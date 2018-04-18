@@ -1,12 +1,16 @@
 // @flow
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import styles from './Home.css';
 import CreateVr from './createVr'
+import { bindActionCreators } from 'redux';
+import * as vrActions from '../actions/vr'
+import * as sceneActions from '../actions/scene'
 
 type Props = {};
 
-export default class Home extends Component<Props> {
+class Home extends Component<Props> {
   props: Props;
 
   constructor(props){
@@ -17,6 +21,10 @@ export default class Home extends Component<Props> {
   }
 
 
+  onCreate(value){
+    console.log('on create',value)
+  }
+
   onCreateClick(){
     this.setState({
       showCreateItem:true
@@ -26,7 +34,7 @@ export default class Home extends Component<Props> {
   renderCreateVr(){
     const {showCreateItem} = this.state
     if(showCreateItem){
-      return <CreateVr></CreateVr>
+      return <CreateVr onCreate={this.onCreate.bind(this)}></CreateVr>
     }
   }
 
@@ -49,3 +57,19 @@ export default class Home extends Component<Props> {
     );
   }
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+      ...bindActionCreators(vrActions, dispatch),
+      ...bindActionCreators(sceneActions,dispatch)
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    vr: state.vr,
+    scene: state.scene
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

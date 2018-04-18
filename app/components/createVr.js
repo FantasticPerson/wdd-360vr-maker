@@ -10,10 +10,10 @@ export default class CreateVR extends Component{
     onKeyDown(e){
         
         if(e.keyCode == 13){
-            console.log(e.target)
+            const {onCreate} = this.props
             let value = e.target.value.trim()
             if(value.length > 0){
-                
+                onCreate(value)
             }            
         }
     }
