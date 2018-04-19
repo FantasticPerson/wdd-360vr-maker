@@ -1,3 +1,5 @@
+import Modals from '../modals'
+
 export const action_consts = {
     ADD_SCENE:'add_scene',
     DEL_SCENE:'delete_scene',
@@ -13,10 +15,18 @@ export function updateAllScene(arr){
 }
 
 export function addScene(obj){
-    return {
-        type:action_consts.ADD_SCENE,
-        context:obj
-    }
+    return Modals.Scene.add(obj)
+    .then(()=>{
+        return Modals.Scene.findAll()
+    })
+    .then((list)=>{
+        return (dispatch)=>{
+            dispatch({
+                type:action_consts.ADD_SCENE,
+                context:obj
+            })
+        }
+    })
 }
 
 export function delScene(obj){

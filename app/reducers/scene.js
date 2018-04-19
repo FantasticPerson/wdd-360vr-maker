@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { routerReducer as router } from 'react-router-redux';
 import {action_consts} from '../actions/scene'
+import Modals from '../modals'
 
 export default function scene(state=[],action){
     switch(action.type){

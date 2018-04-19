@@ -5,6 +5,8 @@ export const action_consts = {
     UPDATE_ALL:'update_all_vr'
 }
 
+import Modals from '../modals'
+
 export function updateAllVr(arr){
     return {
         type:action_consts.UPDATE_ALL,
@@ -13,22 +15,37 @@ export function updateAllVr(arr){
 }
 
 export function addVr(vrObj){
-    return {
-        type:action_consts.ADD_VR,
-        context:vrObj
+    return (dispatch)=>{
+        Modals.Vr.add(vrObj)
+        .then(()=>{
+            return Modals.Vr.findAll()
+        })
+        .then((list)=>{
+            dispatch(updateAllVr(list))
+        })
     }
 }
 
 export function delVr(vrObj){
-    return {
-        type:action_consts.DEL_VR,
-        context:vrObj
+    return (dispatch)=>{
+        Modals.vr.delVr(vrObj.id)
+        .then(()=>{
+            return Modals.Vr.findAll()
+        })
+        .then((list)=>{
+            dispatch(updateAllVr(list))
+        })
     }
 }
 
 export function modifyVr(vrObj){
-    return {
-        type:action_consts.MODIFY_VR,
-        context:vrObj
+    return (dispatch)=>{
+        Modals.Vr.update(vrObj)
+        .then(()=>{
+            return Modals.Vr.findAll()
+        })
+        .then((list)=>{
+            dispatch(updateAllVr(list))
+        })
     }
 }

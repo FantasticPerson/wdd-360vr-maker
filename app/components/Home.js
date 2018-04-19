@@ -20,9 +20,19 @@ class Home extends Component<Props> {
     }
   }
 
+  componentDidMount(){
+    console.log(this)
+  }
+
 
   onCreate(value){
+    const {addVr} = this.props
+    addVr({
+      id:1,
+      name:value
+    })
     console.log('on create',value)
+
   }
 
   onCreateClick(){
