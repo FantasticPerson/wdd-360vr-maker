@@ -9,12 +9,17 @@ export default [
             ],
             vr:[
                 'id',
-                'name'
+                'title',
+                'brief'
             ],
             scene:[
                 'id',
                 'name',
                 'vrid'
+            ],
+            folder:[
+                'id',
+                'name'
             ]
         },
         upgrade: null

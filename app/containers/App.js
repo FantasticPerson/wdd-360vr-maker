@@ -1,6 +1,8 @@
 // @flow
 import * as React from 'react';
 import Header from '../components/Header'
+import styles from './App.css'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 type Props = {
   children: React.Node
@@ -11,10 +13,14 @@ export default class App extends React.Component<Props> {
 
   render() {
     return (
-      <div>
-        <Header></Header>
-        {this.props.children}
-      </div>
+      <MuiThemeProvider>
+        <div>
+          <Header></Header>
+          <div className={styles.container}>
+            {this.props.children}
+          </div>
+        </div>
+      </MuiThemeProvider>
     );
   }
 }

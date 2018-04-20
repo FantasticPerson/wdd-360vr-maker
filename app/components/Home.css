@@ -1,11 +1,8 @@
 .container{
   display: flex;
   flex-direction: row;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  height: 100%;
+  width: 100%;
 }
 
 .menu{
@@ -13,6 +10,7 @@
   order: 1;
   display: flex;
   flex-direction: column;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px;
 }
 
 .content{
@@ -28,11 +26,15 @@
 }
 
 .projectList{
-  flex: 1
+  flex: 1;
+  padding:10px;
 }
 
 .addProject{
   height: 30px;
   background-color: aliceblue;
   cursor: pointer;
+  border-top: 1px solid #ccc;
+  line-height: 30px;
+  text-align: center;
 }
