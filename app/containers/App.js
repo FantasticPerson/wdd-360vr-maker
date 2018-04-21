@@ -12,15 +12,15 @@ export default class App extends React.Component<Props> {
   props: Props;
 
   render() {
-    return (
-      <MuiThemeProvider>
-        <div>
-          <Header />
-          <div className={styles.container}>
-            {this.props.children}
-          </div>
-        </div>
-      </MuiThemeProvider>
-    );
+      return (
+        <MuiThemeProvider>
+            <div>
+            <Header />
+            <div className={styles.container}>
+                    {this.props.children}
+                  </div>
+              </div>
+          </MuiThemeProvider>
+      );
   }
 }

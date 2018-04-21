@@ -4,8 +4,8 @@ import Vr from './Vr';
 import Folder from './Folder';
 
 export default {
-  Scene,
-  UserInfo,
-  Vr,
-  Folder
+    Scene,
+    UserInfo,
+    Vr,
+    Folder
 };

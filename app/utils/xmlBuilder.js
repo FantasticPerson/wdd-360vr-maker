@@ -1,17 +1,17 @@
 const xmlBuilder = require('xmlbuilder');
 
 export default function builder(data) {
-  const krpano = xmlBuilder.create('krpano');
+    const krpano = xmlBuilder.create('krpano');
 
-  const include = krpano.ele('include');
-  include.att('url', 'default');
+    const include = krpano.ele('include');
+    include.att('url', 'default');
 
-  const skinSetting = krpano.ele('skin_settings');
-  const settingData = data.setting;
+    const skinSetting = krpano.ele('skin_settings');
+    const settingData = data.setting;
 
-  Object.keys(settingData).forEach(key => {
-    skinSetting.att(key, settingData[key]);
-  });
+    Object.keys(settingData).forEach(key => {
+        skinSetting.att(key, settingData[key]);
+    });
 }
 
 // 数据结构

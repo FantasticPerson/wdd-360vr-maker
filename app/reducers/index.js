@@ -7,11 +7,11 @@ import vr from './vr';
 import folder from './folder';
 
 const rootReducer = combineReducers({
-  counter,
-  scene,
-  vr,
-  router,
-  folder
+    counter,
+    scene,
+    vr,
+    router,
+    folder
 });
 
 export default rootReducer;

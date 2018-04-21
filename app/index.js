@@ -14,19 +14,19 @@ dbConfig();
 
 render(
   <AppContainer>
-    <Root store={store} history={history} />
-  </AppContainer>,
-  document.getElementById('root')
+      <Root store={store} history={history} />
+    </AppContainer>,
+    document.getElementById('root')
 );
 
 if (module.hot) {
-  module.hot.accept('./containers/Root', () => {
-    const NextRoot = require('./containers/Root'); // eslint-disable-line global-require
-    render(
-      <AppContainer>
-        <NextRoot store={store} history={history} />
-      </AppContainer>,
-      document.getElementById('root')
-    );
-  });
+    module.hot.accept('./containers/Root', () => {
+        const NextRoot = require('./containers/Root'); // eslint-disable-line global-require
+        render(
+          <AppContainer>
+              <NextRoot store={store} history={history} />
+            </AppContainer>,
+            document.getElementById('root')
+        );
+    });
 }
