@@ -10,7 +10,8 @@ export default [
             vr: [
                 'id',
                 'title',
-                'brief'
+                'brief',
+                'folderId'
             ],
             scene: [
                 'id',
