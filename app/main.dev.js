@@ -14,8 +14,8 @@ import { app, BrowserWindow } from 'electron';
 import MenuBuilder from './menu';
 import { globalAgent } from 'http';
 
-const path = require('path')
-const fs = require('fs')
+const path = require('path');
+const fs = require('fs');
 
 let mainWindow = null;
 
@@ -44,36 +44,37 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
-const initConfig = async ()=>{
-  global.__ELECTRON__ == true
-  global.electron = require('electron')
-  global.electron_app = global.electron.app
-  global.electron_app_path = electron_app.getAppPath()
-  
+const initConfig = async () => {
+  global.__ELECTRON__ == true;
+  global.electron = require('electron');
+  global.electron_app = global.electron.app;
+  global.electron_app_path = electron_app.getAppPath();
 
-  if(process.env.NODE_ENV === 'development'){
-    global.electron_app_root_path = path.resolve(electron_app.getPath('exe'),'../../../../app/dist')
+
+  if (process.env.NODE_ENV === 'development') {
+    global.electron_app_root_path = path.resolve(electron_app.getPath('exe'), '../../../../app/dist');
   } else {
-    global.electron_app_root_path =  path.resolve( electron_app.getPath('exe'),'..')
+    global.electron_app_root_path = path.resolve(electron_app.getPath('exe'), '..');
   }
-  global.electron_app_assets_path = path.resolve(global.electron_app_root_path,'./assets')
-  global.electron_app_krpano_path = path.resolve(global.electron_app_assets_path,'./krpano')
-  global.electron_app_scene_path = path.resolve(global.electron_app_assets_path,'./scene')
+  global.electron_app_assets_path = path.resolve(global.electron_app_root_path, './assets');
+  global.electron_app_krpano_path = path.resolve(global.electron_app_assets_path, './krpano');
+  global.electron_app_scene_path = path.resolve(global.electron_app_assets_path, './scene');
 
-  console.log(global.electron_app_assets_path)
-}
 
-const initDir = async () =>{
-  if(! fs.existsSync(global.electron_app_assets_path)){
-    fs.mkdirSync(global.electron_app_assets_path)
+  console.log(global.electron_app_assets_path);
+};
+
+const initDir = async () => {
+  if (!fs.existsSync(global.electron_app_assets_path)) {
+    fs.mkdirSync(global.electron_app_assets_path);
   }
-  if(! fs.existsSync(global.electron_app_krpano_path)){
-    fs.mkdirSync(global.electron_app_krpano_path)
+  if (!fs.existsSync(global.electron_app_krpano_path)) {
+    fs.mkdirSync(global.electron_app_krpano_path);
   }
-  if(! fs.existsSync(global.electron_app_scene_path)){
-    fs.mkdirSync(global.electron_app_scene_path)
+  if (!fs.existsSync(global.electron_app_scene_path)) {
+    fs.mkdirSync(global.electron_app_scene_path);
   }
-}
+};
 
 /**
  * Add event listeners...
@@ -91,8 +92,8 @@ app.on('window-all-closed', () => {
 app.on('ready', async () => {
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
     await installExtensions();
-    await initConfig()
-    await initDir()
+    await initConfig();
+    await initDir();
   }
 
   mainWindow = new BrowserWindow({

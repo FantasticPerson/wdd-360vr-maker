@@ -1,19 +1,11 @@
 export default class UserInfo { }
 
-UserInfo.store = null 
+UserInfo.store = null;
 
-UserInfo.findAll = ()=>{
-    return UserInfo.store.toArray()
-}
+UserInfo.findAll = () => UserInfo.store.toArray();
 
-UserInfo.add = (obj)=>{
-    return UserInfo.store.put(obj)
-}
+UserInfo.add = (obj) => UserInfo.store.put(obj);
 
-UserInfo.update = (obj)=>{
-    return UserInfo.add(obj)
-}
+UserInfo.update = (obj) => UserInfo.add(obj);
 
-UserInfo.delete = (id)=>{
-    return UserInfo.store.delete(id)
-}
+UserInfo.delete = (id) => UserInfo.store.delete(id);

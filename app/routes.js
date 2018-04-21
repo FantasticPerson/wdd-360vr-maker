@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router';
 import App from './containers/App';
 import HomePage from './containers/HomePage';
 import CounterPage from './containers/CounterPage';
+// import componentWithState from './components/componentWithState'
 
 export default () => (
   <App>

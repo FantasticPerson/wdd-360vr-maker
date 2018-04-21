@@ -1,142 +1,154 @@
-// @flow
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styles from './Home.css';
-import CreateVr from './createVr'
+import CreateVr from './createVr';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import { bindActionCreators } from 'redux';
-import * as vrActions from '../actions/vr'
-import * as sceneActions from '../actions/scene'
+import * as vrActions from '../actions/vr';
+import * as sceneActions from '../actions/scene';
+import * as folderActions from '../actions/folder';
 import FlatButton from 'material-ui/FlatButton';
-import CreateVrModal from './CreateVrModal'
-import {List, ListItem} from 'material-ui/List';
+import CreateVrModal from './CreateVrModal';
+import { List, ListItem } from 'material-ui/List';
+import CreateFolderModal from './CreateFolderModal';
 
-type Props = {};
 
-class Home extends Component<Props> {
-  props: Props;
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      showCreateItem: false,
-      selectVrItemIndex:-1
+class Home extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showCreateFolderItem: false,
+            selectVrItemIndex: -1,
+            selectedFolderIndex: -1
+        };
     }
-  }
 
-  onCreate(title, brief) {
-    const { addVr, nextId } = this.props
-    addVr({
-      id: nextId,
-      title: title,
-      brief: brief
-    })
-    this.setState({
-      showCreateItem: false
-    })
-  }
+    componentDidMount() {
+        const { updateFromLocal } = this.props;
+        updateFromLocal();
+    }
 
-  onHideCreateVrModal() {
-    this.setState({
-      showCreateItem: false
-    })
-  }
+    onCreateFolder(title) {
+        const { addFolder, nextFolderId } = this.props;
+        addFolder({
+            id: nextFolderId,
+            title
+        });
+        this.setState({
+            showCreateFolderItem: false
+        });
+    }
 
-  onCreateClick() {
-    this.setState({
-      showCreateItem: true
-    })
-  }
+    onHiderCreateFolderModal() {
+        this.setState({
+            showCreateFolderItem: false
+        });
+    }
 
-  onVrItemClick(data,index){
-    console.log(index)
-    this.setState({
-      selectVrItemIndex:index
-    })
-  }
+    onCreateFolderClick() {
+        this.setState({
+            showCreateFolderItem: true
+        });
+    }
 
-  renderVrList() {
-    const { vr } = this.props
-    let icon = <i className="fa fa-folder" style={{top:'5px'}} aria-hidden="true"></i>
-    return (
-      <List>
-        {
-          vr.map((item,index) => {
-            return <ListItem key={item.id} primaryText={item.title} leftIcon={icon} onClick={this.onVrItemClick.bind(this,item,index)}></ListItem>
-          })
-        }
-      </List>
-    )
-  }
+    onFolderItemClick(data, index) {
 
-  renderCreateVrModal() {
-    const { showCreateItem } = this.state
-    if (showCreateItem) {
+    }
+
+    renderVrList() {
+      const { vr } = this.props;
+      const { selectedFolderIndex } = this.state;
+      const icon = <i className="fa fa-folder" style={{ top: '5px' }} aria-hidden="true" />;
       return (
-        <CreateVrModal onCreate={this.onCreate.bind(this)} onCancel={this.onHideCreateVrModal.bind(this)}></CreateVrModal>
-      )
+        <List>
+          {
+              vr.map((item, index) => <ListItem style={{ background: rgba(0, 0, 0, 0.87) }} key={item.id} primaryText={item.title} leftIcon={icon} onClick={this.onVrItemClick.bind(this, item, index)} />)
+            }
+        </List>
+      );
     }
-  }
 
-  renderSelectedVr(){
+    renderFolderList() {
+      const { folder } = this.props;
+      const icon = <i className="fa fa-folder" style={{ top: '5px' }} aria-hidden="true" />;
+      return (
+        <List>
+          {
+              folder.map((item, index) => <ListItem key={item.id} primaryText={item.title} leftIcon={icon} onClick={() => { }} />)
+            }
+        </List>
+      );
+    }
 
-  }
+    renderCreateVrModal() {
+      const { showCreateItem } = this.state;
+      if (showCreateItem) {
+        return (
+          <CreateVrModal onCreate={this.onCreate.bind(this)} onCancel={this.onHideCreateVrModal.bind(this)} />
+        );
+      }
+    }
 
-  render() {
-    return (
-      <div className={styles.container}>
-        <div className={styles.menu}>
-          <div className={styles.projectList}>
-            <div>
-              {this.renderVrList()}
+    renderCreateFolderModal() {
+      const { showCreateFolderItem } = this.state;
+      if (showCreateFolderItem) {
+        return (
+          <CreateFolderModal onCreate={this.onCreateFolder.bind(this)} onCancel={this.onHiderCreateFolderModal.bind(this)} />
+        );
+      }
+    }
+
+    render() {
+      return (
+        <div className={styles.container}>
+          <div className={styles.menu}>
+            <div className={styles.projectList}>
+              <div>
+                {this.renderFolderList()}
+              </div>
+            </div>
+            <div className={styles.addProject} onClick={() => { this.onCreateFolderClick(); }}>
+              <i className="fa fa-plus" />
+              <span style={{ marginLeft: '17px' }}>新建文件夹</span>
             </div>
           </div>
-          <div className={styles.addProject} onClick={() => { this.onCreateClick() }}>
-            <i className="fa fa-plus"></i>
-            <span style={{ marginLeft: '17px' }}>新建文件夹</span>
-          </div>
+          <div className={styles.content} />
+          {this.renderCreateVrModal()}
+          {this.renderCreateFolderModal()}
         </div>
-        <div className={styles.content}>
-        </div>
-        {/* <div className={styles.rightContent}></div> */}
-        {this.renderCreateVrModal()}
-      </div>
-    );
-  }
+      );
+    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     ...bindActionCreators(vrActions, dispatch),
-    ...bindActionCreators(sceneActions, dispatch)
-  }
+    ...bindActionCreators(sceneActions, dispatch),
+    ...bindActionCreators(folderActions, dispatch)
+  };
 }
 
 function mapStateToProps(state) {
   return {
     vr: state.vr,
     scene: state.scene,
-    nextId: getNextId(state.vr,0),
-    nextFolderId: getNextId(state.folder,2)
+    folder: state.folder,
+    nextId: getNextId(state.vr, 0),
+    nextFolderId: getNextId(state.folder, 2)
   };
 }
 
-const getNextId = (arr,startIndex) => {
-  let id = startIndex
+const getNextId = (arr, startIndex) => {
+  let id = startIndex;
   arr.map(item => {
     if (item.id > id) {
-      id = item.id
+      id = item.id;
     }
-  })
-  return ++id
-}
-
-const getNextFolderId = (arr) => {
-  let id = 2
-  arr.map((item)=>)
-}
+  });
+  return ++id;
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -1,19 +1,11 @@
-export default class Folder{ }
+export default class Folder { }
 
-Folder.store = null
+Folder.store = null;
 
-Folder.findAll = ()=>{
-    return Folder.store.toArray()
-}
+Folder.findAll = () => Folder.store.toArray();
 
-Folder.add = (obj)=>{
-    return Folder.store.put(obj)
-}
+Folder.add = (obj) => Folder.store.put(obj);
 
-Folder.update = (obj)=>{
-    return Folder.store.add(obj)
-}
+Folder.update = (obj) => Folder.store.add(obj);
 
-Folder.delete = (id)=>{
-    return Folder.store.delete(id)
-}
+Folder.delete = (id) => Folder.store.delete(id);

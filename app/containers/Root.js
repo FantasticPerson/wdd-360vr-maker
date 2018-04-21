@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import Routes from '../routes';
-import Header from '../components/Header'
+import Header from '../components/Header';
 
 type Props = {
   store: {},

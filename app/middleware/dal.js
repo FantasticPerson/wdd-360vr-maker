@@ -1,7 +1,7 @@
-function createDal(opts={},cb){
+function createDal(opts = {}, cb) {
 
 }
 
-export default ({dispatch,getState})=>next=>action=>{
-    
-}  
+export default ({ dispatch, getState }) => next => action => {
+
+};

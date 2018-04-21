@@ -1,19 +1,11 @@
 export default class Scene { }
 
-Scene.store = null
+Scene.store = null;
 
-Scene.findAll = ()=> {
-    return Scene.store.toArray()
-}
+Scene.findAll = () => Scene.store.toArray();
 
-Scene.add = (obj)=>{
-    return Scene.store.put(obj)
-}
+Scene.add = (obj) => Scene.store.put(obj);
 
-Scene.update = (obj)=>{
-    return Scene.add(obj)
-}
+Scene.update = (obj) => Scene.add(obj);
 
-Scene.delete = (id)=>{
-    return Scene.store.delete(id)
-}
+Scene.delete = (id) => Scene.store.delete(id);
