@@ -10,6 +10,7 @@ import * as folderActions from '../../actions/folder';
 
 import CreateVrModal from '../CreateVrModal';
 import CreateFolderModal from '../CreateFolderModal';
+import VrContainer from '../VrContainer'
 
 import { List, ListItem } from 'material-ui/List';
 
@@ -18,13 +19,14 @@ class Home extends Component {
         super(props);
         this.state = {
             showCreateFolderItem: false,
-            selectedFolderId: -1
+            selectedFolderId: 0
         };
     }
 
     componentDidMount() {
-        const { updateFromLocal } = this.props;
+        const { updateFromLocal,updateVrFromLocal } = this.props;
         updateFromLocal();
+        updateVrFromLocal();
     }
 
     onCreateFolder(title) {
@@ -33,9 +35,7 @@ class Home extends Component {
             id: nextFolderId,
             title
         });
-        this.setState({
-            showCreateFolderItem: false
-        });
+        onHiderCreateFolderModal()
     }
 
     onHiderCreateFolderModal() {
@@ -75,12 +75,14 @@ class Home extends Component {
         const { showCreateFolderItem } = this.state;
         if (showCreateFolderItem) {
             return (
-              <CreateFolderModal onCreate={this.onCreateFolder.bind(this)} onCancel={this.onHiderCreateFolderModal.bind(this)} />
+                <CreateFolderModal onCreate={this.onCreateFolder.bind(this)} onCancel={this.onHiderCreateFolderModal.bind(this)} />
             );
         }
     }
 
     render() {
+        const {selectedFolderId} = this.state
+
         return (
             <div className={styles.container}>
                 <div className={styles.menu}>
@@ -94,7 +96,9 @@ class Home extends Component {
                         <span style={{ marginLeft: '17px' }}>新建文件夹</span>
                     </div>
                 </div>
-                <div className={styles.content} />
+                <div className={styles.content}>
+                    <VrContainer selectedFolderId={selectedFolderId}></VrContainer>
+                </div>
                 {this.renderCreateFolderModal()}
             </div>
         );

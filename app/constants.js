@@ -1,0 +1,1 @@
+export const IMG_NAME_ARR = ["mobile_b.jpg","mobile_d.jpg","mobile_f.jpg","mobile_l.jpg","mobile_r.jpg","mobile_u.jpg","preview.jpg","thumb.jpg"]

@@ -1,0 +1,26 @@
+.container{
+    display: flex;
+    flex-direction: column;
+}
+
+.header{
+    height: 30px;
+    width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+}
+
+.content{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding:15px;
+    flex:1;
+}
+
+.plusIcon{
+    vertical-align: -2px;
+    position: absolute;
+    top: 10px;
+    margin-left: 15px;
+    color:rgb(0, 188, 212)
+}

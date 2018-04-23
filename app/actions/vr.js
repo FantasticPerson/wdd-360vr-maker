@@ -14,6 +14,15 @@ export function updateAllVr(arr) {
     };
 }
 
+export function updateVrFromLocal(){
+    return (dispatch)=>{
+        Modals.Vr.findAll()
+        .then((list)=>{
+            dispatch(updateAllVr(list))
+        })
+    }
+}
+
 export function addVr(vrObj) {
     return (dispatch) => {
         Modals.Vr.add(vrObj)
