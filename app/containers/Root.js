@@ -13,9 +13,9 @@ type Props = {
 export default class Root extends Component<Props> {
     render() {
         return (
-          <Provider store={this.props.store}>
-              <ConnectedRouter history={this.props.history}>
-                  <Routes />
+            <Provider store={this.props.store}>
+                <ConnectedRouter history={this.props.history}>
+                    <Routes />
                 </ConnectedRouter>
             </Provider>
         );
