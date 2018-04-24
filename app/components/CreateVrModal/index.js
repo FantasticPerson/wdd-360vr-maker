@@ -7,14 +7,19 @@ import openFolder from '../../native/openFolder'
 import checkPicValid from '../../native/checkPicValid'
 import copyFileToTmp from '../../native/copyFileToTmp'
 import getPathOfPreviewImg from '../../native/getPathOfPreviewImg'
+import {history  } from 'react-router'
 
 import styles from './index.css'
 
 export default class CreateVrModal extends Component {
     constructor() {
         super();
+        console.log(history)
         this.state = {tmpImgReady:false}
         this.previewImg = getPathOfPreviewImg(true)
+
+        console.log(this.previewImg)
+
         this.titleRef = React.createRef();
         this.summaryRef = React.createRef();
     }

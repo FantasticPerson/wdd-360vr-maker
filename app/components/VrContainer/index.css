@@ -1,6 +1,7 @@
 .container{
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .header{
@@ -16,6 +17,9 @@
     padding:15px;
     flex:1;
     box-sizing: content-box;
+    overflow-y: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .plusIcon{
