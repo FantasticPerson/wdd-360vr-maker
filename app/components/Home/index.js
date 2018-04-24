@@ -54,8 +54,8 @@ class Home extends Component {
         this.setState({
             selectedFolderId:data.id
         })
-    }
-
+    } 
+    
     renderFolderList() {
         const { folder } = this.props;
         const {selectedFolderId} = this.state;

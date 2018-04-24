@@ -1,11 +1,15 @@
 import React,{Component} from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import generateVrFolder from '../../native/generateVrFolder'
+import copyImageToScene from '../../native/copyImageToScene'
+import getScenePath from '../../native/getScenePath'
 
 import FlatButton from 'material-ui/FlatButton';
 
 import styles from './index.css'
 import * as vrActions from '../../actions/vr'
+import * as sceneActions from '../../actions/scene'
 import CreateVrModal from '../CreateVrModal'
 
 class VrContainer extends Component{
@@ -28,19 +32,51 @@ class VrContainer extends Component{
         })
     }
 
-    onCreateClick(title,brief){
+    onCreateClick(title,brief,isTmpImageReady){
+        const {nextVrId,nextSceneId,selectedFolderId,addScene,addVr} = this.props
+
+        addVr({
+            id:nextVrId,
+            title:title,
+            brief:brief,
+            folderId:selectedFolderId
+        })
+
+        addScene({
+            id:nextSceneId,
+            vrid:nextVrId,
+            name:'test'
+        })
+
+        setTimeout(()=>{
+            generateVrFolder(selectedFolderId,nextVrId,nextSceneId)
+            .then(()=>{
+                return copyImageToScene(getScenePath(selectedFolderId,nextVrId,nextSceneId))
+            })
+            .catch((e)=>{
+                console.error(e)
+            })
+        },20)
+        
         this.onCancelClick()
     }
     
     renderContent(){
-        const {vr} = this.props
-        if(vr.length > 0){
-
-        } else {
+        let  vrArr = this.getVrByFolderId()
+        if(vrArr.length > 0){
             return (
-                <h3>暂无内容</h3>
+                <h3>有内容哦</h3>
             )
+        } else {
+            return <h3>暂无内容</h3>
         }
+    }
+
+    getVrByFolderId(){
+        const {selectedFolderId,vr} = this.props
+        return vr.filter((item)=>{
+            return item.folderId === selectedFolderId
+        })
     }
 
     renderCreateVrModal(){
@@ -72,13 +108,27 @@ class VrContainer extends Component{
 
 function mapStateToProps(state){
     return {
-        vr:state.vr
+        vr:state.vr,
+        scene:state.scene,
+        nextVrId:getNextId(state.vr,0),
+        nextSceneId:getNextId(state.scene,0)
     }
 }
 
+const getNextId = (arr, startIndex) => {
+    let id = startIndex;
+    arr.map(item => {
+        if (item.id > id) {
+            id = item.id;
+        }
+    });
+    return ++id;
+};
+
 function mapDispatchToProps(dispatch){
     return {
-        ...bindActionCreators(vrActions,dispatch)
+        ...bindActionCreators(vrActions,dispatch),
+        ...bindActionCreators(sceneActions,dispatch)
     }
 }
 

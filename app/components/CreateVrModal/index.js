@@ -13,9 +13,7 @@ import styles from './index.css'
 export default class CreateVrModal extends Component {
     constructor() {
         super();
-        this.state = {
-            tmpImgReady:false
-        }
+        this.state = {tmpImgReady:false}
         this.previewImg = getPathOfPreviewImg(true)
         this.titleRef = React.createRef();
         this.summaryRef = React.createRef();
@@ -28,13 +26,14 @@ export default class CreateVrModal extends Component {
     }
 
     onConfirmClick() {
+        const {tmpImgReady} = this.state
         const { onCreate } = this.props;
 
         const title = this.titleRef.input.value.trim();
         const brief = this.summaryRef.input.refs.input.value.trim();
 
         if (title.length > 0) {
-            onCreate(title, brief);
+            onCreate(title, brief,tmpImgReady);
         }
     }
 

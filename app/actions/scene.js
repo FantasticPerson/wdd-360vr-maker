@@ -15,26 +15,37 @@ export function updateAllScene(arr) {
 }
 
 export function addScene(obj) {
-    return Modals.Scene.add(obj)
-        .then(() => Modals.Scene.findAll())
-        .then((list) => (dispatch) => {
-            dispatch({
-                type: action_consts.ADD_SCENE,
-                context: obj
-            });
-        });
+    return (dispatch) => {
+        Modals.Scene.add(obj)
+        .then(()=>{
+            return Modals.Scene.findAll()
+        })
+        .then((list)=>{
+            dispatch(updateAllScene(list))
+        })
+    }
 }
 
 export function delScene(obj) {
-    return {
-        type: action_consts.DEL_SCENE,
-        context: obj
-    };
+    return (dispatch)=>{
+        Modals.Scene.delete(obj.id)
+        .then(()=>{
+            return Modals.Scene.findAll()
+        })
+        .then((list)=>{
+            dispatch(updateAllScene(list))
+        })
+    }
 }
 
 export function modifyScene(obj) {
-    return {
-        type: action_consts.MODIFY_SCENE,
-        context: obj
-    };
+    return (dispatch)=>{
+        Modals.Scene.update(obj)
+        .then(()=>{
+            return Modals.Scene.findAll()
+        })
+        .then((list)=>{
+            dispatch(updateAllScene(list))
+        })
+    }
 }

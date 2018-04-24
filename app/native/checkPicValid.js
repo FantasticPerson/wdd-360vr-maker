@@ -1,5 +1,4 @@
-import { resolve } from "path";
-import {IMG_NAME_ARR} from '../constants'
+ import {IMG_NAME_ARR} from '../constants'
 
 const nativeRequire = window.native_require
 const path = nativeRequire('path')
@@ -9,7 +8,6 @@ export default function checkPicValid(rootPath){
     return new Promise((resolve,reject)=>{
         try{
             let fileArr = fs.readdirSync(rootPath)  
-            console.log(fileArr)          
             for(let i=0;i<IMG_NAME_ARR.length;i++){
                 if(fileArr.indexOf(IMG_NAME_ARR[i]) < 0){
                     reject('图片上传格式不正确')

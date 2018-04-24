@@ -60,6 +60,7 @@ const initConfig = async () => {
     global.electron_app_krpano_path = path.resolve(global.electron_app_assets_path, './krpano');
     global.electron_app_scene_path = path.resolve(global.electron_app_assets_path, './scene');
     global.electron_app_tmp_path = path.resolve(global.electron_app_assets_path,'./tmp')
+    global.electron_app_vr_path = path.resolve(global.electron_app_assets_path,'./vr')
 
 
     console.log(global.electron_app_assets_path);
@@ -77,6 +78,9 @@ const initDir = async () => {
     }
     if(!fs.existsSync(global.electron_app_tmp_path)) {
         fs.mkdirSync(global.electron_app_tmp_path)
+    }
+    if(!fs.existsSync(global.electron_app_vr_path)){
+        fs.mkdirSync(global.electron_app_vr_path)
     }
 };
 

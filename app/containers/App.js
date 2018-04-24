@@ -19,11 +19,11 @@ export default class App extends React.Component<Props> {
         fontFamily:'"Lato","Microsoft Yahei","微软雅黑","STXihei","Meiryo UI","Meiryo","メイリオ","ＭＳ Ｐゴシック","MS PGothic","Hiragino Kaku Gothic Pro","Arial Unicode MS","Helvetica Neue","Helvetica","Arial",sans-serif'
       }); 
       return (
-        <MuiThemeProvider muiTheme={muiTheme}>
-            <div>
-            <Header />
-            <div className={styles.container}>
-                    {this.props.children}
+          <MuiThemeProvider muiTheme={muiTheme}>
+              <div>
+                  <Header />
+                  <div className={styles.container}>
+                      {this.props.children}
                   </div>
               </div>
           </MuiThemeProvider>
