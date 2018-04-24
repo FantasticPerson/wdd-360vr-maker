@@ -15,6 +15,7 @@
     flex-wrap: wrap;
     padding:15px;
     flex:1;
+    box-sizing: content-box;
 }
 
 .plusIcon{

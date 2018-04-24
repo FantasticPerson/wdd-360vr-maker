@@ -11,6 +11,7 @@ import styles from './index.css'
 import * as vrActions from '../../actions/vr'
 import * as sceneActions from '../../actions/scene'
 import CreateVrModal from '../CreateVrModal'
+import VrItem from './vrItem'
 
 class VrContainer extends Component{
     constructor(){
@@ -61,12 +62,20 @@ class VrContainer extends Component{
         this.onCancelClick()
     }
     
+    onVrItemClick(data){
+        console.log(data)
+    }
+
     renderContent(){
         let  vrArr = this.getVrByFolderId()
         if(vrArr.length > 0){
-            return (
-                <h3>有内容哦</h3>
-            )
+            let vrItems =  vrArr.map((item,index)=>{
+                   return <VrItem key={index}  data={item} onItemClick={this.onVrItemClick.bind(this)}></VrItem>     
+            })
+            for(var i=0;i<20;i++){
+                vrItems.push(<div key={`placeHolder${i}`} style={{width:'230px',height:'0'}}></div>)
+            }
+            return vrItems
         } else {
             return <h3>暂无内容</h3>
         }
