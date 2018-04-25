@@ -1,6 +1,7 @@
 import React,{Component} from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { createHashHistory } from 'history'
 import generateVrFolder from '../../native/generateVrFolder'
 import copyImageToScene from '../../native/copyImageToScene'
 import getScenePath from '../../native/getScenePath'
@@ -19,6 +20,11 @@ class VrContainer extends Component{
         this.state = {
             showCreateVrModal:false
         }
+        this.history = createHashHistory()
+    }
+
+    componentDidMount(){
+        console.log(this.props)
     }
 
     onAddClick(){
@@ -70,7 +76,7 @@ class VrContainer extends Component{
         let  vrArr = this.getVrByFolderId()
         if(vrArr.length > 0){
             let vrItems =  vrArr.map((item,index)=>{
-                   return <VrItem key={index}  data={item} onItemClick={this.onVrItemClick.bind(this)}></VrItem>     
+                   return <VrItem key={index}  history={this.history} data={item} onItemClick={this.onVrItemClick.bind(this)}></VrItem>     
             })
             for(var i=0;i<20;i++){
                 vrItems.push(<div key={`placeHolder${i}`} style={{width:'230px',height:'0'}}></div>)

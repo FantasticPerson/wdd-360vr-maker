@@ -3,9 +3,11 @@ import styles from './vrItem.css'
 
 export default class VrItem extends Component{
     onItemDbClick(){
-        console.log('doubleclick')
+        const {history} = this.props
+        console.log('doubleclick',history)
         const {onItemClick,data} = this.props
         onItemClick(data)
+        history.push(`/edit/${data.id}`)
     }
     
     render(){

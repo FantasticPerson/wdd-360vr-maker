@@ -1,6 +1,7 @@
 const xmlBuilder = require('xmlbuilder');
+import Common from '../common'
 
-export default function builder(data) {
+export function builder(data) {
     const krpano = xmlBuilder.create('krpano');
 
     const include = krpano.ele('include');
@@ -12,6 +13,45 @@ export default function builder(data) {
     Object.keys(settingData).forEach(key => {
         skinSetting.att(key, settingData[key]);
     });
+}
+
+export function getPanoXml = (data){
+    const krpano = xmlBuilder.create('krpano')
+    krpano.att('version',Common.KR_VERSION)
+
+    const scene = krpano.ele('scene')
+    scene.att('name','scene_0')
+
+    const preview = scene.ele('preview')
+    preview.att('url','')
+
+    const view = scene.ele('view')
+
+    view.att('fov', data.fov)
+    view.att('fovtype', 'MFOV')
+    view.att('fovmin', data.fovMin)
+    view.att('fovmax', data.fovMax)
+    view.att('hlookat', data.hAov)
+    view.att('vlookat', data.vAov)
+    view.att('vlookatmin', data.vAovMin)
+    view.att('vlookatmax', data.vAovMax)
+    view.att('limitview', 'lookat')
+
+    const image = scene.ele('image')
+    image.att('type', 'CUBE')
+    image.att('multires', true)
+    image.att('tilesize', 512)
+
+    for (let i = 0; i < data.multires.length; i++) {
+        const level = image.ele('level')
+        level.att('tiledimagewidth', data.multires[i])
+        level.att('tiledimageheight', data.multires[i])
+
+        const cube = level.ele('cube')
+        cube.att('url', path.join(data.rootPath, 'pano.tiles', `mres_%s/l${data.multires.length - i}/%v/l${data.multires.length - i}_%s_%v_%h.jpg`))
+    }
+
+    return krpano.doc().end()
 }
 
 // 数据结构
