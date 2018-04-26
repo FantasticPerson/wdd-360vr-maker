@@ -13,6 +13,7 @@
 import { app, BrowserWindow } from 'electron';
 import MenuBuilder from './menu';
 import { globalAgent } from 'http';
+import initServer from './server'
 
 const path = require('path');
 const fs = require('fs');
@@ -102,6 +103,8 @@ app.on('ready', async () => {
         await installExtensions();
         await initConfig();
         await initDir();
+        await initServer(global.electron_app_root_path,global)
+
     }
 
     mainWindow = new BrowserWindow({

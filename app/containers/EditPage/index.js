@@ -8,19 +8,19 @@ export default class EditPage extends Component{
         return (
             <div className={styles.container}>
                 <div className={styles.leftBar}>
-                    <div>
+                    <div className={styles.btn}>
                         <i className="fa fa-eye"></i>
                         <p>视角</p>
                     </div>
-                    <div>
-                        <i className="fa fa-dot-circle-0"></i>
+                    <div className={styles.btn}>
+                        <i className="fa fa-dot-circle-o"></i>
                         <p>热点</p>
                     </div>
-                    <div>
+                    <div className={styles.btn}>
                         <i className="fa fa-music"></i>
                         <p>音乐</p>
                     </div>
-                    <div>
+                    <div className={styles.btn}>
                         <i className="fa fa-magic"></i>
                         <p>特效</p>
                     </div>

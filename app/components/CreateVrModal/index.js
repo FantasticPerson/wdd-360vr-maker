@@ -16,6 +16,7 @@ export default class CreateVrModal extends Component {
         console.log(history)
         this.state = {tmpImgReady:false}
         this.previewImg = getPathOfPreviewImg(true)
+        console.log(this.previewImg)
 
         this.titleRef = React.createRef();
         this.summaryRef = React.createRef();
@@ -48,7 +49,9 @@ export default class CreateVrModal extends Component {
             return copyFileToTmp(res.rootPath)
         })
         .then(()=>{
-            this.setState({tmpImgReady:true})
+            setTimeout(()=>{
+                this.setState({tmpImgReady:true})
+            },300)
         })
         .catch((err)=>{
             console.error(err)

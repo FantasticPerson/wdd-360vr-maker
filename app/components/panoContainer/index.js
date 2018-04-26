@@ -1,6 +1,7 @@
 import React,{Component} from 'react'
 import styles from './index.css'
 import Common from '../../common'
+import {getPanoXml} from '../../utils/xmlBuilder'
 
 class PanoContainer extends Component{
     componentDidMount(){
@@ -8,7 +9,14 @@ class PanoContainer extends Component{
             target:'pano',
             ...Common.KR_EMBED,
             onready:krpano=>{
-                console.log(krpano)
+                setTimeout(()=>{
+                    const xml = getPanoXml({})
+                    krpano.call(`load_pano_by_multils(${xml})`)
+                    krpano.call('show_view_frame();')
+                },500)
+                this.krpano = krpano
+                // console.log(krpano)
+                
             }
         })
     }
@@ -16,7 +24,7 @@ class PanoContainer extends Component{
     render(){
         return (
             <div className={styles.container}>
-                <div id="pano"></div>
+                <div id="pano" className={styles.container}></div>
             </div>
         )
     }

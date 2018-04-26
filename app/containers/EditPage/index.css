@@ -35,3 +35,20 @@
     flex: 0 0 150px;
     border-top: 1px solid #ccc;
 }
+
+.leftBar .btn{
+    text-align: center;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.leftBar .btn:hover{
+    background-color: rgba(0, 0, 0, 0.3);
+    color:#FFF
+}
+
+.leftBar .btn p{
+    font-size: 15px;
+}

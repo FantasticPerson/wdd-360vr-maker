@@ -15,7 +15,7 @@ export function builder(data) {
     });
 }
 
-export function getPanoXml = (data){
+export function getPanoXml(data){
     const krpano = xmlBuilder.create('krpano')
     krpano.att('version',Common.KR_VERSION)
 
@@ -27,29 +27,33 @@ export function getPanoXml = (data){
 
     const view = scene.ele('view')
 
-    view.att('fov', data.fov)
+    // view.att('hlookat', '1')
     view.att('fovtype', 'MFOV')
-    view.att('fovmin', data.fovMin)
-    view.att('fovmax', data.fovMax)
-    view.att('hlookat', data.hAov)
-    view.att('vlookat', data.vAov)
-    view.att('vlookatmin', data.vAovMin)
-    view.att('vlookatmax', data.vAovMax)
+    view.att('fovmin', 70)
+    view.att('fovmax', 140)
+    // view.att('hlookat', data.hAov)
+    // view.att('vlookat', data.vAov)
+    // view.att('vlookatmin', data.vAovMin)
+    // view.att('vlookatmax', data.vAovMax)
+    // view.att('limitview', 'auto')
     view.att('limitview', 'lookat')
 
     const image = scene.ele('image')
     image.att('type', 'CUBE')
-    image.att('multires', true)
-    image.att('tilesize', 512)
+    // image.att('multires', true)
+    // image.att('tilesize', 512)
 
-    for (let i = 0; i < data.multires.length; i++) {
-        const level = image.ele('level')
-        level.att('tiledimagewidth', data.multires[i])
-        level.att('tiledimageheight', data.multires[i])
+    const cube = image.ele('cube')
+    cube.attribute('url','http://localhost:8000/assets/vr/folder_4_vr_11/scene_6/mobile_%s.jpg')
 
-        const cube = level.ele('cube')
-        cube.att('url', path.join(data.rootPath, 'pano.tiles', `mres_%s/l${data.multires.length - i}/%v/l${data.multires.length - i}_%s_%v_%h.jpg`))
-    }
+    // for (let i = 0; i < data.multires.length; i++) {
+    //     const level = image.ele('level')
+    //     level.att('tiledimagewidth', data.multires[i])
+    //     level.att('tiledimageheight', data.multires[i])
+
+    //     const cube = level.ele('cube')
+    //     cube.att('url', path.join(data.rootPath, 'pano.tiles', `mres_%s/l${data.multires.length - i}/%v/l${data.multires.length - i}_%s_%v_%h.jpg`))
+    // }
 
     return krpano.doc().end()
 }
