@@ -35,7 +35,7 @@ export function addVr(vrObj) {
 
 export function delVr(vrObj) {
     return (dispatch) => {
-        Modals.vr.delVr(vrObj.id)
+        Modals.Vr.delete(vrObj.id)
             .then(() => Modals.Vr.findAll())
             .then((list) => {
                 dispatch(updateAllVr(list));

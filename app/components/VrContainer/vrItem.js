@@ -8,16 +8,9 @@ export default class VrItem extends Component{
     }
     onItemDbClick(){
         const {history} = this.props
-        console.log('doubleclick',history)
-        const {onItemClick,data} = this.props
-        onItemClick(data)
+        const {data} = this.props
         history.push(`/edit/${data.id}`)
         
-    }
-
-    componentDidMount(){
-        console.log(this.dom)
-        console.log(this.dom.clientWidth)
     }
     
     renderImage(){
@@ -28,10 +21,10 @@ export default class VrItem extends Component{
     }
 
     render(){
-        const {data} = this.props
+        const {data,onContextMenu} = this.props
         
         return (
-            <div ref={(dom)=>this.dom=dom} className={styles.container} onDoubleClick={this.onItemDbClick.bind(this)}>
+            <div ref={(dom)=>this.dom=dom} className={styles.container} onDoubleClick={this.onItemDbClick.bind(this)} onContextMenu={(e)=>{onContextMenu(e,data)}}>
                 <div className={styles.imgContainer}>
                     {this.renderImage()}
                 </div>

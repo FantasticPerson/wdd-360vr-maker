@@ -24,6 +24,9 @@ export default class CreateFolderModal extends Component {
     }
 
     render() {
+        const {folderData}= this.props
+
+        console.log('--------',folderData)
         const actions = [
           <FlatButton label="取消" primary onClick={this.onCancelClick.bind(this)} />,
           <FlatButton label="确认" primary onClick={this.onConfirmClick.bind(this)} />
@@ -32,7 +35,7 @@ export default class CreateFolderModal extends Component {
         return (
           <Dialog title="新建文件夹" open actions={actions}>
               <div>
-                  <TextField fullWidth hintText="请输入文件夹名称" floatingLabelText="请输入文件夹名称" ref={(input) => this.titleRef = input} />
+                  <TextField defaultValue={folderData ? folderData.title : ''} fullWidth hintText="请输入文件夹名称" floatingLabelText="请输入文件夹名称" ref={(input) => this.titleRef = input} />
                 </div>
             </Dialog>
         );

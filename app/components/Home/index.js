@@ -92,8 +92,10 @@ let folderModalObj = {
     renderCreateFolderModal() {
         const { showCreateFolderItem } = this.state;
         if (showCreateFolderItem) {
+            const {contextFolderData} = this.state
+
             return (
-                <CreateFolderModal onCreate={this.onCreateFolder.bind(this)} onCancel={this.onHiderCreateFolderModal.bind(this)} />
+                <CreateFolderModal onCreate={this.onCreateFolder.bind(this)} folderData={contextFolderData } onCancel={this.onHiderCreateFolderModal.bind(this)} />
             );
         }
     },
@@ -104,16 +106,25 @@ let folderModalObj = {
     },
     onCreateFolderClick() {
         this.setState({
-            showCreateFolderItem: true
+            showCreateFolderItem: true,
+            contextFolderData:null
         });
     },
     onCreateFolder(title) {
-        const { addFolder, nextFolderId } = this.props;
-        addFolder({
-            id: nextFolderId,
-            title
-        });
-        onHiderCreateFolderModal()
+        const { addFolder, nextFolderId ,updateFolder} = this.props;
+        const {contextFolderData} = this.state
+        if(contextFolderData){
+            updateFolder({
+                id: contextFolderData.id,
+                title
+            })
+        } else {
+            addFolder({
+                id: nextFolderId,
+                title
+            });
+        }
+        this.onHiderCreateFolderModal()
     }
 }
 
@@ -135,14 +146,20 @@ let folderContextObj = {
         })
     },
     handleDeleteFolder(data){
-        console.log(data)
+        const {deleteFolder} = this.props 
+        deleteFolder(data)
     },
 
     handleEditFolder(data){
-        console.log(data)
+        this.setState({
+            showCreateFolderItem: true
+        });
     },
     onFolderContext(e,item){
-        console.log(e)
+        e.preventDefault()
+        if(item.id === 0){
+            return
+        }
         this.setState({
             showFolderMenu:true,
             posData:{
@@ -151,7 +168,6 @@ let folderContextObj = {
             },
             contextFolderData:item
         })
-        e.preventDefault()
     }
 }
 

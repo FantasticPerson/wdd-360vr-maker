@@ -14,81 +14,21 @@ import * as sceneActions from '../../actions/scene'
 import CreateVrModal from '../CreateVrModal'
 import VrItem from './vrItem'
 import getPathOfPreviewImg from '../../native/getPathOfPreviewImg'
+import VrContextMenu from '../VrContextMenu'
+import mapToReactComponent from '../../utils/mapToReactComponent'
 
 class VrContainer extends Component{
     constructor(){
         super()
         this.state = {
-            showCreateVrModal:false
+            showCreateVrModal:false,
+            showVrContextMenu:false,
+            vrContextItem:null,
+            contextPosData:{}
         }
         this.history = createHashHistory()
-    }
-
-    componentDidMount(){
-        console.log(this.props)
-    }
-
-    onAddClick(){
-        this.setState({
-            showCreateVrModal:true
-        })
-    }
-
-    onCancelClick(){
-        this.setState({
-            showCreateVrModal:false
-        })
-    }
-
-    onCreateClick(title,brief,isTmpImageReady){
-        const {nextVrId,nextSceneId,selectedFolderId,addScene,addVr} = this.props
-
-        let previewImg = getPathOfPreviewImg(false,nextVrId,selectedFolderId,nextSceneId)
-
-        addVr({
-            id:nextVrId,
-            title:title,
-            brief:brief,
-            folderId:selectedFolderId,
-            headImg:previewImg
-        })
-
-        addScene({
-            id:nextSceneId,
-            vrid:nextVrId,
-            name:'test'
-        })
-
-        setTimeout(()=>{
-            generateVrFolder(selectedFolderId,nextVrId,nextSceneId)
-            .then(()=>{
-                return copyImageToScene(getScenePath(selectedFolderId,nextVrId,nextSceneId))
-            })
-            .catch((e)=>{
-                console.error(e)
-            })
-        },20)
-        
-        this.onCancelClick()
-    }
-    
-    onVrItemClick(data){
-        console.log(data)
-    }
-
-    renderContent(){
-        let  vrArr = this.getVrByFolderId()
-        if(vrArr.length > 0){
-            let vrItems =  vrArr.map((item,index)=>{
-                   return <VrItem key={index}  history={this.history} data={item} onItemClick={this.onVrItemClick.bind(this)}></VrItem>     
-            })
-            for(var i=0;i<20;i++){
-                vrItems.push(<div key={`placeHolder${i}`} style={{width:'230px',height:'0'}}></div>)
-            }
-            return vrItems
-        } else {
-            return <h3>暂无内容</h3>
-        }
+        mapToReactComponent(this,vrModalContext)
+        mapToReactComponent(this,vrItemContextObj)
     }
 
     getVrByFolderId(){
@@ -98,12 +38,18 @@ class VrContainer extends Component{
         })
     }
 
-    renderCreateVrModal(){
-        const {showCreateVrModal} = this.state
-        if(showCreateVrModal){
-            return (
-                <CreateVrModal onCancel={this.onCancelClick.bind(this)} onCreate={this.onCreateClick.bind(this)}></CreateVrModal>
-            )
+    renderContent(){
+        let  vrArr = this.getVrByFolderId()
+        if(vrArr.length > 0){
+            let vrItems =  vrArr.map((item,index)=>{
+                   return <VrItem key={index}  onContextMenu={this.onVrItemContext.bind(this)} history={this.history} data={item}></VrItem>     
+            })
+            for(var i=0;i<20;i++){
+                vrItems.push(<div key={`placeHolder${i}`} style={{width:'230px',height:'0'}}></div>)
+            }
+            return vrItems
+        } else {
+            return <h3>{`暂无内容，点击左上角按钮进行添加！`}</h3>
         }
     }
 
@@ -120,8 +66,121 @@ class VrContainer extends Component{
                     {this.renderContent()}         
                 </div>
                 {this.renderCreateVrModal()}
+                {this.renderVrContextMenu()}
             </div>
         )
+    }
+}
+
+let vrItemContextObj = {
+    showVrContext(){
+        this.setState({
+            showVrContextMenu:true
+        })
+    },
+    hideVrContext(){
+        this.setState({
+            showVrContextMenu:false
+        })
+    },
+    onVrItemContext(e,data){
+        e.preventDefault()
+        this.setState({
+            showVrContextMenu:true,
+            vrContextItem:data,
+            contextPosData:{
+                posX:e.clientX,
+                posY:e.clientY
+            }
+        })
+    },
+    bgClick(){
+        this.hideVrContext()
+    },
+    onDelete(){
+        const {delVr} = this.props;
+        const {vrContextItem} = this.state
+        delVr(vrContextItem)
+    },
+    onModify(){
+        this.setState({
+            showCreateVrModal:true
+        })
+    },
+    renderVrContextMenu(){
+        const {showVrContextMenu,contextPosData} = this.state
+        if(showVrContextMenu){
+            return (
+                <VrContextMenu posData={contextPosData} bgClick={this.bgClick.bind(this)} onDelete={this.onDelete.bind(this)} onModify={this.onModify.bind(this)}></VrContextMenu>
+            )
+        }
+    }
+}
+
+let vrModalContext={
+    onAddClick(){
+        this.setState({
+            showCreateVrModal:true
+        })
+    },
+
+    onCancelClick(){
+        console.log('on cancel click')
+        this.setState({
+            showCreateVrModal:false,
+            vrContextItem:null
+        })
+    },
+
+    onCreateClick(title,brief,isTmpImageReady){
+        const {vrContextItem} = this.state
+        if(!vrContextItem){
+            const {nextVrId,nextSceneId,selectedFolderId,addScene,addVr} = this.props
+
+            let previewImg = getPathOfPreviewImg(false,nextVrId,selectedFolderId,nextSceneId)
+
+            
+
+            addVr({
+                id:nextVrId,
+                title:title,
+                brief:brief,
+                folderId:selectedFolderId,
+                headImg:previewImg
+            })
+
+            addScene({
+                id:nextSceneId,
+                vrid:nextVrId,
+                name:'test'
+            })
+
+            setTimeout(()=>{
+                generateVrFolder(selectedFolderId,nextVrId,nextSceneId)
+                .then(()=>{
+                    return copyImageToScene(getScenePath(selectedFolderId,nextVrId,nextSceneId))
+                })
+                .catch((e)=>{
+                    console.error(e)
+                })
+            },20)
+        } else {
+            const {modifyVr} = this.props
+            modifyVr({
+                ...vrContextItem,
+                title:title,
+                brief:brief
+            })
+        }
+        this.onCancelClick()
+    },
+    renderCreateVrModal(){
+        const {showCreateVrModal,vrContextItem} = this.state
+        if(showCreateVrModal){
+            return (
+                <CreateVrModal itemData={vrContextItem} onCancel={this.onCancelClick.bind(this)} onCreate={this.onCreateClick.bind(this)}></CreateVrModal>
+            )
+        }
     }
 }
 
