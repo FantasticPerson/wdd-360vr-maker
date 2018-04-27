@@ -11,7 +11,8 @@ export default [
                 'id',
                 'title',
                 'brief',
-                'folderId'
+                'folderId',
+                'headImg'
             ],
             scene: [
                 'id',

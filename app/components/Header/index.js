@@ -1,13 +1,52 @@
 import React, { Component } from 'react';
-import AppBar from 'material-ui/AppBar';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-export default class Header extends Component {
+import AppBar from 'material-ui/AppBar';
+import IconButton from 'material-ui/IconButton';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import FlatButton from 'material-ui/FlatButton';
+import { createHashHistory } from 'history'
+
+class Header extends Component {
+    constructor(){
+        super()
+        this.history = createHashHistory()
+    }
+
+    onBackClick(){
+        console.log(this.history)
+        this.history.goBack()
+    }
+
     render() {
-        return (
-            <AppBar
-                title="Title"
-                iconClassNameRight="muidocs-icon-navigation-expand-more"
-            />
-        );
+        const {app} = this.props
+        if(app.showBack){
+            return (
+                <AppBar
+                    title={app.title}
+                    iconElementLeft={<IconButton onClick={this.onBackClick.bind(this)}><NavigationClose /></IconButton>}
+                />
+            );
+        } else {
+            return (
+                <AppBar
+                    title={app.title}
+                    iconClassNameRight="muidocs-icon-navigation-expand-more"
+                />
+            )
+        }
     }
 }
+
+function mapDispatchToProps(dispatch) {
+    return {};
+}
+
+function mapStateToProps(state) {
+    return {
+        app: state.app
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

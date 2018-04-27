@@ -7,6 +7,7 @@ import styles from './Home.css';
 import * as vrActions from '../../actions/vr';
 import * as sceneActions from '../../actions/scene';
 import * as folderActions from '../../actions/folder';
+import * as appActions from '../../actions/app'
 
 import CreateVrModal from '../CreateVrModal';
 import CreateFolderModal from '../CreateFolderModal';
@@ -14,40 +15,30 @@ import VrContainer from '../VrContainer'
 
 import { List, ListItem } from 'material-ui/List';
 
+import FolderContextMenu from '../folderContextMenu'
+import MapToReactComponent from '../../utils/mapToReactComponent'
+
 class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
             showCreateFolderItem: false,
-            selectedFolderId: 0
+            selectedFolderId: 0,
+
+            showFolderMenu:false,
+            posData:{},
+            contextFolderData:{}
         };
+        MapToReactComponent(this,folderContextObj)
+        MapToReactComponent(this,folderModalObj)
     }
 
     componentDidMount() {
-        const { updateFromLocal,updateVrFromLocal } = this.props;
+        const { updateFromLocal,updateVrFromLocal,updateAppTitle,updateAppShowBack } = this.props;
         updateFromLocal();
         updateVrFromLocal();
-    }
-
-    onCreateFolder(title) {
-        const { addFolder, nextFolderId } = this.props;
-        addFolder({
-            id: nextFolderId,
-            title
-        });
-        onHiderCreateFolderModal()
-    }
-
-    onHiderCreateFolderModal() {
-        this.setState({
-            showCreateFolderItem: false
-        });
-    }
-
-    onCreateFolderClick() {
-        this.setState({
-            showCreateFolderItem: true
-        });
+        updateAppTitle('全景制作工具')
+        updateAppShowBack(false)
     }
 
     onFolderItemClick(data, index) {
@@ -65,19 +56,10 @@ class Home extends Component {
         return (
             <List>
                 {
-                    folder.map((item, index) => <ListItem key={item.id} primaryText={item.title} leftIcon={item.id === selectedFolderId ? icon1 : icon} onClick={() => {this.onFolderItemClick(item,index)}} />)
+                    folder.map((item, index) => <ListItem key={item.id} primaryText={item.title} leftIcon={item.id === selectedFolderId ? icon1 : icon} onClick={() => {this.onFolderItemClick(item,index)}} onContextMenu={(e)=>{this.onFolderContext(e,item)}}/>)
                 }
             </List>
         );
-    }
-
-    renderCreateFolderModal() {
-        const { showCreateFolderItem } = this.state;
-        if (showCreateFolderItem) {
-            return (
-                <CreateFolderModal onCreate={this.onCreateFolder.bind(this)} onCancel={this.onHiderCreateFolderModal.bind(this)} />
-            );
-        }
     }
 
     render() {
@@ -100,8 +82,76 @@ class Home extends Component {
                     <VrContainer selectedFolderId={selectedFolderId}></VrContainer>
                 </div>
                 {this.renderCreateFolderModal()}
+                {this.renderContextMenu()}
             </div>
         );
+    }
+}
+
+let folderModalObj = {
+    renderCreateFolderModal() {
+        const { showCreateFolderItem } = this.state;
+        if (showCreateFolderItem) {
+            return (
+                <CreateFolderModal onCreate={this.onCreateFolder.bind(this)} onCancel={this.onHiderCreateFolderModal.bind(this)} />
+            );
+        }
+    },
+    onHiderCreateFolderModal() {
+        this.setState({
+            showCreateFolderItem: false
+        });
+    },
+    onCreateFolderClick() {
+        this.setState({
+            showCreateFolderItem: true
+        });
+    },
+    onCreateFolder(title) {
+        const { addFolder, nextFolderId } = this.props;
+        addFolder({
+            id: nextFolderId,
+            title
+        });
+        onHiderCreateFolderModal()
+    }
+}
+
+let folderContextObj = {
+    renderContextMenu(){
+        const {showFolderMenu} = this.state
+
+        if(showFolderMenu){
+            const {posData,contextFolderData} = this.state
+
+            return (
+                <FolderContextMenu posData={posData} folderData={contextFolderData} bgClick={this.onFolderContextMenuBgClick.bind(this)} onDelete={this.handleDeleteFolder.bind(this)} onModify={this.handleEditFolder.bind(this)}></FolderContextMenu>
+            )
+        }
+    },
+    onFolderContextMenuBgClick(){
+        this.setState({
+            showFolderMenu : false
+        })
+    },
+    handleDeleteFolder(data){
+        console.log(data)
+    },
+
+    handleEditFolder(data){
+        console.log(data)
+    },
+    onFolderContext(e,item){
+        console.log(e)
+        this.setState({
+            showFolderMenu:true,
+            posData:{
+                posX:e.clientX,
+                posY:e.clientY
+            },
+            contextFolderData:item
+        })
+        e.preventDefault()
     }
 }
 
@@ -109,7 +159,8 @@ function mapDispatchToProps(dispatch) {
     return {
         ...bindActionCreators(vrActions, dispatch),
         ...bindActionCreators(sceneActions, dispatch),
-        ...bindActionCreators(folderActions, dispatch)
+        ...bindActionCreators(folderActions, dispatch),
+        ...bindActionCreators(appActions,dispatch)
     };
 }
 

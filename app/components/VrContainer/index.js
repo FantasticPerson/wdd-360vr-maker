@@ -13,6 +13,7 @@ import * as vrActions from '../../actions/vr'
 import * as sceneActions from '../../actions/scene'
 import CreateVrModal from '../CreateVrModal'
 import VrItem from './vrItem'
+import getPathOfPreviewImg from '../../native/getPathOfPreviewImg'
 
 class VrContainer extends Component{
     constructor(){
@@ -42,11 +43,14 @@ class VrContainer extends Component{
     onCreateClick(title,brief,isTmpImageReady){
         const {nextVrId,nextSceneId,selectedFolderId,addScene,addVr} = this.props
 
+        let previewImg = getPathOfPreviewImg(false,nextVrId,selectedFolderId,nextSceneId)
+
         addVr({
             id:nextVrId,
             title:title,
             brief:brief,
-            folderId:selectedFolderId
+            folderId:selectedFolderId,
+            headImg:previewImg
         })
 
         addScene({

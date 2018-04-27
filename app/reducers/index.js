@@ -5,13 +5,15 @@ import counter from './counter';
 import scene from './scene';
 import vr from './vr';
 import folder from './folder';
+import app from './app'
 
 const rootReducer = combineReducers({
     counter,
     scene,
     vr,
     router,
-    folder
+    folder,
+    app
 });
 
 export default rootReducer;

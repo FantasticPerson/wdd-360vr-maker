@@ -197,6 +197,7 @@
     "material-ui": "^0.20.0",
     "react": "^16.2.0",
     "react-bootstrap": "^0.32.1",
+    "react-contextmenu": "^2.9.2",
     "react-desktop": "^0.3.5",
     "react-dom": "^16.2.0",
     "react-hot-loader": "^4.0.0-beta.13",
