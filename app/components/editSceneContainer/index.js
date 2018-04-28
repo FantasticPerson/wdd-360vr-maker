@@ -2,6 +2,7 @@ import React,{Component} from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { createHashHistory } from 'history'
+import TabList from '../TabList'
 
 import styles from './index.css'
 
@@ -20,10 +21,32 @@ class EditSceneContainer extends Component{
     
     render(){
         let sceneArr = this.filterScene()
+        let tabArr = [
+            {id:0,name:'asdasd'},
+            {id:1,name:'asdasd'},
+            {id:2,name:'asdasd'},
+            {id:3,name:'asdasd'},
+            {id:4,name:'asdasd'},
+            {id:5,name:'asdasd'},
+            {id:6,name:'asdasd'},
+            {id:7,name:'asdasd'},
+            {id:8,name:'asdasd'},
+            {id:9,name:'asdasd'},
+            {id:10,name:'asdasd'},
+            {id:11,name:'asdasd'},
+            {id:12,name:'asdasd'},
+            {id:13,name:'asdasd'},
+            {id:14,name:'asdasd'},
+            {id:15 ,name:'asdasd'},
+            {id:16 ,name:'asdasd'},
+            {id:17 ,name:'asdasd'}
+        ]
 
         return (
             <div className={styles.container}>
-                <div className={styles.header}></div>
+                <div className={styles.header}>
+                    <TabList tabArr={tabArr}></TabList>
+                </div>
                 <div className={styles.content}></div>
             </div>
         )

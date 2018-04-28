@@ -12,6 +12,8 @@
     padding-right: 20px;
     background-color: rgba(200,200, 200, 0.5);
     border-bottom: 1px solid rgba(0,0,0,0.18);
+    position: relative;
+    overflow: hidden;
 }
 
 .content{

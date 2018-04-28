@@ -1,3 +1,41 @@
 .container{
     width: 100%;
 }
+
+.tabItemContainer{
+    display: inline-block;
+    padding: 0 5px;
+    min-width: 60px;
+    max-width: 150px;
+    box-sizing: border-box;
+}
+
+.tabItemContainer span{
+    padding:0 5px;
+    background-color: #FFF;
+    height: 30px;
+    display: inline-block;
+    line-height: 30px;
+    /* border-radius: 5px; */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    margin-top: 4px;
+}
+
+.leftArrow{
+    position: absolute;
+    left: 4px;
+    top: 0;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.rightArrow{
+    position: absolute;
+    right: 4px;
+    top: 0;
+    font-size: 25px;
+    cursor: pointer;
+}
