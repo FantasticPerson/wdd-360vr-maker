@@ -6,6 +6,7 @@ import scene from './scene';
 import vr from './vr';
 import folder from './folder';
 import app from './app'
+import group from './group'
 
 const rootReducer = combineReducers({
     counter,
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
     vr,
     router,
     folder,
-    app
+    app,
+    group
 });
 
 export default rootReducer;

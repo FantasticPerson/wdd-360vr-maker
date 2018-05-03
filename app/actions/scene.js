@@ -14,6 +14,15 @@ export function updateAllScene(arr) {
     };
 }
 
+export function updateAllSceneFromLocal(){
+    return (dispatch)=>{
+        Modals.Scene.findAll()
+        .then((list)=>{
+            dispatch(updateAllScene(list))
+        })
+    }
+}
+
 export function addScene(obj) {
     return (dispatch) => {
         Modals.Scene.add(obj)

@@ -23,6 +23,12 @@ export default [
             folder: [
                 'id',
                 'name'
+            ],
+            group: [
+                'id',
+                'name',
+                'folderId',
+                'vrId'
             ]
         },
         upgrade: null

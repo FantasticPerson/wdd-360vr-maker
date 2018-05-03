@@ -6,19 +6,47 @@ import PanoContainer from '../../components/panoContainer'
 import EditSceneContainer from '../../components/editSceneContainer'
 import styles from './index.css'
 import * as appActions from '../../actions/app'
-
-
+import * as groupActions from '../../actions/group'
+import * as vrActions from '../../actions/vr'
+import * as sceneActions from '../../actions/scene'
+import * as folderActions from '../../actions/folder'
 
 class EditPage extends Component{
+    constructor(){
+        super()
+        this.state = {
+            vrId : -1,
+            previewSceneId:-10
+        }
+    }
+
     componentDidMount(){
-        console.log(this)
-        const {updateAppTitle,updateAppShowBack} = this.props
+        const {updateAppTitle,updateAppShowBack,findAddGroup,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal} = this.props
 
         updateAppTitle('编辑全景')
+        findAddGroup()
+
+
+        updateFromLocal();
+        updateVrFromLocal();
+        updateAllSceneFromLocal()
+
         updateAppShowBack(true)
+
+        let id = pathname.split('/')[2]
+        this.setState({
+            vrId:id
+        })
+    }
+
+    onChangeScene(sceneId){
+        this.setState({
+            previewSceneId:sceneId
+        })
     }
 
     render(){
+        const {vrId,previewSceneId} = this.state
         return (
             <div className={styles.container}>
                 <div className={styles.leftBar}>
@@ -41,10 +69,10 @@ class EditPage extends Component{
                 </div>
                 <div className={styles.content}>
                     <div className={styles.panoContainer}>
-                        <PanoContainer></PanoContainer>
+                        <PanoContainer previewSceneId={previewSceneId}></PanoContainer>
                     </div>
                     <div className={styles.sceneContainer}>
-                        <EditSceneContainer></EditSceneContainer>
+                        <EditSceneContainer previewSceneId={previewSceneId} changeScene={this.onChangeScene.bind(this)} vrId={vrId}></EditSceneContainer>
                     </div>
                 </div>
                 <div className={styles.rightBar}></div>
@@ -55,12 +83,18 @@ class EditPage extends Component{
 
 function mapDispatchToProps(dispatch){
     return {
-        ...bindActionCreators(appActions,dispatch)
+        ...bindActionCreators(appActions,dispatch),
+        ...bindActionCreators(groupActions,dispatch),
+        ...bindActionCreators(sceneActions,dispatch),
+        ...bindActionCreators(vrActions,dispatch),
+        ...bindActionCreators(folderActions,dispatch)
     }
 }
 
-function mapStateToProps(){
-    return {}
+function mapStateToProps(state){
+    return {
+        pathname:state.router.location.pathname
+    }
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(EditPage)

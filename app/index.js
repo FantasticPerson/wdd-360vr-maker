@@ -4,6 +4,7 @@ import { AppContainer } from 'react-hot-loader';
 import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.css';
+import './animation.css';
 import './styles/font-awesome/css/font-awesome.css';
 import dbConfig from './db';
 

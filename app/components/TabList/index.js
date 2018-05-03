@@ -56,8 +56,6 @@ export default class TabList extends Component{
             this.setState({
                 totalWidth:maxWidth * tabItems.length
             })
-            // console.log(maxWidth * tabItems.length)
-            // console.log(this.tabContainer.style.width)
             this.setState({
                 width:maxWidth
             })
@@ -125,6 +123,15 @@ export default class TabList extends Component{
         }
     }
 
+    renderAddBtn(){
+        const {tabArr} = this.props;
+        if(tabArr.length < 20) { 
+            return (
+                <div className={`fa fa-plus ${styles.add_btn}`}></div>
+            )
+        }
+    }
+
     renderTabItems(){
         const {tabArr} = this.props
         const {width,marginLeft} = this.state
@@ -133,7 +140,7 @@ export default class TabList extends Component{
         })
         let totalWidth = width * tabArr.length
 
-        return <div style={{overflow:'hidden'}}><div style={{marginLeft:`${marginLeft}px`}} ref={(dom)=>this.tabContainer=dom}>{tabItems}</div></div>
+        return <div style={{overflow:'hidden'}}><div style={{marginLeft:`${marginLeft}px`}} ref={(dom)=>this.tabContainer=dom}>{tabItems}{this.renderAddBtn()}</div></div>
     }
 
     render(){

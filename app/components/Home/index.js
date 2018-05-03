@@ -34,9 +34,10 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        const { updateFromLocal,updateVrFromLocal,updateAppTitle,updateAppShowBack } = this.props;
+        const { updateFromLocal,updateVrFromLocal,updateAppTitle,updateAppShowBack,updateAllSceneFromLocal } = this.props;
         updateFromLocal();
         updateVrFromLocal();
+        updateAllSceneFromLocal()
         updateAppTitle('全景制作工具')
         updateAppShowBack(false)
     }
