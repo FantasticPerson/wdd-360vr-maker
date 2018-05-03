@@ -94,29 +94,27 @@ export default class SceneList extends Component{
 let createSceneObj={
     onCreate(name,imgReady){
         const {nextSceneId,addScene,vrId,folderId} = this.props
-        console.log('create')
-        // this.setState({
-
-        // })
-        addScene({
-            id:nextSceneId,
-            vrid:vrId,
-            name:name
+        
+        generateVrFolder(folderId,vrId,nextSceneId)
+        .then(()=>{
+            return copyImageToScene(getScenePath(folderId,vrId,nextSceneId))
         })
-
-        setTimeout(()=>{
-            generateVrFolder(folderId,vrId,nextSceneId)
-            .then(()=>{
-                return copyImageToScene(getScenePath(folderId,vrId,nextSceneId))
-            })
-            .catch((e)=>{
-                console.error(e)
-            })
-        },20)
+        .then(()=>{
+            setTimeout(()=>{
+                addScene({
+                    id:nextSceneId,
+                    vrid:vrId,
+                    name:name
+                })
+            },20) 
+        })
+        .catch((e)=>{
+            console.error(e)
+        })
+        
         this.onCancel()
     },
     onCancel(){
-        console.log('cancel')
         this.setState({
             showCreateScene:false
         })        
@@ -140,14 +138,12 @@ let sceneModalObj={
             name:value
         })
         this.onEditCancel()
-        console.log('onEditConfirm')
     },
 
     onEditCancel(){
         this.setState({
             showEditModal:false
         })
-        console.log('onEditCancel')
     },
 
     renderEditModal(){
@@ -188,18 +184,14 @@ let sceneMenuObj={
     },
 
     handleDeleteScene(){
-        console.log('delete')
         const {contextSceneData} = this.state
-
         this.onHideContextMenu()
     },
 
     handleEditScene(){
-        console.log('edit')
         const {contextSceneData} = this.state
 
         this.onHideContextMenu()
-
         this.setState({
             showEditModal:true
         })
