@@ -47,6 +47,11 @@ class EditPage extends Component{
 
     render(){
         const {vrId,previewSceneId} = this.state
+        const {vr} = this.props
+        let vrItem = vr.find((item)=>{
+            return item.id ==  vrId
+        })
+        vrItem = vrItem || {}
         return (
             <div className={styles.container}>
                 <div className={styles.leftBar}>
@@ -69,7 +74,7 @@ class EditPage extends Component{
                 </div>
                 <div className={styles.content}>
                     <div className={styles.panoContainer}>
-                        <PanoContainer previewSceneId={previewSceneId}></PanoContainer>
+                        <PanoContainer previewSceneId={previewSceneId} folderId={vrItem.folderId} vrId={vrId}></PanoContainer>
                     </div>
                     <div className={styles.sceneContainer}>
                         <EditSceneContainer previewSceneId={previewSceneId} changeScene={this.onChangeScene.bind(this)} vrId={vrId}></EditSceneContainer>
@@ -93,7 +98,8 @@ function mapDispatchToProps(dispatch){
 
 function mapStateToProps(state){
     return {
-        pathname:state.router.location.pathname
+        pathname:state.router.location.pathname,
+        vr:state.vr
     }
 }
 

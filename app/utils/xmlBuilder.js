@@ -44,7 +44,7 @@ export function getPanoXml(data){
     // image.att('tilesize', 512)
 
     const cube = image.ele('cube')
-    cube.attribute('url','http://localhost:8000/assets/vr/folder_4_vr_11/scene_6/mobile_%s.jpg')
+    cube.attribute('url',`${data.scenePath}/mobile_%s.jpg`)
 
     // for (let i = 0; i < data.multires.length; i++) {
     //     const level = image.ele('level')

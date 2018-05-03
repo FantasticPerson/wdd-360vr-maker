@@ -2,6 +2,7 @@ import React,{Component} from 'react'
 import styles from './index.css'
 import Common from '../../common'
 import {getPanoXml} from '../../utils/xmlBuilder'
+import getScenePath from '../../native/getScenePath'
 
 class PanoContainer extends Component{
     constructor(){
@@ -29,8 +30,13 @@ class PanoContainer extends Component{
         }
 
         setTimeout(()=>{
+            const {previewSceneId,folderId,vrId} = this.props
+
+            let scenePath = getScenePath(folderId,vrId,previewSceneId)
             if(this.krpano){
-                const xml = getPanoXml({})
+                const xml = getPanoXml({
+                    scenePath:scenePath
+                })
                 this.krpano.call(`load_pano_by_multils(${xml})`)
                 this.krpano.call('show_view_frame();')
             }
