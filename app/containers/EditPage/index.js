@@ -55,10 +55,10 @@ class EditPage extends Component{
         return (
             <div className={styles.container}>
                 <div className={styles.leftBar}>
-                    <div className={styles.btn}>
+                    {/* <div className={styles.btn}>
                         <i className="fa fa-eye"></i>
                         <p>视角</p>
-                    </div>
+                    </div> */}
                     <div className={styles.btn}>
                         <i className="fa fa-dot-circle-o"></i>
                         <p>热点</p>
