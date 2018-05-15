@@ -16,7 +16,8 @@ class EditPage extends Component{
         super()
         this.state = {
             vrId : -1,
-            previewSceneId:-10
+            previewSceneId:-10,
+            editType : 0
         }
     }
 
@@ -45,6 +46,17 @@ class EditPage extends Component{
         })
     }
 
+
+    getEditClassName(type){
+        const {editType} = this.state
+        return editType == type ? `${styles.btn} ${styles.btnSelected}` : `${styles.btn}`
+    }
+
+    onEditClick(type){
+        console.log('on click')
+        this.setState({editType:type})
+    }
+
     render(){
         const {vrId,previewSceneId} = this.state
         const {vr} = this.props
@@ -55,19 +67,19 @@ class EditPage extends Component{
         return (
             <div className={styles.container}>
                 <div className={styles.leftBar}>
-                    {/* <div className={styles.btn}>
+                    <div className={styles.btn}>
                         <i className="fa fa-eye"></i>
                         <p>视角</p>
-                    </div> */}
-                    <div className={styles.btn}>
+                    </div>
+                    <div className={this.getEditClassName(0)} onClick={()=>{this.onEditClick(0)}}>
                         <i className="fa fa-dot-circle-o"></i>
                         <p>热点</p>
                     </div>
-                    <div className={styles.btn}>
+                    <div className={this.getEditClassName(1)} onClick={()=>{this.onEditClick(1)}}>
                         <i className="fa fa-music"></i>
                         <p>音乐</p>
                     </div>
-                    <div className={styles.btn}>
+                    <div className={this.getEditClassName(2)} onClick={()=>{this.onEditClick(2)}}>
                         <i className="fa fa-magic"></i>
                         <p>特效</p>
                     </div>

@@ -49,6 +49,11 @@
     color:#FFF
 }
 
+.btnSelected{
+    background-color: rgba(0, 0, 0, 0.3);
+    color:#FFF
+}
+
 .leftBar .btn p{
     font-size: 15px;
 }

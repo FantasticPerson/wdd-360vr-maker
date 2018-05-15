@@ -1,4 +1,5 @@
 import React,{Component} from 'react'
+import deepEquals from 'deep-equal'
 import styles from './index.css'
 import Common from '../../common'
 import {getPanoXml} from '../../utils/xmlBuilder'
@@ -16,15 +17,16 @@ class PanoContainer extends Component{
             ...Common.KR_EMBED,
             onready:krpano=>{
                 this.krpano = krpano
-                // console.log(krpano)
-                 
             }
         })
     }
 
+    shouldComponentUpdate(nextProps) {
+        return !deepEquals(this.props, nextProps)
+    }
+
     componentDidUpdate(){
         const {previewSceneId} = this.props
-        console.log('==============',previewSceneId)
         if(previewSceneId == -10){
             return
         }
