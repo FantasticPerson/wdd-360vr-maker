@@ -10,7 +10,7 @@
  *
  * @flow
  */
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow,globalShortcut } from 'electron';
 import MenuBuilder from './menu';
 import { globalAgent } from 'http';
 import initServer from './server'
@@ -62,10 +62,14 @@ const initConfig = async () => {
     global.electron_app_scene_path = path.resolve(global.electron_app_assets_path, './scene');
     global.electron_app_tmp_path = path.resolve(global.electron_app_assets_path,'./tmp')
     global.electron_app_vr_path = path.resolve(global.electron_app_assets_path,'./vr')
+    global.electron_app_krp_path = path.resolve(global.electron_app_root_path,'./krp');
+    global.electron_app_krpano_path = path.resolve(global.electron_app_root_path,'./krpano');
 
 
     console.log(global.electron_app_assets_path);
 };
+
+
 
 const initDir = async () => {
     if (!fs.existsSync(global.electron_app_assets_path)) {
@@ -88,6 +92,14 @@ const initDir = async () => {
 /**
  * Add event listeners...
  */
+
+app.on('will-quit', () => {
+    // Unregister a shortcut.
+    // globalShortcut.unregister('CommandOrControl+X')
+  
+    // Unregister all shortcuts.
+    globalShortcut.unregisterAll()
+  })
 
 app.on('window-all-closed', () => {
     // Respect the OSX convention of having the application in memory even
@@ -129,6 +141,14 @@ app.on('ready', async () => {
         mainWindow = null;
     });
 
-    const menuBuilder = new MenuBuilder(mainWindow);
-    menuBuilder.buildMenu();
+    // const menuBuilder = new MenuBuilder(mainWindow);
+    // menuBuilder.buildMenu();
+    const ret = globalShortcut.register('ctrl+m', () => {
+        if(mainWindow){
+            mainWindow.openDevTools()
+        }
+    })
+    if(!ret){
+        console.log('register shortcut failed')
+    }
 });

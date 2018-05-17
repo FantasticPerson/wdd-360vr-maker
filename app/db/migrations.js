@@ -29,6 +29,12 @@ export default [
                 'name',
                 'folderId',
                 'vrId'
+            ],
+            hotpot:[
+                'id',
+                'name',
+                'targetId',
+                'sceneId'
             ]
         },
         upgrade: null

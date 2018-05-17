@@ -7,6 +7,7 @@ import vr from './vr';
 import folder from './folder';
 import app from './app'
 import group from './group'
+import hotpot from './hotpot'
 
 const rootReducer = combineReducers({
     counter,
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
     router,
     folder,
     app,
-    group
+    group,
+    hotpot
 });
 
 export default rootReducer;

@@ -40,6 +40,8 @@
         window.electron_app_tmp_path = native_global('electron_app_tmp_path')
         window.electron_app_vr_path = native_global('electron_app_vr_path')
         window.electron_app_server_port = native_global('electron_app_server_port')
+        window.electron_app_krp_assets_path = native_global('electron_app_krp_path')
+        window.electron_app_krpano_assets_path = native_global('electron_app_krpano_path')
       }
     </script>
     <script>
@@ -57,7 +59,7 @@
         scripts.push(
           (process.env.HOT)
             ? 'http://localhost:' + port + '/dist/renderer.dev.js'
-            : './dist/renderer.prod.js'
+            : './dist/renderer.dev.js'
         );
 
         document.write(

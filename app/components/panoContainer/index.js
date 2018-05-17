@@ -12,11 +12,13 @@ class PanoContainer extends Component{
     }
 
     componentDidMount(){
+        const {setKrpano} = this.props
         embedpano({
             target:'pano',
             ...Common.KR_EMBED,
             onready:krpano=>{
                 this.krpano = krpano
+                setKrpano(krpano)
             }
         })
     }
