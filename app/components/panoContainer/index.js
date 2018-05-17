@@ -24,7 +24,12 @@ class PanoContainer extends Component{
     }
 
     shouldComponentUpdate(nextProps) {
-        return !deepEquals(this.props, nextProps)
+        // console.log(deepEquals(this.props, nextProps))
+        if(this.props.folderId == nextProps.folderId && this.props.previewSceneId == nextProps.previewSceneId && this.props.vrId == nextProps.vrId){
+            return false
+        }
+        return true
+        // return !deepEquals(this.props, nextProps)
     }
 
     componentDidUpdate(){

@@ -190,11 +190,13 @@
     "webpack-merge": "^4.1.1"
   },
   "dependencies": {
+    "dank-copyfile": "^0.0.2",
     "devtron": "^1.4.0",
     "dexie": "^2.0.2",
     "electron-debug": "^1.5.0",
     "express": "^4.16.3",
     "font-awesome": "^4.7.0",
+    "fs-copy-file": "^2.1.2",
     "hashids": "^1.1.4",
     "history": "^4.7.2",
     "material-ui": "^0.20.0",

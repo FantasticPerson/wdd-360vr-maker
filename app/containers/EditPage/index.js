@@ -7,6 +7,7 @@ import Hashid from '../../utils/generateHashId'
 import PanoContainer from '../../components/panoContainer'
 import EditSceneContainer from '../../components/editSceneContainer'
 import getPathOfHotSpotIconPath from '../../native/getHotspotIconPath'
+import getPathOfSceneHeadImg from '../../native/getPathOfSceneHeadImg'
 import {addHotspotToKrpano,selectHotspotInKrpano} from '../../utils/krpanoFunctions'
 import styles from './index.css'
 import * as appActions from '../../actions/app'
@@ -23,14 +24,19 @@ class EditPage extends Component{
             vrId : -1,
             previewSceneId:-10,
             editType : 0,
-            editHotpot:false
+            editHotpot:false,
+            selectSceneId:-1
         }
         this.krpano = null
+        this.hotspots = []
+        this.selectedHotspotId = null
+        this.lastSceneId = null
     }
 
     componentDidMount(){
-        const {updateAppTitle,updateAppShowBack,findAddGroup,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal} = this.props
 
+        const {updateAppTitle,updateAppShowBack,findAddGroup,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal} = this.props
+        this.lastSceneId = this.state.previewSceneId
         updateAppTitle('编辑全景')
         findAddGroup()
 
@@ -44,6 +50,27 @@ class EditPage extends Component{
         this.setState({
             vrId:id
         })
+    }
+
+    componentDidUpdate(){
+        const {previewSceneId} = this.state;
+        console.log(this.lastSceneId,previewSceneId)
+
+        if(previewSceneId != this.lastSceneId){
+            setTimeout(()=>{
+                this.setState({editHotpot:false})
+                console.log(this.hotspots)
+                for(var i=0;i<this.hotspots.length;i++){
+                    if(this.hotspots[i].sceneId == previewSceneId){
+                        console.log('addHotpot')
+                        addHotspotToKrpano(this.krpano,this.hotspots[i].data, true)
+                    }
+                }
+            },500)
+            
+        }
+        
+        this.lastSceneId = previewSceneId
     }
 
     setKrpano(krpano){
@@ -68,6 +95,7 @@ class EditPage extends Component{
 
     onAddHotpotClick(){
         if(this.krpano){
+            const {vrId,previewSceneId} = this.state
             const _id = `hs${new Hashid().encode()}`
             const ath = this.krpano.get('view.hlookat')
             const atv = this.krpano.get('view.vlookat')
@@ -85,52 +113,136 @@ class EditPage extends Component{
             setTimeout(()=>{
                 selectHotspotInKrpano(this.krpano,data._id)
             },50)
+            this.hotspots.push({sceneId:previewSceneId,data:data})
+            this.selectedHotspotId = data._id
+
+            this.setState({
+                editHotpot:true
+            })
+            // const {addHotpot} = this.props;
+            // addHotpot({
+                
+            // })
         }
-        console.log('onAddHotpotClick')
-        
+        // console.log('onAddHotpotClick')
+    }
+
+    renderSceneList(){
+        const {} = this.props
     }
 
     renderEditHotpot1(){
         const {editHotpot} = this.state
-        if(!editHotpot){
+        // if(!editHotpot){
             return (
                 <div>
                     <div>{`当前场景共有热点1个`}</div>
-                    <div></div>
+                    <div>
+                        
+                    </div>
+                </div>
+            )
+        // }
+    }
+
+    onSceneClick(id){
+        const {vrId,previewSceneId} = this.state
+        if(id == previewSceneId){
+            return 
+        }
+        console.log('on scene click')
+        this.setState({
+            selectSceneId:id
+        })
+    }
+
+    renderEditHotPot2(){
+        const {editHotpot,vrId,selectSceneId,previewSceneId} = this.state
+        const {scene} = this.props
+        let sceneArr = this.fiterScene()
+        let sceneList = sceneArr.map((item)=>{
+            let folderId = this.findFolderId()
+            let sceneItemStyle = selectSceneId == item.id ? {
+                margin:'5px',height:'100px',width:'80px',display:'inline-block',border:'1px solid #123',overflow:'hidden'
+            } : {margin:'5px',height:'100px',width:'80px',display:'inline-block',overflow:'hidden'}
+
+            console.log(sceneItemStyle)
+            return <div onClick={()=>{this.onSceneClick(item.id)}} style={sceneItemStyle} key={item.id}><div style={{height:'80px',width:'80px',overflow:'hidden'}}><img style={{height:'100%'}} src={getPathOfSceneHeadImg(folderId,vrId,item.id)}/></div></div>
+        })
+        console.log(editHotpot)
+        if(editHotpot){
+            console.log('render')
+            return (
+                <div>
+                    <h1>选择一个场景</h1>
+                    <div>
+                        {sceneList}
+                    </div>
                 </div>
             )
         }
     }
 
-    renderEditHotPot2(){
+    fiterScene(){
+        const {scene} = this.props
+        const {vrId,previewSceneId} = this.state
+        return scene.filter((item)=>{
+            return item.vrid == vrId && item.id !== previewSceneId
+        })
+    }
+
+    findFolderId(){
+        const {vr} = this.props
+        const {vrId} = this.state
+        let item = vr.find((item)=>{
+            return item.id == vrId
+        })
+        return item ? item.folderId : -1
+    }
+
+
+    renderEditTitle(){
         const {editHotpot} = this.state
-        if(editHotpot){
+
+        if(!editHotpot){
             return (
-                <div></div>
+                <span>
+                    <i className='fa fa-dot-circle-o'></i>
+                    <span style={{
+                        marginLeft:'5px'
+                    }}>热点编辑</span> 
+                    <FlatButton label="添加热点" primary onClick={this.onAddHotpotClick.bind(this)} />
+                </span>
+            ) 
+        } else {
+            return (
+                <span>
+                    <i className='fa fa-dot-circle-o'></i>
+                    <span style={{
+                        marginLeft:'5px'
+                    }}>编辑</span> 
+                </span>
             )
         }
     }
 
     renderEditHotPot(){
-        return (
-            <div style={{padding:'5px'}}>
-                <div style={{
-                    borderBottom:'1px solid #eee'
-                }}>
-                    <span>
-                        <i className='fa fa-dot-circle-o'></i>
-                        <span style={{
-                            marginLeft:'5px'
-                        }}>热点编辑</span> 
-                        <FlatButton label="添加热点" primary onClick={this.onAddHotpotClick.bind(this)} />
-                    </span>
+        const {editType} = this.state
+        if(editType == 0){
+            return (
+                <div style={{padding:'5px'}}>
+                    <div style={{
+                        borderBottom:'1px solid #eee'
+                    }}>
+                        {this.renderEditTitle()}
+                    </div>
+                    <div>
+                        {/* {this.renderEditHotpot1} */}
+                        {this.renderEditHotPot2()}
+                    </div>
                 </div>
-                <div>
-                    {this.renderEditHotpot1}
-                    {this.renderEditHotPot2}
-                </div>
-            </div>
-        )
+            )
+        }
     }
 
     render(){
@@ -191,7 +303,8 @@ function mapStateToProps(state){
     return {
         pathname:state.router.location.pathname,
         vr:state.vr,
-        hotpot:state.hotpot
+        hotpot:state.hotpot,
+        scene: state.scene,
     }
 }
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import packageKrpano from '../../native/packageKrpano'
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
@@ -19,6 +20,10 @@ class Header extends Component {
         this.history.goBack()
     }
 
+    onOutputClick(){
+        packageKrpano()
+    }
+
     render() {
         const {app} = this.props
         if(app.showBack){
@@ -26,6 +31,7 @@ class Header extends Component {
                 <AppBar
                     title={app.title}
                     iconElementLeft={<IconButton onClick={this.onBackClick.bind(this)}><NavigationClose /></IconButton>}
+                    iconElementRight={<FlatButton label="导出" onClick={this.onOutputClick.bind(this)}/>}
                 />
             );
         } else {
