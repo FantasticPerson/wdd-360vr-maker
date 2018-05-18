@@ -261,6 +261,40 @@ class EditPage extends Component{
         }
     }
 
+    renderEditMusic(){
+        const {editType} = this.state
+        console.log(editType)
+        if(editType == 1){
+            return (
+                <div style={{padding:'5px'}}>
+                    <div style={{
+                        borderBottom:'1px solid #eee'
+                    }}>
+                        <span>
+                            <i className='fa fa-music'></i>
+                            <span style={{
+                                marginLeft:'5px'
+                            }}>音乐</span> 
+                            
+                        </span>
+                    </div>
+                    <div>
+                        <div style={{marginTop:'10px',borderBottom:'1px solid #eee'}}>背景音乐设置</div>
+                        <div>
+                            <span>选择一首音乐</span>
+                            <FlatButton label="添加" primary onClick={this.onAddHotpotClick.bind(this)} />
+                        </div>
+                        <div style={{marginTop:'10px',borderBottom:'1px solid #eee'}}>解说音乐设置</div>
+                        <div>
+                            <span>选择一首音乐</span>
+                            <FlatButton label="添加" primary onClick={this.onAddHotpotClick.bind(this)} />
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+    }
+
     renderSpecialShow(){
         const {editType} = this.state
         if(editType == 2){
@@ -336,6 +370,7 @@ class EditPage extends Component{
                 <div className={styles.rightBar}>
                     {this.renderEditHotPot()}
                     {this.renderSpecialShow()}
+                    {this.renderEditMusic()}
                 </div>
             </div>
         )
