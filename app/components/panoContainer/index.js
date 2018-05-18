@@ -47,7 +47,7 @@ class PanoContainer extends Component{
                     scenePath:scenePath
                 })
                 this.krpano.call(`load_pano_by_multils(${xml})`)
-                this.krpano.call('show_view_frame();')
+                // this.krpano.call('show_view_frame();')
             }
         },500)
     }

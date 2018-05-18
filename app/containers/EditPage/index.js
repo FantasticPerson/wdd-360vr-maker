@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import FlatButton from 'material-ui/FlatButton';
+import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 
 import Hashid from '../../utils/generateHashId'
 import PanoContainer from '../../components/panoContainer'
 import EditSceneContainer from '../../components/editSceneContainer'
 import getPathOfHotSpotIconPath from '../../native/getHotspotIconPath'
 import getPathOfSceneHeadImg from '../../native/getPathOfSceneHeadImg'
-import {addHotspotToKrpano,selectHotspotInKrpano} from '../../utils/krpanoFunctions'
+import {addHotspotToKrpano,selectHotspotInKrpano,addRainEffect,addSnowEffect} from '../../utils/krpanoFunctions'
 import styles from './index.css'
 import * as appActions from '../../actions/app'
 import * as groupActions from '../../actions/group'
@@ -31,10 +32,11 @@ class EditPage extends Component{
         this.hotspots = []
         this.selectedHotspotId = null
         this.lastSceneId = null
+        this.radioGroup1 = React.createRef()
+        this.radioGroup2 = React.createRef()
     }
 
     componentDidMount(){
-
         const {updateAppTitle,updateAppShowBack,findAddGroup,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal} = this.props
         this.lastSceneId = this.state.previewSceneId
         updateAppTitle('编辑全景')
@@ -67,14 +69,13 @@ class EditPage extends Component{
                     }
                 }
             },500)
-            
         }
-        
         this.lastSceneId = previewSceneId
     }
 
     setKrpano(krpano){
         this.krpano = krpano
+        this.krpano.call('hide_view_frame();')
     }
 
     onChangeScene(sceneId){
@@ -91,6 +92,15 @@ class EditPage extends Component{
     onEditClick(type){
         console.log('on click')
         this.setState({editType:type})
+        if(type == 0){
+            if(this.krpano){
+                this.krpano.call('show_view_frame();')
+            }
+        } else {
+            if(this.krpano){
+                this.krpano.call('hide_view_frame();')
+            }
+        }
     }
 
     onAddHotpotClick(){
@@ -119,30 +129,19 @@ class EditPage extends Component{
             this.setState({
                 editHotpot:true
             })
-            // const {addHotpot} = this.props;
-            // addHotpot({
-                
-            // })
         }
-        // console.log('onAddHotpotClick')
-    }
-
-    renderSceneList(){
-        const {} = this.props
     }
 
     renderEditHotpot1(){
         const {editHotpot} = this.state
-        // if(!editHotpot){
-            return (
+        return (
+            <div>
+                <div>{`当前场景共有热点1个`}</div>
                 <div>
-                    <div>{`当前场景共有热点1个`}</div>
-                    <div>
-                        
-                    </div>
+                    
                 </div>
-            )
-        // }
+            </div>
+        )
     }
 
     onSceneClick(id){
@@ -150,7 +149,6 @@ class EditPage extends Component{
         if(id == previewSceneId){
             return 
         }
-        console.log('on scene click')
         this.setState({
             selectSceneId:id
         })
@@ -169,9 +167,7 @@ class EditPage extends Component{
             console.log(sceneItemStyle)
             return <div onClick={()=>{this.onSceneClick(item.id)}} style={sceneItemStyle} key={item.id}><div style={{height:'80px',width:'80px',overflow:'hidden'}}><img style={{height:'100%'}} src={getPathOfSceneHeadImg(folderId,vrId,item.id)}/></div></div>
         })
-        console.log(editHotpot)
         if(editHotpot){
-            console.log('render')
             return (
                 <div>
                     <h1>选择一个场景</h1>
@@ -237,10 +233,67 @@ class EditPage extends Component{
                         {this.renderEditTitle()}
                     </div>
                     <div>
-                        {/* {this.renderEditHotpot1} */}
                         {this.renderEditHotPot2()}
                     </div>
                 </div>
+            )
+        }
+    }
+
+    onChooseSpecislShowChange(name){
+        if(name == 'rain'){
+            let rainSelected = this.radioGroup1.getSelectedValue()
+            if(rainSelected != '0'){
+                this.radioGroup2.setSelectedValue('0')
+
+                if(this.krpano){
+                    addRainEffect(this.krpano,rainSelected)
+                }
+            }
+        } else {
+            let snowSelected = this.radioGroup2.getSelectedValue()
+            if(snowSelected != '0'){
+                this.radioGroup1.setSelectedValue('0')
+                if(snowSelected){
+                    addSnowEffect(this.krpano,snowSelected)
+                }
+            }
+        }
+    }
+
+    renderSpecialShow(){
+        const {editType} = this.state
+        if(editType == 2){
+            return (
+                <div style={{padding:'5px'}}>
+                    <div style={{
+                        borderBottom:'1px solid #eee'
+                    }}>
+                        <span>
+                            <i className='fa fa-magic'></i>
+                            <span style={{
+                                marginLeft:'5px'
+                            }}>特效编辑</span> 
+                            <FlatButton label="添加特效" primary />
+                        </span>
+                    </div>
+                    <div>
+                        <div>下雨</div>
+                        <RadioButtonGroup name="rain" ref={(rg)=>{this.radioGroup1=rg}} defaultSelected={'0'}onChange={()=>this.onChooseSpecislShowChange('rain')}>
+                            <RadioButton value="0" label="关闭" style={styles.radioButton}/>
+                            <RadioButton value="3" label="小雨" style={styles.radioButton}/>
+                            <RadioButton value="2" label="中雨" style={styles.radioButton}/>
+                            <RadioButton value="1" label="大雨" style={styles.radioButton}/>
+                        </RadioButtonGroup>
+                        <div>下雪</div>
+                        <RadioButtonGroup name="snow" ref={(rg)=>{this.radioGroup2=rg}} defaultSelected={'0'} onChange={()=>this.onChooseSpecislShowChange('snow')}>
+                            <RadioButton value="0" label="关闭" style={styles.radioButton}/>
+                            <RadioButton value="3" label="小雪" style={styles.radioButton}/>
+                            <RadioButton value="2" label="中雪" style={styles.radioButton}/>
+                            <RadioButton value="1" label="大雪" style={styles.radioButton}/>
+                        </RadioButtonGroup>
+                    </div>
+                </div>  
             )
         }
     }
@@ -282,6 +335,7 @@ class EditPage extends Component{
                 </div>
                 <div className={styles.rightBar}>
                     {this.renderEditHotPot()}
+                    {this.renderSpecialShow()}
                 </div>
             </div>
         )
