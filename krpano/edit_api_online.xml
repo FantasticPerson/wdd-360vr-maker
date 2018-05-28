@@ -1,0 +1,1106 @@
+<krpano>
+
+  <control mouse="moveto" keycodesin="16,65,107" keycodesout="17,89,90,109" />
+  <contextmenu fullscreen="false"
+             native="false"
+             versioninfo="false"
+             touch="false"
+  />
+
+  <!-- 场景加载完成回调  window.onKrpImageLoaded() -->
+  <events
+      onloadcomplete="jscall(window.onKrpImageLoaded());"
+      onviewchanged="jscall(window.onKrpViewChanged());"
+      />
+
+  <!-- 切换场景 -->
+  <!--
+
+  load_pano_by_multils(xmlString);
+  xmlString : 全景xml字符串
+
+  //初始化时拼接一个xml，在onready中使用下面方式加载全景，参考edit_api.html
+
+  let krpano = document.getElementById("krpanoSWFObject");
+
+
+  krpano.call('loadxml(<krpano version="1.19"><view hlookat="0" vlookat="0" /><image type="CUBE" multires="true" tilesize="512"><level tiledimagewidth="638" tiledimageheight="638"><cube url="http://pano.local.720static.com/resource/prod/b51if9b2281/c3627wfOybs/161286/imgs/%s/l1/%v/l1_%s_%v_%h.jpg"/></level></image></scene><scene name="scene_161290" pano_id="161290"><image type="CUBE" multires="true" tilesize="512" ><level tiledimagewidth="128" tiledimageheight="128"><cube url="/resource/prod/b51if9b2281/c3627wfOybs/161290/imgs/%s/l1/%v/l1_%s_%v_%h.jpg"/></level></image></krpano>);')
+
+
+
+  //xml字符串拼接
+  <krpano version="1.19">
+      <view fov="90" hlookat="0" vlookat="0" />
+      <image type="CUBE" multires="true" tilesize="512">
+  	   <level tiledimagewidth="2136" tiledimageheight="2136">
+              <cube url="panos/a1.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+          </level>
+          <level tiledimagewidth="1024" tiledimageheight="1024">
+               <cube url="panos/a1.tiles/%s/l1/%v/l1_%s_%v_%h.jpg" />
+           </level>
+          .
+          .
+          .
+  	</image>
+  </krpano>
+
+
+
+   -->
+  <action name="load_pano_by_multils">
+      loadxml('%1',null,MERGE,BLEND(0.3,linear));
+      loadscene('scene_0');
+  </action>
+
+
+  <action name="makescreenshot" type="Javascript"><![CDATA[
+    if (krpano.webGL && krpano.webGL.context.getContextAttributes().preserveDrawingBuffer)
+    {
+      try
+      {
+         var img_src = krpano.webGL.canvas.toDataURL();
+         window.krpMakeScreenshot(img_src);
+      }
+      catch(err)
+      {
+         krpano.trace(3,err);
+      }
+    }
+    else
+    {
+      krpano.trace(3,"no webgl or no preserveDrawingBuffer");
+    }
+  ]]></action>
+
+
+  <!-- 视角 -->
+  <!--
+
+  get:
+  let fov = krpano.get('view.fov');
+  let fovmin = krpano.get('view.fovmin');
+  let fovmax = krpano.get('view.fovmax');
+  let hlookat = krpano.get('view.hlookat');
+  let vlookat = krpano.get('view.vlookat');
+
+  set:
+  krpano.set('view.fov',fov);
+  krpano.set('view.fovmin',fovmin);
+  krpano.set('view.fovmax',fovmax);
+  krpano.set('view.hlookat',hlookat);
+  krpano.set('view.vlookat',vlookat);
+
+  krpano.call('lookto(' + ath + ',' + atv + ');');
+  krpano.call('looktohotspot(' + hotspot_id + ');');
+
+  -->
+
+  <!-- 视角 end -->
+
+
+
+
+  <!-- 热点 -->
+
+  <!--
+  id:         热点id，字母开头，不重复
+  url:        热点图片地址
+  ath:        水平坐标，为空则默认中间
+  atv:        竖直坐标，为空则默认中间
+  animation:  是否是动图 true/false 不传默认false
+  selected:  是否选中 true/false 不传默认false
+  krpano.call('add_hotspot(' + id + ',' + url + ',' + ath + ',' + ath +', animation);' );
+  -->
+  <action name="add_hotspot">
+
+      addhotspot(%1);
+      set(hotspot_url,%2);
+      txtadd(hotspot_url,'?imageView2/0/w/300/h/300');
+      set(hotspot[%1].url,get(hotspot_url));
+      set(hotspot[%1].scale,0.75);
+      set(hotspot[%1].keep,false);
+      set(hotspot[%1].onup,
+        jscall(calc('window.onKrpHotspotMoveEnd("'+ name + '",' + ath + ',' + atv + ')'));
+      );
+      if(%3 === null,
+          set(hotspot[%1].ath,get(view.hlookat));
+          ,
+          set(hotspot[%1].ath,%3);
+      );
+      if(%4 === null,
+          set(hotspot[%1].atv,get(view.vlookat));
+          ,
+          set(hotspot[%1].atv,%4);
+      );
+
+      set(hotspot[%1].edge,center);
+      set(hotspot[%1].renderer,css3d);
+      set(hotspot[%1].ondown,drag_enable_hotspot(););
+      set(hotspot[%1].onclick,
+        jscall(calc('window.onKrpHotspotClick("'+ name + '")'));
+      );
+
+      stopdelayedcall(%1);
+
+      set(hotspot_txt_name,%1);
+      txtadd(hotspot_txt_name,"_txt");
+      addhotspot(get(hotspot_txt_name));
+      copy(hotspot[get(hotspot_txt_name)].ath,hotspot[%1].ath);
+      copy(hotspot[get(hotspot_txt_name)].atv,hotspot[%1].atv);
+      set(hotspot[get(hotspot_txt_name)].scale,1);
+      set(hotspot[get(hotspot_txt_name)].capture,false);
+      set(hotspot[get(hotspot_txt_name)].keep,false);
+      set(hotspot[get(hotspot_txt_name)].visible,false);
+      set(hotspot[get(hotspot_txt_name)].url,'http://ssl-player.720static.com/@/krp/1.19-pr8/plugins/textfield.swf');
+
+      ifnot(hotspot[%1].height === null ,
+        copy(hotspot[get(hotspot_txt_name)].oy,hotspot[%1].height);
+        div(hotspot[get(hotspot_txt_name)].oy,-4);
+        sub(hotspot[get(hotspot_txt_name)].oy,20);
+      );
+      set(hotspot[get(hotspot_txt_name)].backgroundcolor,#000000);
+      set(hotspot[get(hotspot_txt_name)].backgroundalpha,0.5);
+      set(hotspot[get(hotspot_txt_name)].roundedge,5);
+      set(hotspot[get(hotspot_txt_name)].padding,5);
+      set(hotspot[get(hotspot_txt_name)].css,font-family:STXihei; font-size:12px; color:#ffffff;letter-spacing:1px;textAlign:center;);
+      set(hotspot[get(hotspot_txt_name)].edge,center);
+
+
+      if(%5 == true,
+        if(hotspot[%1].loaded AND %6 == true,
+          update_hotspot_selected(%1);
+        );
+        set(hotspot[%1].crop,'0|0|100|100');
+        set(hotspot[%1].framewidth, 100);
+        set(hotspot[%1].frameheight, 100);
+        set(hotspot[%1].frame, 0);
+        set(hotspot[%1].lastframe, 16);
+        set(hotspot[%1].onloaded,
+          hotspot_animate(%1);
+          set(hotspot_loaded_txt_name,get(name));
+          txtadd(hotspot_loaded_txt_name,"_txt");
+          copy(hotspot[get(hotspot_loaded_txt_name)].oy,height);
+          div(hotspot[get(hotspot_loaded_txt_name)].oy,-4);
+          sub(hotspot[get(hotspot_loaded_txt_name)].oy,20);
+          if(%6 == true,
+            update_hotspot_selected(%1);
+          );
+        );
+        ,
+        if(hotspot[%1].loaded AND %6 == true,
+          update_hotspot_selected(%1);
+        );
+        set(hotspot[%1].onloaded,
+          set(hotspot_loaded_txt_name,get(name));
+          txtadd(hotspot_loaded_txt_name,"_txt");
+          copy(hotspot[get(hotspot_loaded_txt_name)].oy,height);
+          div(hotspot[get(hotspot_loaded_txt_name)].oy,-4);
+          sub(hotspot[get(hotspot_loaded_txt_name)].oy,20);
+          if(%6 == true,
+            update_hotspot_selected(%1);
+          );
+        );
+      );
+
+
+  </action>
+
+
+
+  <!--
+  id:         热点id
+  url:        热点图片地址
+  animation:  是否是动图 true/false 不传默认false
+  krpano.call('update_hotspot_image(' + id + ',' + url + ',' + animation + ');' );
+  -->
+  <action name="update_hotspot_image">
+    ifnot(hotspot[%1] === null ,
+      set(hotspot_url,%2);
+      txtadd(hotspot_url,'?imageView2/0/w/300/h/300');
+      set(hotspot[%1].url,get(hotspot_url));
+
+      if(%3 == true,
+        set(hotspot[%1].crop,'0|0|100|100');
+        set(hotspot[%1].framewidth, 100);
+        set(hotspot[%1].frameheight, 100);
+        set(hotspot[%1].frame, 0);
+        set(hotspot[%1].lastframe, 16);
+        set(hotspot[%1].onloaded,
+          hotspot_animate(%1);
+          copy(hotspot[get(hotspot_loaded_txt_name)].oy,height);
+          div(hotspot[get(hotspot_loaded_txt_name)].oy,-4);
+          sub(hotspot[get(hotspot_loaded_txt_name)].oy,20);
+          if(hotspot[hotspot_selected_bg].target_hotspot == %1,
+            set(hotspot[hotspot_selected_bg].width, get(hotspot[%1].width));
+            add(hotspot[hotspot_selected_bg].width, 20);
+            set(hotspot[hotspot_selected_bg].height, get(hotspot[%1].height));
+            add(hotspot[hotspot_selected_bg].height, 20);
+          );
+        );
+        ,
+        stopdelayedcall(%1);
+        set(hotspot[%1].onloaded,
+          set(hotspot[%1].crop,'');
+          copy(hotspot[get(hotspot_loaded_txt_name)].oy,height);
+          div(hotspot[get(hotspot_loaded_txt_name)].oy,-4);
+          sub(hotspot[get(hotspot_loaded_txt_name)].oy,20);
+
+          if(hotspot[hotspot_selected_bg].target_hotspot == %1,
+            set(hotspot[hotspot_selected_bg].width, get(hotspot[%1].width));
+            add(hotspot[hotspot_selected_bg].width, 20);
+            set(hotspot[hotspot_selected_bg].height, get(hotspot[%1].height));
+            add(hotspot[hotspot_selected_bg].height, 20);
+          );
+
+        );
+      );
+
+      if(hotspot[%1].loaded == true,
+        set(hotspot[hotspot_selected_bg].width, get(hotspot[%1].width));
+        add(hotspot[hotspot_selected_bg].width, 20);
+        set(hotspot[hotspot_selected_bg].height, get(hotspot[%1].height));
+        add(hotspot[hotspot_selected_bg].height, 20);
+      );
+    );
+  </action>
+
+
+
+  <!--
+  id:         热点id
+  txt:        热点文字
+  krpano.call('update_hotspot_txt(' + id + ',' + txt + ');' );
+  -->
+  <action name="update_hotspot_txt">
+    ifnot(hotspot[%1] === null ,
+      set(hotspot_txt_name,%1);
+      txtadd(hotspot_txt_name,"_txt");
+      set(txt,%2);
+      if(txt === null OR txt == '',
+        set(hotspot[get(hotspot_txt_name)].visible,false);
+        set(hotspot[get(hotspot_txt_name)].html,'');
+        ,
+        set(hotspot[get(hotspot_txt_name)].visible,true);
+        set(hotspot[get(hotspot_txt_name)].html,%2);
+      );
+    );
+  </action>
+
+  <!--
+  id:         热点id，会清除之前选中状态，传入null则不选中任何热点，
+  krpano.call('update_hotspot_selected(' + id + ');' );
+  -->
+  <action name="update_hotspot_selected">
+
+    if(hotspot[hotspot_selected_bg] === null ,
+      addhotspot(hotspot_selected_bg);
+      set(hotspot[hotspot_selected_bg].type, container);
+      set(hotspot[hotspot_selected_bg].keep, true);
+      set(hotspot[hotspot_selected_bg].scale, 0.5);
+      set(hotspot[hotspot_selected_bg].url, 'http://api-qiniu2.720static.com/@/krp/client/skin/hotspot_selected_bg.png');
+      set(hotspot[hotspot_selected_bg].edge, center);
+      set(hotspot[hotspot_selected_bg].scale9grid, 20|20|100|100 );
+      set(hotspot[hotspot_selected_bg].enabled, false);
+    );
+
+    set(hotspot[hotspot_selected_bg].visible, false);
+
+    if(hotspot[%1] !== null,
+      if(hotspot[%1].loaded == true,
+        if(hotspot[hotspot_selected_bg].target_hotspot !== null,
+          set(hotspot[get(hotspot[hotspot_selected_bg].target_hotspot)].zorder, 0);
+        );
+
+        set(hotspot[hotspot_selected_bg].width, get(hotspot[%1].width));
+        add(hotspot[hotspot_selected_bg].width, 20);
+        set(hotspot[hotspot_selected_bg].height, get(hotspot[%1].height));
+        add(hotspot[hotspot_selected_bg].height, 20);
+
+        set(hotspot[hotspot_selected_bg].ath, get(hotspot[%1].ath));
+        set(hotspot[hotspot_selected_bg].atv, get(hotspot[%1].atv));
+        copy(hotspot[hotspot_selected_bg].zorder, hotspot[%1].zorder);
+        set(hotspot[%1].zorder, 100);
+        set(hotspot[hotspot_selected_bg].zorder, 99);
+        set(hotspot[hotspot_selected_bg].visible, true);
+        set(hotspot[hotspot_selected_bg].target_hotspot, %1);
+      );
+    );
+
+
+  </action>
+
+  <!-- hotspot animation action -->
+  <action name="hotspot_animate">
+    inc(frame,1,get(lastframe),0);
+    mul(xpos,frame,frameheight);
+    txtadd(crop,get(xpos),'|0|',get(framewidth),'|',get(frameheight));
+    delayedcall(%1,0.035, if(loaded, hotspot_animate(%1) ) );
+  </action>
+
+  <!--
+  id:     热点id
+  krpano.call('remove_hotspot(' + id + ');' );
+  -->
+  <action name="remove_hotspot">
+      removehotspot(%1);
+      set(hotspot_txt_name,%1);
+      txtadd(hotspot_txt_name,"_txt");
+      removehotspot(get(hotspot_txt_name));
+      if(hotspot[hotspot_selected_bg].target_hotspot == %1,
+        set(hotspot[embed_image_selected_bg].visible, false);
+      );
+  </action>
+
+
+  <!--
+  获取热点坐标
+  let ath = krpano.get('hotspot[' + id + '].ath');
+  let atv = krpano.get('hotspot[' + id + '].atv');
+   -->
+
+
+
+  <!-- 热点 end -->
+
+
+  <!-- 天气 -->
+
+  <!--
+  添加太阳光
+  ath:        水平坐标，为空则默认中间
+  atv:        竖直坐标，为空则默认中间
+  krpano.call('add_sun_hotspot('+ ath + ', ' + atv +');' );
+
+  看向太阳光
+  krpano.call('looktohotspot(sun_hotspot);');
+  -->
+  <action name="add_sun_hotspot">
+
+      addhotspot(sun_hotspot);
+      set(hotspot[sun_hotspot].url, 'http://api-qiniu2.720static.com/@/krp/client/skin/sun.png');
+      set(hotspot[sun_hotspot].keep,false);
+      set(hotspot[sun_hotspot].onup,
+        jscall(calc('window.onKrpSunHotspotMoveEnd(' + ath + ',' + atv + ')'));
+      );
+
+      if(%1 === null,
+          set(hotspot[sun_hotspot].ath,get(view.hlookat));
+          ,
+          set(hotspot[sun_hotspot].ath,%1);
+      );
+      if(%2 === null,
+          set(hotspot[sun_hotspot].atv,get(view.vlookat));
+          ,
+          set(hotspot[sun_hotspot].atv,%2);
+      );
+      set(hotspot[sun_hotspot].edge,center);
+      set(hotspot[sun_hotspot].ondown,drag_enable(););
+
+  </action>
+  <!--
+  删除太阳光
+  krpano.call('remove_sun_hotspot();' );
+  -->
+  <action name="remove_sun_hotspot">
+      removehotspot(sun_hotspot);
+  </action>
+
+
+
+    <!-- 遮罩 -->
+
+    <!--
+    添加天空遮罩
+    krpano.call('add_top_mask('+ url + ');' );
+
+    -->
+    <action name="add_top_mask">
+
+      addhotspot(top_mask_layer);
+      set(hotspot[top_mask_layer].ath,0);
+      set(hotspot[top_mask_layer].atv,-90);
+      set(hotspot[top_mask_layer].rotate,0.0);
+      set(hotspot[top_mask_layer].distorted,true);
+      set(hotspot[top_mask_layer].zoom,false);
+      set(hotspot[top_mask_layer].enabled,false);
+      set(hotspot[top_mask_layer].handcursor,false);
+      set(hotspot[top_mask_layer].visible,true);
+      set(hotspot[top_mask_layer].keep,false);
+      set(top_mask_url,%1);
+      txtadd(top_mask_url,'?imageView2/0/w/1024/h/1024');
+      set(hotspot[top_mask_layer].url, get(top_mask_url));
+      if(%2 == true,
+        set(hotspot[top_mask_layer].distorted,false);
+        set(hotspot[top_mask_layer].zoom,true);
+      );
+
+    </action>
+
+    <!--
+    更新天空遮罩是否漂浮
+    krpano.call('update_top_mask_float(true/false);' );
+    -->
+    <action name="update_top_mask_float">
+      if(hotspot[top_mask_layer] !== null,
+        if(%1 == true,
+          set(hotspot[top_mask_layer].rotate,0.0);
+          set(hotspot[top_mask_layer].distorted,false);
+          set(hotspot[top_mask_layer].zoom,true);
+          ,
+          set(hotspot[top_mask_layer].rotate,0.0);
+          set(hotspot[top_mask_layer].distorted,true);
+          set(hotspot[top_mask_layer].zoom,false);
+        );
+      );
+    </action>
+
+    <!--
+    删除天空遮罩
+    krpano.call('remove_top_mask();' );
+    -->
+    <action name="remove_top_mask">
+      removehotspot(top_mask_layer);
+    </action>
+
+
+    <!--
+    添加地面遮罩
+    krpano.call('add_bottom_mask('+ url + ');' );
+
+    -->
+    <action name="add_bottom_mask">
+
+      addhotspot(bottom_mask_layer);
+      set(hotspot[bottom_mask_layer].ath,0);
+      set(hotspot[bottom_mask_layer].atv,90);
+      set(hotspot[bottom_mask_layer].rotate,0.0);
+      set(hotspot[bottom_mask_layer].scale,0.75);
+      set(hotspot[bottom_mask_layer].distorted,true);
+      set(hotspot[bottom_mask_layer].zoom,false);
+      set(hotspot[bottom_mask_layer].enabled,false);
+      set(hotspot[bottom_mask_layer].handcursor,false);
+      set(hotspot[bottom_mask_layer].visible,true);
+      set(hotspot[bottom_mask_layer].keep,false);
+      set(bottom_mask_url,%1);
+      txtadd(bottom_mask_url,'?imageView2/0/w/1024/h/1024');
+      set(hotspot[bottom_mask_layer].url, get(bottom_mask_url));
+      if(%2 == true,
+        set(hotspot[bottom_mask_layer].distorted,false);
+        set(hotspot[bottom_mask_layer].zoom,true);
+      );
+
+    </action>
+
+    <!--
+    更新地面遮罩是否漂浮
+    krpano.call('update_top_mask_float(true/false);' );
+    -->
+    <action name="update_bottom_mask_float">
+      if(hotspot[bottom_mask_layer] !== null,
+        if(%1 == true,
+          set(hotspot[bottom_mask_layer].rotate,0.0);
+          set(hotspot[bottom_mask_layer].distorted,false);
+          set(hotspot[bottom_mask_layer].zoom,true);
+          ,
+          set(hotspot[bottom_mask_layer].rotate,0.0);
+          set(hotspot[bottom_mask_layer].distorted,true);
+          set(hotspot[bottom_mask_layer].zoom,false);
+        );
+      );
+    </action>
+
+    <!--
+    删除地面遮罩
+    krpano.call('remove_bottom_mask();' );
+    -->
+    <action name="remove_bottom_mask">
+      removehotspot(bottom_mask_layer);
+    </action>
+
+
+
+
+
+
+  <action name="drag_enable_hotspot">
+   if(%1 != dragging,
+     spheretoscreen(ath, atv, hotspotcenterx, hotspotcentery);
+     sub(drag_adjustx, mouse.stagex, hotspotcenterx);
+     sub(drag_adjusty, mouse.stagey, hotspotcentery);
+     drag_enable_hotspot(dragging);
+
+     ,
+     if(pressed,
+       sub(dx, mouse.stagex, drag_adjustx);
+       sub(dy, mouse.stagey, drag_adjusty);
+       screentosphere(dx, dy, ath, atv);
+       copy(print_ath, ath);
+       copy(print_atv, atv);
+       roundval(print_ath, 3);
+       roundval(print_atv, 3);
+       set(ath,get(print_ath));
+       set(atv,get(print_atv));
+       if(hotspot[hotspot_selected_bg].target_hotspot == name,
+         set(hotspot[hotspot_selected_bg].ath,get(print_ath));
+         set(hotspot[hotspot_selected_bg].atv,get(print_atv));
+       );
+       set(hotspot_txt_name,get(name));
+       txtadd(hotspot_txt_name,"_txt");
+       copy(hotspot[get(hotspot_txt_name)].ath,ath);
+       copy(hotspot[get(hotspot_txt_name)].atv,atv);
+       delayedcall(0, drag_enable_hotspot(dragging) );
+       );
+     );
+   </action>
+
+   <action name="drag_enable">
+   if(%1 != dragging,
+     spheretoscreen(ath, atv, hotspotcenterx, hotspotcentery);
+     sub(drag_adjustx, mouse.stagex, hotspotcenterx);
+     sub(drag_adjusty, mouse.stagey, hotspotcentery);
+     drag_enable(dragging);
+
+     ,
+     if(pressed,
+       sub(dx, mouse.stagex, drag_adjustx);
+       sub(dy, mouse.stagey, drag_adjusty);
+       screentosphere(dx, dy, ath, atv);
+       copy(print_ath, ath);
+       copy(print_atv, atv);
+       roundval(print_ath, 3);
+       roundval(print_atv, 3);
+       set(ath,get(print_ath));
+       set(atv,get(print_atv));
+       if(hotspot[hotspot_selected_bg].target_hotspot == name,
+         set(hotspot[hotspot_selected_bg].ath,get(print_ath));
+         set(hotspot[hotspot_selected_bg].atv,get(print_atv));
+       );
+       delayedcall(0, drag_enable(dragging) );
+       );
+     );
+   </action>
+
+
+   <action name="show_view_frame">
+     addlayer(view_frame);
+     set(layer[view_frame].url, 'http://api-qiniu2.720static.com/@/krp/client/skin/view_frame.png');
+     set(layer[view_frame].scale, 0.5);
+     set(layer[view_frame].align, center);
+     set(layer[view_frame].enabled, fasle);
+     set(layer[view_frame].keep, true);
+     set(layer[view_frame].onloaded,
+      jscall('window.onKrpViewFrameShow()');
+     );
+   </action>
+
+   <action name="hide_view_frame">
+    removelayer(view_frame);
+  </action>
+
+
+
+
+  <!--
+  下雨
+
+  size:     雨量，传入0也可关闭下雨效果
+  krpano.call('add_rain('+ size + ');' );
+
+  关闭下雨效果
+  krpano.call('remove_rain();' );
+  -->
+	<action name="add_rain">
+    if(%1 === null,
+      set(rain_size, 2);
+      ,
+      set(rain_size, %1);
+    );
+
+    removeplugin(snow);
+    addplugin(snow);
+    set(plugin[snow].onloaded,
+      set(plugin[snow].mode,          image);
+      set(plugin[snow].imageurl,      'http://api-qiniu2.720static.com/@/krp/client/skin/rain.png');
+      set(plugin[snow].blendmode,     normal);
+      set(plugin[snow].flakes,        1000);
+      mul(plugin[snow].flakes,        rain_size);
+      set(plugin[snow].color,         0xefe3e4);
+      set(plugin[snow].speed,         15.5);
+      set(plugin[snow].shake,         1.0);
+      set(plugin[snow].speedvariance, 1.0);
+      set(plugin[snow].spreading,     2.0);
+      set(plugin[snow].rainwidth,     0.4);
+      mul(plugin[snow].rainwidth,     rain_size);
+      set(plugin[snow].rainalpha,     0.5);
+      set(plugin[snow].wind,          2.0);
+    );
+    if(device.flash,
+  		set(plugin[snow].url,          'http://ssl-player.720static.com/@/krp/1.19-pr8/plugins/snow.swf');
+      ,
+  		set(plugin[snow].url,          'http://ssl-player.720static.com/@/krp/1.19-pr8/plugins/snow.js');
+    );
+  </action>
+  <action name="remove_rain">
+    removeplugin(snow);
+  </action>
+
+  <!--
+  下雪
+
+  size:     雪量，传入0也可关闭下雪效果
+  krpano.call('add_snow('+ size + ');' );
+
+  关闭下雪效果
+  krpano.call('remove_snow();' );
+  -->
+	<action name="add_snow">
+
+    if(%1 === null,
+      set(snow_size, 2);
+      ,
+      set(snow_size, %1);
+    );
+
+    removeplugin(snow);
+    addplugin(snow);
+    set(plugin[snow].onloaded,
+      set(plugin[snow].mode,          image);
+      set(plugin[snow].imageurl,      'http://api-qiniu2.720static.com/@/krp/client/skin/snow.png');
+      set(plugin[snow].blendmode,     normal);
+      set(plugin[snow].flakes,        1500);
+      mul(plugin[snow].flakes,        snow_size);
+      set(plugin[snow].color,         0xdfe3e4);
+      copy(plugin[snow].speed,        snow_size);
+      mul(plugin[snow].speed,         snow_size);
+      add(plugin[snow].speed,         1);
+      set(plugin[snow].shake,         4.0);
+      set(plugin[snow].speedvariance, 2.0);
+      set(plugin[snow].spreading,     4.0);
+      set(plugin[snow].wind,          1.0);
+      sub(plugin[snow].wind,          snow_size);
+    );
+    if(device.flash,
+  		set(plugin[snow].url,          'http://ssl-player.720static.com/@/krp/1.19-pr8/plugins/snow.swf');
+      ,
+  		set(plugin[snow].url,          'http://ssl-player.720static.com/@/krp/1.19-pr8/plugins/snow.js');
+    );
+
+
+	</action>
+  <action name="remove_snow">
+    removeplugin(snow);
+  </action>
+
+
+  <!--
+  下图片
+
+  url:      图片地址
+  size:     图片量，传入0也可关闭下图片效果
+  krpano.call('add_image_rain(' + url + ',' + size + ');' );
+
+  关闭下图片效果
+  krpano.call('remove_image_rain();' );
+  -->
+	<action name="add_image_rain">
+
+    if(%2 === null,
+      set(snow_size, 2);
+      ,
+      set(snow_size, %2);
+    );
+
+
+    removeplugin(snow);
+    addplugin(snow);
+    set(plugin[snow].onloaded,
+      set(plugin[snow].mode,          image);
+      set(image_rain_url,%1);
+      txtadd(image_rain_url,'?imageView2/0/w/512/h/512');
+      set(plugin[snow].imageurl,      get(image_rain_url));
+      set(plugin[snow].imagescale,    0.5);
+      set(plugin[snow].blendmode,     normal);
+      set(plugin[snow].flakes,        150);
+      mul(plugin[snow].flakes,        snow_size);
+      set(plugin[snow].color,         0xdfe3e4);
+      add(plugin[snow].speed,         0.5);
+      set(plugin[snow].shake,         1.0);
+      set(plugin[snow].speedvariance, 2.0);
+      set(plugin[snow].spreading,     1.5);
+      set(plugin[snow].wind,          0);
+    );
+    if(device.flash,
+  		set(plugin[snow].url,          'http://ssl-player.720static.com/@/krp/1.19-pr8/plugins/snow.swf');
+      ,
+  		set(plugin[snow].url,          'http://ssl-player.720static.com/@/krp/1.19-pr8/plugins/snow.js');
+    );
+
+	</action>
+  <action name="remove_image_rain">
+    removeplugin(snow);
+  </action>
+
+
+  <!-- 嵌入 -->
+
+  <!--
+  id:         热点id，字母开头，不重复
+  url:        热点图片地址
+  ath:        水平坐标，为空则默认中间
+  atv:        竖直坐标，为空则默认中间
+  scale:      图片缩放，默认0.5
+  krpano.call('add_embed_img(' + id + ',' + url + ',' + ath + ',' + ath +', scale);' );
+  -->
+  <action name="add_embed_image">
+
+      addhotspot(%1);
+      set(hotspot[%1].keep,false);
+      set(url,%2);
+      if(url === null,
+          set(hotspot[%1].url,'http://api-qiniu2.720static.com/@/krp/client/skin/embed_empty.png');
+          set(hotspot[%1].empty,true);
+          ,
+          copy(embed_image_url,url);
+          txtadd(embed_image_url,'?imageView2/0/w/2000/h/2000');
+          set(hotspot[%1].url,get(embed_image_url));
+          set(hotspot[%1].empty,false);
+      );
+      if(%5 === null,
+        set(hotspot[%1].scale,0.5);
+        ,
+        set(hotspot[%1].scale,%5);
+      );
+      if(%3 === null,
+          set(hotspot[%1].ath,get(view.hlookat));
+          ,
+          set(hotspot[%1].ath,%3);
+      );
+      if(%4 === null,
+          set(hotspot[%1].atv,get(view.vlookat));
+          ,
+          set(hotspot[%1].atv,%4);
+      );
+      set(hotspot[%1].edge,center);
+      set(hotspot[%1].distorted,true);
+      set(hotspot[%1].zoom,true);
+      <!-- set(hotspot[%1].renderer,css3d); -->
+
+
+
+      set(hotspot[%1].ondown,drag_enable_embed(););
+      set(hotspot[%1].onup,
+        jscall(calc('window.onKrpEmbedMoveEnd("'+ name + '",' + ath + ',' + atv + ')'));
+      );
+
+      set(hotspot[%1].onclick,
+        jscall(calc('window.onKrpEmbedClick("'+ name + '")'));
+        <!-- update_embed_image_selected(%1); -->
+      );
+
+
+      stopdelayedcall(%1);
+  </action>
+
+
+
+  <!--
+  id:         热点id
+  url:        热点图片地址
+  scale:      图片缩放
+  krpano.call('update_embed_image(' + id + ',' + url + ',' + scale + ');' );
+  -->
+  <action name="update_embed_image">
+    ifnot(hotspot[%1] === null ,
+      set(url,%2);
+      if(url === null,
+          set(hotspot[%1].url,'http://api-qiniu2.720static.com/@/krp/client/skin/embed_empty.png');
+          set(hotspot[%1].empty,true);
+          ,
+          copy(embed_image_url,url);
+          txtadd(embed_image_url,'?imageView2/0/w/2000/h/2000');
+          set(hotspot[%1].url,get(embed_image_url));
+          set(hotspot[%1].empty,false);
+      );
+      if(%3 !== null,
+          set(hotspot[%1].ath,%3);
+      );
+      if(%4 !== null,
+          set(hotspot[%1].atv,%4);
+      );
+      if(%5 !== null,
+        set(hotspot[%1].scale,%5);
+        if(hotspot[embed_image_selected_bg].target_hotspot == %1,
+          copy(hotspot[embed_image_selected_bg].scale, hotspot[%1].scale);
+        );
+      );
+      if(hotspot[embed_image_selected_bg].target_hotspot == %1,
+        copy(hotspot[embed_image_selected_bg].ath,hotspot[%1].ath);
+        copy(hotspot[embed_image_selected_bg].atv,hotspot[%1].atv);
+      );
+    );
+  </action>
+
+
+
+  <!--
+  id:         热点id，会清除之前选中状态，传入null则不选中任何热点，
+  krpano.call('update_hotspot_selected(' + id + ');' );
+  -->
+  <action name="update_embed_image_selected">
+    if(selected_txt_name !== null,
+      set(hotspot[get(selected_txt_name)].border,false);
+     );
+
+    addhotspot(embed_image_selected_bg);
+    set(hotspot[embed_image_selected_bg].type, container);
+    set(hotspot[embed_image_selected_bg].distorted,true);
+    set(hotspot[embed_image_selected_bg].zoom,true);
+    set(hotspot[embed_image_selected_bg].keep, true);
+    set(hotspot[embed_image_selected_bg].url, 'http://api-qiniu2.720static.com/@/krp/client/skin/embed_selected_bg.png');
+    set(hotspot[embed_image_selected_bg].edge, center);
+    set(hotspot[embed_image_selected_bg].scale9grid, 20|20|100|100 );
+    set(hotspot[embed_image_selected_bg].enabled, false);
+    set(hotspot[embed_image_selected_bg].visible, false);
+
+    if(hotspot[%1] !== null ,
+      if(hotspot[%1].loaded == true,
+        if(hotspot[embed_image_selected_bg].target_hotspot !== null,
+          set(hotspot[get(hotspot[embed_image_selected_bg].target_hotspot)].zorder, 0);
+        );
+
+        set(hotspot[embed_image_selected_bg].width, get(hotspot[%1].width));
+        add(hotspot[embed_image_selected_bg].width, 20);
+        set(hotspot[embed_image_selected_bg].height, get(hotspot[%1].height));
+        add(hotspot[embed_image_selected_bg].height, 20);
+
+        set(hotspot[embed_image_selected_bg].ath, get(hotspot[%1].ath));
+        set(hotspot[embed_image_selected_bg].atv, get(hotspot[%1].atv));
+        copy(hotspot[embed_image_selected_bg].zorder, hotspot[%1].zorder);
+        set(hotspot[%1].zorder, 100);
+        set(hotspot[embed_image_selected_bg].zorder, 99);
+        set(hotspot[embed_image_selected_bg].visible, true);
+        set(hotspot[embed_image_selected_bg].target_hotspot, %1);
+
+        copy(hotspot[embed_image_selected_bg].scale, hotspot[%1].scale);
+        ,
+        set(hotspot[%1].onloaded,
+          update_embed_image_selected(%1,%2);
+        );
+      );
+    );
+
+
+  </action>
+
+  <!--
+  id:     热点id
+  krpano.call('remove_hotspot(' + id + ');' );
+  -->
+  <action name="remove_embed_image">
+      removehotspot(%1);
+  </action>
+
+
+  <action name="drag_enable_embed">
+   if(%1 != dragging,
+     spheretoscreen(ath, atv, hotspotcenterx, hotspotcentery);
+     sub(drag_adjustx, mouse.stagex, hotspotcenterx);
+     sub(drag_adjusty, mouse.stagey, hotspotcentery);
+     drag_enable_embed(dragging);
+     set(alpha,0.5);
+     <!-- set(hotspot[embed_image_selected_bg].visible,false); -->
+     ,
+     if(pressed,
+       sub(dx, mouse.stagex, drag_adjustx);
+       sub(dy, mouse.stagey, drag_adjusty);
+       screentosphere(dx, dy, ath, atv);
+       copy(print_ath, ath);
+       copy(print_atv, atv);
+       roundval(print_ath, 3);
+       roundval(print_atv, 3);
+       set(ath,get(print_ath));
+       set(atv,get(print_atv));
+       if(hotspot[embed_image_selected_bg].target_hotspot == name,
+         set(hotspot[embed_image_selected_bg].ath,get(print_ath));
+         set(hotspot[embed_image_selected_bg].atv,get(print_atv));
+       );
+       delayedcall(0, drag_enable_embed(dragging) );
+       ,
+       <!-- set(hotspot[embed_image_selected_bg].visible,true); -->
+       set(alpha,1);
+      );
+    );
+  </action>
+
+  <!--
+  获取热点坐标
+  let ath = krpano.get('hotspot[' + id + '].ath');
+  let atv = krpano.get('hotspot[' + id + '].atv');
+   -->
+
+
+
+
+   <!-- 嵌入文字 -->
+     <!--
+     id:         热点id，字母开头，不重复
+     txt         嵌入文字内容
+     ath:        水平坐标，为空则默认中间
+     atv:        竖直坐标，为空则默认中间
+     krpano.call('add_embed_img(' + id + ',' + txt + ',' + ath + ',' + ath +', scale);' );
+     -->
+     <action name="add_embed_txt">
+
+       addhotspot(%1);
+       if(%3 === null,
+           set(hotspot[%1].ath,get(view.hlookat));
+           ,
+           set(hotspot[%1].ath,%3);
+       );
+       if(%4 === null,
+           set(hotspot[%1].atv,get(view.vlookat));
+           ,
+           set(hotspot[%1].atv,%4);
+       );
+
+       set(hotspot[%1].scale,1);
+       set(hotspot[%1].keep,false);
+       set(hotspot[%1].url,'http://ssl-player.720static.com/@/krp/1.19-pr8/plugins/textfield.swf');
+
+
+       set(tempTxt,%2);
+       if(tempTxt == '' OR tempTxt === null,
+        set(hotspot[%1].html,'请输入标注文字');
+        ,
+        txtreplace(tempTxt,'&#xA;','[br]');
+        set(hotspot[%1].html,get(tempTxt));
+       );
+
+
+
+       set(hotspot[%1].borderwidth,1.0);
+       set(hotspot[%1].bordercolor,0xfad057);
+       set(hotspot[%1].backgroundcolor,#000000);
+       set(hotspot[%1].backgroundalpha,0.5);
+       set(hotspot[%1].roundedge,5);
+       set(hotspot[%1].padding,10);
+       set(hotspot[%1].zorder2,1.0);
+       set(hotspot[%1].oy,-9);
+       set(hotspot[%1].css,font-family:STXihei; font-size:12px; color:#ffffff;letter-spacing:1px;textAlign:center;);
+       set(hotspot[%1].edge,bottom);
+
+       set(hotspot[%1].onup,
+         jscall(calc('window.onKrpEmbedMoveEnd("'+ name + '",' + ath + ',' + atv + ')'));
+       );
+       set(hotspot[%1].ondown,drag_enable_embed_txt(););
+       set(hotspot[%1].onclick,
+         jscall(calc('window.onKrpEmbedClick("'+ name + '")'));
+       );
+
+
+       set(embed_txt_bg_name,%1);
+       txtadd(embed_txt_bg_name,"_bg");
+       addhotspot(get(embed_txt_bg_name));
+       set(hotspot[get(embed_txt_bg_name)].url,'http://api-qiniu2.720static.com/@/krp/client/skin/embed_txt_bg.png');
+       copy(hotspot[get(embed_txt_bg_name)].ath,hotspot[%1].ath);
+       copy(hotspot[get(embed_txt_bg_name)].atv,hotspot[%1].atv);
+       set(hotspot[get(embed_txt_bg_name)].keep,false);
+       set(hotspot[get(embed_txt_bg_name)].scale,0.5);
+       set(hotspot[get(embed_txt_bg_name)].edge,top);
+       set(hotspot[get(embed_txt_bg_name)].oy,-9);
+       set(hotspot[get(embed_txt_bg_name)].zorder2,1.0);
+
+       stopdelayedcall(%1);
+
+     </action>
+
+
+
+     <!--
+     id:         热点id
+     txt:        文本内容
+     krpano.call('update_embed_image(' + id + ',' + txt + ');' );
+     -->
+     <action name="update_embed_txt">
+       ifnot(hotspot[%1] === null ,
+
+         set(tempTxt,%2);
+         if(tempTxt == '' OR tempTxt === null,
+          set(hotspot[%1].html,'请输入标注文字');
+          ,
+          txtreplace(tempTxt,'&#xA;','[br]');
+          set(hotspot[%1].html,get(tempTxt));
+         );
+
+         if(%3 !== null,
+             set(hotspot[%1].ath,%3);
+         );
+         if(%4 !== null,
+             set(hotspot[%1].atv,%4);
+         );
+       );
+     </action>
+
+
+
+     <!--
+     id:         热点id，会清除之前选中状态，传入null则不选中任何热点，
+     krpano.call('update_hotspot_selected(' + id + ');' );
+     -->
+     <action name="update_embed_txt_selected">
+       set(hotspot[embed_image_selected_bg].visible, false);
+
+       if(selected_txt_name !== null,
+        set(hotspot[get(selected_txt_name)].border,false);
+       );
+
+
+       set(selected_txt_name,%1);
+       if(hotspot[%1] !== null,
+          set(hotspot[%1].border,true);
+        );
+
+
+     </action>
+
+     <!--
+     id:     热点id
+     krpano.call('remove_hotspot(' + id + ');' );
+     -->
+     <action name="remove_embed_txt">
+         removehotspot(%1);
+         set(bg_name,%1);
+         txtadd(bg_name,'_bg');
+         removehotspot(get(bg_name));
+     </action>
+
+
+     <action name="drag_enable_embed_txt">
+      if(%1 != dragging,
+        spheretoscreen(ath, atv, hotspotcenterx, hotspotcentery);
+        sub(drag_adjustx, mouse.stagex, hotspotcenterx);
+        sub(drag_adjusty, mouse.stagey, hotspotcentery);
+        drag_enable_embed_txt(dragging);
+
+        ,
+        if(pressed,
+          sub(dx, mouse.stagex, drag_adjustx);
+          sub(dy, mouse.stagey, drag_adjusty);
+          screentosphere(dx, dy, ath, atv);
+          copy(print_ath, ath);
+          copy(print_atv, atv);
+          roundval(print_ath, 3);
+          roundval(print_atv, 3);
+          set(ath,get(print_ath));
+          set(atv,get(print_atv));
+          set(embed_txt_bg_name,get(name));
+          txtadd(embed_txt_bg_name,"_bg");
+          copy(hotspot[get(embed_txt_bg_name)].ath,ath);
+          copy(hotspot[get(embed_txt_bg_name)].atv,atv);
+          delayedcall(0, drag_enable_embed_txt(dragging) );
+          );
+        );
+      </action>
+  <!-- 嵌入 end -->
+
+</krpano>

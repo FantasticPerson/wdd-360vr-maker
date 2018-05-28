@@ -1,0 +1,3285 @@
+<krpano>
+<style name="skin_style" url="%SWFPATH%/../krp/skin/skin_v6_1.png"/>
+
+<settings
+    sound_play_id="play_sound_id"
+    sound_playing="false"
+    sound_on="false"
+
+    voice_play_id="play_voice_id"
+    voice_playing="false"
+    voice_on="false"
+
+    bottom_right_btn_width="60"
+    menu_btn_width="70"
+
+    pano_thumbs_width="80"
+    pano_thumbs_height="80"
+    pano_thumbs_padding_v="10"
+    pano_thumbs_padding_h="20"
+
+    category_thumbs_width="100"
+    category_thumbs_height="100"
+    category_thumbs_padding_v="10"
+    category_thumbs_padding_h="30"
+    category_thumbs_bg_crop="0|0|218|218"
+    category_thumbs_bg_crop_selected="218|241|218|218"
+
+    plugin_url="%SWFPATH%/../krp/plugins/"
+
+
+    thumb_btn_url="%SWFPATH%/../krp/system/piclist.png"
+/>
+<plugin_url
+    TEXT_SWF="calc:settings.plugin_url + 'textfield.swf'"
+    GYRO="calc:settings.plugin_url + 'gyro2.js'"
+    SOUND_SWF="calc:settings.plugin_url + 'soundinterface.swf'"
+    SOUND_JS="calc:settings.plugin_url + 'soundinterface.js'"
+    SCROLL_SWF="calc:settings.plugin_url + 'scrollarea.swf'"
+    SCROLL_JS="calc:settings.plugin_url + 'scrollarea.js'"
+    RADAR_SWF="calc:settings.plugin_url + 'radar.swf'"
+    RADAR_JS="calc:settings.plugin_url + 'radar.js'"
+    SNOW_SWF="calc:settings.plugin_url + 'snow.swf'"
+    SNOW_JS="calc:settings.plugin_url + 'snow.js'"
+    PLUGINS_SUN_IMAGE="calc:settings.plugin_url + 'lensflareset/lensflares.jpg'"
+    WEBVR_JS="calc:settings.plugin_url + 'webvr.js'"
+    WEBVR_XML="calc:settings.plugin_url + 'webvr.xml'"
+    />
+
+<events onenterfullscreen=""
+    onexitfullscreen=""
+    onxmlcomplete=""
+    onpreviewcomplete=""
+    onloadcomplete=""
+    onnewpano=""
+    onremovepano=""
+    onnewscene=""
+    onloaderror=""
+    onkeydown=""
+    onkeyup=""
+    onclick="on_click();"
+    onmousedown="on_mouse_down();"
+    onmouseup=""
+    onmousewheel=""
+    onidle=""
+    onviewchange=""
+    onviewchanged=""
+    onresize=""
+    onautorotatestart=""
+    onautorotatestop=""
+    onautorotateoneround=""
+    onautorotatechange=""
+    />
+
+
+
+<action name="startup" autorun="onstart">
+  <!-- showlog(true); -->
+
+  setupPV();
+
+  setup_startup_consts();
+
+  setup_startup_vars();
+  setup_start_pano();
+
+  jscall('window.onKrpXMLReady()');
+
+</action>
+
+<action name="setupPV">
+    jscall(window.krpGetPanoStat(1,0));
+</action>
+
+<action name="setup_startup_consts">
+  set(js_show_loading,window.krpToggleLoading(true));
+  set(js_hide_loading,window.krpToggleLoading(false));
+  set(js_start_comment,window.krpShowModal('SPEAK_MODAL'));
+  set(js_stop_comment,window.krpDismissModal());
+  set(js_modify_comment,window.krpShowComments);
+  set(js_do_like,window.krpLike());
+  set(js_show_qr,window.krpShowModal('QR_MODAL'));
+  set(js_show_more,window.krpShowModal('DETAIL_MODAL'));
+  set(js_show_intro,window.krpShowModal('INTRO_MODAL'));
+  set(js_show_location,window.krpShowModal('MAP_MODAL'));
+  set(js_modify_url,window.krpModifyURL);
+  set(js_enable_gyro,window.krpShowTip("陀螺仪已开启"));
+  set(js_disable_gyro,window.krpShowTip("陀螺仪已关闭"));
+  set(js_show_comments,window.krpShowTip("说一说已开启"));
+  set(js_hide_comments,window.krpShowTip("说一说已隐藏"));
+  set(js_sound_on,window.krpShowTip("背景音乐已开启"));
+  set(js_sound_off,window.krpShowTip("背景音乐已关闭"));
+  set(js_voice_on,window.krpShowTip("语音解说已开启"));
+  set(js_voice_off,window.krpShowTip("语音解说已关闭"));
+  set(js_require_password,window.krpRequirePassword());
+  set(js_xml_ready,window.onKrpXMLReady());
+
+  set(js_video_hotspot,'window.krpShowModal("VIDEO_MODAL",');
+  set(js_text_hotspot,'window.krpShowModal("TEXT_MODAL",');
+  set(js_gallery_hotspot,'window.krpShowModal("GALLERY_MODAL",');
+  set(js_mix_hotspot,'window.krpShowModal("MIX_MODAL",');
+
+  set(js_show_info,'window.krpShowModal("INFO",');
+</action>
+<action name="setup_startup_vars">
+  set(customScale, 1);
+  if(device.mobile,
+    if(stagewidth LT stageheight,
+      div(customScale, stagewidth,540);
+      ,
+      div(customScale, stageheight,360);
+    );
+  );
+  mul(stagescale,customScale );
+
+  set(events.onpreviewcomplete,on_preview_complete());
+
+  if(pano_id === null,
+    <!-- copy(pano_id,scene[0].name); -->
+    copy(pano_id,config.panos.pano[0].info.pano_id);
+    ,
+    for(set(i,0), i LT config.panos.pano.count, inc(i),
+      if(pano_id == config.panos.pano[get(i)].info.pano_id,
+        set(pano_id_valid,true);
+      );
+    );
+    if(pano_id_valid != true,
+      copy(pano_id,config.panos.pano[0].info.pano_id);
+    );
+  );
+
+  txtadd(scene_name,scene_, get(pano_id));
+
+  for(set(o,0), o LT config.thumbs.category.count, inc(o),
+    for(set(i,0), i LT config.thumbs.category[get(o)].pano.count, inc(i),
+      if(pano_id == config.thumbs.category[get(o)].pano[get(i)].pano_id,
+        copy(current_category_index,o);
+      );
+    );
+  );
+
+</action>
+
+<action name="setup_start_pano">
+  loadscene(get(scene_name));
+
+  if(displayMode.online == true,
+    set(modify_id_cmd,get(js_modify_url));
+    txtadd(modify_id_cmd,"('");
+    txtadd(modify_id_cmd,get(pano_id));
+    txtadd(modify_id_cmd,"')");
+    jscall(get(modify_id_cmd));
+  );
+
+  if(config.feature.enable_littleplanet == 1,
+    setup_view();
+    set(layer[layer_container].visible, false);
+    setup_littleplanet();
+    setup_top_mask();
+    setup_bottom_mask();
+    ,
+    setup_view();
+  );
+</action>
+
+
+
+<action name="setup_startup_ui">
+  setup_start_image();
+</action>
+
+<action name="setup_pano_config">
+  setup_title();
+  setup_sound();
+  setup_hotspot();
+  setup_weather();
+
+  if(control.usercontrol != off,
+
+    setup_view();
+    setup_top_mask();
+    setup_bottom_mask();
+  );
+
+  setup_layout();
+</action>
+
+<action name="setup_global_config">
+  setup_logo();
+  setup_auth();
+  setup_fullscreen();
+  setup_vr();
+  setup_thumbs();
+  setup_top_mask();
+  setup_bottom_mask();
+  setup_contextmenu();
+  setup_layout();
+  if(config.feature.enable_littleplanet == 0 ,
+    setup_gyro();
+    setup_autoplay();
+  );
+</action>
+
+<action name="on_preview_complete">
+  setup_pano_config();
+
+  if(first_pano_inited === null,
+
+    setup_global_config();
+    set(first_pano_inited,true);
+
+    if(control.usercontrol != off,
+      setup_startup_ui();
+    );
+  );
+
+
+  hide_loading();
+
+</action>
+
+<action name="on_mouse_down">
+
+</action>
+
+<action name="on_click">
+  if(category_thumbs_show == true,
+    toggle_category_thumbs();
+  );
+</action>
+
+<action name="setup_littleplanet">
+  set(control.usercontrol, off);
+	copy(lp_scene, xml.scene);
+	copy(lp_hlookat, view.hlookat);
+	copy(lp_vlookat, view.vlookat);
+	copy(lp_fov, view.fov);
+	copy(lp_fovmax, view.fovmax);
+	copy(lp_limitview, view.limitview);
+	set(view.fovmax, 170);
+	set(view.limitview, lookto);
+	set(view.vlookatmin, -90);
+	set(view.vlookatmax, 90);
+	lookat(calc(lp_hlookat + 180), 90, 150, 1, 0, 0);
+	set(events[lp_events].onpreviewcomplete,
+		delayedcall(1.5,
+			if(lp_scene === xml.scene,
+				set(control.usercontrol, off);
+				copy(view.limitview, lp_limitview);
+				set(view.vlookatmin, null);
+				set(view.vlookatmax, null);
+				tween(view.hlookat|view.vlookat|view.fov|view.distortion, calc('' + lp_hlookat + '|' + lp_vlookat + '|' + lp_fov + '|' + 0.0),
+					3.0, easeOutQuad,
+					set(control.usercontrol, all);
+					tween(view.fovmax, get(lp_fovmax));
+          set(layer[layer_container].visible, true);
+          setup_startup_ui();
+          setup_gyro();
+          setup_autoplay();
+          setup_layout();
+          setup_view();
+					);
+			  );
+		  );
+	  );
+</action>
+<!-- skin layout -->
+<layer name="layer_container" keep="true" type="container" align="topleft" width="100%" height="100%" maskchildren="true" visible="true" bgcapture="false" zorder="1">
+    <layer name="info_container" keep="true" type="container" align="topleft" width="100%" height="100%" maskchildren="true" visible="true" bgcapture="false" zorder="10">
+        <layer name="title_layer" keep="true" align="topcenter" zorder="200"/>
+    </layer>
+    <layer name="auth_container" keep="true" type="container" align="topleft" width="100%" height="100%" maskchildren="true" visible="true" bgcapture="false" zorder="10">
+        <layer name="auth_layer" keep="true" align="topleft"/>
+    </layer>
+    <layer name="start_image_container" keep="true" type="container" align="topleft" width="100%" height="100%" maskchildren="true" visible="true" bgcapture="false" zorder="10">
+        <layer name="start_image_layer" keep="false" align="center" zorder="201"/>
+    </layer>
+    <layer name="logo_container" keep="true" type="container" align="topleft" width="100%" height="100%" maskchildren="true" visible="true" bgcapture="false" zorder="10">
+        <layer name="logo_layer" keep="true" align="topleft"/>
+        <layer name="logo_detail_container"  type="container" align="topleft" width="100%" height="100%" maskchildren="true" visible="true" bgcapture="false" zorder="10"/>
+    </layer>
+    <layer name="radar_container" keep="true" type="container" align="topleft" width="100%" height="100%" maskchildren="true" visible="true" bgcapture="false" zorder="10">
+        <layer name="radar_layer" keep="true" align="topleft"/>
+    </layer>
+    <layer name="feature_container" keep="true" type="container" align="topleft" width="100%" height="100%" maskchildren="true" visible="true" bgcapture="false" zorder="10">
+        <layer name="more_layer" keep="true" align="topright" visible="false"/>
+        <layer name="fullscreen_layer" keep="true" align="topright"/>
+        <layer name="sound_layer" keep="true" align="topright"/>
+        <layer name="voice_layer" keep="true" align="topright"/>
+        <layer name="gyro_layer" keep="true" align="topright"/>
+        <layer name="vr_layer" keep="true" align="topright"/>
+        <layer name="comment_layer" keep="true" visible="false" align="bottomright"/>
+        <layer name="like_layer" keep="true" visible="false" align="bottomright"/>
+        <layer name="location_layer" keep="true" visible="false" align="bottomright"/>
+        <layer name="qr_layer" keep="true" visible="false" align="bottomright"/>
+        <layer name="intro_layer" keep="true" visible="false" align="bottomright"/>
+    </layer>
+    <layer name="menu_container" keep="true" type="container" align="bottomleft" width="100%" height="100%" maskchildren="true" visible="true" bgcapture="false" zorder="10">
+        <layer name="thumb_container" keep="true" type="container" align="bottomleft" width="100%" height="100%" maskchildren="true" visible="true" bgcapture="false" zorder="10">
+            <layer name="category_container" keep="true" type="container" align="bottomleft" width="100%" height="100%" maskchildren="true" visible="true" bgcapture="false" zorder="10" />
+            <layer name="thumb_container" keep="true" type="container" align="bottomleft" width="100%" height="100%" maskchildren="true" visible="true" bgcapture="false" zorder="10" />
+        </layer>
+        <layer name="links_container" keep="true" type="container" align="bottomleft" width="100%" height="100%" maskchildren="true" visible="true" bgcapture="false" zorder="10" />
+    </layer>
+</layer>
+
+<action name="hideUI">
+  set(layer[layer_container].visible,false);
+</action>
+<action name="showUI">
+  set(layer[layer_container].visible,true);
+</action>
+<krpano>
+
+
+	<!-- overwrite some settings from the webvr.xml for the skin integration -->
+	<plugin name="WebVR" keep="true" devices="html5"
+	        url=""
+	        multireslock.desktop="true"
+	        multireslock.mobile.or.tablet="false"
+	        mobilevr_support="true"
+	        mobilevr_fake_support="true"
+	        onavailable="removelayer(webvr_enterbutton); webvr_onavailable();trace('ttttttttt');"
+	        onunavailable="set(layer[vr_layer].visible,false);setup_layout();"
+	        onentervr="webvr_onentervr(); webvr_setup();"
+	        onexitvr="webvr_onexitvr(); webvr_setup(); setup_layout();"
+	        />
+
+	<!-- load the WebVR plugin and assign it to a 'webvr' variable for easier usage -->
+	<plugin name="WebVR" devices="html5" keep="true"
+	        url=""
+	        onloaded="trace(aaaaaa);copy(webvr, plugin[WebVR]);"
+	        mousespeed="0.00125"
+	        multireslock="true"
+	        fullscreen_mirroring="true"
+	        mobilevr_support="true"
+	        mobilevr_ipd="63.5"
+	        mobilevr_screensize="auto"
+	        mobilevr_lens_overlap="1.0"
+	        mobilevr_lens_fov="96"
+	        mobilevr_lens_dist="0.6"
+	        mobilevr_lens_dist2="1|0|0|0"
+	        mobilevr_lens_ca="0.0"
+	        mobilevr_lens_vign="100"
+	        mobilevr_wakelock="true"
+	        mobilevr_sensor_mode="3"
+	        mobilevr_autocalibration="false"
+	        mobilevr_touch_support="true"
+	        mobilevr_fake_support="false"
+	        vr_cursor="hotspot[vr_cursor]"
+	        vr_cursor_enabled="true"
+	        vr_cursor_onover="if(handcursor, tween(hotspot[vr_cursor].scale,0.4,0.1); vr_auto_click(get(vr_timeout)); );"
+	        vr_cursor_onout="tween(hotspot[vr_cursor].scale,0.3,0.1);"
+					onavailable="removelayer(webvr_enterbutton); webvr_onavailable();trace('ttttttttt');"
+	        onunavailable="set(layer[vr_layer].visible,false);setup_layout();"
+	        onentervr="webvr_onentervr(); webvr_setup();"
+	        onexitvr="webvr_onexitvr(); webvr_setup(); setup_layout();"
+	        />
+
+
+	<!-- a custom xml data structure with the supported VR headsets -->
+	<vrheadsets>
+		<headset name="cb1" caption="Cardboard A"   overlap="1.10" fov="96.0"  dist="1.00" dist2="1|0|0|0" ca="0.000" vig="100" />
+		<headset name="cb2" caption="Cardboard B"   overlap="1.00" fov="96.0"  dist="0.60" dist2="1|0|0|0" ca="0.000" vig="100" />
+		<headset name="gvr" caption="GearVR"        overlap="1.00" fov="112.0" dist="0.95" dist2="1|0|0|0" ca="0.090" vig="100" />
+		<headset name="hom" caption="HOMiDO"        overlap="1.00" fov="101.0" dist="1.10" dist2="1|0|0|0" ca="0.075" vig="100" />
+		<headset name="one" caption="VR ONE"        overlap="1.00" fov="109.9" dist="0.00" dist2="1.139|0.093|0.018|0.207" ca="0.090" vig="35" />
+		<headset name="ccr" caption="ColorCross VR" overlap="1.00" fov="70.0"  dist="0.65" dist2="1|0|0|0" ca="0.000" vig="100" />
+		<headset name="nod" caption="No Distortion" overlap="1.00" fov="96.0"  dist="0.00" dist2="1|0|0|0" ca="0.000" vig="100" />
+	</vrheadsets>
+
+
+	<!-- the VR cursor hotspot -->
+	<hotspot name="vr_cursor" keep="true"
+	         url="%SWFPATH%/../krp/plugins/webvr_cursor_80x80_17f.png"
+	         visible="false"
+	         enabled="false"
+	         distorted="true"
+	         crop="0|0|80|80"
+	         scale="0.3"
+	         depth="1000"
+	         />
+
+
+	<!-- vr_auto_click() - call this action in the onover event of a
+	     hotspot to trigger automatically a click after some time.  -->
+	<action name="vr_auto_click">
+		if(webvr.isenabled,
+			if(%1 != null, set(vr_aclk_timeout, %1), set(vr_aclk_timeout, 2000));
+			copy(vr_aclk_t1, timertick);
+			set(vr_aclk_waiting, true);
+			copy(vr_aclk_hotspot, name);
+			set(hotspot[vr_cursor].crop,'0|0|80|80');
+
+			asyncloop(vr_aclk_waiting AND vr_aclk_hotspot == name,
+				sub(dt, timertick,vr_aclk_t1);
+
+				if(!hovering,
+					set(vr_aclk_waiting, false);
+					set(hotspot[vr_cursor].crop,'0|0|80|80');
+				  ,
+					div(f, dt, vr_aclk_timeout);
+					mul(f, 16);
+					roundval(f);
+					Math.min(f, 16);
+					mul(f, 80);
+
+					txtadd(hotspot[vr_cursor].crop,get(f),'|0|80|80');
+
+					<!-- wait another 100ms delay after finishing the animation before doing the click -->
+					sub(dt, 100);
+					if(dt GT vr_aclk_timeout,
+						set(vr_aclk_waiting,false);
+						set(hotspot[vr_cursor].crop,'0|0|80|80');
+						<!-- call onclick -->
+						onclick();
+					  );
+				  );
+				);
+		  );
+	</action>
+
+
+	<!-- by pressing SPACE the Oculus Rift could be re-centered -->
+	<events name="webvr_events" devices="html5" keep="true"
+	        onkeydown="if(webvr AND webvr.isenabled AND keycode==32, webvr.resetSensor() );"
+	        onmousedown="if(webvr AND webvr.isenabled, webvr_showbuttons() );"
+	        />
+
+
+	<!-- when WebVR support is available show an EnterVR button -->
+	<action name="webvr_onavailable">
+		<!-- webvr.loadsettings(); -->
+		delayedcall(0.5, tween(layer[webvr_enterbutton].alpha,1.0); );
+	</action>
+
+
+	<action name="webvr_onunknowndevice">
+		if(webvr.isfake AND device.desktop AND webvr.havesettings == false,
+			<!-- set the 'no distortion' headset for fake desktop usage -->
+			set(webvr.mobilevr_lens_overlap, 1.0);
+			set(webvr.mobilevr_lens_fov, 96.0);
+			set(webvr.mobilevr_lens_dist, 0.0);
+			set(webvr.mobilevr_lens_dist2, '1|0|0|0');
+			set(webvr.mobilevr_lens_ca, 0.0);
+			set(webvr.mobilevr_lens_vign, 100);
+		  ,
+			set(ask_user_for_screensize,true);
+		  );
+	</action>
+
+
+	<action name="webvr_onentervr">
+		tween(layer[webvr_enterbutton].alpha,0,0);
+
+		webvr_showbuttons();
+		webvr_hide_all_non_vr_layers();
+
+		<!-- when the screen size is unknown an no custom size is set, open the setup screen on entering the VR mode -->
+		if(webvr.ismobilevr == true AND !webvr.isfake AND ask_user_for_screensize == true AND webvr.mobilevr_screensize == 'auto',
+			set(ask_user_for_screensize, false);
+			vr_setup();
+		  );
+		if(webvr.isfake,
+			webvr_show_fakemode_info(true);
+		  );
+
+			set(hotspotCount,get(config.panos.pano[get(xml.scene)].hotspots.hotspot.count));
+      for(set(i,0),i LT hotspotCount,inc(i),
+
+        set(hotspotName,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].name));
+
+        if(hotspot[get(hotspotName)].hotspot_type != 0,
+          set(hotspot[get(hotspotName)].visible,false);
+        );
+      );
+	</action>
+
+
+	<action name="webvr_onexitvr">
+		stopdelayedcall(vr_button_fadeout);
+
+		tween(layer[webvr_enterbutton].alpha,1);
+		tween(layer[webvr_exitbutton].alpha,0);
+		tween(layer[webvr_setupbutton].alpha,0);
+
+		webvr_show_fakemode_info(false);
+
+		webvr_restore_layers();
+
+
+		set(hotspotCount,get(config.panos.pano[get(xml.scene)].hotspots.hotspot.count));
+		for(set(i,0),i LT hotspotCount,inc(i),
+
+			set(hotspotName,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].name));
+
+			if(hotspot[get(hotspotName)].hotspot_type != 0,
+				set(hotspot[get(hotspotName)].visible,true);
+			);
+		);
+	</action>
+
+
+	<action name="webvr_hide_all_non_vr_layers">
+		for(set(i,0), i LT layer.count, inc(i),
+			copy(lr, layer[get(i)]);
+			if(lr.vr !== true,
+				copy(lr.vr_backup_visible, lr.visible);
+				set(lr.visible, false);
+			  );
+		  );
+	</action>
+
+	<action name="webvr_restore_layers">
+		for(set(i,0), i LT layer.count, inc(i),
+			copy(lr, layer[get(i)]);
+			if(lr.vr_backup_visible,
+				copy(lr.visible, lr.vr_backup_visible);
+				delete(lr.vr_backup_visible);
+			  );
+		  );
+	</action>
+
+	<action name="webvr_show_fakemode_info">
+		if('%1' == 'true',
+			addlayer(webvr_fakemode_info);
+			set(layer[webvr_fakemode_info].url, get(plugin_url.TEXT_SWF));
+			set(layer[webvr_fakemode_info].keep, true);
+			set(layer[webvr_fakemode_info].align, 'bottom');
+			set(layer[webvr_fakemode_info].y, 80);
+			set(layer[webvr_fakemode_info].background, false);
+			set(layer[webvr_fakemode_info].css, 'color:#FFFFFF;text-align:center;');
+			set(layer[webvr_fakemode_info].html, '[i][u]Simulated WebVR Mode![/u][/i][br]For real WebVR with headset tracking, either use a [a href="http://webvr.info" target="_blank" style="color:#FFFFFF;"]WebVR-API-capable[/a] desktop browser or a mobile device and a VR headset.');
+		  ,
+			removelayer(webvr_fakemode_info);
+		  );
+	</action>
+
+
+	<!-- ensure the same scaling on mobiles (regardless if mobilescale is 0.5 or 1.0) -->
+	<krpano webvr_setup_scale="calc:(1.0 + 1.0*(device.mobile AND stagescale LT 1.0)) / (1.0 + 1.0*device.mobile)"
+	        webvr_button_scale.normal="1.0"
+	        webvr_button_scale.mobile="1.6"
+	        />
+
+
+	<!-- the EnterVR/ExitVR and SetupVR buttons -->
+	<style name="webvr_button_style"
+	       url="calc:plugin_url.TEXT_SWF"
+	       backgroundcolor="0x000000"
+	       backgroundalpha="0.5"
+	       css="color:#FFFFFF;font-size:20px;'"
+	       />
+
+	<layer name="webvr_enterbutton" keep="true" vr="true"
+	       style="webvr_button_style"
+	       html="Enter VR"
+	       align="top" y="24"
+	       autoalpha="true" alpha="0.0"
+	       onclick="webvr.enterVR();"
+	       />
+
+	<layer name="webvr_exitbutton" keep="true" vr="true"
+	       style="webvr_button_style"
+	       html="退出VR模式"
+	       align="top" y="24"
+	       autoalpha="true" alpha="0.0"
+	       onclick="webvr.exitVR();"
+	       />
+
+	<layer name="webvr_setupbutton" keep="true" vr="true"
+	       style="webvr_button_style"
+	       html="VR设置"
+	       align="bottom" y="24"
+	       autoalpha="true" alpha="0.0"
+	       onclick="vr_setup()"
+	       />
+
+
+	<action name="webvr_showbuttons">
+		stopdelayedcall(vr_button_fadeout);
+		if(webvr.ismobilevr,
+			tween(layer[webvr_exitbutton].alpha|layer[webvr_setupbutton].alpha, 1.0|1.0, 0.25);
+			delayedcall(vr_button_fadeout, 3.0, tween(layer[webvr_exitbutton].alpha|layer[webvr_setupbutton].alpha, 0.0|0.0, 1.0); );
+		  ,
+			tween(layer[webvr_exitbutton].alpha, 1.0, 0.25);
+			delayedcall(vr_button_fadeout, 3.0, tween(layer[webvr_exitbutton].alpha, 0.0, 1.0); );
+		  );
+	</action>
+
+
+
+	<!--
+		VR Setup
+	-->
+
+	<action name="vr_setup">
+		<!-- disable cursor -->
+		set(webvr.vr_cursor_enabled, false);
+
+		<!-- hide VR buttons -->
+		tween(layer[webvr_exitbutton].alpha,0);
+		tween(layer[webvr_setupbutton].alpha,0);
+
+		<!-- create background layer -->
+		addlayer(vr_setup_bg);
+		set(layer[vr_setup_bg].type, container);
+		set(layer[vr_setup_bg].bgcolor, 0x000000);
+		set(layer[vr_setup_bg].bgalpha, 0.5);
+		set(layer[vr_setup_bg].bgcapture, true);
+		set(layer[vr_setup_bg].handcursor, false);
+		set(layer[vr_setup_bg].align, lefttop);
+		set(layer[vr_setup_bg].width, 100%);
+		set(layer[vr_setup_bg].height, 100%);
+		set(layer[vr_setup_bg].zorder, 99999);
+
+		<!-- get and prepare device infos and settings -->
+		copy(i_screensize, webvr.mobilevr_screensize);
+		if(i_screensize == 'auto', copy(i_screensize, webvr.devicesize));
+		if(i_screensize LE 0, set(i_screensize, 5.0));
+		roundval(i_screensize, 1);
+		txtadd(i_screensize, ' inch');
+
+		copy(i_ipd, webvr.mobilevr_ipd);
+		roundval(i_ipd, 1);
+		txtadd(i_ipd, ' mm');
+
+		copy(i_fov, webvr.mobilevr_lens_fov);
+		roundval(i_fov, 1);
+
+		copy(i_dist, webvr.mobilevr_lens_dist);
+		roundval(i_dist, 2);
+
+		copy(i_dist2, webvr.mobilevr_lens_dist2);
+		txtsplit(i_dist2, '|', i_dist2_k1, i_dist2_k2, i_dist2_k3, i_dist2_k4);
+		mul(i_dist2_k1,1);
+		mul(i_dist2_k2,10);
+		mul(i_dist2_k3,10);
+		mul(i_dist2_k4,10);
+		roundval(i_dist2_k1,2);
+		roundval(i_dist2_k2,2);
+		roundval(i_dist2_k3,2);
+		roundval(i_dist2_k4,2);
+
+		copy(i_vig, webvr.mobilevr_lens_vign);
+		roundval(i_vig, 0);
+
+		copy(i_overlap, webvr.mobilevr_lens_overlap);
+		roundval(i_overlap, 2);
+
+		copy(i_ca, webvr.mobilevr_lens_ca);
+		roundval(i_ca, 3);
+
+		set(i_headset, 'Custom');
+		for(set(i,0), i LT vrheadsets.headset.count, inc(i),
+			copy(hs, vrheadsets.headset[get(i)]);
+			if(i_overlap == hs.overlap AND i_fov == hs.fov AND i_dist == hs.dist AND i_dist2 == hs.dist2 AND i_ca == hs.ca AND i_vig == hs.vig , copy(i_headset, hs.caption));
+		   );
+
+		<!-- when the screen size is unknown, mark it red -->
+		set(known_size, true);
+		set(sizcol, #FFFFFF);
+		copy(i_devicename, webvr.devicename);
+		if(i_devicename == 'Unknown',
+			if(webvr.mobilevr_screensize == 'auto',
+				set(sizcol, #AA0000);
+				set(known_size, false);
+			  ,
+				set(i_devicename, 'Custom');
+			  );
+		  );
+
+
+		<!-- create layer for the main menu -->
+		addlayer(vr_setup_m1);
+		set(layer[vr_setup_m1].type, container);
+		set(layer[vr_setup_m1].parent, vr_setup_bg);
+		set(layer[vr_setup_m1].align, lefttop);
+		set(layer[vr_setup_m1].width, 100%);
+		set(layer[vr_setup_m1].height, 100%);
+
+		<!-- create layer for the headset customization menu -->
+		addlayer(vr_setup_m3);
+		set(layer[vr_setup_m3].type, container);
+		set(layer[vr_setup_m3].parent, vr_setup_bg);
+		set(layer[vr_setup_m3].align, lefttop);
+		set(layer[vr_setup_m3].width, 100%);
+		set(layer[vr_setup_m3].height, 100%);
+		set(layer[vr_setup_m3].visible, false);
+
+		<!-- create layer for the calibration menu -->
+		addlayer(vr_setup_m2);
+		set(layer[vr_setup_m2].type, container);
+		set(layer[vr_setup_m2].parent, vr_setup_bg);
+		set(layer[vr_setup_m2].align, lefttop);
+		set(layer[vr_setup_m2].width, 100%);
+		set(layer[vr_setup_m2].height, 100%);
+		set(layer[vr_setup_m2].visible, false);
+
+		<!-- create the text elements -->
+		set(vr_setup_text_parent, 'vr_setup_m1');
+		vr_setup_createtext(vr_setup_title, 'MOBILE VR SETUP',       center, center, 0, -225, #FFFFFF,     false);
+
+		vr_setup_createtext(vr_setup_dvn1, 'Device:',         center, right,  0, -145, #FFFFFF,     true, vr_setup_select('screen') );
+		vr_setup_createtext(vr_setup_dvn2, get(i_devicename), center, left,   0, -145, get(sizcol), true, vr_setup_select('screen') );
+		vr_setup_createtext(vr_setup_siz1, 'Screensize:',     center, right,  0, -105, #FFFFFF,     true, vr_setup_select('screen') );
+		vr_setup_createtext(vr_setup_siz2, get(i_screensize), center, left,   0, -105, get(sizcol), true, vr_setup_select('screen') );
+
+		vr_setup_createtext(vr_setup_ipd1, 'IPD:',            center, right,  0,  -35, #FFFFFF,     true, vr_setup_select('ipd') );
+		vr_setup_createtext(vr_setup_ipd2, get(i_ipd),        center, left,   0,  -35, #FFFFFF,     true, vr_setup_select('ipd') );
+
+		vr_setup_createtext(vr_setup_hmd1, 'VR Headset:',     center, right,  0,  +35, #FFFFFF,     true, vr_setup_select('headset') );
+		vr_setup_createtext(vr_setup_hmd2, get(i_headset),    center, left,   0,  +35, #FFFFFF,     true, vr_setup_select('headset') );
+
+		vr_setup_createtext(vr_setup_hmd3, 'Customize',       center, center, 0,  +75, #FFFFFF,     true, set(background,true), set(background,false), vr_setup_customize_headset() );
+
+
+
+		if(webvr.iswebvr == false,
+			vr_setup_createtext(vr_setup_cal, 'Calibrate Gyroscope',   center, center,    0, +145, #FFFFFF,     true, set(background,true), set(background,false), vr_setup_calibration() );
+		  );
+
+		vr_setup_createtext(vr_setup_sav, 'SAVE',          center, center, -200, +225, #FFFFFF,     true, set(background,true), set(background,false), vr_setup_save() );
+		vr_setup_createtext(vr_setup_rst, 'RESET',         center, center,    0, +225, #FFFFFF,     true, set(background,true), set(background,false), vr_setup_reset() );
+		vr_setup_createtext(vr_setup_cls, 'CLOSE',         center, center, +200, +225, #FFFFFF,     true, set(background,true), set(background,false), vr_setup_close() );
+
+		<!-- and the adjusting buttons -->
+		vr_setup_createbutton(vr_setup_btn1, '&#60;', left,  left,  5%, -35, #FFFFFF, true, null);
+		vr_setup_createbutton(vr_setup_btn2, '&#62;', right, right, 5%, -35, #FFFFFF, true, null);
+
+
+		<!-- create the customize_headset text elements -->
+		set(vr_setup_text_parent, 'vr_setup_m3');
+		vr_setup_createtext(vr_setup_m31, 'VR HEADSET', center, center, 0, -225, #FFFFFF, false);
+
+		vr_setup_createtext(vr_setup_fov1,  'FOV:',           center, right,  0,  -80,  #FFFFFF,    true, vr_setup_select('fov') );
+		vr_setup_createtext(vr_setup_fov2, get(i_fov),        center, left,   0,  -80,  #FFFFFF,    true, vr_setup_select('fov') );
+		vr_setup_createtext(vr_setup_dst1, 'Distortion:',     center, right,  0,  -32,  #FFFFFF,    true, vr_setup_select('dist') );
+		vr_setup_createtext(vr_setup_dst2, get(i_dist),       center, left,   0,  -32,  #FFFFFF,    true, vr_setup_select('dist') );
+		vr_setup_createtext(vr_setup_d2tx, 'Dist2:',          center, right,  0,  +16,  #FFFFFF,    true, vr_setup_select('dist2k1') );
+		vr_setup_createtext(vr_setup_d2k1, get(i_dist2_k1),   center, left,   0,  +16,  #FFFFFF,    true, vr_setup_select('dist2k1') );
+		vr_setup_createtext(vr_setup_d2k2, get(i_dist2_k2),   center, left, +100, +16,  #FFFFFF,    true, vr_setup_select('dist2k2') );
+		vr_setup_createtext(vr_setup_d2k3, get(i_dist2_k3),   center, left, +200, +16,  #FFFFFF,    true, vr_setup_select('dist2k3') );
+		vr_setup_createtext(vr_setup_d2k4, get(i_dist2_k4),   center, left, +300, +16,  #FFFFFF,    true, vr_setup_select('dist2k4') );
+
+
+		vr_setup_createtext(vr_setup_cac1, 'CA Corr:',        center, right,  0,  +64,  #FFFFFF,    true, vr_setup_select('ca') );
+		vr_setup_createtext(vr_setup_cac2, get(i_ca),         center, left,   0,  +64,  #FFFFFF,    true, vr_setup_select('ca') );
+		vr_setup_createtext(vr_setup_vig1, 'Vignette:',       center, right,  0, +112,  #FFFFFF,    true, vr_setup_select('vignette') );
+		vr_setup_createtext(vr_setup_vig2, get(i_vig),        center, left,   0, +112,  #FFFFFF,    true, vr_setup_select('vignette') );
+		vr_setup_createtext(vr_setup_olp1, 'Overlap:',        center, right,  0, +160,  #FFFFFF,    true, vr_setup_select('overlap') );
+		vr_setup_createtext(vr_setup_olp2, get(i_overlap),    center, left,   0, +160,  #FFFFFF,    true, vr_setup_select('overlap') );
+
+		vr_setup_createtext(vr_setup_m35, 'CLOSE',       center, center, 0, +225, #FFFFFF, true, set(background,true), set(background,false), vr_setup_close_sub_menus() );
+
+
+		<!-- create the calibration text elements -->
+		set(vr_setup_text_parent, 'vr_setup_m2');
+		vr_setup_createtext(vr_setup_cb1, 'GYROSCOPE', center, center, 0, -225, #FFFFFF, false);
+		vr_setup_createtext(vr_setup_cb2, 'Place the device on a flat and[br]stable surface and tab calibrate[br]to correct a gyroscope drifting.', center, center, 0, -95, #FFFFFF, false, vr_setup_select('screen') );
+		vr_setup_createtext(vr_setup_cb3, 'CALIBRATE',   center, center, 0,  +55, #FFFFFF, true, set(background,true), set(background,false), vr_setup_do_calibration() );
+		vr_setup_createtext(vr_setup_cb4, 'RESET',       center, center, 0, +125, #FFFFFF, true, set(background,true), set(background,false), webvr.resetcalibration() );
+		vr_setup_createtext(vr_setup_cb5, 'CLOSE',       center, center, 0, +225, #FFFFFF, true, set(background,true), set(background,false), vr_setup_close_sub_menus() );
+
+		vr_setup_createtext(vr_setup_cb6, 'Calibrating...',      bottom, center, 0, 40, #FFFFFF, false, null );
+		vr_setup_createtext(vr_setup_cb7, 'Calibration okay.',   bottom, center, 0, 40, #FFFFFF, false, null );
+		vr_setup_createtext(vr_setup_cb8, 'Calibration failed!', bottom, center, 0, 40, #FFFFFF, false, null );
+		set(layer[vr_setup_cb6].autoalpha, true);
+		set(layer[vr_setup_cb7].autoalpha, true);
+		set(layer[vr_setup_cb8].autoalpha, true);
+		set(layer[vr_setup_cb6].alpha, 0.0);
+		set(layer[vr_setup_cb7].alpha, 0.0);
+		set(layer[vr_setup_cb8].alpha, 0.0);
+
+
+		<!-- pre-select the screen size for adjusting when it is unknown, otherwise the IPD -->
+		if(known_size == false,
+			vr_setup_select('screen', true);
+		  ,
+			vr_setup_select('ipd', true);
+		  );
+	</action>
+
+
+	<action name="vr_setup_createtext">
+		<!--
+			%1 = name
+			%2 = text
+			%3 = align
+			%4 = edge
+			%5 = x
+			%6 = y
+			%7 = color
+			%8 = enabled
+			%9 = ondown
+			%10 = onup
+			%11 = onclick
+		-->
+		addlayer(%1);
+		set(layer[%1].parent, get(vr_setup_text_parent));
+		set(layer[%1].url, get(plugin_url.TEXT_SWF));
+		set(layer[%1].css, calc('text-align:%3;color:%7;font-size:'+40*webvr_setup_scale+'px;font-weight:bold;'));
+		set(layer[%1].padding, calc(0 + ' ' + 8*webvr_setup_scale));
+		set(layer[%1].roundedge, calc(8*webvr_setup_scale));
+		set(layer[%1].background, false);
+		set(layer[%1].backgroundcolor, 0xFFFFFF);
+		set(layer[%1].backgroundalpha, 0.25);
+		set(layer[%1].align, %3);
+		set(layer[%1].edge, %4);
+		set(layer[%1].x, calc(%5 * webvr_setup_scale));
+		set(layer[%1].y, calc(%6 * webvr_setup_scale));
+		set(layer[%1].html, %2);
+		set(layer[%1].enabled, %8);
+		set(layer[%1].ondown, %9);
+		set(layer[%1].onup, %10);
+		set(layer[%1].onclick, %11);
+	</action>
+
+
+	<action name="vr_setup_createbutton">
+		vr_setup_createtext(%1,%2,%3,%4,%5,%6,%7,%8,%9);
+		set(layer[%1].css, calc('vertical-align:middle;text-align:center;color:%7;font-size:'+60*webvr_setup_scale+'px;font-weight:bold;'));
+		set(layer[%1].background, true);
+		set(layer[%1].padding, 0);
+		set(layer[%1].roundedge, calc(40 * webvr_setup_scale));
+		set(layer[%1].width, calc(70 * webvr_setup_scale));
+		set(layer[%1].height, calc(70 * webvr_setup_scale));
+		set(layer[%1].vcenter, true);
+	</action>
+
+
+	<action name="vr_setup_reset">
+		<!-- reset to the defaults -->
+		set(webvr.mobilevr_screensize, 'auto');
+		copy(i_screensize, webvr.devicesize);
+		if(i_screensize LE 0, set(i_screensize, 5.0); );
+		roundval(i_screensize, 1);
+		set(layer[vr_setup_dvn2].html, get(webvr.devicename));
+		txtadd(layer[vr_setup_siz2].html, get(i_screensize), ' inch');
+
+		set(webvr.mobilevr_ipd, 63.5);
+		copy(i_ipd, webvr.mobilevr_ipd);
+		roundval(i_ipd, 1);
+		txtadd(layer[vr_setup_ipd2].html, get(i_ipd), ' mm');
+
+		<!-- set fake custom lens settings and call 'next' headset to switch to the default 'Cardboard' settings -->
+		set(webvr.mobilevr_lens_fov, 100);
+		set(webvr.mobilevr_lens_dist, 0.5);
+		set(webvr.mobilevr_lens_dist2, '1|0|0|0');
+		set(webvr.mobilevr_lens_vign, 100);
+		set(webvr.mobilevr_lens_overlap, 1.0);
+		set(webvr.mobilevr_lens_ca, 0.0);
+
+		if(webvr.isfake AND device.desktop,
+			<!-- select 'no distortion' headset for fake desktop usage -->
+			vr_setup_change_headset(-1);
+		  ,
+			<!-- select 'Cardboard A' headset for Mobile-VR usage -->
+			vr_setup_change_headset(+1);
+		  );
+
+		vr_setup_select(get(selected_var));
+	</action>
+
+
+	<action name="vr_setup_close">
+		<!-- 2. parameter == true => remove children elements too -->
+		removelayer(vr_setup_bg, true);
+
+		<!-- enable cursor -->
+		set(webvr.vr_cursor_enabled, true);
+	</action>
+
+
+	<action name="vr_setup_save">
+		webvr.saveSettings();
+		vr_setup_close();
+	</action>
+
+
+	<action name="vr_setup_customize_headset">
+		set(layer[vr_setup_bg].bgalpha, 0.1);
+
+		set(layer[vr_setup_m1].visible,false);
+		set(layer[vr_setup_m2].visible,false);
+		set(layer[vr_setup_m3].visible,true);
+
+		set(layer[vr_setup_hmd1].parent, vr_setup_m3);
+		set(layer[vr_setup_hmd2].parent, vr_setup_m3);
+		set(layer[vr_setup_btn1].parent, vr_setup_m3);
+		set(layer[vr_setup_btn2].parent, vr_setup_m3);
+
+		set(layer[vr_setup_hmd1].y, calc(-145 * webvr_setup_scale));
+		set(layer[vr_setup_hmd2].y, calc(-145 * webvr_setup_scale));
+
+		copy(old_selection, selected_var);
+		vr_setup_select('headset');
+	</action>
+
+
+
+	<action name="vr_setup_calibration">
+		set(layer[vr_setup_m1].visible,false);
+		set(layer[vr_setup_m2].visible,true);
+	</action>
+
+	<action name="vr_setup_close_sub_menus">
+		set(layer[vr_setup_bg].bgalpha, 0.5);
+
+		set(layer[vr_setup_m1].visible,true);
+		set(layer[vr_setup_m2].visible,false);
+		set(layer[vr_setup_m3].visible,false);
+
+		set(layer[vr_setup_hmd1].parent, vr_setup_m1);
+		set(layer[vr_setup_hmd2].parent, vr_setup_m1);
+		set(layer[vr_setup_btn1].parent, vr_setup_m1);
+		set(layer[vr_setup_btn2].parent, vr_setup_m1);
+
+		set(layer[vr_setup_hmd1].y, calc(+35 * webvr_setup_scale));
+		set(layer[vr_setup_hmd2].y, calc(+35 * webvr_setup_scale));
+
+		if(old_selection,
+			vr_setup_select(get(old_selection));
+			delete(old_selection);
+		  );
+	</action>
+
+	<action name="vr_setup_do_calibration">
+		if(!webvr.isfake,
+			tween(layer[vr_setup_cb6].alpha, 1.0, 0.1);
+			tween(layer[vr_setup_cb7].alpha, 0.0, 0.1);
+			tween(layer[vr_setup_cb8].alpha, 0.0, 0.1);
+			webvr.calibrate(
+				tween(layer[vr_setup_cb6].alpha, 0.0, 0.1);
+				tween(layer[vr_setup_cb7].alpha, 1.0, 0.1);
+				delayedcall(2.0, tween(layer[vr_setup_cb7].alpha, 0.0, 0.25) );
+			  ,
+				tween(layer[vr_setup_cb6].alpha, 0.0, 0.1);
+				tween(layer[vr_setup_cb8].alpha, 1.0, 0.1);
+				delayedcall(2.0, tween(layer[vr_setup_cb8].alpha, 0.0, 0.25) );
+			  );
+		  );
+	</action>
+
+	<action name="vr_setup_update_dist2">
+		txtadd(webvr.mobilevr_lens_dist2, get(i_dist2_k1), '|', calc(i_dist2_k2/10.0), '|', calc(i_dist2_k3/10.0), '|', calc(i_dist2_k4/10.0));
+		vr_setup_change_headset(0);
+	</action>
+
+	<action name="vr_setup_select">
+		<!-- select a setting for adjusting -->
+		set(layer[vr_setup_siz2].background, false);
+		set(layer[vr_setup_ipd2].background, false);
+		set(layer[vr_setup_hmd2].background, false);
+		set(layer[vr_setup_fov2].background, false);
+		set(layer[vr_setup_dst2].background, false);
+		set(layer[vr_setup_d2k1].background, false);
+		set(layer[vr_setup_d2k2].background, false);
+		set(layer[vr_setup_d2k3].background, false);
+		set(layer[vr_setup_d2k4].background, false);
+		set(layer[vr_setup_vig2].background, false);
+		set(layer[vr_setup_cac2].background, false);
+		set(layer[vr_setup_olp2].background, false);
+
+		set(selected_setting, null);
+		delete(selected_var_value);
+
+		set(layer[vr_setup_btn1].ondown, vr_setup_change_ondown(-1) );
+		set(layer[vr_setup_btn2].ondown, vr_setup_change_ondown(+1) );
+		set(selected_var_callback, null);
+
+		set(selected_var, %1);
+
+		if(selected_var == 'screen',
+			set(selected_setting,      vr_setup_siz2);
+			set(selected_var_name,     'webvr.mobilevr_screensize');
+			set(selected_var_postfix,  ' inch');
+			copy(selected_var_value,   get(selected_var_name));
+			if(selected_var_value == 'auto', copy(selected_var_value, webvr.devicesize));
+			if(selected_var_value LE 0, set(selected_var_value, 5.0));
+			set(selected_var_step,     0.1);
+			set(selected_var_min,      4);
+			set(selected_var_max,      10);
+			set(selected_var_round,    1);
+			set(selected_var_callback, vr_setup_change_screen() );
+		  );
+
+		if(selected_var == 'ipd',
+			set(selected_setting,      vr_setup_ipd2);
+			set(selected_var_name,     'webvr.mobilevr_ipd');
+			set(selected_var_postfix,  ' mm');
+			copy(selected_var_value,   get(selected_var_name));
+			set(selected_var_step,     0.1);
+			set(selected_var_min,      40);
+			set(selected_var_max,      80);
+			set(selected_var_round,    1);
+		  );
+
+		if(selected_var == 'headset',
+			set(selected_setting,      vr_setup_hmd2);
+			set(layer[vr_setup_btn1].ondown, vr_setup_change_headset(-1) );
+			set(layer[vr_setup_btn2].ondown, vr_setup_change_headset(+1) );
+		  );
+
+		if(selected_var == 'fov',
+			set(selected_setting,      vr_setup_fov2);
+			set(selected_var_name,     'webvr.mobilevr_lens_fov');
+			set(selected_var_postfix,  '');
+			copy(selected_var_value,   get(selected_var_name));
+			set(selected_var_step,     0.1);
+			set(selected_var_min,      40);
+			set(selected_var_max,      179);
+			set(selected_var_round,    1);
+			set(selected_var_callback, vr_setup_change_headset(0) );
+		  );
+
+		if(selected_var == 'dist',
+			set(selected_setting,      vr_setup_dst2);
+			set(selected_var_name,     'webvr.mobilevr_lens_dist');
+			set(selected_var_postfix,  '');
+			copy(selected_var_value,   get(selected_var_name));
+			set(selected_var_step,     0.01);
+			set(selected_var_min,      0);
+			set(selected_var_max,      5);
+			set(selected_var_round,    2);
+			set(selected_var_callback, vr_setup_change_headset(0) );
+		  );
+
+		if(selected_var == 'dist2k1',
+			set(selected_setting,      vr_setup_d2k1);
+			set(selected_var_name,     'i_dist2_k1');
+			set(selected_var_postfix,  '');
+			copy(selected_var_value,   get(selected_var_name));
+			set(selected_var_step,     0.01);
+			set(selected_var_min,      -9);
+			set(selected_var_max,      +9);
+			set(selected_var_round,    2);
+			set(selected_var_callback, vr_setup_update_dist2() );
+		  );
+
+		if(selected_var == 'dist2k2',
+			set(selected_setting,      vr_setup_d2k2);
+			set(selected_var_name,     'i_dist2_k2');
+			set(selected_var_postfix,  '');
+			copy(selected_var_value,   get(selected_var_name));
+			set(selected_var_step,     0.01);
+			set(selected_var_min,      -9);
+			set(selected_var_max,      +9);
+			set(selected_var_round,    2);
+			set(selected_var_callback, vr_setup_update_dist2() );
+		  );
+
+		if(selected_var == 'dist2k3',
+			set(selected_setting,      vr_setup_d2k3);
+			set(selected_var_name,     'i_dist2_k3');
+			set(selected_var_postfix,  '');
+			copy(selected_var_value,   get(selected_var_name));
+			set(selected_var_step,     0.01);
+			set(selected_var_min,      -9);
+			set(selected_var_max,      +9);
+			set(selected_var_round,    2);
+			set(selected_var_callback, vr_setup_update_dist2() );
+		  );
+
+		if(selected_var == 'dist2k4',
+			set(selected_setting,      vr_setup_d2k4);
+			set(selected_var_name,     'i_dist2_k4');
+			set(selected_var_postfix,  '');
+			copy(selected_var_value,   get(selected_var_name));
+			set(selected_var_step,     0.01);
+			set(selected_var_min,      -9);
+			set(selected_var_max,      +9);
+			set(selected_var_round,    2);
+			set(selected_var_callback, vr_setup_update_dist2() );
+		  );
+
+		if(selected_var == 'vignette',
+			set(selected_setting,      vr_setup_vig2);
+			set(selected_var_name,     'webvr.mobilevr_lens_vign');
+			set(selected_var_postfix,  '');
+			copy(selected_var_value,   get(selected_var_name));
+			set(selected_var_step,     1);
+			set(selected_var_min,      10);
+			set(selected_var_max,      200);
+			set(selected_var_round,    0);
+			set(selected_var_callback, vr_setup_change_headset(0) );
+		  );
+
+		if(selected_var == 'ca',
+			set(selected_setting,      vr_setup_cac2);
+			set(selected_var_name,     'webvr.mobilevr_lens_ca');
+			set(selected_var_postfix,  '');
+			copy(selected_var_value,   get(selected_var_name));
+			set(selected_var_step,     0.01);
+			set(selected_var_min,      -1.0);
+			set(selected_var_max,      +1.0);
+			set(selected_var_round,    2);
+			set(selected_var_callback, vr_setup_change_headset(0) );
+		  );
+
+		if(selected_var == 'overlap',
+			set(selected_setting,      vr_setup_olp2);
+			set(selected_var_name,     'webvr.mobilevr_lens_overlap');
+			set(selected_var_postfix,  '');
+			copy(selected_var_value,   get(selected_var_name));
+			set(selected_var_step,     0.01);
+			set(selected_var_min,      0.5);
+			set(selected_var_max,      2.0);
+			set(selected_var_round,    2);
+			set(selected_var_callback, vr_setup_change_headset(0) );
+		  );
+
+		if(selected_setting != null,
+			set(layer[get(selected_setting)].background, true);
+			if(%2 == true,
+				set(layer[vr_setup_btn1].y, get(layer[get(selected_setting)].y));
+				set(layer[vr_setup_btn2].y, get(layer[get(selected_setting)].y));
+			  ,
+				tween(layer[vr_setup_btn1].y, get(layer[get(selected_setting)].y));
+				tween(layer[vr_setup_btn2].y, get(layer[get(selected_setting)].y));
+			  );
+		  );
+	</action>
+
+
+	<action name="vr_setup_change_screen">
+		set(layer[vr_setup_dvn2].html, 'Custom');
+		set(layer[vr_setup_dvn2].css, calc('color:#FFFFFF;font-size:'+40*webvr_setup_scale+'px;font-weight:bold;'));
+		set(layer[vr_setup_siz2].css, calc('color:#FFFFFF;font-size:'+40*webvr_setup_scale+'px;font-weight:bold;'));
+	</action>
+
+
+	<action name="vr_setup_change_ondown">
+		copy(t0,timertick);
+		set(t1,0);
+		asyncloop(pressed,
+			copy(t2,timertick);
+			sub(dt,t2,t1);
+			if(dt GT 100,
+				copy(t1,t2);
+				sub(dt,t1,t0);
+				div(dt,1000);
+				Math.max(dt,1);
+				mul(dt,%1);
+				vr_setup_adjust(get(dt));
+			  );
+		  );
+	</action>
+
+
+	<action name="vr_setup_adjust">
+		if(selected_setting != null,
+			mul(change, selected_var_step, %1);
+			add(selected_var_value, change);
+			Math.max(selected_var_value, selected_var_min);
+			Math.min(selected_var_value, selected_var_max);
+			roundval(selected_var_value, get(selected_var_round));
+			tween(get(selected_var_name), get(selected_var_value), 0.1);
+			txtadd(layer[get(selected_setting)].html, get(selected_var_value), get(selected_var_postfix));
+			if(selected_var_callback != null, selected_var_callback());
+		  );
+	</action>
+
+
+	<action name="vr_setup_change_headset">
+		set(i_headset, 'Custom');
+		if(%1 != 0,
+			copy(i_fov, webvr.mobilevr_lens_fov);
+			roundval(i_fov, 1);
+			copy(i_dist, webvr.mobilevr_lens_dist);
+			roundval(i_dist, 2);
+			copy(i_dist2, webvr.mobilevr_lens_dist2);
+			copy(i_vig, webvr.mobilevr_lens_vign);
+			roundval(i_vig, 0);
+			copy(i_ca, webvr.mobilevr_lens_ca);
+			roundval(i_ca, 3);
+			copy(i_overlap, webvr.mobilevr_lens_overlap);
+			roundval(i_overlap, 2);
+			set(i_hsindex, -1);
+			copy(i_hscount, vrheadsets.headset.count);
+			for(set(i,0), i LT i_hscount, inc(i),
+				copy(hs, vrheadsets.headset[get(i)]);
+				if(i_overlap == hs.overlap AND i_fov == hs.fov AND i_dist == hs.dist AND i_dist2 == hs.dist2 AND i_ca == hs.ca AND i_vig == hs.vig , copy(i_hsindex, i); copy(i_headset, hs.caption); );
+			   );
+
+			if(%1 GT 0,
+				<!-- loop right -->
+				add(i_hsindex, 1);
+				if(i_hsindex GE i_hscount, set(i_hsindex,0));
+			  ,
+				<!-- loop left -->
+				sub(i_hsindex, 1);
+				if(i_hsindex LT 0, sub(i_hsindex,i_hscount,1));
+			  );
+
+			copy(hs, vrheadsets.headset[get(i_hsindex)]);
+			copy(i_headset, hs.caption);
+			copy(i_overlap, hs.overlap);
+			copy(i_fov,     hs.fov);
+			copy(i_dist,    hs.dist);
+			copy(i_dist2,   hs.dist2);
+			copy(i_ca,      hs.ca);
+			copy(i_vig,     hs.vig);
+		  );
+
+		copy(layer[vr_setup_hmd2].html, i_headset);
+		if(%1 != 0,
+			copy(webvr.mobilevr_lens_overlap, i_overlap);
+			copy(webvr.mobilevr_lens_fov, i_fov);
+			copy(webvr.mobilevr_lens_dist, i_dist);
+			copy(webvr.mobilevr_lens_dist2, i_dist2);
+			copy(webvr.mobilevr_lens_ca, i_ca);
+			copy(webvr.mobilevr_lens_vign, i_vig);
+			copy(layer[vr_setup_olp2].html, i_overlap);
+			copy(layer[vr_setup_fov2].html, i_fov);
+			copy(layer[vr_setup_dst2].html, i_dist);
+
+			txtsplit(i_dist2, '|', i_dist2_k1, i_dist2_k2, i_dist2_k3, i_dist2_k4);
+			mul(i_dist2_k1,1);
+			mul(i_dist2_k2,10);
+			mul(i_dist2_k3,10);
+			mul(i_dist2_k4,10);
+			roundval(i_dist2_k1,2);
+			roundval(i_dist2_k2,2);
+			roundval(i_dist2_k3,2);
+			roundval(i_dist2_k4,2);
+			copy(layer[vr_setup_d2k1].html, i_dist2_k1);
+			copy(layer[vr_setup_d2k2].html, i_dist2_k2);
+			copy(layer[vr_setup_d2k3].html, i_dist2_k3);
+			copy(layer[vr_setup_d2k4].html, i_dist2_k4);
+
+			copy(layer[vr_setup_cac2].html, i_ca);
+			copy(layer[vr_setup_vig2].html, i_vig);
+		  );
+	</action>
+
+</krpano>
+
+<action name="show_loading">
+  jscall(get(js_show_loading));
+</action>
+
+<action name="hide_loading">
+  jscall(get(js_hide_loading));
+</action>
+
+
+<action name="modalClosed">
+  resume_autoplay();
+</action>
+
+
+<action name="update_pano_change_ui">
+  for(set(o,0), o LT config.thumbs.category.count, inc(o),
+    for(set(i,0), i LT config.thumbs.category[get(o)].pano.count, inc(i),
+      txtadd(pano_thumb_container_name,'pano_thumb_container_',get(o),'_',get(i));
+      if(pano_id == config.thumbs.category[get(o)].pano[get(i)].pano_id,
+        set(layer[get(pano_thumb_container_name)].bgborder,3 0xf6b64c 1);
+        ,
+        set(layer[get(pano_thumb_container_name)].bgborder,3 0xffffff 1);
+      );
+    );
+  );
+</action>
+
+<action name="setup_pv_like">
+  if(displayMode.online == true AND (config.feature.show_pv == 1 OR config.feature.enable_like == 1),
+      jscall(calc('window.krpGetPanoStat(' + config.feature.show_pv + ',' + config.feature.enable_like + ')'));
+  );
+</action>
+
+<action name="showPV">
+  if(config.feature.show_pv == 1 AND %1 != 0 ,
+    if(layer[auth_layer].visible == false ,
+      copy(layer[auth_layer].url,plugin_url.TEXT_SWF);
+      set(layer[auth_layer].autoWidth,true);
+      set(layer[auth_layer].autoHeight,true);
+      set(layer[auth_layer].background,false);
+      set(layer[auth_layer].textshadow,0.5);
+      set(layer[auth_layer].wordwrap,false);
+      set(layer[auth_layer].handcursor,false);
+      set(layer[auth_layer].enabled,true);
+      set(layer[auth_layer].x,5);
+      set(layer[auth_layer].y,5);
+      set(layer[auth_layer].css,color:#ffffff; font-family:STXihei; font-size:14px;);
+      set(layer[auth_layer].visible,true);
+      txtadd(layer[auth_layer].html,'人气 : ');
+      ,
+      txtadd(layer[auth_layer].html,' 　 人气 : ');
+    );
+
+
+    txtadd(layer[auth_layer].html,%1);
+
+    setup_layout();
+  );
+</action>
+
+<action name="setup_view">
+  copy(view.fovtype, config.panos.pano[get(scene_name)].view.fovtype);
+  copy(view.hlookat, config.panos.pano[get(scene_name)].view.hlookat);
+  copy(view.vlookat, config.panos.pano[get(scene_name)].view.vlookat);
+  if(config.panos.pano[get(scene_name)].view.vlookatmin != -90 OR config.panos.pano[get(scene_name)].view.vlookatmax != 90,
+    set(view.limitview, lookat);
+    copy(view.vlookatmin, config.panos.pano[get(scene_name)].view.vlookatmin);
+    copy(view.vlookatmax, config.panos.pano[get(scene_name)].view.vlookatmax);
+  );
+  copy(view.fov, config.panos.pano[get(scene_name)].view.fov);
+  copy(view.fovmin, config.panos.pano[get(scene_name)].view.fovmin);
+  copy(view.fovmax, config.panos.pano[get(scene_name)].view.fovmax);
+</action>
+
+<action name="play_hotspot_sound">
+  if(layer[hotspot_sound_stop_btn] === null,
+      addlayer(hotspot_sound_stop_btn);
+      set(layer[hotspot_sound_stop_btn].keep,true);
+      set(layer[hotspot_sound_stop_btn].visible,false);
+      set(layer[hotspot_sound_stop_btn].crop,240|0|262|82);
+      layer[hotspot_sound_stop_btn].loadstyle(skin_style);
+      set(layer[hotspot_sound_stop_btn].align,bottomcenter);
+      set(layer[hotspot_sound_stop_btn].scale,0.5);
+      set(layer[hotspot_sound_stop_btn].x,0);
+      set(layer[hotspot_sound_stop_btn].y,150);
+      set(layer[hotspot_sound_stop_btn].onclick,stop_hotspot_sound(););
+  );
+
+  if(plugin[soundinterface] === null,
+      addplugin(soundinterface);
+      if(device.html5 == true ,
+        copy(plugin[soundinterface].url,plugin_url.SOUND_JS);
+        ,
+        copy(plugin[soundinterface].url,plugin_url.SOUND_SWF);
+      );
+      set(plugin[soundinterface].preload,false);
+      set(plugin[soundinterface].onloaded,
+        playsound(hotspot_sound_name,%1,1,stop_hotspot_sound(1););
+        set(layer[hotspot_sound_stop_btn].visible,true);
+      );
+      ,
+      playsound(hotspot_sound_name,%1,1,stop_hotspot_sound(1););
+      set(layer[hotspot_sound_stop_btn].visible,true);
+  );
+
+
+
+  if(settings.voice_playing,
+    pause_voice();
+  );
+
+  if(settings.sound_playing,
+    pause_sound();
+  );
+
+  if(category_thumbs_show == true,
+    toggle_category_thumbs();
+  );
+
+</action>
+<action name="stop_hotspot_sound">
+
+  set(layer[hotspot_sound_stop_btn].visible,false);
+
+  if(plugin[soundinterface] !== null,
+    ifnot(%1==1,
+        stopsound(hotspot_sound_name);
+    );
+  );
+
+  <!-- resume_voice(); -->
+
+
+  resume_sound();
+
+
+</action>
+
+
+	<action name="hide_vr_hotspot">
+		if(webvr.isenabled == true,
+    set(hotspotCount,get(config.panos.pano[get(xml.scene)].hotspots.hotspot.count));
+    for(set(i,0),i LT hotspotCount,inc(i),
+
+				set(hotspotName,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].name));
+
+				if(hotspot[get(hotspotName)].hotspot_type != 0,
+					set(hotspot[get(hotspotName)].visible,false);
+				);
+			);
+		);
+	</action>
+
+<action name="show_hotspots">
+  set(plugin[hotspot_container].visible , true);
+</action>
+<action name="hide_hotspots">
+  set(plugin[hotspot_container].visible , false);
+</action>
+
+
+
+
+
+<action name="setup_top_mask">
+  if(config.panos.pano[get(scene_name)].top_circle.enabled == 1,
+    addhotspot(top_mask_layer);
+    set(hotspot[top_mask_layer].ath,0);
+    set(hotspot[top_mask_layer].atv,-90);
+    set(hotspot[top_mask_layer].rotate,0.0);
+    set(hotspot[top_mask_layer].distorted,true);
+    set(hotspot[top_mask_layer].enabled,false);
+    set(hotspot[top_mask_layer].handcursor,false);
+    set(hotspot[top_mask_layer].visible,true);
+    set(hotspot[top_mask_layer].keep,false);
+    copy(hotspot[top_mask_layer].url, config.panos.pano[get(scene_name)].top_circle.url);
+  );
+</action>
+<action name="setup_bottom_mask">
+  if(config.panos.pano[get(scene_name)].bottom_circle.enabled == 1,
+    addhotspot(bottom_mask_layer);
+    set(hotspot[bottom_mask_layer].ath,0);
+    set(hotspot[bottom_mask_layer].atv,90);
+    set(hotspot[bottom_mask_layer].rotate,0.0);
+    set(hotspot[bottom_mask_layer].distorted,true);
+    set(hotspot[bottom_mask_layer].enabled,false);
+    set(hotspot[bottom_mask_layer].handcursor,false);
+    set(hotspot[bottom_mask_layer].visible,true);
+    set(hotspot[bottom_mask_layer].keep,false);
+    copy(hotspot[bottom_mask_layer].url, config.panos.pano[get(scene_name)].bottom_circle.url);
+  )
+</action>
+
+
+<action name="setup_thumbs">
+
+  copy(menu_btn_size,settings.menu_btn_width);
+
+  if(config.panos.pano.count GT 1 ,
+    set(thumbs_btn_name,'thumbs_btn');
+    set(thumbs_btn_txt_name,'thumbs_btn_txt');
+    set(thumbs_btn_container_name,'thumbs_btn_container');
+
+    addlayer(get(thumbs_btn_container_name));
+    set(layer[get(thumbs_btn_container_name)].parent, 'thumb_container');
+    set(layer[get(thumbs_btn_container_name)].align, bottomleft);
+    set(layer[get(thumbs_btn_container_name)].keep, true);
+    set(layer[get(thumbs_btn_container_name)].type, container);
+    set(layer[get(thumbs_btn_container_name)].width, get(menu_btn_size));
+    set(layer[get(thumbs_btn_container_name)].height, get(menu_btn_size));
+    set(layer[get(thumbs_btn_container_name)].children,false);
+    set(layer[get(thumbs_btn_container_name)].bgcapture,true);
+    set(layer[get(thumbs_btn_container_name)].bgcolor,0);
+    set(layer[get(thumbs_btn_container_name)].bgalpha,0);
+    set(layer[get(thumbs_btn_container_name)].onclick,
+      toggle_category_thumbs();
+    );
+
+
+    addlayer(get(thumbs_btn_name));
+    set(layer[get(thumbs_btn_name)].parent, get(thumbs_btn_container_name));
+    set(layer[get(thumbs_btn_name)].scale, 0.5);
+    set(layer[get(thumbs_btn_name)].align, bottom);
+    set(layer[get(thumbs_btn_name)].width, 80);
+    set(layer[get(thumbs_btn_name)].height, 80);
+    set(layer[get(thumbs_btn_name)].y, 25);
+    set(layer[get(thumbs_btn_name)].keep, true);
+
+
+    addlayer(get(thumbs_btn_txt_name));
+    copy(layer[get(thumbs_btn_txt_name)].url, plugin_url.TEXT_SWF);
+    set(layer[get(thumbs_btn_txt_name)].parent, get(thumbs_btn_container_name));
+    set(layer[get(thumbs_btn_txt_name)].align, bottomcenter);
+    set(layer[get(thumbs_btn_txt_name)].keep, true);
+    set(layer[get(thumbs_btn_txt_name)].width, get(menu_btn_size));
+    set(layer[get(thumbs_btn_txt_name)].height, 20);
+    set(layer[get(thumbs_btn_txt_name)].y, 0);
+    set(layer[get(thumbs_btn_txt_name)].background,false);
+    set(layer[get(thumbs_btn_txt_name)].textshadow,0.5);
+    set(layer[get(thumbs_btn_txt_name)].wordwrap,false);
+    set(layer[get(thumbs_btn_txt_name)].css,color:#ffffff; font-family:STXihei; text-align:center; font-size:12px;);
+
+
+    if(config.thumbs.category.count == 1,
+      copy(layer[get(thumbs_btn_name)].url, settings.thumb_btn_url);
+      set(layer[get(thumbs_btn_txt_name)].html, get(config.thumbs.category[0].title));
+      ,
+      copy(layer[get(thumbs_btn_name)].url, settings.thumb_btn_url);
+      set(layer[get(thumbs_btn_txt_name)].html, get(config.thumbs.title));
+    );
+
+    add_category_thumbs();
+    add_pano_thumbs();
+
+
+    if(config.thumbs.show_thumb == 1,
+      delayedcall(1,toggle_category_thumbs(););
+    );
+
+  );
+</action>
+
+<action name="add_category_thumbs">
+
+
+  if(config.thumbs.category.count GT 1,
+
+
+
+    copy(thumbwidth, settings.category_thumbs_width);
+    copy(thumbheight, settings.category_thumbs_height);
+    copy(thumbpadding_h, settings.category_thumbs_padding_h);
+    copy(thumbpadding_v, settings.category_thumbs_padding_v);
+    copy(thumbcrop, settings.category_thumbs_bg_crop);
+
+    add(thumbxoffset, thumbwidth, thumbpadding_h);
+    mul(thumbxcenter, thumbxoffset, 0.5);
+    mul(thumbbarwidth, thumbxoffset, config.thumbs.category.count);
+    add(thumbbarwidth, thumbpadding_h);
+    add(thumbbarheight, thumbpadding_v, thumbheight);
+    add(thumbbarheight, thumbpadding_v);
+
+    addlayer(category_thumbs_mask);
+    set(layer[category_thumbs_mask].parent, 'category_container');
+    set(layer[category_thumbs_mask].type, container);
+    set(layer[category_thumbs_mask].align, bottomleft);
+    set(layer[category_thumbs_mask].y, 80);
+    set(layer[category_thumbs_mask].width, 100%);
+    set(layer[category_thumbs_mask].height, 100%);
+    set(layer[category_thumbs_mask].maskchildren,true);
+    set(layer[category_thumbs_mask].keep,true);
+
+
+    addlayer(category_thumbs_container);
+    set(layer[category_thumbs_container].parent, 'category_thumbs_mask');
+    set(layer[category_thumbs_container].type, container);
+    set(layer[category_thumbs_container].align, bottomleft);
+    set(layer[category_thumbs_container].y, -150);
+    set(layer[category_thumbs_container].width, 100%);
+    copy(layer[category_thumbs_container].height, thumbbarheight);
+    set(layer[category_thumbs_container].bgalpha, 0.3);
+    set(layer[category_thumbs_container].keep,true);
+
+    addlayer(category_thumbs_scrollarea);
+    if(device.flash,
+      copy(layer[category_thumbs_scrollarea].url, plugin_url.SCROLL_SWF);
+      ,
+      copy(layer[category_thumbs_scrollarea].url, plugin_url.SCROLL_JS);
+    );
+    set(layer[category_thumbs_scrollarea].parent,'category_thumbs_container');
+    set(layer[category_thumbs_scrollarea].direction,h);
+    set(layer[category_thumbs_scrollarea].align,bottom);
+    copy(layer[category_thumbs_scrollarea].height,thumbbarheight);
+    set(layer[category_thumbs_scrollarea].keep,true);
+    set(layer[category_thumbs_scrollarea].onloaded,setcenter(0,0););
+
+
+
+
+    set(thumb_cnt,0);
+    for(set(i,0), i LT config.thumbs.category.count, inc(i),
+
+      txtadd(category_thumb_container_name,'category_thumb_container_',get(i));
+      txtadd(category_thumb_name,'category_thumb_',get(i));
+      txtadd(category_thumb_text_name, 'category_thumb_text_', get(i));
+
+      addlayer(get(category_thumb_container_name));
+      copy(layer[get(category_thumb_container_name)].url, config.thumbs.category[get(i)].thumb);
+      set(layer[get(category_thumb_container_name)].keep, true);
+      set(layer[get(category_thumb_container_name)].parent, 'category_thumbs_scrollarea');
+      set(layer[get(category_thumb_container_name)].align, left);
+      set(layer[get(category_thumb_container_name)].children, false);
+      set(layer[get(category_thumb_container_name)].category_index, get(i));
+      set(layer[get(category_thumb_container_name)].onclick, show_pano_thumbs(););
+      set(layer[get(category_thumb_container_name)].title, get(config.thumbs.category[get(i)].title));
+      set(layer[get(category_thumb_container_name)].onhover,showtext(get(title),tooltipTextStyle));
+      layer[get(category_thumb_container_name)].loadstyle(skin_style);
+      copy(layer[get(category_thumb_container_name)].crop, thumbcrop);
+      copy(layer[get(category_thumb_container_name)].width, thumbwidth);
+      copy(layer[get(category_thumb_container_name)].height, thumbheight);
+      mul(thumbx, i, thumbxoffset);
+      add(thumbx, thumbpadding_h);
+      copy(layer[get(category_thumb_container_name)].x, thumbx);
+      add(scene[get(i)].thumbx, thumbx, thumbxcenter);
+      copy(scene[get(i)].thumby, thumbpadding_v);
+
+
+
+      addlayer(get(category_thumb_name));
+      copy(layer[get(category_thumb_name)].url, config.thumbs.category[get(i)].pano[0r].thumb);
+      set(layer[get(category_thumb_name)].keep, true);
+      set(layer[get(category_thumb_name)].parent, get(category_thumb_container_name));
+      set(layer[get(category_thumb_name)].align, leftbottom);
+      set(layer[get(category_thumb_name)].category_index, get(i));
+      set(layer[get(category_thumb_name)].width, 83);
+      set(layer[get(category_thumb_name)].height, 83);
+      set(layer[get(category_thumb_name)].x, 8);
+      set(layer[get(category_thumb_name)].y, 8);
+
+
+      addlayer(get(category_thumb_text_name));
+      copy(layer[get(category_thumb_text_name)].url, plugin_url.TEXT_SWF);
+      set(layer[get(category_thumb_text_name)].keep, true);
+      set(layer[get(category_thumb_text_name)].align, bottom);
+      set(layer[get(category_thumb_text_name)].width,80);
+      set(layer[get(category_thumb_text_name)].height,16);
+      set(layer[get(category_thumb_text_name)].y,10);
+      set(layer[get(category_thumb_text_name)].background,true);
+      set(layer[get(category_thumb_text_name)].backgroundcolor,0x000000);
+      set(layer[get(category_thumb_text_name)].backgroundalpha,0.5);
+      set(layer[get(category_thumb_text_name)].wordwrap,false);
+      set(layer[get(category_thumb_text_name)].css,color:#ffffff; font-family:STXihei; text-align:center; font-size:12px;);
+      set(layer[get(category_thumb_text_name)].parent, get(category_thumb_container_name));
+      set(layer[get(category_thumb_text_name)].html, get(config.thumbs.category[get(i)].title));
+
+      inc(thumb_cnt);
+
+    );
+
+
+    copy(layer[category_thumbs_scrollarea].width, thumbwidth);
+    add(layer[category_thumbs_scrollarea].width, thumbpadding_h);
+    mul(layer[category_thumbs_scrollarea].width, thumb_cnt);
+    add(layer[category_thumbs_scrollarea].width, thumb_cnt);
+
+  );
+</action>
+
+<action name="add_pano_thumbs">
+
+  if(config.panos.pano.count GT 1 ,
+
+    copy(thumbwidth, settings.pano_thumbs_width);
+    copy(thumbheight, settings.pano_thumbs_height);
+    copy(thumbpadding_h, settings.pano_thumbs_padding_h);
+    copy(thumbpadding_v, settings.pano_thumbs_padding_v);
+
+    add(thumbxoffset, thumbwidth, thumbpadding_h);
+    mul(thumbxcenter, thumbxoffset, 0.5);
+    mul(thumbbarwidth, thumbxoffset, config.thumbs.category.count);
+    add(thumbbarwidth, thumbpadding_h);
+    add(thumbbarheight, thumbpadding_v, thumbheight);
+    add(thumbbarheight, thumbpadding_v);
+
+    for(set(o,0), o LT config.thumbs.category.count, inc(o),
+
+      txtadd(pano_thumbs_mask_name,'pano_thumbs_mask_',get(o));
+      txtadd(pano_thumbs_container_name,'pano_thumbs_container_',get(o));
+      txtadd(pano_thumbs_scrollarea_name,'pano_thumbs_scrollarea_',get(o));
+
+      addlayer(get(pano_thumbs_mask_name));
+      set(layer[get(pano_thumbs_mask_name)].parent, 'category_container');
+      set(layer[get(pano_thumbs_mask_name)].type, container);
+      set(layer[get(pano_thumbs_mask_name)].align, bottomleft);
+      if(config.thumbs.category.count GT 1 ,
+        set(layer[get(pano_thumbs_mask_name)].y, 210);
+        ,
+        set(layer[get(pano_thumbs_mask_name)].y, 80);
+      );
+      set(layer[get(pano_thumbs_mask_name)].width, 100%);
+      set(layer[get(pano_thumbs_mask_name)].height, 100%);
+      set(layer[get(pano_thumbs_mask_name)].maskchildren,true);
+      set(layer[get(pano_thumbs_mask_name)].keep,true);
+
+
+
+      addlayer(get(pano_thumbs_container_name));
+      set(layer[get(pano_thumbs_container_name)].parent, get(pano_thumbs_mask_name));
+      set(layer[get(pano_thumbs_container_name)].type, container);
+      set(layer[get(pano_thumbs_container_name)].align, bottomleft);
+      set(layer[get(pano_thumbs_container_name)].y, 0);
+      set(layer[get(pano_thumbs_container_name)].width, 100%);
+      copy(layer[get(pano_thumbs_container_name)].height, thumbbarheight);
+      set(layer[get(pano_thumbs_container_name)].bgalpha, 0.3);
+      set(layer[get(pano_thumbs_container_name)].keep,true);
+      set(layer[get(pano_thumbs_container_name)].y, -140);
+
+
+      addlayer(get(pano_thumbs_scrollarea_name));
+      if(device.flash,
+        copy(layer[get(pano_thumbs_scrollarea_name)].url, plugin_url.SCROLL_SWF);
+        ,
+        copy(layer[get(pano_thumbs_scrollarea_name)].url, plugin_url.SCROLL_JS);
+      );
+      set(layer[get(pano_thumbs_scrollarea_name)].parent,get(pano_thumbs_container_name));
+      set(layer[get(pano_thumbs_scrollarea_name)].direction,h);
+      set(layer[get(pano_thumbs_scrollarea_name)].align,bottom);
+      set(layer[get(pano_thumbs_scrollarea_name)].height,100);
+      set(layer[get(pano_thumbs_scrollarea_name)].keep,true);
+
+
+      set(thumb_cnt,0);
+      for(set(i,0), i LT config.thumbs.category[get(o)].pano.count, inc(i),
+
+        txtadd(pano_thumb_container_name,'pano_thumb_container_',get(o),'_',get(i));
+        txtadd(pano_thumb_img_name,'pano_thumb_img_',get(o),'_',get(i));
+        txtadd(pano_thumb_text_name, 'pano_thumb_text_',get(o),'_',get(i));
+
+
+
+        addlayer(get(pano_thumb_container_name));
+        set(layer[get(pano_thumb_container_name)].type, container);
+        set(layer[get(pano_thumb_container_name)].keep, true);
+        set(layer[get(pano_thumb_container_name)].parent, get(pano_thumbs_scrollarea_name));
+        set(layer[get(pano_thumb_container_name)].bgcolor,0x999999);
+        set(layer[get(pano_thumb_container_name)].bgalpha,1);
+        set(layer[get(pano_thumb_container_name)].bgborder,3 0xffffff 1);
+        set(layer[get(pano_thumb_container_name)].children, false);
+        set(layer[get(pano_thumb_container_name)].bgcapture, true);
+        set(layer[get(pano_thumb_container_name)].align, leftbottom);
+        copy(layer[get(pano_thumb_container_name)].width, thumbwidth);
+        copy(layer[get(pano_thumb_container_name)].height, thumbheight);
+        mul(thumbx, i, thumbxoffset);
+        add(thumbx, thumbpadding_h);
+        copy(layer[get(pano_thumb_container_name)].x, thumbx);
+        copy(layer[get(pano_thumb_container_name)].y, thumbpadding_v);
+        add(scene[get(i)].thumbx, thumbx, thumbxcenter);
+        copy(scene[get(i)].thumby, thumbpadding_v);
+        copy(layer[get(pano_thumb_container_name)].linkedscene, config.thumbs.category[get(o)].pano[get(i)].pano_id);
+        set(layer[get(pano_thumb_container_name)].onclick,
+          load_pano_by_id(get(linkedscene));
+        );
+        set(layer[get(pano_thumb_container_name)].title, get(config.thumbs.category[get(o)].pano[get(i)].title));
+        set(layer[get(pano_thumb_container_name)].onhover,showtext(get(title),tooltipTextStyle));
+
+
+
+        addlayer(get(pano_thumb_img_name));
+        copy(layer[get(pano_thumb_img_name)].url, config.thumbs.category[get(o)].pano[get(i)].thumb);
+        set(layer[get(pano_thumb_img_name)].keep, true);
+        set(layer[get(pano_thumb_img_name)].parent, get(pano_thumb_container_name));
+        set(layer[get(pano_thumb_img_name)].align, center);
+        copy(layer[get(pano_thumb_img_name)].width, thumbwidth);
+        copy(layer[get(pano_thumb_img_name)].height, thumbheight);
+
+
+        addlayer(get(pano_thumb_text_name));
+        copy(layer[get(pano_thumb_text_name)].url, plugin_url.TEXT_SWF);
+        set(layer[get(pano_thumb_text_name)].keep, true);
+        set(layer[get(pano_thumb_text_name)].align, bottom);
+        set(layer[get(pano_thumb_text_name)].width,80);
+        set(layer[get(pano_thumb_text_name)].height,16);
+        set(layer[get(pano_thumb_text_name)].background,true);
+        set(layer[get(pano_thumb_text_name)].backgroundcolor,0x000000);
+        set(layer[get(pano_thumb_text_name)].backgroundalpha,0.5);
+        set(layer[get(pano_thumb_text_name)].wordwrap,false);
+        set(layer[get(pano_thumb_text_name)].css,color:#ffffff; font-family:STXihei; text-align:center; font-size:12px;);
+        set(layer[get(pano_thumb_text_name)].parent, get(pano_thumb_container_name));
+        set(layer[get(pano_thumb_text_name)].html, get(config.thumbs.category[get(o)].pano[get(i)].title));
+
+        inc(thumb_cnt);
+
+      );
+
+
+      copy(layer[get(pano_thumbs_scrollarea_name)].width, thumbwidth);
+      add(layer[get(pano_thumbs_scrollarea_name)].width, thumbpadding_h);
+      mul(layer[get(pano_thumbs_scrollarea_name)].width, thumb_cnt);
+      add(layer[get(pano_thumbs_scrollarea_name)].width, thumb_cnt);
+      set(layer[get(pano_thumbs_scrollarea_name)].onloaded,
+        setcenter(0,0);
+      );
+    );
+  );
+</action>
+<action name="toggle_category_thumbs">
+  if(config.thumbs.category.count GT 1 ,
+    if(category_thumbs_show == true,
+      hide_category_thumbs();
+      hide_pano_thumbs();
+      ,
+      show_category_thumbs();
+      show_pano_thumbs();
+    );
+    ,
+    if(category_thumbs_show == true,
+      hide_pano_thumbs();
+      set(category_thumbs_show,false);
+      ,
+      show_pano_thumbs();
+      set(category_thumbs_show,true);
+    );
+  );
+</action>
+<action name="show_category_thumbs">
+  tween(layer[category_thumbs_container].y,0,0.2);
+  set(category_thumbs_show,true);
+</action>
+<action name="hide_category_thumbs">
+  if(category_thumbs_show == true,
+    tween(layer[category_thumbs_container].y,-150,0.2);
+    set(category_thumbs_show,false);
+  );
+</action>
+<action name="show_pano_thumbs">
+  if(pano_thumbs_show == true AND current_category_index != category_index,
+    hide_pano_thumbs();
+  );
+  if(category_index === null,
+    copy(category_index,current_category_index);
+  );
+
+  txtadd(current_category_thumb_name,'category_thumb_container_',get(category_index));
+  copy(layer[get(current_category_thumb_name)].crop, settings.category_thumbs_bg_crop_selected);
+
+  txtadd(current_category_name,'pano_thumbs_container_',get(category_index));
+  tween(layer[get(current_category_name)].y,0,0.2);
+
+
+  copy(current_category_index,category_index);
+  set(pano_thumbs_show,true);
+
+  update_pano_change_ui();
+</action>
+
+<action name="hide_pano_thumbs">
+
+  if(pano_thumbs_show == true,
+    txtadd(current_category_thumb_name,'category_thumb_container_',get(current_category_index));
+    copy(layer[get(current_category_thumb_name)].crop, settings.category_thumbs_bg_crop);
+
+    txtadd(current_category_name,'pano_thumbs_container_',get(current_category_index));
+    tween(layer[get(current_category_name)].y,-140,0.2);
+    set(pano_thumbs_show,false);
+  );
+</action>
+
+<action name="add_thumbs">
+
+  addlayer(category_thumbs_scrollarea);
+  if(device.flash,
+    copy(layer[category_thumbs_scrollarea].url, plugin_url.SCROLL_SWF);
+    ,
+    copy(layer[category_thumbs_scrollarea].url, plugin_url.SCROLL_JS);
+  );
+  set(layer[category_thumbs_scrollarea].parent,'category_container');
+  set(layer[category_thumbs_scrollarea].direction,h);
+  set(layer[category_thumbs_scrollarea].align,bottomleft);
+  set(layer[category_container].y,200);
+  set(layer[category_thumbs_scrollarea].height,140);
+  set(layer[category_thumbs_scrollarea].keep,true);
+  set(layer[category_thumbs_scrollarea].backgroundalpha,1);
+  set(layer[get(category_container)].background,true);
+  set(layer[get(category_container)].backgroundcolor,0x000000);
+  set(layer[get(category_container)].backgroundalpha,0.5);
+
+
+  copy(thumbwidth, settings.thumbs_width);
+  copy(thumbheight, settings.thumbs_height);
+  copy(thumbpadding, settings.thumbs_padding);
+
+  add(thumbxoffset, thumbwidth, thumbpadding);
+  mul(thumbxcenter, thumbxoffset, 0.5);
+  mul(thumbbarwidth, thumbxoffset, config.thumbs.category.count);
+  add(thumbbarwidth, thumbpadding);
+  add(thumbbarheight, thumbpadding, thumbheight);
+  add(thumbbarheight, thumbpadding);
+
+  if(config.thumbs.category.count GT 0,
+
+    set(thumb_cnt,0);
+    for(set(i,0), i LT config.thumbs.category.count, inc(i),
+
+      txtadd(category_thumb_name,'category_thumb_',get(i));
+      txtadd(category_thumb_text_name, 'category_thumb_text_', get(i));
+
+      addlayer(get(category_thumb_name));
+      copy(layer[get(category_thumb_name)].url, config.thumbs.category[get(i)].thumb);
+      set(layer[get(category_thumb_name)].keep, true);
+      set(layer[get(category_thumb_name)].parent, 'category_thumbs_scrollarea');
+      set(layer[get(category_thumb_name)].align, lefttop);
+      copy(layer[get(category_thumb_name)].width, thumbwidth);
+      copy(layer[get(category_thumb_name)].height, thumbheight);
+      mul(thumbx, i, thumbxoffset);
+      add(thumbx, thumbpadding);
+      copy(layer[get(category_thumb_name)].x, thumbx);
+      copy(layer[get(category_thumb_name)].y, thumbpadding);
+      add(scene[get(i)].thumbx, thumbx, thumbxcenter);
+      copy(scene[get(i)].thumby, thumbpadding);
+
+      addlayer(get(category_thumb_text_name));
+      copy(layer[get(category_thumb_text_name)].url, plugin_url.TEXT_SWF);
+      set(layer[get(category_thumb_text_name)].keep, true);
+      set(layer[get(category_thumb_text_name)].align, bottom);
+      set(layer[get(category_thumb_text_name)].width,80);
+      set(layer[get(category_thumb_text_name)].height,16);
+      set(layer[get(category_thumb_text_name)].background,true);
+      set(layer[get(category_thumb_text_name)].backgroundcolor,0x000000);
+      set(layer[get(category_thumb_text_name)].backgroundalpha,0.5);
+      set(layer[get(category_thumb_text_name)].wordwrap,false);
+      set(layer[get(category_thumb_text_name)].css,color:#ffffff; font-family:STXihei; text-align:center; font-size:12px;);
+      set(layer[get(category_thumb_text_name)].parent, get(category_thumb_name));
+      set(layer[get(category_thumb_text_name)].html, get(config.thumbs.category[get(i)].title));
+
+      inc(thumb_cnt);
+
+      );
+
+
+      copy(layer[category_thumbs_scrollarea].width, thumbwidth);
+      add(layer[category_thumbs_scrollarea].width, thumbpadding);
+      mul(layer[category_thumbs_scrollarea].width, thumb_cnt);
+      add(layer[category_thumbs_scrollarea].width, thumb_cnt);
+
+  );
+</action>
+
+
+
+  <action name="setup_start_image">
+      if(config.start_image.enabled == 1 ,
+        if(config.start_image.url === null,
+          if(device.desktop,
+            set(layer[start_image_layer].url,%SWFPATH%/../krp/skin/mouseAlert.png);
+            ,
+            set(layer[start_image_layer].url,%SWFPATH%/../krp/skin/touchAlert.png);
+          );
+          ,
+          copy(layer[start_image_layer].url,config.start_image.url);
+        );
+
+        set(layer[start_image_layer].scale,0.5);
+        set(layer[start_image_layer].align,center);
+        set(layer[start_image_layer].background,false);
+        set(layer[start_image_layer].autoalpha,true);
+        set(layer[start_image_layer].onclick,tween(layer[start_image_layer].alpha,0.0,0.5););
+        set(layer[start_image_layer].alpha,1.0);
+        set(layer[start_image_layer].enabled,true);
+        set(layer[start_image_layer].bgcapture,true);
+        set(layer[start_image_layer].ondown,set(enabled,false);tween(layer[start_image_layer].alpha,0.0,0.5););
+        set(layer[start_image_layer].onloaded,
+          delayedcall(3,tween(layer[start_image_layer].alpha,0.0,0.5););
+        );
+      );
+  </action>
+
+
+  <action name="setup_title">
+    if(first_pano_inited,
+      set(layer[title_layer].html,get(config.panos.pano[get(scene_name)].info.title));
+      tween(layer[title_layer].alpha,1.0,0.3);
+      delayedcall(6,tween(layer[title_layer].alpha,0.0,0.3););
+      ,
+      set(layer[title_layer].url,get(plugin_url.TEXT_SWF));
+      set(layer[title_layer].autoWidth,true);
+      set(layer[title_layer].autoHeight,true);
+      set(layer[title_layer].background,false);
+      set(layer[title_layer].keep,true);
+      set(layer[title_layer].textshadow,0.5);
+      set(layer[title_layer].wordwrap,false);
+      set(layer[title_layer].enabled,false);
+      set(layer[title_layer].html,get(config.info.title));
+      set(layer[title_layer].y,100);
+      set(layer[title_layer].align,topcenter);
+      set(layer[title_layer].css,color:#ffffff; font-family:STXihei; font-size:16px;);
+      delayedcall(6,tween(layer[title_layer].alpha,0.0,0.3););
+    );
+  </action>
+
+
+
+
+
+<action name="setup_fullscreen">
+  if(device.fullscreensupport,
+    set(layer[fullscreen_layer].enabled,true);
+    set(layer[fullscreen_layer].scale,0.5);
+    set(layer[fullscreen_layer].x,5);
+    set(layer[fullscreen_layer].crop,64|589|64|65);
+    layer[fullscreen_layer].loadstyle(skin_style);
+    set(layer[fullscreen_layer].onclick,
+      toggle(fullscreen);
+      ifnot(fullscreen,
+        set(crop,64|659|64|65);
+        ,
+        set(crop,64|589|64|65);
+      );
+    );
+    ,
+    set(layer[fullscreen_layer].visible,false);
+  );
+</action>
+
+
+
+<action name="setup_sound">
+  if(sound_inited === null,
+    set(layer[sound_layer].scale,0.5);
+    set(layer[sound_layer].x,5);
+    set(layer[sound_layer].crop,129|659|64|65);
+    layer[sound_layer].loadstyle(skin_style);
+    set(layer[sound_layer].onclick,
+        if(settings.sound_on == true,
+            set(crop,129|589|64|65);
+            stop_sound();
+            ,
+            set(crop,129|659|64|65);
+            start_sound();
+        );
+    );
+
+    if(config.panos.pano[get(scene_name)].sound.enabled == 1,
+
+        set(layer[sound_layer].visible,true);
+        play_sound(get(config.panos.pano[get(scene_name)].sound.url));
+        ,
+        set(layer[sound_layer].visible,false);
+    );
+    set(sound_inited,true);
+    ,
+    set(layer[sound_layer].visible,false);
+    if(config.panos.pano[get(scene_name)].sound.enabled == 1,
+      if((settings.sound_on == true OR sound_first_play === null)  AND config.panos.pano[get(scene_name)].sound.url != current_sound_url,
+        play_sound(get(config.panos.pano[get(scene_name)].sound.url));
+      );
+      set(layer[sound_layer].visible,true);
+      ,
+      set(current_sound_url, null);
+    );
+  );
+</action>
+
+
+<action name="setup_voice">
+    if(config.panos.pano[get(xml.scene)].voice.enabled == 1,
+        set(layer[voice_layer].scale,0.5);
+        set(layer[voice_layer].x,5);
+        set(layer[voice_layer].y,55);
+        set(layer[voice_layer].crop,129|659|64|65);
+        layer[voice_layer].loadstyle(skin_style);
+        set(layer[voice_layer].onclick,
+            if(settings.voice_on == true,
+                set(crop,129|659|64|65);
+                stop_voice();
+                ,
+                set(crop,129|589|64|65);
+                start_voice();
+            );
+        );
+        ,
+        set(layer[voice_layer].visible,false);
+    );
+</action>
+
+
+
+
+
+
+
+
+
+
+<!-- Sound support  -->
+<action name="play_sound">
+  if(plugin[soundinterface] === null,
+    addplugin(soundinterface);
+    if(device.html5 == true ,
+      copy(plugin[soundinterface].url,plugin_url.SOUND_JS);
+      ,
+      copy(plugin[soundinterface].url,plugin_url.SOUND_SWF);
+    );
+    set(plugin[soundinterface].preload,false);
+    set(plugin[soundinterface].onloaded,
+        if(settings.sound_on == true,
+            play_sound(%1);
+        );
+    );
+    set(settings.sound_playing,false);
+    set(settings.sound_on,true);
+    set(layer[sound_layer].crop,129|659|64|65);
+    ,
+    playsound(get(settings.sound_play_id),%1,0);
+    set(current_sound_url,%1);
+    set(settings.sound_playing,true);
+    set(settings.sound_on,true);
+    set(layer[sound_layer].crop,129|659|64|65);
+  );
+
+  set(sound_first_play,true);
+</action>
+<action name="start_sound">
+    if(plugin[soundinterface] !== null,
+      resumesound(get(settings.sound_play_id));
+      set(settings.sound_playing,true);
+      set(settings.sound_on,true);
+      set(layer[sound_layer].crop,129|659|64|65);
+    );
+</action>
+<action name="stop_sound">
+  if(plugin[soundinterface] !== null,
+    pausesound(get(settings.sound_play_id));
+    set(settings.sound_playing,false);
+    set(settings.sound_on,false);
+    set(layer[sound_layer].crop,129|589|64|65);
+  );
+</action>
+<action name="pause_sound">
+    if(settings.sound_playing == true AND plugin[soundinterface] !== null,
+        pausesound(get(settings.sound_play_id));
+        set(settings.sound_playing,false);
+        set(layer[sound_layer].crop,129|589|64|65);
+    );
+</action>
+<action name="resume_sound">
+    if(settings.sound_on == true AND settings.sound_playing == false AND plugin[soundinterface] !== null,
+      if(config.panos.pano[get(scene_name)].sound.enabled == 1,
+        resumesound(get(settings.sound_play_id));
+        set(layer[sound_layer].crop,129|659|64|65);
+      );
+      set(settings.sound_playing,true);
+    );
+</action>
+<!-- Sound support  -->
+
+
+<!-- Sound support  -->
+<action name="play_voice">
+    if(plugin[voiceinterface] === null,
+        addplugin(voiceinterface);
+        set(plugin[voiceinterface].url,get(plugin_url.SOUND_SWF));
+        set(plugin[voiceinterface].alturl,get(plugin_url.SOUND_JS));
+        set(plugin[voiceinterface].preload,true);
+        set(plugin[voiceinterface].keep,true);
+        set(plugin[voiceinterface].onloaded,
+            if(settings.voice_on == true,
+                play_voice(%1);
+            );
+        );
+        set(settings.voice_playing,false);
+        set(settings.voice_on,true);
+        ,
+        plu
+        playsound(get(settings.voice_play_id),%1,0);
+        set(current_sound_url,%1);
+        set(settings.voice_playing,true);
+        set(settings.voice_on,true);
+    );
+</action>
+<action name="start_voice">
+    if(plugin[soundinterface] !== null,
+      resumesound(get(settings.voice_play_id));
+      set(settings.voice_playing,true);
+      set(settings.voice_on,true);
+    );
+</action>
+<action name="stop_voice">
+    if(plugin[soundinterface] !== null,
+      pausesound(get(settings.voice_play_id));
+      set(settings.voice_playing,false);
+      set(settings.voice_on,false);
+    );
+</action>
+<action name="pause_voice">
+    if(settings.voice_playing == true AND plugin[soundinterface] !== null,
+        pausesound(get(settings.voice_play_id));
+        set(settings.voice_playing,false);
+    );
+</action>
+<action name="resume_voice">
+    if(settings.voice_on == true AND settings.voice_playing == false AND plugin[soundinterface] !== null,
+        resumesound(get(settings.voice_play_id));
+        set(settings.voice_playing,true);
+    );
+</action>
+<!-- Sound support  -->
+
+
+
+
+<!-- Weather support -->
+<action name="setup_weather">
+
+  if(config.panos.pano[get(scene_name)].sun.enabled == 1,
+    add_sun(get(config.panos.pano[get(scene_name)].sun.ath),get(config.panos.pano[get(scene_name)].sun.atv));
+  );
+
+  if(config.panos.pano[get(scene_name)].weather.enabled == 1,
+    if(config.panos.pano[get(scene_name)].weather.id == 0,
+      add_snow(get(config.panos.pano[get(scene_name)].weather.size));
+      ,
+      if(config.panos.pano[get(scene_name)].weather.id == 1,
+        add_rain(get(config.panos.pano[get(scene_name)].weather.size));
+        ,
+        if(config.panos.pano[get(scene_name)].weather.id == 2,
+          add_sun(get(config.panos.pano[get(scene_name)].weather.ath),get(config.panos.pano[get(scene_name)].weather.atv));
+          ,
+          add_image_rain(get(config.panos.pano[get(scene_name)].weather.url), get(config.panos.pano[get(scene_name)].weather.size));
+        );
+      );
+    );
+  );
+</action>
+<action name="add_sun">
+  addlensflare("obj");
+  set(lensflares[obj].keep,false);
+  set(lensflares[obj].visible,true);
+  set(lensflares[obj].device,html5);
+  set(lensflares[obj].item[flareobj].ath,%1);
+  set(lensflares[obj].item[flareobj].atv,%2);
+  set(lensflares[obj].item[flareobj].scene,get(xml.scene));
+  set(lensflares[obj].item[flareobj].typ,blinkstyle1);
+  set(lensflares[obj].item[flareobj].dust_effect,false);
+  set(lensflares[obj].item[flareobj].keep,false);
+</action>
+<action name="add_rain">
+
+  if(%1 === null,
+    set(rain_size, 2);
+    ,
+    set(rain_size, %1);
+  );
+
+  removeplugin(snow);
+  addplugin(snow);
+  set(plugin[snow].keep,          false);
+  set(plugin[snow].onloaded,
+    set(plugin[snow].mode,          image);
+    set(plugin[snow].imageurl,      %SWFPATH%/../krp/skin/rain.png);
+    set(plugin[snow].blendmode,     normal);
+    set(plugin[snow].flakes,        1000);
+    mul(plugin[snow].flakes,        rain_size);
+    set(plugin[snow].color,         0xefe3e4);
+    set(plugin[snow].speed,         15.5);
+    set(plugin[snow].shake,         1.0);
+    set(plugin[snow].speedvariance, 1.0);
+    set(plugin[snow].spreading,     2.0);
+    set(plugin[snow].rainwidth,     0.4);
+    mul(plugin[snow].rainwidth,     rain_size);
+    set(plugin[snow].rainalpha,     0.5);
+    set(plugin[snow].wind,          2.0);
+  );
+  if(device.flash,
+		set(plugin[snow].url,          %SWFPATH%/../krp/plugins/snow.swf);
+    ,
+		set(plugin[snow].url,          %SWFPATH%/../krp/plugins/snow.js);
+  );
+</action>
+<action name="remove_rain">
+  removeplugin(snow);
+</action>
+<action name="add_snow">
+
+  if(%1 === null,
+    set(snow_size, 2);
+    ,
+    set(snow_size, %1);
+  );
+
+
+  removeplugin(snow);
+  addplugin(snow);
+  set(plugin[snow].keep,          false);
+  set(plugin[snow].onloaded,
+    set(plugin[snow].mode,          image);
+    set(plugin[snow].imageurl,      %SWFPATH%/../krp/skin/snow.png);
+    set(plugin[snow].blendmode,     normal);
+    set(plugin[snow].flakes,        1500);
+    mul(plugin[snow].flakes,        snow_size);
+    set(plugin[snow].color,         0xdfe3e4);
+    set(plugin[snow].speed,         get(snow_size));
+    mul(plugin[snow].speed,         snow_size);
+    add(plugin[snow].speed,         1);
+    set(plugin[snow].shake,         4.0);
+    set(plugin[snow].speedvariance, 2.0);
+    set(plugin[snow].spreading,     4.0);
+    set(plugin[snow].wind,          1.0);
+    sub(plugin[snow].wind,          snow_size);
+  );
+  if(device.flash,
+		set(plugin[snow].url,          %SWFPATH%/../krp/plugins/snow.swf);
+    ,
+		set(plugin[snow].url,          %SWFPATH%/../krp/plugins/snow.js);
+  );
+
+
+</action>
+<action name="add_image_rain">
+
+  if(%2 == null ,
+    set(snow_size, 2);
+    ,
+    set(snow_size, %2);
+  );
+
+
+  removeplugin(snow);
+  addplugin(snow);
+  set(plugin[snow].keep,          false);
+  set(plugin[snow].onloaded,
+    set(plugin[snow].mode,          image);
+    set(plugin[snow].imageurl,      %1);
+    set(plugin[snow].imagescale,    0.5);
+    set(plugin[snow].blendmode,     normal);
+    set(plugin[snow].flakes,        150);
+    mul(plugin[snow].flakes,        snow_size);
+    set(plugin[snow].color,         0xdfe3e4);
+    add(plugin[snow].speed,         0.5);
+    set(plugin[snow].shake,         1.0);
+    set(plugin[snow].speedvariance, 2.0);
+    set(plugin[snow].spreading,     1.5);
+    set(plugin[snow].wind,          0);
+  );
+  if(device.flash,
+		set(plugin[snow].url,          %SWFPATH%/../krp/plugins/snow.swf);
+    ,
+		set(plugin[snow].url,          %SWFPATH%/../krp/plugins/snow.js);
+  );
+
+</action>
+<!-- Weather support end -->
+
+
+
+
+<!-- Gyro support  -->
+<plugin name="gyro_plugin" keep="true" url="" devices="html5" enabled="true"  />
+<action name="setup_gyro">
+    if(config.feature.enable_gyro == 1 AND !device.desktop AND device.html5,
+	    copy(plugin[gyro_plugin].url, plugin_url.GYRO);
+
+      set(layer[gyro_layer].scale,0.5);
+      set(layer[gyro_layer].x,5);
+      set(layer[gyro_layer].y,255);
+      set(layer[gyro_layer].crop,259|659|64|65);
+      layer[gyro_layer].loadstyle(skin_style);
+      set(layer[gyro_layer].onclick,
+        toggle_gyro();
+        if(plugin[gyro_plugin].enabled == true,
+            set(crop,259|659|64|65);
+            ,
+            set(crop,259|589|64|65);
+        );
+      );
+      ,
+      set(layer[gyro_layer].visible,false);
+    );
+</action>
+<action name="toggle_gyro">
+    switch(plugin[gyro_plugin].enabled);
+    if(displayMode.online == true,
+      if(plugin[gyro_plugin].enabled == true,
+        jscall(get(js_enable_gyro));
+        ,
+        jscall(get(js_disable_gyro));
+      );
+    );
+</action>
+
+
+<!-- Gyro support end -->
+
+
+<!-- VR support  -->
+
+
+<!-- <include url="%SWFPATH%/plugins/webvr.xml" /> -->
+<action name="setup_vr">
+    copy(vr_plugin_url,plugin_url.WEBVR_JS);
+    if(config.feature.enable_vr == 1 AND device.html5 AND device.webgl AND displayMode.preview != true,
+	      copy(plugin[WebVR].url, vr_plugin_url);
+
+        set(layer[vr_layer].scale,0.5);
+        set(layer[vr_layer].x,5);
+        set(layer[vr_layer].crop,-1|589|64|65);
+        layer[vr_layer].loadstyle(skin_style);
+        set(layer[vr_layer].onclick,
+            turn_on_vr();
+        );
+
+        ,
+        set(layer[vr_layer].false);
+  );
+</action>
+<action name="turn_on_vr">
+    webvr.entervr();
+</action>
+<action name="turn_off_vr">
+    webvr.exitvr();
+</action>
+
+<!-- overwrite some settings from the webvr.xml for the skin integration -->
+<plugin name="WebVR" keep="true" devices="html5"
+        url=""
+        multireslock.desktop="true"
+        multireslock.mobile.or.tablet="false"
+        mobilevr_support="true"
+        mobilevr_fake_support="true"
+        onavailable="removelayer(webvr_enterbutton); webvr_onavailable();"
+        onunavailable="set(layer[vr_layer].visible,false);setup_layout();"
+        onentervr="webvr_onentervr(); webvr_setup();"
+        onexitvr="webvr_onexitvr(); webvr_setup(); setup_layout();"
+        />
+
+<!-- webvr button style (adjust to match skin style) -->
+<style name="webvr_button_style"
+       border="false"
+       roundedge="calc:1.0"
+       backgroundcolor="0x000000"
+       backgroundalpha="0.6"
+       padding="10"
+       css="color:#ffffff; font-family:STXihei; text-align:center; font-size:18px;);"
+       />
+
+<!-- show a 'rotate the device' info when the mobile device is in portrait orientation in VR mode -->
+<layer name="webvr_rotate_to_landscape_request" keep="true" vr="true" devices="mobile"
+       url="%SWFPATH%/../krp/skin/rotate_device.png" scale="0.5"
+       align="top" edge="center" y="28%"
+       autoalpha="true" alpha="0.0"
+       enabled="false"
+       />
+
+<events name="webvr_events" keep="true" devices="html5"
+        onresize.mobile="webvr_act_as_gyro_in_portrait_mode();"
+        onviewchange=""
+        />
+
+<action name="webvr_setup">
+	if(webvr.isenabled,
+		copy(loadscene_flags_backup, skin_settings.loadscene_flags);
+		set(skin_settings.loadscene_flags, MERGE|KEEPVIEW|KEEPMOVING|NOPREVIEW);
+		webvr_act_as_gyro_in_portrait_mode(true);
+		if(scene.count GT 1,
+			set(hotspot[webvr_prev_scene].visible, true);
+			set(hotspot[webvr_next_scene].visible, true);
+			set(events[webvr_events].onviewchange, webvr_menu_following());
+		  );
+	  ,
+		if(loadscene_flags_backup !== null, copy(skin_settings.loadscene_flags, loadscene_flags_backup));
+		tween(layer[webvr_rotate_to_landscape_request].alpha, 0.0, 0.0);
+		set(hotspot[webvr_prev_scene].visible, false);
+		set(hotspot[webvr_next_scene].visible, false);
+		set(events[webvr_events].onviewchange, null);
+	  );
+</action>
+
+<action name="webvr_act_as_gyro_in_portrait_mode">
+	if(device.mobile AND webvr.isenabled,
+		div(aspect, stagewidth, stageheight);
+		if(aspect != lastaspect OR '%1' == 'true',
+			copy(lastaspect, aspect);
+			if(stagewidth GT stageheight,
+				<!-- landscape orientation - use stereo rendering and a direct/fast gyro sensor mode -->
+				set(display.stereo, true);
+				set(webvr.mobilevr_sensor_mode, 3);
+				webvr.update();
+				tween(layer[webvr_rotate_to_landscape_request].alpha, 0.0, 0.0);
+			  ,
+				<!-- portrait orientation - use normal rendering and a smoother/slower gyro sensor mode -->
+				set(display.stereo, false);
+				set(webvr.mobilevr_sensor_mode, 1);
+				webvr.update();
+				tween(layer[webvr_rotate_to_landscape_request].alpha, 1.0);
+				delayedcall(3.0, tween(layer[webvr_rotate_to_landscape_request].alpha, 0.0, 1.0); );
+			  );
+		  );
+	  ,
+		set(lastaspect, 0);
+	  );
+</action>
+
+<!-- VR scene switching hotspots -->
+<style name="webvr_menu_style" depth="800" scale="0.5" distorted="true" ath="0" atv="45" alpha="0.5" />
+<!-- <hotspot name="webvr_prev_scene" keep="true" style="skin_base|webvr_menu_style" crop="0|64|64|64"  ox="-64" onover="tween(scale,0.6);" onout="tween(scale,0.5);" vr_timeout="750" onclick="skin_nextscene_loop(-1);" visible="false" devices="html5.and.webgl" />
+<hotspot name="webvr_next_scene" keep="true" style="skin_base|webvr_menu_style" crop="64|64|64|64" ox="+64" onover="tween(scale,0.6);" onout="tween(scale,0.5);" vr_timeout="750" onclick="skin_nextscene_loop(+1);" visible="false" devices="html5.and.webgl" /> -->
+
+<!-- floating/following VR hotspots -->
+<action name="webvr_menu_following" type="Javascript" devices="html5"><![CDATA[
+	var hs1 = krpano.get("hotspot[webvr_prev_scene]");
+	var hs2 = krpano.get("hotspot[webvr_next_scene]");
+	if(!hs1.hovering && !hs2.hovering)
+	{
+		var f = 0.01;	// following speed factor
+		var h = krpano.view.hlookat;
+		var v = krpano.view.vlookat;
+		var hsh = hs1.ath;
+		var hsv = hs1.atv;
+		h   = (h  -(h|0))   + (((h|0)  +360180)%360) - 180.0;
+		v   = (v  -(v|0))   + (((v|0)  +360180)%360) - 180.0;
+		hsh = (hsh-(hsh|0)) + (((hsh|0)+360180)%360) - 180.0;
+		var dh = h - hsh;
+		dh += (dh > 180) ? -360 : (dh < -180) ? 360 : 0
+		hsh += dh*f;
+		var a = Math.abs(v - hsv) / 90.0;
+		a = 1.0 * Math.max(1.0 - 2.0*Math.sqrt(a), 0);
+		v = v + 55.0 - v*1.5;
+		hsv = hsv*(1.0 - f) + v*f;
+		hs1.ath = hs2.ath = hsh;
+		hs1.atv = hs2.atv = hsv;
+		hs1.alpha = hs2.alpha = a;
+	}
+]]></action>
+<!-- VR support -->
+
+<!-- Auto Play support  -->
+<action name="setup_autoplay">
+  if(config.feature.enable_autorotate == 1,
+    set(autorotate.waittime, 10);
+    set(autorotate.speed, 2);
+    set(autorotate.accel,10);
+    set(autorotate.enabled, true);
+    if(config.panos.pano[get(scene_name)].view.autorotatekeepview == 1,
+      set(autorotate.horizon, get(view.hlookat));
+      ,
+      set(autorotate.horizon, 0.0);
+    );
+  );
+</action>
+<action name="resume_autoplay">
+  autorotate.resume();
+  set(autorotate.enabled, true);
+</action>
+<action name="pause_autoplay">
+  autorotate.pause();
+</action>
+<!-- Auto Play support end -->
+
+
+<!-- Contextmenu support -->
+<action name="setup_contextmenu">
+  if(config.auth.status == 1,
+    set(contextmenu.item["copyright"].visible, true);
+  );
+
+  if(config.info.ccagreement !== null AND config.logo.is_720 == 1,
+      copy(contextmenu.item["ccagreement"].caption, config.info.ccagreement);
+      set(contextmenu.item["ccagreement"].visible, true);
+  );
+</action>
+<!-- Contextmenu support end -->
+
+<action name="load_pano_by_id">
+  show_loading();
+
+  stop_hotspot_sound();
+
+  set(temp_show_comments,get(config.feature.show_comment));
+  <!-- if(config.panos.pano[get(scene_name)].voice.is_global != 1,
+    stop_voice();
+  ); -->
+
+  set(pano_id,%1);
+  txtadd(scene_name,scene_,%1);
+
+  if(config.panos.pano[get(scene_name)].sound.enabled == 0 OR (settings.sound_on == true AND config.panos.pano[get(scene_name)].sound.url != current_sound_url) ,
+    pause_sound();
+  );
+
+
+  if(blend_mode === null,
+    copy(blend_mode,blendmodes[blend0].blend);
+  );
+
+  if(%2 == 1 ,
+    loadscene(get(scene_name),null,KEEPVIEW|MERGE,BLEND(0.5, easeInCubic));
+    ,
+    loadscene(get(scene_name),null,MERGE,get(blend_mode));
+    set(view.hlookat,get(config.panos.pano[get(xml.scene)].view.hlookat));
+    set(view.vlookat,get(config.panos.pano[get(xml.scene)].view.vlookat));
+    set(view.fov,get(config.panos.pano[get(xml.scene)].view.fov));
+  );
+
+  copy(blend_mode,blendmodes[blend0].blend);
+
+  if(displayMode.online == true,
+    set(modify_id_cmd,get(js_modify_url));
+    txtadd(modify_id_cmd,"('");
+    txtadd(modify_id_cmd,get(pano_id));
+    txtadd(modify_id_cmd,"')");
+    jscall(get(modify_id_cmd));
+
+    set(config.feature.show_comment,get(temp_show_comments));
+    show_pano_comments();
+  );
+
+
+  update_pano_change_ui();
+</action>
+
+<action name="setup_layout">
+
+  set(feature_offset,5);
+  set(feature_offset_size,45);
+
+  if(layer[fullscreen_layer].visible,
+    copy(layer[fullscreen_layer].y,feature_offset);
+    add(feature_offset,feature_offset_size);
+  );
+
+  if(layer[sound_layer].visible,
+    copy(layer[sound_layer].y,feature_offset);
+    add(feature_offset,feature_offset_size);
+  );
+
+  <!-- if(layer[voice_layer].visible,
+    copy(layer[voice_layer].y,feature_offset);
+    add(feature_offset,feature_offset_size);
+  ); -->
+
+
+  if(layer[vr_layer].visible,
+    copy(layer[vr_layer].y,feature_offset);
+    add(feature_offset,feature_offset_size);
+  );
+
+  if(layer[gyro_layer].visible,
+    copy(layer[gyro_layer].y,feature_offset);
+    add(feature_offset,feature_offset_size);
+  );
+
+
+
+  if(layer[logo_layer].visible == true ,
+    if(config.logo.align == 1 ,
+        set(layer[logo_layer].align,topleft);
+        set(layer[logo_layer].x,5);
+        if(layer[auth_layer].visible == true,
+          set(layer[logo_layer].y,30);
+          ,
+          set(layer[logo_layer].y,5);
+        );
+        ,
+
+        set(layer[logo_layer].align,bottomright);
+        set(layer[logo_layer].x,5);
+        if(config.feature.enable_like == 1,
+          set(layer[logo_layer].y,50);
+          ,
+          set(layer[logo_layer].y,5);
+        );
+    );
+  );
+
+
+
+
+  set(menu_offset,0);
+  if(config.panos.pano.count GT 1,
+    set(layer[thumbs_btn_container].x, get(menu_offset));
+    add(menu_offset,menu_btn_size);
+  );
+
+
+
+</action>
+
+
+<action name="setup_hotspot">
+
+  if(plugin[hotspot_container] === null,
+    addplugin(hotspot_container);
+    set(plutin[hostspot_container].zorder,100);
+    set(hotspot[hostspot_container].handcursor, true);
+  );
+
+  set(hotspot_count,get(config.panos.pano[get(xml.scene)].hotspots.hotspot.count));
+  for(set(i,0),i LT hotspot_count,inc(i),
+    if(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].type == 0,
+      set(hotspot_name,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].name));
+
+      ifnot(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].image_type==0,
+        addhotspot(get(hotspot_name));
+        set(hotspot[get(hotspot_name)].hotspot_type,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].type));
+        set(hotspot[get(hotspot_name)].linkedscene,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].linkedscene));
+        set(hotspot[get(hotspot_name)].keep_view,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].keep_view));
+        set(hotspot[get(hotspot_name)].target,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].target));
+        set(hotspot[get(hotspot_name)].ath,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].ath));
+        set(hotspot[get(hotspot_name)].atv,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].atv));
+        set(hotspot[get(hotspot_name)].show_txt,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].show_txt));
+        set(hotspot[get(hotspot_name)].image_type,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].image_type));
+        set(hotspot[get(hotspot_name)].is_blank,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].is_blank));
+        set(hotspot[get(hotspot_name)].link,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].url));
+        set(hotspot[get(hotspot_name)].blend,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].blend));
+        if(hotspot[get(hotspot_name)].link === null,
+          set(hotspot[get(hotspot_name)].link,"");
+        );
+        set(hotspot[get(hotspot_name)].scale, 0.5);
+        set(hotspot[get(hotspot_name)].capture, false);
+        set(hotspot[get(hotspot_name)].keep, false);
+        if(hotspot[get(hotspot_name)].blend === null,
+          set(hotspot[get(hotspot_name)].blend,1);
+        );
+        set(hotspot[get(hotspot_name)].blend,calc('blend'+config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].blend));
+        set(hotspot[get(hotspot_name)].handcursor, true);
+        set(hotspot[get(hotspot_name)].edge, center);
+        set(hotspot[get(hotspot_name)].target_name, get(hotspot_name));
+        set(hotspot[get(hotspot_name)].onclick, hotspot_action(););
+        set(hotspot[get(hotspot_name)].parent,' hotspot_container');
+
+
+
+        if(hotspot[get(hotspot_name)].image_type=="2",
+          set(hotspot_name_URL,get(config.panos.pano[get(scene_name)].hotspots.hotspot[get(hotspot_name)].image_url));
+          set(hotspot[get(hotspot_name)].url,get(hotspot_name_URL));
+          ,
+          set(hotspot[get(hotspot_name)].style_id,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].style_id));
+          hotspot[get(hotspot_name)].loadstyle(get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].style_id));
+
+        );
+      );
+
+      if(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].show_txt==1 OR config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].type==0,
+
+          set(hotspot_txt_name,get(hotspot_name));
+          txtadd(hotspot_txt_name,"_txt");
+          addhotspot(get(hotspot_txt_name));
+          set(hotspot[get(hotspot_txt_name)].hotspot_type,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].type));
+          set(hotspot[get(hotspot_txt_name)].linkedscene,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].linkedscene));
+          set(hotspot[get(hotspot_txt_name)].keep_view,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].keep_view));
+          set(hotspot[get(hotspot_txt_name)].target,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].target));
+          set(hotspot[get(hotspot_txt_name)].ath,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].ath));
+          set(hotspot[get(hotspot_txt_name)].atv,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].atv));
+          set(hotspot[get(hotspot_txt_name)].scale,1);
+          set(hotspot[get(hotspot_txt_name)].url,get(plugin_url.TEXT_SWF));
+          set(hotspot[get(hotspot_txt_name)].capture,false);
+          set(hotspot[get(hotspot_txt_name)].keep,false);
+          copy(hotspot[get(hotspot_txt_name)].target_name, hotspot_name);
+          set(hotspot[get(hotspot_txt_name)].blend,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].blend));
+          set(hotspot[get(hotspot_txt_name)].link,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].url));
+          if(hotspot[get(hotspot_txt_name)].link === null,
+            set(hotspot[get(hotspot_txt_name)].link,"");
+          );
+          set(hotspot[get(hotspot_txt_name)].blend,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].blend));
+          if(hotspot[get(hotspot_txt_name)].blend === null,
+            set(hotspot[get(hotspot_txt_name)].blend,1);
+          );
+          set(hotspot[get(hotspot_txt_name)].blend,calc('blend'+config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].blend));
+
+
+          if(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].type == 0,
+            set(hotspot[get(hotspot_txt_name)].html,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].linkedscene_name));
+            ,
+            set(hotspot[get(hotspot_txt_name)].html,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].target));
+          );
+
+
+          if(hotspot[get(hotspot_name)].height === null ,
+            set(hotspot[get(hotspot_name)].onloaded,
+              set(hotspot_loaded_txt_name,get(target_name));
+              txtadd(hotspot_loaded_txt_name,"_txt");
+              copy(hotspot[get(hotspot_loaded_txt_name)].oy,hotspot[get(target_name)].height);
+              div(hotspot[get(hotspot_loaded_txt_name)].oy,-4);
+              sub(hotspot[get(hotspot_loaded_txt_name)].oy,15);
+            );
+            ,
+            copy(hotspot[get(hotspot_txt_name)].oy,hotspot[get(hotspot_name)].height);
+            div(hotspot[get(hotspot_txt_name)].oy,-4);
+            sub(hotspot[get(hotspot_txt_name)].oy,15);
+          );
+
+          set(hotspot[get(hotspot_txt_name)].backgroundcolor,#000000);
+          set(hotspot[get(hotspot_txt_name)].backgroundalpha,0.5);
+          set(hotspot[get(hotspot_txt_name)].roundedge,5);
+          set(hotspot[get(hotspot_txt_name)].padding,5);
+          set(hotspot[get(hotspot_txt_name)].css,font-family:STXihei; font-size:12px; color:#ffffff;letter-spacing:1px;textAlign:center;);
+          set(hotspot[get(hotspot_txt_name)].edge,center);
+          set(hotspot[get(hotspot_txt_name)].show_txt,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].show_txt));
+          set(hotspot[get(hotspot_txt_name)].image_type,get(config.panos.pano[get(xml.scene)].hotspots.hotspot[get(i)].image_type));
+          set(hotspot[get(hotspot_txt_name)].onclick,hotspot_action(););
+
+          set(hotspot[get(hotspot_txt_name)].parent, 'hotspot_container');
+        );
+      );
+  );
+
+  hide_vr_hotspot();
+</action>
+<action name="hotspot_action">
+  if(hotspot_type == 0,
+
+
+    if(blend !== null,
+      copy(blend_mode,blendmodes[get(blend)].blend);
+      ,
+    );
+    if(keep_view == 0 AND blend == 0,
+      looktohotspot(get(name),60);
+    );
+    load_pano_by_id(get(linkedscene),get(keep_view));
+  );
+
+</action>
+
+
+
+<action name="setup_logo">
+    set(layer[logo_layer].crop,240|156|220|66);
+    layer[logo_layer].loadstyle(skin_style);
+    set(layer[logo_layer].scale,0.5);
+    set(layer[logo_layer].enabled,true);
+    set(layer[logo_layer].onclick,
+      show_Info();
+    );
+</action>
+
+<action name="setup_auth">
+    if(config.feature.show_auth == 1 ,
+        copy(layer[auth_layer].url,plugin_url.TEXT_SWF);
+        set(layer[auth_layer].autoWidth,true);
+        set(layer[auth_layer].autoHeight,true);
+        set(layer[auth_layer].background,false);
+        set(layer[auth_layer].textshadow,0.5);
+        set(layer[auth_layer].wordwrap,false);
+        set(layer[auth_layer].html,'作者：');
+        txtadd(layer[auth_layer].html,get(config.auth.auth_name));
+        set(layer[auth_layer].handcursor,true);
+        set(layer[auth_layer].enabled,true);
+        set(layer[auth_layer].x,5);
+        set(layer[auth_layer].y,5);
+        set(layer[auth_layer].css,color:#ffffff; font-family:STXihei; font-size:14px;);
+        set(layer[auth_layer].onclick,
+          show_Info();
+        );
+        ,
+        set(layer[auth_layer].visible,false);
+    );
+</action>
+
+<action name="show_Info">
+  set(showInfoJSON,'{"title":"');
+  txtadd(showInfoJSON,get(config.info.title));
+  txtadd(showInfoJSON,'","desc":"');
+  txtadd(showInfoJSON,get(config.info.desc));
+  txtadd(showInfoJSON,'","auth":"');
+  txtadd(showInfoJSON,get(config.auth.auth_name));
+  txtadd(showInfoJSON,'","contact":"');
+  txtadd(showInfoJSON,get(config.auth.contact));
+  txtadd(showInfoJSON,'"}');
+  jscall(calc(js_show_info + showInfoJSON + ')'));
+</action>
+<action name="print">
+    jscall('console.log("%1")');
+</action>
+
+<action name="showloading">
+	if(display.stereo == true,
+		set(layer[skin_loadingtext].visible, false);
+	  ,
+		set(layer[skin_loadingtext].visible, %1);
+	  );
+</action>
+
+<contextmenu keep="true" fullscreen="true"
+   enterfs="全屏"
+   exitfs="退出全屏"
+   separator="true"
+ >
+
+  <item name="copyright"
+    caption="720yun - 全景看世界"
+    enabled="true"
+    visible="false"
+    separator="true"
+    onclick="openurl(https://720yun.com);"
+  />
+
+
+  <item name="ccagreement"
+    caption="cc协议"
+    enabled="true"
+    visible="false"
+    separator="true"
+    onclick="set(ccurl,http://bbs.720yun.com/forum.php?mod=viewthread%26tid=34);unescape(ccurl);openurl(get(ccurl));"
+    />
+
+  <item name="normalView"
+    caption="正常视角"
+    onclick="cm_normal_view();"
+    separator="true"
+    />
+
+  <item name="planetView"
+    caption="小行星视角"
+    onclick="cm_littleplanet_view();"
+    separator="false"
+    />
+
+</contextmenu>
+
+
+<control mouse="moveto" keycodesin="16,65,107" keycodesout="17,89,90,109" bouncinglimits="true" />
+
+
+
+<action name="skin_view_look_straight">
+  delayedcall(2,
+    set(view.fovmax, get(config.panos.pano[get(scene_name)].view.fovmax));
+    set(view.fovmin, get(config.panos.pano[get(scene_name)].view.fovmin));
+    set(view.limitview,auto);
+  );
+</action>
+
+<action name="cm_normal_view">
+	<!-- skin_view_look_straight();
+	tween(view.architectural, 0.0, distance(1.0,0.5));
+	tween(view.pannini,       0.0, distance(1.0,0.5));
+	tween(view.distortion,    0.0, distance(1.0,0.5)); -->
+  tween(view.architectural, 0.0, 2);
+  tween(view.pannini,       0.0, 2);
+  tween(view.fisheye,       0.0, 2);
+  tween(view.fov,     get(config.panos.pano[get(scene_name)].view.fov), 2);
+  tween(view.vlookat, get(config.panos.pano[get(scene_name)].view.vlookat), 2);
+  skin_view_look_straight();
+</action>
+
+<action name="skin_view_fisheye">
+	skin_view_look_straight();
+	tween(view.architectural, 0.0,  distance(1.0,0.5));
+	tween(view.pannini,       0.0,  distance(1.0,0.5));
+	tween(view.distortion,    0.35, distance(1.0,0.5));
+</action>
+
+<action name="skin_view_architectural">
+	skin_view_look_straight();
+	tween(view.architectural, 1.0, distance(1.0,0.5));
+	tween(view.pannini,       0.0, distance(1.0,0.5));
+	tween(view.distortion,    0.0, distance(1.0,0.5));
+</action>
+
+<action name="skin_view_stereographic">
+	skin_view_look_straight();
+	tween(view.architectural, 0.0, distance(1.0,0.5));
+	tween(view.pannini,       0.0, distance(1.0,0.5));
+	tween(view.distortion,    1.0, distance(1.0,0.8));
+</action>
+
+<action name="skin_view_pannini">
+	skin_view_look_straight();
+	tween(view.architectural, 0.0, distance(1.0,0.5));
+	tween(view.pannini,       1.0, distance(1.0,0.8));
+	if(view.distortion LT 0.1,
+		tween(view.distortion, 1.0, distance(1.0,0.8));
+	  );
+</action>
+
+<action name="cm_littleplanet_view">
+	<!-- tween(view.architectural, 0.0, distance(1.0,0.5));
+	tween(view.pannini,       0.0, distance(1.0,0.5));
+	tween(view.distortion,    1.0, distance(1.0,0.8));
+	tween(view.fov,           150, distance(150,0.8));
+	tween(view.vlookat,        90, distance(100,0.8));
+	add(new_hlookat, view.hlookat, 123.0);
+	tween(view.hlookat, get(new_hlookat), distance(100,0.8));
+	skin_deeplinking_update_url(1.0); -->
+  tween(view.architectural, 0.0, 0.25);
+  tween(view.vlookat,  90, distance(179, 1.50), easeoutquad);
+  set(backtonormalfirst,false);
+  if(view.pannini       == true,  set(backtonormalfirst,true) );
+  if(view.stereographic == false, set(backtonormalfirst,true) );
+  if(backtonormalfirst, tween(view.fisheye, 0.0 ,distance(1.0, 0.25), easeoutquad, WAIT); );
+  set(view.pannini, false);
+  set(view.stereographic, true);
+  set(view.fovmax, 150);
+  tween(view.fisheye, 1.0, distance(1.0, 0.75), easeoutquad);
+  tween(view.fov,     150, distance(179, 0.75), easeoutquad);
+</action>
+
+
+<!-- HOTSPOT　STYLE-->
+<!-- <style name="new_spotd01" crop="0|0|100|100" url="%SWFPATH%/../krp/hotspotIcons/new_spotd01_gif.png" framewidth="100" frameheight="100" frame="0" lastframe="16"/>
+<style name="new_spotd02" crop="0|0|100|100" url="%SWFPATH%/../krp/hotspotIcons/new_spotd02_gif.png" framewidth="100" frameheight="100" frame="0" lastframe="16"/>
+<style name="new_spotd03" crop="0|0|100|100" url="%SWFPATH%/../krp/hotspotIcons/new_spotd03_gif.png" framewidth="100" frameheight="100" frame="0" lastframe="16"/>
+<style name="new_spotd04" crop="0|0|100|100" url="%SWFPATH%/../krp/hotspotIcons/new_spotd04_gif.png" framewidth="100" frameheight="100" frame="0" lastframe="16"/>
+<style name="new_spotd05" crop="0|0|100|100" url="%SWFPATH%/../krp/hotspotIcons/new_spotd05_gif.png" framewidth="100" frameheight="100" frame="0" lastframe="16"/>
+<style name="new_spotd06" crop="0|0|100|100" url="%SWFPATH%/../krp/hotspotIcons/new_spotd06_gif.png" framewidth="100" frameheight="100" frame="0" lastframe="16"/>
+<style name="new_spotd07" crop="0|0|100|100" url="%SWFPATH%/../krp/hotspotIcons/new_spotd07_gif.png" framewidth="100" frameheight="100" frame="0" lastframe="16"/>
+<style name="new_spotd08" crop="0|0|100|100" url="%SWFPATH%/../krp/hotspotIcons/new_spotd08_gif.png" framewidth="100" frameheight="100" frame="0" lastframe="16"/>
+<style name="new_spotd09" crop="0|0|100|100" url="%SWFPATH%/../krp/hotspotIcons/new_spotd09_gif.png" framewidth="100" frameheight="100" frame="0" lastframe="16"/>
+<style name="new_spotd10" crop="0|0|100|100" url="%SWFPATH%/../krp/hotspotIcons/new_spotd10_gif.png" framewidth="100" frameheight="100" frame="0" lastframe="16"/>
+<style name="new_spotd11" crop="0|0|100|100" url="%SWFPATH%/../krp/hotspotIcons/new_spotd11_gif.png" framewidth="100" frameheight="100" frame="0" lastframe="16"/> -->
+
+  <!-- HOTSPOT　STYLE-->
+  <style name="hotspot_4" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot1.png?2.2.7"/>
+  <style name="hotspot_5" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot2.png?2.2.7"/>
+  <style name="hotspot_6" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot3.png?2.2.7"/>
+  <style name="hotspot_7" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot4.png?2.2.7"/>
+  <style name="hotspot_8" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot5.png?2.2.7"/>
+  <style name="hotspot_9" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot6.png?2.2.7"/>
+  <style name="hotspot_10" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot7.png?2.2.7"/>
+  <style name="hotspot_11" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot8.png?2.2.7"/>
+  <style name="hotspot_12" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot9.png?2.2.7"/>
+  <style name="hotspot_13" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot10.png?2.2.7"/>
+  <style name="hotspot_14" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot11.png?2.2.7"/>
+  <style name="hotspot_15" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot12.png?2.2.7"/>
+  <style name="hotspot_16" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot13.png?2.2.7"/>
+  <style name="hotspot_17" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot14.png?2.2.7"/>
+  <style name="hotspot_18" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot15.png?2.2.7"/>
+  <style name="hotspot_19" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot16.png?2.2.7"/>
+  <style name="hotspot_20" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot17.png?2.2.7"/>
+  <style name="hotspot_21" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot18.png?2.2.7"/>
+  <style name="hotspot_22" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot19.png?2.2.7"/>
+  <style name="hotspot_23" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spotd1_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="9" onloaded="hotspot_animate();"/>
+  <style name="hotspot_24" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spotd2_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="9" onloaded="hotspot_animate();"/>
+  <style name="hotspot_25" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spotd3_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="9" onloaded="hotspot_animate();"/>
+  <style name="hotspot_26" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spotd4_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="9" onloaded="hotspot_animate();"/>
+  <style name="hotspot_27" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spotd5_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="9" onloaded="hotspot_animate();"/>
+  <style name="hotspot_28" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/static_link.png?2.2.7"/>
+  <style name="hotspot_29" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/static_gallery.png?2.2.7"/>
+  <style name="hotspot_30" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/static_video.png?2.2.7"/>
+  <style name="hotspot_31" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/static_txt.png?2.2.7"/>
+  <style name="hotspot_32" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/static_music.png?2.2.7"/>
+  <style name="hotspot_33" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd1_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="24" onloaded="hotspot_animate();"/>
+  <style name="hotspot_34" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd2_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="24" onloaded="hotspot_animate();"/>
+  <style name="hotspot_35" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd3_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="24" onloaded="hotspot_animate();"/>
+  <style name="hotspot_36" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd4_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="24" onloaded="hotspot_animate();"/>
+  <style name="hotspot_37" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd5_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="24" onloaded="hotspot_animate();"/>
+  <style name="hotspot_38" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd6_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="24" onloaded="hotspot_animate();"/>
+  <style name="hotspot_39" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd7_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="24" onloaded="hotspot_animate();"/>
+  <style name="hotspot_40" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd8_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="24" onloaded="hotspot_animate();"/>
+  <style name="hotspot_41" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd9_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="24" onloaded="hotspot_animate();"/>
+  <style name="hotspot_42" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd10_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="24" onloaded="hotspot_animate();"/>
+  <style name="hotspot_43" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd11_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="24" onloaded="hotspot_animate();"/>
+  <style name="hotspot_44" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd12_gif.png?2.2.7" framewidth="128" frameheight="128" frame="0" lastframe="24" onloaded="hotspot_animate();"/>
+  <style name="hotspot_45" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd1.png?2.2.7"/>
+  <style name="hotspot_46" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd2.png?2.2.7"/>
+  <style name="hotspot_47" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd3.png?2.2.7"/>
+  <style name="hotspot_48" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd4.png?2.2.7"/>
+  <style name="hotspot_49" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd5.png?2.2.7"/>
+  <style name="hotspot_50" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd6.png?2.2.7"/>
+  <style name="hotspot_51" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd7.png?2.2.7"/>
+  <style name="hotspot_52" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd8.png?2.2.7"/>
+  <style name="hotspot_53" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd9.png?2.2.7"/>
+  <style name="hotspot_54" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd10.png?2.2.7"/>
+  <style name="hotspot_55" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd11.png?2.2.7"/>
+  <style name="hotspot_56" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/new_spotd12.png?2.2.7"/>
+  <style name="hotspot_57" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot20.png?2.2.7"/>
+  <style name="hotspot_58" crop="0|0|128|128" url="https://ssl-player.720static.com/@/krp/hotspot/v2/spot21.png?2.2.7"/>
+
+
+<!-- hotspot animation action -->
+<!-- <action name="hotspot_animate">
+  inc(hotspot[%1].frame,1,get(hotspot[%1].lastframe),0);
+  mul(xpos,hotspot[%1].frame,hotspot[%1].frameheight);
+  txtadd(hotspot[%1].crop,get(xpos),'|0|',get(hotspot[%1].framewidth),'|',get(hotspot[%1].frameheight));
+  delayedcall(%1,0.035, hotspot_animate(%1););
+</action> -->
+<!-- hotspot animation action -->
+  <action name="hotspot_animate">
+    inc(frame,1,get(lastframe),0);
+    mul(ypos,frame,frameheight);
+    txtadd(crop,'0|',get(ypos),'|',get(framewidth),'|',get(frameheight));
+    delayedcall(0.03, if(loaded, hotspot_animate() ); );
+  </action>
+
+<!-- the automatic running (autorun=preinit) install action -->
+  <action name="showtext_install" autorun="preinit">
+    <!-- redirect the build-in 'showtext' action to the 'showtext_xml' action: -->
+    set(showtext, action(showtext_xml,%%1,%%2) );
+    <!-- initialize internal variables -->
+    set(showtext_style, DEFAULT);
+    set(showtext_prevstyle, null);
+    set(showtext_text, '');
+    set(showtext_prevtext, '');
+    set(showtext_timeout, 0.1);
+    set(showtext_fadeout, 0.0);
+    set(showtext_clipping, false);
+  </action>
+
+
+  <action name="showtext_xml">
+    set(showtext_style, DEFAULT);
+    if(%2 != null, ifnot(textstyle[%2], trace('textstyle "%2" not found'); , set(showtext_style,%2)); );
+
+    set(showtext_text, %1);
+    if(showtext_text != showtext_prevtext,
+      copy(showtext_prevtext, showtext_text);
+      showtext_createnewtext();
+      ,
+      delayedcall(showtext_timer, get(showtext_timeout), showtext_hide() );
+      );
+  </action>
+
+
+  <action name="showtext_createnewtext">
+    <!-- stop running mouse and alpha update calls -->
+    stopdelayedcall(showtext_mouseupdates);
+    stoptween(layer[showtext_tf].alpha);
+
+    <!-- remove the old textfield when the style has changed -->
+    if(showtext_style != showtext_prevstyle,
+      copy(showtext_prevstyle, showtext_style);
+      removelayer(showtext_tf);
+      );
+
+    <!-- create a new textfield plugin layer -->
+    addlayer(showtext_tf);
+
+    <!-- create 'shortcut' variables (tf,ts) for faster access -->
+    copy(tf, layer[showtext_tf]);
+    copy(ts, textstyle[get(showtext_style)]);
+
+    <!-- get the position settings -->
+    if(ts.origin  !== null, copy(ts_origin,  ts.origin),  set(ts_origin, 'cursor'));
+    if(ts.edge    !== null, copy(ts_edge,    ts.edge),    set(ts_edge, 'bottom'));
+    if(ts.xoffset !== null, copy(ts_xoffset, ts.xoffset), set(ts_xoffset, 0));
+    if(ts.yoffset !== null, copy(ts_yoffset, ts.yoffset), set(ts_yoffset, -3));
+
+    <!-- set the position settings -->
+    if(ts_origin == 'cursor',
+      set(tf.align, 'lefttop');
+      showtext_movetomouse();
+      ,
+      copy(tf.align, ts_origin);
+      );
+    copy(tf.edge, ts_edge);
+    copy(tf.ox, ts_xoffset);
+    copy(tf.oy, ts_yoffset);
+
+    <!-- get the font settings -->
+    if(ts.font      !== null, copy(ts_font,      ts.font),      set(ts_font, 'Times'));
+    if(ts.fontsize  !== null, copy(ts_fontsize,  ts.fontsize),  set(ts_fontsize, 12.0));
+    if(ts.bold      !== null, copy(ts_bold,      ts.bold),      set(ts_bold, true));
+    if(ts.italic    !== null, copy(ts_italic,    ts.italic),    set(ts_italic, false));
+    if(ts.textcolor !== null, copy(ts_textcolor, ts.textcolor), set(ts_textcolor, 0x000000));
+    if(ts.textalign !== null, copy(ts_textalign, ts.textalign), set(ts_textalign, 'left'));
+
+    <!-- use the font settings to build the CSS style -->
+    set(tf_css, '');
+    tohex(ts_textcolor, '#', 6);
+    txtadd(tf_css, 'font-family:',get(ts_font),'; font-size:',get(ts_fontsize),'px; color:',get(ts_textcolor),'; ');
+    if(ts_textalign != 'none', txtadd(tf_css, get(tf_css), 'text-align:',get(ts_textalign),'; '));
+    if(ts_bold,   txtadd(tf_css, 'font-weight:bold; '));
+    if(ts_italic, txtadd(tf_css, 'font-style:italic; '));
+    if(ts.css !== null, txtadd(tf_css, get(ts.css)));
+    copy(tf.css, tf_css);
+
+    <!-- size settings -->
+    if(ts.width   !== null, copy(tf.width,   ts.width));
+    if(ts.height  !== null, copy(tf.height,  ts.height));
+    if(ts.vcenter !== null, copy(tf.vcenter, ts.vcenter));
+    if(ts.padding !== null, copy(tf.padding, ts.padding), set(tf.padding,1));
+
+    <!-- background, border, shadow settings -->
+    if(ts.background      !== null, copy(tf.background,      ts.background));
+    if(ts.backgroundcolor !== null, copy(tf.backgroundcolor, ts.backgroundcolor));
+    if(ts.backgroundalpha !== null, copy(tf.backgroundalpha, ts.backgroundalpha));
+    if(ts.border          !== null, copy(tf.border,          ts.border), set(tf.border,true));
+    if(ts.bordercolor     !== null, copy(tf.bordercolor,     ts.bordercolor));
+    if(ts.borderalpha     !== null, copy(tf.borderalpha,     ts.borderalpha));
+    if(ts.borderwidth     !== null, copy(tf.borderwidth,     ts.borderwidth));
+    if(ts.roundedge       !== null, copy(tf.roundedge,       ts.roundedge));
+    if(ts.shadow          !== null, copy(tf.shadow,          ts.shadow));
+    if(ts.shadowrange     !== null, copy(tf.shadowrange,     ts.shadowrange));
+    if(ts.shadowangle     !== null, copy(tf.shadowangle,     ts.shadowangle));
+    if(ts.shadowcolor     !== null, copy(tf.shadowcolor,     ts.shadowcolor));
+    if(ts.shadowalpha     !== null, copy(tf.shadowalpha,     ts.shadowalpha));
+    if(ts.textshadow      !== null, copy(tf.textshadow,      ts.textshadow));
+    if(ts.textshadowrange !== null, copy(tf.textshadowrange, ts.textshadowrange));
+    if(ts.textshadowangle !== null, copy(tf.textshadowangle, ts.textshadowangle));
+    if(ts.textshadowcolor !== null, copy(tf.textshadowcolor, ts.textshadowcolor));
+    if(ts.textshadowalpha !== null, copy(tf.textshadowalpha, ts.textshadowalpha));
+
+    <!-- showing settings -->
+    if(ts.alpha      !== null, copy(ts_alpha,      ts.alpha),      set(ts_alpha, 1.0));
+    if(ts.showtime   !== null, copy(ts_showtime,   ts.showtime),   set(ts_showtime, 0.1));
+    if(ts.fadetime   !== null, copy(ts_fadetime,   ts.fadetime),   set(ts_fadetime, 0.0));
+    if(ts.fadeintime !== null, copy(ts_fadeintime, ts.fadeintime), set(ts_fadeintime, 0.0));
+    copy(showtext_timeout, ts_showtime);
+    copy(showtext_fadeout, ts_fadetime);
+    if(ts_fadeintime GT 0,
+      set(tf.alpha, 0.0);
+      tween(layer[showtext_tf].alpha, get(ts_alpha), get(ts_fadeintime), linear);
+      ,
+      copy(tf.alpha, ts_alpha);
+      );
+
+    if(ts.noclip !== null, copy(showtext_clipping,ts.noclip), set(showtext_clipping, true));
+
+    if(showtext_clipping,
+      set(tf.onloaded,    showtext_do_clipping() );
+      set(tf.onautosized, showtext_do_clipping() );
+      );
+
+    <!-- special flash-only settings -->
+    if(ts.embeddedfonts !== null, copy(tf.embeddedfonts, ts.embeddedfonts));
+    if(ts.effect        !== null, copy(tf.effect,        ts.effect));
+    if(ts.blendmode     !== null, copy(tf.blendmode,     ts.blendmode));
+
+    <!-- set the text and the basic settings to start showing the textfield -->
+    copy(tf.html, showtext_text);
+    set(tf.enabled, false);
+    set(tf.zorder, 3000);
+    if(ts.parent, copy(tf.parent, ts.parent) );
+    set(tf.url,get(plugin_url.TEXT_SWF));
+
+
+    <!-- remove the shortcut variables -->
+    delete(ts);
+    delete(tf);
+
+    <!-- start the text-hiding timer -->
+    delayedcall(showtext_timer, get(showtext_timeout), showtext_hide() );
+  </action>
+
+
+  <action name="showtext_do_clipping">
+    if(showtext_clipping,
+      layer[showtext_tf].updatepos();
+      copy(tf_px, layer[showtext_tf].pixelx);
+      copy(tf_py, layer[showtext_tf].pixely);
+      if(tf_px LT 0,
+        sub(layer[showtext_tf].x, tf_px);
+        ,
+        add(tf_rightedge, tf_px, layer[showtext_tf].pixelwidth);
+        if(tf_rightedge GE stagewidth, sub(tf_rightedge,stagewidth); sub(layer[showtext_tf].x,tf_rightedge); );
+        );
+      if(tf_py LT 0,
+        sub(layer[showtext_tf].y,  tf_py);
+        ,
+        add(tf_bottomedge, tf_py, layer[showtext_tf].pixelheight);
+        if(tf_bottomedge GE stageheight, sub(tf_bottomedge,stageheight); sub(layer[showtext_tf].y,tf_bottomedge); );
+        );
+      );
+  </action>
+
+
+  <action name="showtext_movetomouse">
+    copy(layer[showtext_tf].x, mouse.stagex);
+    copy(layer[showtext_tf].y, mouse.stagey);
+    showtext_do_clipping();
+    delayedcall(showtext_mouseupdates, 0, showtext_movetomouse() );
+  </action>
+
+
+  <action name="showtext_hide">
+    if(layer[showtext_tf],
+      tween(layer[showtext_tf].alpha, 0.0, get(showtext_fadeout), linear,
+          stopdelayedcall(showtext_mouseupdates);
+          removelayer(showtext_tf);
+          set(showtext_text, '');
+          set(showtext_prevtext, '');
+        );
+      );
+  </action>
+
+
+
+  <textstyle name="tooltipTextStyle"
+           font="STXihei"   fontsize.no-mobile="14" fontsize.mobile="18" bold="false"
+             background="true" backgroundcolor="0x000000" backgroundalpha="0.667"
+             border="true" borderwidth="2" bordercolor="0xFFFFFF" roundedge="5"
+             textcolor="0xFFFFFF"
+             padding="6 10"
+             textalign="center"
+             yoffset.no-touch="-5"
+             yoffset.touch="-40"
+
+           />
+ <!-- some custom example blend modes ('blendmodes' is a custom xml structure) -->
+ <blendmodes name="blend0"               blend="OPENBLEND(0.5, 0.0, 0.75, 0.05, linear)" />
+ <blendmodes name="blend1"           blend="ZOOMBLEND(2.0, 2.0, easeInOutSine)" />
+ <blendmodes name="blend2"            blend="COLORBLEND(2.0, 0x000000, easeOutSine)" />
+ <blendmodes name="blend3"          blend="LIGHTBLEND(1.0, 0xFFFFFF, 2.0, linear)" />
+ <blendmodes name="blend4"        blend="SLIDEBLEND(1.0, 0.0, 0.2, linear)" />
+ <blendmodes name="blend5"             blend="SLIDEBLEND(1.0, 135.0, 0.4, linear)" />
+ <blendmodes name="blend6"          blend="OPENBLEND(1.0, 0.0, 0.2, 0.0, linear)" />
+ <blendmodes name="blend7"      blend="OPENBLEND(1.0, -1.0, 0.3, 0.0, linear)" />
+ <blendmodes name="blend8"      blend="OPENBLEND(1.0, -0.5, 0.3, 0.8, linear)" />
+
+
+
+
+<action name="dispose">
+  removelensflare("obj");
+  removeplugin(snow);
+  set(autorotate.enabled, true);
+</action>
+</krpano>
