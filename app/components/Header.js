@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import {createSelector} from 'reselect'
 
 import packageKrpano from '../native/packageKrpano'
 import AppBar from 'material-ui/AppBar';
@@ -25,11 +26,11 @@ class Header extends Component {
     }
 
     render() {
-        const {app} = this.props
-        if(app.showBack){
+        const {showBack,title} = this.props
+        if(showBack){
             return (
                 <AppBar
-                    title={app.title}
+                    title={title}
                     iconElementLeft={<IconButton onClick={this.onBackClick.bind(this)}><NavigationClose /></IconButton>}
                     iconElementRight={<FlatButton label="导出" onClick={this.onOutputClick.bind(this)}/>}
                 />
@@ -37,7 +38,7 @@ class Header extends Component {
         } else {
             return (
                 <AppBar
-                    title={app.title}
+                    title={title}
                     iconClassNameRight="muidocs-icon-navigation-expand-more"
                 />
             )
@@ -45,14 +46,15 @@ class Header extends Component {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {};
-}
+const selector = createSelector(
+    state=>state.app.title,
+    state=>state.app.showBack,
+    (title, showBack) => {
+        return {
+            title,
+            showBack
+        }
+    }
+)
 
-function mapStateToProps(state) {
-    return {
-        app: state.app
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(selector)(Header);

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import {createSelector} from 'reselect'
 
 import styles from '../styles/Home.css';
 
@@ -23,8 +24,6 @@ class Home extends Component {
         super(props);
         this.state = {
             showCreateFolderItem: false,
-            selectedFolderId: 0,
-
             showFolderMenu:false,
             posData:{},
             contextFolderData:{}
@@ -43,21 +42,22 @@ class Home extends Component {
     }
 
     onFolderItemClick(data, index) {
+        const {updateSelectedFolder} = this.props;
         this.setState({
             selectedFolderId:data.id
         })
+        updateSelectedFolder(data.id)
     } 
     
     renderFolderList() {
-        const { folder } = this.props;
-        const {selectedFolderId} = this.state;
+        const { folderList,folderSelectedId } = this.props;
         const icon = <i className="fa fa-folder" style={{ top: '4px' }} aria-hidden="true" />;
         const icon1 = <i className="fa fa-folder-open" style={{ top: '4px' }} aria-hidden="true" />;
         
         return (
             <List>
                 {
-                    folder.map((item, index) => <ListItem key={item.id} primaryText={item.title} leftIcon={item.id === selectedFolderId ? icon1 : icon} onClick={() => {this.onFolderItemClick(item,index)}} onContextMenu={(e)=>{this.onFolderContext(e,item)}}/>)
+                    folderList.map((item, index) => <ListItem key={item.id} primaryText={item.title} leftIcon={item.id === folderSelectedId ? icon1 : icon} onClick={() => {this.onFolderItemClick(item,index)}} onContextMenu={(e)=>{this.onFolderContext(e,item)}}/>)
                 }
             </List>
         );
@@ -172,25 +172,6 @@ let folderContextObj = {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        ...bindActionCreators(vrActions, dispatch),
-        ...bindActionCreators(sceneActions, dispatch),
-        ...bindActionCreators(folderActions, dispatch),
-        ...bindActionCreators(appActions,dispatch)
-    };
-}
-
-function mapStateToProps(state) {
-    return {
-        vr: state.vr,
-        scene: state.scene,
-        folder: state.folder,
-        nextId: getNextId(state.vr, 0),
-        nextFolderId: getNextId(state.folder, 2)
-    };
-}
-
 const getNextId = (arr, startIndex) => {
     let id = startIndex;
     arr.map(item => {
@@ -201,4 +182,34 @@ const getNextId = (arr, startIndex) => {
     return ++id;
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+function mapDispatchToProps(dispatch) {
+    return {
+        ...bindActionCreators(vrActions, dispatch),
+        ...bindActionCreators(sceneActions, dispatch),
+        ...bindActionCreators(folderActions, dispatch),
+        ...bindActionCreators(appActions,dispatch)
+    };
+}
+
+const selector = createSelector(
+    state => state.vr.list,
+    state => state.scene.list,
+    state => {
+        window.r_state = state
+        return state.folder.list
+    },
+    state => state.folder.selectId,
+
+    (list,sceneList,folderList,folderSelectedId)=>{
+        return {
+            vrList:list,
+            sceneList:sceneList,
+            folderList:folderList,
+            folderSelectedId:folderSelectedId,
+            nextVrId:getNextId(list,0),
+            nextFolderId:getNextId(folderList,2)
+        }
+    }
+)
+
+export default connect(selector,mapDispatchToProps)(Home);

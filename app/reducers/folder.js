@@ -1,13 +1,18 @@
-import { combineReducers } from 'redux';
-import { routerReducer as router } from 'react-router-redux';
-import { action_consts } from '../actions/folder';
-import Modals from '../modals';
+import { createReducer } from 'redux-act'
+import * as actions from '../actions/folder'
 
-export default function folder(state = [], action) {
-    switch (action.type) {
-    case action_consts.UPDATE_ALL_FOLDER:
-        return action.context;
-    default:
-        return state;
-    }
+const defaultState = {
+    list : [],
+    selectId : 0
 }
+
+const folder = createReducer({
+    [actions.updateAllFolder]:(state,list)=>{
+        return {...state,'list':list}
+    },
+    [actions.updateSelectedFolder]:(state,id)=>{
+        return {...state,'selectId':id}
+    }
+},defaultState)
+
+export default folder

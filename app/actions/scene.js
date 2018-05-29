@@ -1,18 +1,21 @@
 import Modals from '../modals';
+import { createAction } from 'redux-act'
 
-export const action_consts = {
-    ADD_SCENE: 'add_scene',
-    DEL_SCENE: 'delete_scene',
-    MODIFY_SCENE: 'modify_scene',
-    UPDATE_ALL: 'update_all'
-};
+// export const action_consts = {
+//     ADD_SCENE: 'add_scene',
+//     DEL_SCENE: 'delete_scene',
+//     MODIFY_SCENE: 'modify_scene',
+//     UPDATE_ALL: 'update_all'
+// };
 
-export function updateAllScene(arr) {
-    return {
-        type: action_consts.UPDATE_ALL,
-        context: arr
-    };
-}
+export const updateAllScene = createAction('update_all_scene')
+
+// export function updateAllScene(arr) {
+//     return {
+//         type: action_consts.UPDATE_ALL,
+//         context: arr
+//     };
+// }
 
 export function updateAllSceneFromLocal(){
     return (dispatch)=>{

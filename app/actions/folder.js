@@ -1,28 +1,25 @@
 import Modals from '../modals';
+import { createAction } from 'redux-act'
 
-export const action_consts = {
-    ADD_FOLDER: 'add_folder',
-    DELETE_FOLDER: 'delete_folder',
-    UPDATE_ALL_FOLDER: 'update_all_folder',
-    MODIFY_FOLDER: 'modify_folder',
-};
+const baseList =  [{
+    id: 0,
+    title: '默认文件夹'
+}];
 
-export function updateAllFolder(arr) {
-    const baseList = [{
-        id: 0,
-        title: '默认文件夹'
-    }];
-    return {
-        type: action_consts.UPDATE_ALL_FOLDER,
-        context: baseList.concat(arr)
-    };
+export const updateAllFolder = createAction('update_all_folder')
+export const updateSelectedFolder = createAction('update_selected_folder')
+
+export function updateSelected(id){
+    return (dispatch) => {
+        dispatch(updateSelectedFolder(id))
+    }
 }
 
 export function updateFromLocal() {
     return (dispatch) => {
         Modals.Folder.findAll()
             .then((list) => {
-                dispatch(updateAllFolder(list));
+                dispatch(updateAllFolder(baseList.concat(list)));
             });
     };
 }
@@ -32,7 +29,7 @@ export function addFolder(obj) {
         Modals.Folder.add(obj)
             .then(() => Modals.Folder.findAll())
             .then((list) => {
-                dispatch(updateAllFolder(list));
+                dispatch(updateAllFolder(baseList.concat(list)));
             });
     };
 }
@@ -42,7 +39,7 @@ export function deleteFolder(obj) {
         Modals.Folder.delete(obj.id)
             .then(() => Modals.Folder.findAll())
             .then((list) => {
-                dispatch(updateAllFolder(list));
+                dispatch(updateAllFolder(baseList.concat(list)));
             });
     };
 }
@@ -52,7 +49,7 @@ export function updateFolder(obj) {
         Modals.Folder.update(obj)
             .then(() => Modals.Folder.findAll())
             .then((list) => {
-                dispatch(updateAllFolder(list));
+                dispatch(updateAllFolder(baseList.concat(list)));
             });
     };
 }

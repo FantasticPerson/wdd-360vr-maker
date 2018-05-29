@@ -1,18 +1,7 @@
-import Modals from '../modals';
+import Modals from '../modals'
+import { createAction } from 'redux-act'
 
-export const action_consts = {
-    ADD_VR: 'add_vr',
-    DEL_VR: 'del_vr',
-    MODIFY_VR: 'modify_vr',
-    UPDATE_ALL: 'update_all_vr'
-};
-
-export function updateAllVr(arr) {
-    return {
-        type: action_consts.UPDATE_ALL,
-        context: arr
-    };
-}
+export const updateAllVr = createAction('update_all_vr')
 
 export function updateVrFromLocal(){
     return (dispatch)=>{

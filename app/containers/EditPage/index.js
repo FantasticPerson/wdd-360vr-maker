@@ -12,7 +12,6 @@ import getPathOfSceneHeadImg from '../../native/getPathOfSceneHeadImg'
 import {addHotspotToKrpano,selectHotspotInKrpano,addRainEffect,addSnowEffect} from '../../utils/krpanoFunctions'
 import styles from './index.css'
 import * as appActions from '../../actions/app'
-import * as groupActions from '../../actions/group'
 import * as vrActions from '../../actions/vr'
 import * as sceneActions from '../../actions/scene'
 import * as folderActions from '../../actions/folder'
@@ -56,7 +55,6 @@ class EditPage extends Component{
 
     componentDidUpdate(){
         const {previewSceneId} = this.state;
-        console.log(this.lastSceneId,previewSceneId)
 
         if(previewSceneId != this.lastSceneId){
             setTimeout(()=>{
@@ -380,7 +378,6 @@ class EditPage extends Component{
 function mapDispatchToProps(dispatch){
     return {
         ...bindActionCreators(appActions,dispatch),
-        ...bindActionCreators(groupActions,dispatch),
         ...bindActionCreators(sceneActions,dispatch),
         ...bindActionCreators(vrActions,dispatch),
         ...bindActionCreators(folderActions,dispatch),

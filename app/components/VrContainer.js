@@ -1,6 +1,7 @@
 import React,{Component} from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import {createSelector} from 'reselect'
 import { createHashHistory } from 'history'
 import generateVrFolder from '../native/generateVrFolder'
 import copyImageToScene from '../native/copyImageToScene'
@@ -32,9 +33,9 @@ class VrContainer extends Component{
     }
 
     getVrByFolderId(){
-        const {selectedFolderId,vr} = this.props
-        return vr.filter((item)=>{
-            return item.folderId === selectedFolderId
+        const {folderSelectedId,vrList} = this.props
+        return vrList.filter((item)=>{
+            return item.folderId === folderSelectedId
         })
     }
 
@@ -125,7 +126,6 @@ let vrModalContext={
     },
 
     onCancelClick(){
-        console.log('on cancel click')
         this.setState({
             showCreateVrModal:false,
             vrContextItem:null
@@ -138,8 +138,6 @@ let vrModalContext={
             const {nextVrId,nextSceneId,selectedFolderId,addScene,addVr} = this.props
 
             let previewImg = getPathOfPreviewImg(false,nextVrId,selectedFolderId,nextSceneId)
-
-            
 
             addVr({
                 id:nextVrId,
@@ -184,15 +182,6 @@ let vrModalContext={
     }
 }
 
-function mapStateToProps(state){
-    return {
-        vr:state.vr,
-        scene:state.scene,
-        nextVrId:getNextId(state.vr,0),
-        nextSceneId:getNextId(state.scene,0)
-    }
-}
-
 const getNextId = (arr, startIndex) => {
     let id = startIndex;
     arr.map(item => {
@@ -210,4 +199,19 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(VrContainer)
+const selector = createSelector(
+    state => state.vr.list,
+    state => state.scene.list,
+    state => state.folder.selectId,
+    (list,sceneList,folderSelectedId)=>{
+        return {
+            vrList:list,
+            sceneList:sceneList,
+            folderSelectedId:folderSelectedId,
+            nextVrId:getNextId(list,0),
+            nextSceneId:getNextId(sceneList,0)
+        }
+    }
+)
+
+export default connect(selector,mapDispatchToProps)(VrContainer)

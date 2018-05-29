@@ -1,20 +1,18 @@
-import { combineReducers } from 'redux';
-import { routerReducer as router } from 'react-router-redux';
-import {action_consts} from '../actions/app'
+import { createReducer } from 'redux-act'
+import * as actions from '../actions/app'
 
-export default function app(state={title:'VR 制作工具',showBack:false},action){
-    switch(action.type){
-        case action_consts.APP_UPDATE_TITLE:
-            return {
-                ...state,
-                title:action.context
-            }
-        case action_consts.APP_UPDATE_SHOW_BACK:
-            return {
-                ...state,
-                showBack:action.context
-            }
-        default:
-            return state
-    }
+const defaultState = {
+    title:'VR 制作工具',
+    showBack:false
 }
+
+const app = createReducer({
+    [actions.dUpdateAppTitle]:(state,title)=>{
+        return {...state,title:title}
+    },
+    [actions.dUpdataAppShowBack]:(state,showBack)=>{
+        return {...state,showBack:showBack}
+    }
+},defaultState)
+
+export default app

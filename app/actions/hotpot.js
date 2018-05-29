@@ -1,4 +1,10 @@
+import { createAction } from 'redux-act'
 import Modals from '../modals';
+import {addHotspotToKrpano,removeHotspotFromKrpano} from '../utils/krpanoFunctions'
+
+export const dAddHotpot = createAction('add_hotpot')
+export const dDeleteHotpot = createAction('delete_hotpot') 
+export const dUpdateAllHotpot = createAction('update_all_hotpot')
 
 export const action_consts = {
     ADD_HOTPOT: 'add_hotpot',
@@ -8,10 +14,9 @@ export const action_consts = {
 };
 
 export function updateAllHotpot(arr) {
-    return {
-        type: action_consts.UPDATE_ALL_HOTPOT,
-        context: arr
-    };
+    return (dispatch)=>{
+        dispatch(dUpdateAllHotpot(arr))
+    }
 }
 
 export function updateAllHotpotFromLocal(){
@@ -24,13 +29,16 @@ export function updateAllHotpotFromLocal(){
 }
 
 export function addHotpot(obj) {
-    return (dispatch) => {
+    return (dispatch,getState) => {
         Modals.Hotpot.add(obj)
         .then(()=>{
             return Modals.Hotpot.findAll()
         })
         .then((list)=>{
             dispatch(updateAllHotpot(list))
+            if(getState().krpano.obj){
+                addHotspotToKrpano(getState().krpano.obj,obj,true)
+            }
         })
     }
 }
