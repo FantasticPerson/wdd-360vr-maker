@@ -3,12 +3,12 @@ import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import openFolder from '../native/openFolder'
-import checkPicValid from '../native/checkPicValid'
-import copyFileToTmp from '../native/copyFileToTmp'
-import getPathOfPreviewImg from '../native/getPathOfPreviewImg'
+import openFolder from '../../native/openFolder'
+import checkPicValid from '../../native/checkPicValid'
+import copyFileToTmp from '../../native/copyFileToTmp'
+import getPathOfPreviewImg from '../../native/getPathOfPreviewImg'
 
-import styles from '../styles/CreateVrModal.css'
+import styles from '../../styles/CreateVrModal.css'
 
 export default class CreateVrModal extends Component {
     constructor() {

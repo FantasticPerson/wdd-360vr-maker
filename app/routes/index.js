@@ -1,8 +1,8 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router';
 import App from '../containers/App';
-import HomePage from '../containers/HomePage';
-import EditPage from '../containers/EditPage'
+import HomePage from '../containers/HomePage/index';
+import EditPage from '../containers/EditPage/index'
 
 export default () => (
     <App>

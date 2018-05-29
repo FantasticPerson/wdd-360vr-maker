@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {createSelector} from 'reselect'
 
-import styles from '../styles/Home.css';
+import styles from '../../styles/Home.css';
 
-import * as vrActions from '../actions/vr';
-import * as sceneActions from '../actions/scene';
-import * as folderActions from '../actions/folder';
-import * as appActions from '../actions/app'
+import * as vrActions from '../../actions/vr';
+import * as sceneActions from '../../actions/scene';
+import * as folderActions from '../../actions/folder';
+import * as appActions from '../../actions/app'
 
 import CreateVrModal from './CreateVrModal';
 import CreateFolderModal from './CreateFolderModal';
@@ -17,7 +17,7 @@ import VrContainer from './VrContainer'
 import { List, ListItem } from 'material-ui/List';
 
 import FolderContextMenu from './folderContextMenu'
-import MapToReactComponent from '../utils/mapToReactComponent'
+import MapToReactComponent from '../../utils/mapToReactComponent'
 
 class Home extends Component {
     constructor(props) {
