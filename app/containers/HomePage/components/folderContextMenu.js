@@ -1,6 +1,6 @@
 import React,{Component} from 'react'
-import ContextModal from '../../components/ContextModal'
-import styles from '../../styles/folderContextMenu.css'
+import ContextModal from '../../../components/ContextModal'
+import styles from '../../../styles/folderContextMenu.css'
                                     
 export default class FolderContextMenu extends Component{
 

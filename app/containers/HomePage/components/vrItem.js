@@ -1,5 +1,5 @@
 import React,{Component} from 'react'
-import styles from '../../styles/vrItem.css'
+import styles from '../../../styles/vrItem.css'
 
 export default class VrItem extends Component{
     constructor(){

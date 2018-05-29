@@ -3,20 +3,20 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {createSelector} from 'reselect'
 import { createHashHistory } from 'history'
-import generateVrFolder from '../../native/generateVrFolder'
-import copyImageToScene from '../../native/copyImageToScene'
-import getScenePath from '../../native/getScenePath'
+import generateVrFolder from '../../../native/generateVrFolder'
+import copyImageToScene from '../../../native/copyImageToScene'
+import getScenePath from '../../../native/getScenePath'
 
 import FlatButton from 'material-ui/FlatButton';
 
-import styles from '../../styles/VrContainer.css'
-import * as vrActions from '../../actions/vr'
-import * as sceneActions from '../../actions/scene'
+import styles from '../../../styles/VrContainer.css'
+import * as vrActions from '../../../actions/vr'
+import * as sceneActions from '../../../actions/scene'
 import CreateVrModal from './CreateVrModal'
 import VrItem from './vrItem'
-import getPathOfPreviewImg from '../../native/getPathOfPreviewImg'
+import getPathOfPreviewImg from '../../../native/getPathOfPreviewImg'
 import VrContextMenu from './VrContextMenu'
-import mapToReactComponent from '../../utils/mapToReactComponent'
+import mapToReactComponent from '../../../utils/mapToReactComponent'
 
 class VrContainer extends Component{
     constructor(){

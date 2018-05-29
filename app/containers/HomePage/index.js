@@ -10,13 +10,13 @@ import * as sceneActions from '../../actions/scene';
 import * as folderActions from '../../actions/folder';
 import * as appActions from '../../actions/app'
 
-import CreateVrModal from './CreateVrModal';
-import CreateFolderModal from './CreateFolderModal';
-import VrContainer from './VrContainer'
+import CreateVrModal from './components/CreateVrModal';
+import CreateFolderModal from './components/CreateFolderModal';
+import VrContainer from './components/VrContainer'
 
 import { List, ListItem } from 'material-ui/List';
 
-import FolderContextMenu from './folderContextMenu'
+import FolderContextMenu from './components/folderContextMenu'
 import MapToReactComponent from '../../utils/mapToReactComponent'
 
 class Home extends Component {
