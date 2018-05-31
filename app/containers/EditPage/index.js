@@ -11,24 +11,24 @@ import EditSceneContainer from '../../components/editSceneContainer'
 import getPathOfHotSpotIconPath from '../../native/getHotspotIconPath'
 import getPathOfSceneHeadImg from '../../native/getPathOfSceneHeadImg'
 import {addHotspotToKrpano,selectHotspotInKrpano,addRainEffect,addSnowEffect} from '../../utils/krpanoFunctions'
-import styles from './index.css'
+import styles from '../../styles/EditPage.css'
 import * as appActions from '../../actions/app'
 import * as vrActions from '../../actions/vr'
 import * as sceneActions from '../../actions/scene'
 import * as folderActions from '../../actions/folder'
 import * as hotpotActions from '../../actions/hotpot'
 
+import EditHotSpot from './containers/EditHotpot'
+
 class EditPage extends Component{
     constructor(){
         super()
         this.state = {
             vrId : -1,
-            previewSceneId:-10,
             editType : 0,
             editHotpot:false,
             selectSceneId:-1
         }
-        this.krpano = null
         this.hotspots = []
         this.selectedHotspotId = null
         this.lastSceneId = null
@@ -40,7 +40,6 @@ class EditPage extends Component{
         const {updateAppTitle,updateAppShowBack,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal} = this.props
         this.lastSceneId = this.state.previewSceneId
         updateAppTitle('编辑全景')
-        // findAddGroup()
 
         updateFromLocal();
         updateVrFromLocal();
@@ -54,31 +53,9 @@ class EditPage extends Component{
         })
     }
 
-    componentDidUpdate(){
-        const {previewSceneId} = this.state;
-
-        if(previewSceneId != this.lastSceneId){
-            setTimeout(()=>{
-                this.setState({editHotpot:false})
-                for(var i=0;i<this.hotspots.length;i++){
-                    if(this.hotspots[i].sceneId == previewSceneId){
-                        addHotspotToKrpano(this.krpano,this.hotspots[i].data, true)
-                    }
-                }
-            },500)
-        }
-        this.lastSceneId = previewSceneId
-    }
-
     setKrpano(krpano){
         this.krpano = krpano
         this.krpano.call('hide_view_frame();')
-    }
-
-    onChangeScene(sceneId){
-        this.setState({
-            previewSceneId:sceneId
-        })
     }
 
     getEditClassName(type){
@@ -114,6 +91,7 @@ class EditPage extends Component{
                 animated: true,
                 type: undefined,
                 typeProps: {},
+                action:''
             }
             addHotspotToKrpano(this.krpano, data, true)
             setTimeout(()=>{
@@ -140,16 +118,6 @@ class EditPage extends Component{
         )
     }
 
-    onSceneClick(id){
-        const {vrId,previewSceneId} = this.state
-        if(id == previewSceneId){
-            return 
-        }
-        this.setState({
-            selectSceneId:id
-        })
-    }
-
     renderEditHotPot2(){
         const {editHotpot,vrId,selectSceneId,previewSceneId} = this.state
         const {scene} = this.props
@@ -160,7 +128,7 @@ class EditPage extends Component{
                 margin:'5px',height:'100px',width:'80px',display:'inline-block',border:'1px solid #123',overflow:'hidden'
             } : {margin:'5px',height:'100px',width:'80px',display:'inline-block',overflow:'hidden'}
 
-            return <div onClick={()=>{this.onSceneClick(item.id)}} style={sceneItemStyle} key={item.id}><div style={{height:'80px',width:'80px',overflow:'hidden'}}><img style={{height:'100%'}} src={getPathOfSceneHeadImg(folderId,vrId,item.id)}/></div></div>
+            return <div style={sceneItemStyle} key={item.id}><div style={{height:'80px',width:'80px',overflow:'hidden'}}><img style={{height:'100%'}} src={getPathOfSceneHeadImg(folderId,vrId,item.id)}/></div></div>
         })
         if(editHotpot){
             return (
@@ -221,16 +189,7 @@ class EditPage extends Component{
         const {editType} = this.state
         if(editType == 0){
             return (
-                <div style={{padding:'5px'}}>
-                    <div style={{
-                        borderBottom:'1px solid #eee'
-                    }}>
-                        {this.renderEditTitle()}
-                    </div>
-                    <div>
-                        {this.renderEditHotPot2()}
-                    </div>
-                </div>
+                <EditHotSpot></EditHotSpot>
             )
         }
     }
@@ -326,6 +285,29 @@ class EditPage extends Component{
         }
     }
 
+    renderLeftBtns(){
+        return (
+            <div className={styles.leftBar}>
+                <div className={styles.btn}>
+                    <i className="fa fa-eye"></i>
+                    <p>视角</p>
+                </div>
+                <div className={this.getEditClassName(0)} onClick={()=>{this.onEditClick(0)}}>
+                    <i className="fa fa-dot-circle-o"></i>
+                    <p>热点</p>
+                </div>
+                <div className={this.getEditClassName(1)} onClick={()=>{this.onEditClick(1)}}>
+                    <i className="fa fa-music"></i>
+                    <p>音乐</p>
+                </div>
+                <div className={this.getEditClassName(2)} onClick={()=>{this.onEditClick(2)}}>
+                    <i className="fa fa-magic"></i>
+                    <p>特效</p>
+                </div>
+            </div>
+        )
+    }
+
     render(){
         const {vrId,previewSceneId} = this.state
         const {vrList} = this.props
@@ -335,30 +317,13 @@ class EditPage extends Component{
         vrItem = vrItem || {}
         return (
             <div className={styles.container}>
-                <div className={styles.leftBar}>
-                    <div className={styles.btn}>
-                        <i className="fa fa-eye"></i>
-                        <p>视角</p>
-                    </div>
-                    <div className={this.getEditClassName(0)} onClick={()=>{this.onEditClick(0)}}>
-                        <i className="fa fa-dot-circle-o"></i>
-                        <p>热点</p>
-                    </div>
-                    <div className={this.getEditClassName(1)} onClick={()=>{this.onEditClick(1)}}>
-                        <i className="fa fa-music"></i>
-                        <p>音乐</p>
-                    </div>
-                    <div className={this.getEditClassName(2)} onClick={()=>{this.onEditClick(2)}}>
-                        <i className="fa fa-magic"></i>
-                        <p>特效</p>
-                    </div>
-                </div>
+                {this.renderLeftBtns()}
                 <div className={styles.content}>
                     <div className={styles.panoContainer}>
                         <PanoContainer previewSceneId={previewSceneId} setKrpano={this.setKrpano.bind(this)} folderId={vrItem.folderId} vrId={vrId}></PanoContainer>
                     </div>
                     <div className={styles.sceneContainer}>
-                        <EditSceneContainer previewSceneId={previewSceneId} changeScene={this.onChangeScene.bind(this)} vrId={vrId}></EditSceneContainer>
+                        <EditSceneContainer previewSceneId={previewSceneId} vrId={vrId}></EditSceneContainer>
                     </div>
                 </div>
                 <div className={styles.rightBar}>

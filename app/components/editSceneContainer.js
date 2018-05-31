@@ -26,37 +26,18 @@ class EditSceneContainer extends Component{
         },50)
     }
 
-    filterScene() {
-        const {vrId,sceneList} = this.props
-        return sceneList.filter((item)=>{
-            return item.vrid == vrId
-        })
-    }
-
     onSceneClick(id){
-        let folderId = this.findFolderId()
-        const {updateSceneSelected,vrId} = this.props
+        const {updateSceneSelected,vrId,folderId} = this.props
         updateSceneSelected(id,vrId,folderId)
-    }
-
-    findFolderId(){
-        const {vrId,vrList} = this.props
-        let item = vrList.find((item)=>{
-            return item.id == vrId
-        })
-        return item ? item.folderId : -1
     }
     
     render(){
-        const {modifyScene,addScene,nextSceneId,sceneSelected} = this.props
-        const {vrId} = this.props
-        let folderId = this.findFolderId()
-        let sceneArr = this.filterScene()
+        const {modifyScene,addScene,nextSceneId,sceneSelected,folderId,vrId,sceneList} = this.props
 
         return (
             <div className={styles.container}>
                 <div className={styles.content}>
-                    <SceneList changeScene={this.onSceneClick.bind(this)} previewSceneId={sceneSelected} nextSceneId={nextSceneId} modifyScene={modifyScene} addScene={addScene} sceneList={sceneArr} vrId ={vrId} folderId={folderId}></SceneList>
+                    <SceneList changeScene={this.onSceneClick.bind(this)} previewSceneId={sceneSelected} nextSceneId={nextSceneId} modifyScene={modifyScene} addScene={addScene} sceneList={sceneList} vrId ={vrId} folderId={folderId}></SceneList>
                 </div>
             </div>
         )
@@ -73,14 +54,32 @@ const selector = createSelector(
     state => state.scene.list,
     state => state.scene.sceneSelected,
     state => state.vr.list,
-    (sceneList,sceneSelected,vrList) => {
+    state => state.router.location.pathname,
+    (sceneList,sceneSelected,vrList,pathname) => {
         return {
-            sceneList:sceneList,
+            sceneList:filterScene(pathname,sceneList),
             vrList:vrList,
             sceneSelected:sceneSelected,
-            nextSceneId:getNextId(sceneList,'id',0)
+            nextSceneId:getNextId(sceneList,'id',0),
+            vrId:pathname.split('/')[2],
+            folderId:findFolderId(pathname,vrList)
         }
     }
 )
+
+function findFolderId(pathname,vrList){
+    var vrId = pathname.split('/')[2]
+    let item = vrList.find((item)=>{
+        return item.id == vrId
+    })
+    return item ? item.folderId : -1
+}
+
+function filterScene(pathname,sceneList) {
+    var vrId = pathname.split('/')[2]
+    return sceneList.filter((item)=>{
+        return item.vrid == vrId
+    })
+}
 
 export default connect(selector,mapDispatchToProps)(EditSceneContainer);

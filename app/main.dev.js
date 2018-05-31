@@ -62,8 +62,8 @@ const initConfig = async () => {
     global.electron_app_scene_path = path.resolve(global.electron_app_assets_path, './scene');
     global.electron_app_tmp_path = path.resolve(global.electron_app_assets_path,'./tmp')
     global.electron_app_vr_path = path.resolve(global.electron_app_assets_path,'./vr')
-    global.electron_app_krp_path = path.resolve(global.electron_app_root_path,'./krp');
-    global.electron_app_krpano_path = path.resolve(global.electron_app_root_path,'./krpano');
+    global.electron_app_krp_path = path.resolve(global.electron_app_root_path,'../../krp');
+    global.electron_app_krpano_path = path.resolve(global.electron_app_root_path,'../../krpano');
 
 
     console.log(global.electron_app_assets_path);

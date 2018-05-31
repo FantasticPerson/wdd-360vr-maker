@@ -6,6 +6,9 @@ export const dAddHotpot = createAction('add_hotpot')
 export const dDeleteHotpot = createAction('delete_hotpot') 
 export const dUpdateAllHotpot = createAction('update_all_hotpot')
 
+import getPathOfHotSpotIconPath from '../native/getHotspotIconPath'
+import Hashid from '../utils/generateHashId'
+
 export const action_consts = {
     ADD_HOTPOT: 'add_hotpot',
     DEL_HOTPOT: 'delete_hotpot',
@@ -28,18 +31,36 @@ export function updateAllHotpotFromLocal(){
     }
 }
 
-export function addHotpot(obj) {
+export function addHotpot() {
     return (dispatch,getState) => {
-        Modals.Hotpot.add(obj)
-        .then(()=>{
-            return Modals.Hotpot.findAll()
-        })
-        .then((list)=>{
-            dispatch(updateAllHotpot(list))
-            if(getState().krpano.obj){
-                addHotspotToKrpano(getState().krpano.obj,obj,true)
+        var krpano = getState().krpano.obj
+        var selectSceneId = getState().scene.sceneSelected
+        if(krpano && selectSceneId != -10){
+
+            const _id = `hs${new Hashid().encode()}`
+            const ath = krpano.get('view.hlookat')
+            const atv = krpano.get('view.vlookat')
+            const icon = getPathOfHotSpotIconPath()
+            let data = {
+                _id,
+                ath,
+                atv,
+                icon,
+                animated: true,
+                type: undefined,
+                typeProps: '',
+                action:''
             }
-        })
+            
+            Modals.Hotpot.add({...data,sceneId:selectSceneId,id:data._id})
+            .then(()=>{
+                return Modals.Hotpot.findAll()
+            })
+            .then((list)=>{
+                dispatch(updateAllHotpot(list))
+                addHotspotToKrpano(krpano,data,true)
+            })
+        }
     }
 }
 

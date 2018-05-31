@@ -38,7 +38,7 @@ function mapDispatchToProps(dispatch){
 }
 
 function selector(){
-    return {}
+    return { }
 }
 
 export default connect(selector,mapDispatchToProps)(PanoContainer)

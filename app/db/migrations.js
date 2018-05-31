@@ -29,14 +29,25 @@ export default [
                 'name',
                 'folderId',
                 'vrId'
-            ],
-            hotpot:[
-                'id',
-                'name',
-                'targetId',
-                'sceneId'
             ]
+            
         },
         upgrade: null
+    },
+    {
+        ver: 2,
+        stores: {
+            hotpot:[
+                'id',
+                'type',
+                'typeProps',
+                'animated',
+                'icon',
+                'ath',
+                'atv',
+                'action',
+                'sceneId'
+            ]
+        }
     }
 ];
