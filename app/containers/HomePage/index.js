@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {createSelector} from 'reselect'
+import { List, ListItem } from 'material-ui/List';
 
 import styles from '../../styles/Home.css';
 
@@ -13,10 +14,8 @@ import * as appActions from '../../actions/app'
 import CreateVrModal from './components/CreateVrModal';
 import CreateFolderModal from './components/CreateFolderModal';
 import VrContainer from './components/VrContainer'
-
-import { List, ListItem } from 'material-ui/List';
-
 import FolderContextMenu from './components/folderContextMenu'
+
 import MapToReactComponent from '../../utils/mapToReactComponent'
 
 class Home extends Component {

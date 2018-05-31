@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import FlatButton from 'material-ui/FlatButton';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+import {createSelector} from 'reselect'
 
 import Hashid from '../../utils/generateHashId'
 import PanoContainer from '../../components/panoContainer'
@@ -36,10 +37,10 @@ class EditPage extends Component{
     }
 
     componentDidMount(){
-        const {updateAppTitle,updateAppShowBack,findAddGroup,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal} = this.props
+        const {updateAppTitle,updateAppShowBack,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal} = this.props
         this.lastSceneId = this.state.previewSceneId
         updateAppTitle('编辑全景')
-        findAddGroup()
+        // findAddGroup()
 
         updateFromLocal();
         updateVrFromLocal();
@@ -59,10 +60,8 @@ class EditPage extends Component{
         if(previewSceneId != this.lastSceneId){
             setTimeout(()=>{
                 this.setState({editHotpot:false})
-                console.log(this.hotspots)
                 for(var i=0;i<this.hotspots.length;i++){
                     if(this.hotspots[i].sceneId == previewSceneId){
-                        console.log('addHotpot')
                         addHotspotToKrpano(this.krpano,this.hotspots[i].data, true)
                     }
                 }
@@ -88,7 +87,6 @@ class EditPage extends Component{
     }
 
     onEditClick(type){
-        console.log('on click')
         this.setState({editType:type})
         if(type == 0){
             if(this.krpano){
@@ -162,7 +160,6 @@ class EditPage extends Component{
                 margin:'5px',height:'100px',width:'80px',display:'inline-block',border:'1px solid #123',overflow:'hidden'
             } : {margin:'5px',height:'100px',width:'80px',display:'inline-block',overflow:'hidden'}
 
-            console.log(sceneItemStyle)
             return <div onClick={()=>{this.onSceneClick(item.id)}} style={sceneItemStyle} key={item.id}><div style={{height:'80px',width:'80px',overflow:'hidden'}}><img style={{height:'100%'}} src={getPathOfSceneHeadImg(folderId,vrId,item.id)}/></div></div>
         })
         if(editHotpot){
@@ -178,17 +175,17 @@ class EditPage extends Component{
     }
 
     fiterScene(){
-        const {scene} = this.props
+        const {sceneList} = this.props
         const {vrId,previewSceneId} = this.state
-        return scene.filter((item)=>{
+        return sceneList.filter((item)=>{
             return item.vrid == vrId && item.id !== previewSceneId
         })
     }
 
     findFolderId(){
-        const {vr} = this.props
+        const {vrList} = this.props
         const {vrId} = this.state
-        let item = vr.find((item)=>{
+        let item = vrList.find((item)=>{
             return item.id == vrId
         })
         return item ? item.folderId : -1
@@ -261,7 +258,6 @@ class EditPage extends Component{
 
     renderEditMusic(){
         const {editType} = this.state
-        console.log(editType)
         if(editType == 1){
             return (
                 <div style={{padding:'5px'}}>
@@ -332,8 +328,8 @@ class EditPage extends Component{
 
     render(){
         const {vrId,previewSceneId} = this.state
-        const {vr} = this.props
-        let vrItem = vr.find((item)=>{
+        const {vrList} = this.props
+        let vrItem = vrList.find((item)=>{
             return item.id ==  vrId
         })
         vrItem = vrItem || {}
@@ -385,13 +381,20 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-function mapStateToProps(state){
-    return {
-        pathname:state.router.location.pathname,
-        vr:state.vr,
-        hotpot:state.hotpot,
-        scene: state.scene,
-    }
-}
+const selector = createSelector(
+    state => state.vr.list,
+    state => state.hotpot.list,
+    state => state.scene.list,
+    state => state.router.location.pathname,
 
-export default connect(mapStateToProps,mapDispatchToProps)(EditPage)
+    (vrList,hotpotList,sceneList,pathname)=>{
+        return {
+            vrList : vrList,
+            hotpotList : hotpotList,
+            sceneList : sceneList,
+            pathname : pathname
+        }
+    }
+)
+
+export default connect(selector,mapDispatchToProps)(EditPage)

@@ -49,7 +49,7 @@ export default class CreateVrModal extends Component {
         .then(()=>{
             setTimeout(()=>{
                 this.setState({tmpImgReady:true})
-            },300)
+            },800)
         })
         .catch((err)=>{
             console.error(err)

@@ -50,15 +50,6 @@ export default class SceneList extends Component{
         }
     }
 
-    componentDidMount(){
-        setTimeout(()=>{
-            const {sceneList,changeScene} = this.props;
-            if(sceneList.length > 0){
-                changeScene(sceneList[0].id)
-            }
-        },50)
-    }
-
     onAddSceneClick(){
         this.setState({
             showCreateScene:true
