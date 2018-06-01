@@ -5,5 +5,5 @@ export default function getNextId(arr,key,startIndex){
             id = item[key]
         }
     })
-    return id
+    return ++id
 }

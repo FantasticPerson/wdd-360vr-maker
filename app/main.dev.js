@@ -65,10 +65,8 @@ const initConfig = async () => {
     global.electron_app_krp_path = path.resolve(global.electron_app_root_path,'../../krp');
     global.electron_app_krpano_path = path.resolve(global.electron_app_root_path,'../../krpano');
 
-
     console.log(global.electron_app_assets_path);
 };
-
 
 
 const initDir = async () => {

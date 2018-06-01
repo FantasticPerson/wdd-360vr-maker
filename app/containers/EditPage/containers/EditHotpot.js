@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect'
 import { bindActionCreators } from 'redux';
 import FlatButton from 'material-ui/FlatButton';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 
 import * as hotpotActions from '../../../actions/hotpot'
 import getPathOfSceneHeadImg from '../../../native/getPathOfSceneHeadImg'
@@ -10,20 +12,14 @@ import getPathOfSceneHeadImg from '../../../native/getPathOfSceneHeadImg'
 class EditHotSpot extends Component{
     constructor(){
         super()
-        this.state = {editHotpot:false}
+        this.state = {hotSpotType:1,sceneId:null}
     }
 
     render(){
         return (
             <div style={{padding:'5px'}}>
-                <div style={{
-                    borderBottom:'1px solid #eee'
-                }}>
-                    {this.renderEditTitle()}
-                </div>
-                <div>
-                    {this.renderEditHotPot()}
-                </div>
+                {this.renderHotpotList()}
+                {this.renderEditHotPot()}
             </div>
         )
     }
@@ -31,63 +27,109 @@ class EditHotSpot extends Component{
     onAddHotpotClick(){
         const {addHotpot} = this.props;
         addHotpot()
-        // const {vrId,previewSceneId} = this.state
-        // const _id = `hs${new Hashid().encode()}`
-        // const ath = this.krpano.get('view.hlookat')
-        // const atv = this.krpano.get('view.vlookat')
-        // const icon = getPathOfHotSpotIconPath()
-        // let data = {
-        //     _id,
-        //     ath,
-        //     atv,
-        //     icon,
-        //     animated: true,
-        //     type: undefined,
-        //     typeProps: {},
-        //     action:''
-        // }
-        // addHotspotToKrpano(this.krpano, data, true)
     }
 
-    renderEditTitle(){
-        const {editHotpot} = this.state
+    selectHotSpot(id){
+        const {updateHotspotSelect} = this.props
+        updateHotspotSelect(id)
+    }
 
-        if(!editHotpot){
+    handleTypeChange(event, index, value){
+        this.setState({hotSpotType:value});
+    }
+
+    handleScenClick(id){
+        this.setState({sceneId:id})
+    }
+
+    handleCloseEditHotspot(){
+        const {updateHotspotSelect} = this.props
+        updateHotspotSelect(null)
+    }
+
+    renderHotpotList(){
+        const {hotpotSelected} = this.props
+        if(hotpotSelected == null){
+            const {hotpotList} = this.props
+
+            let hotpotArr = hotpotList.map((item,i)=>{
+                return (
+                    <div key={item.id} onClick={()=>{this.selectHotSpot(item.id)}}>
+                        {item.id}
+                    </div>
+                )
+            })
+
             return (
-                <span>
-                    <i className='fa fa-dot-circle-o'></i>
-                    <span style={{
-                        marginLeft:'5px'
-                    }}>热点编辑</span> 
-                    <FlatButton label="添加热点" primary onClick={this.onAddHotpotClick.bind(this)} />
-                </span>
-            ) 
-        } else {
-            return (
-                <span>
-                    <i className='fa fa-dot-circle-o'></i>
-                    <span style={{
-                        marginLeft:'5px'
-                    }}>编辑</span>
-                </span>
+                <div style={{borderBottom:'1px solid #eee'}}>
+                    <span>
+                        <i className='fa fa-dot-circle-o'></i>
+                        <span style={{
+                            marginLeft:'5px'
+                        }}>热点编辑</span> 
+                        <FlatButton label="添加热点" primary onClick={this.onAddHotpotClick.bind(this)} />
+                    </span>
+                    <div>
+                        {`当前场景共有热点${hotpotList.length}个`}
+                    </div>
+                    <div>
+                        {hotpotArr}
+                    </div>
+                </div>  
             )
         }
     }
 
     renderEditHotPot(){
-        const {editHotpot} = this.state
-        const {sceneList,folderId,vrId,sceneSelected} = this.props
-        let sceneArr = sceneList.map((item)=>{
-            let sceneItemStyle = sceneSelected == item.id ? {
-                margin:'5px',height:'100px',width:'80px',display:'inline-block',border:'1px solid #123',overflow:'hidden'
-            } : {margin:'5px',height:'100px',width:'80px',display:'inline-block',overflow:'hidden'}
-
-            return <div style={sceneItemStyle} key={item.id}><div style={{height:'80px',width:'80px',overflow:'hidden'}}><img style={{height:'100%'}} src={getPathOfSceneHeadImg(folderId,vrId,item.id)}/></div></div>
-        })
-        if(editHotpot){
+        const {hotpotSelected} = this.props
+        if(hotpotSelected != null){
             return (
                 <div>
-                    <h1>选择一个场景</h1>
+                    <div style={{borderBottom:'1px solid #eee'}}>
+                        <span>
+                            <i className='fa fa-dot-circle-o'></i>
+                            <span style={{
+                                marginLeft:'5px',
+                                marginRight:'85px'
+                            }}>编辑</span>
+                            <FlatButton onClick={()=>{this.handleCloseEditHotspot()}} label="关闭" primary/>
+                        </span>
+                    </div>
+                    <div>
+                        <SelectField style={{width:'200px'}} floatingLabelText="热点类型" value={this.state.hotSpotType} onChange={(event, index, value)=>{this.handleTypeChange(event, index, value)}}
+                        >
+                            <MenuItem value={1} primaryText="切换" />
+                            <MenuItem value={2} primaryText="相册" />
+                            <MenuItem value={3} primaryText="文本" />
+                            <MenuItem value={4} primaryText="图文" />
+                            <MenuItem value={5} primaryText="音频" />
+                            <MenuItem value={6} primaryText="视频" />
+                        </SelectField>
+                        {this.renderSwitchScene()}
+                    </div>
+                    <div style={{position:'fixed',bottom:0}}>
+                        <FlatButton label="确定" primary onClick={this.onAddHotpotClick.bind(this)} />
+                        <FlatButton label="删除" secondary onClick={this.onAddHotpotClick.bind(this)} />
+                    </div>
+                </div>
+            )
+        }
+    }
+
+    renderSwitchScene(){
+        const {hotSpotType,sceneId} = this.state
+        if(hotSpotType == 1){
+            const {sceneList,folderId,vrId} = this.props
+            let sceneArr = sceneList.map((item)=>{
+                let sceneItemStyle = sceneId == item.id ? {
+                    margin:'5px',height:'80px',width:'80px',display:'inline-block',border:'3px solid blanchedalmond',overflow:'hidden'
+                } : {margin:'5px',height:'80px',width:'80px',display:'inline-block',overflow:'hidden'}
+
+                return <div onClick={()=>{this.handleScenClick(item.id)}} style={sceneItemStyle} key={item.id}><div style={{height:'80px',width:'80px',overflow:'hidden'}}><img style={{height:'100%'}} src={getPathOfSceneHeadImg(folderId,vrId,item.id)}/></div></div>
+            })
+            return (
+                <div>
+                    <h4>场景列表</h4>
                     <div>
                         {sceneArr}
                     </div>
@@ -103,19 +145,27 @@ const selector = createSelector(
     state => state.scene.list,
     state => state.router.location.pathname,
     state => state.scene.sceneSelected,
+    state => state.hotpot.selected,
 
-    (vrList,hotpotList,sceneList,pathname,sceneSelected)=>{
+    (vrList,hotpotList,sceneList,pathname,sceneSelected,hotpotSelected)=>{
         return {
             vrList : vrList,
-            hotpotList : hotpotList,
+            hotpotList : filterHotSpot(hotpotList,sceneSelected),
             sceneList : filterScene(sceneList,pathname,sceneSelected),
             pathname : pathname,
             vrId: pathname.split('/')[2],
             folderId:findFolderId(vrList,pathname),
-            sceneSelected:sceneSelected
+            sceneSelected:sceneSelected,
+            hotpotSelected:hotpotSelected
         }
     }
 )
+
+function filterHotSpot(list,sceneSelected){
+    return list.filter((item)=>{
+        return item.sceneId == sceneSelected
+    })
+}
 
 function filterScene(list,pathname,selectedSceneId){
     var vrId = pathname.split('/')[2]

@@ -37,13 +37,14 @@ class EditPage extends Component{
     }
 
     componentDidMount(){
-        const {updateAppTitle,updateAppShowBack,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal} = this.props
+        const {updateAppTitle,updateAppShowBack,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal,updateAllHotpotFromLocal} = this.props
         this.lastSceneId = this.state.previewSceneId
         updateAppTitle('编辑全景')
 
         updateFromLocal();
         updateVrFromLocal();
         updateAllSceneFromLocal();
+        updateAllHotpotFromLocal();
 
         updateAppShowBack(true)
 
