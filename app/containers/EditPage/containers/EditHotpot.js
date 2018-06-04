@@ -12,12 +12,12 @@ import getPathOfSceneHeadImg from '../../../native/getPathOfSceneHeadImg'
 class EditHotSpot extends Component{
     constructor(){
         super()
-        this.state = {hotSpotType:1,sceneId:null}
+        this.state = {hotSpotType:1,sceneId:null,isAdd:false}
     }
 
     render(){
         return (
-            <div style={{padding:'5px'}}>
+            <div style={{padding:'5px'}}> 
                 {this.renderHotpotList()}
                 {this.renderEditHotPot()}
             </div>
@@ -25,8 +25,7 @@ class EditHotSpot extends Component{
     }
 
     onAddHotpotClick(){
-        const {addHotpot} = this.props;
-        addHotpot()
+        this.setState({isAdd:true,sceneId:null})
     }
 
     selectHotSpot(id){
@@ -44,12 +43,34 @@ class EditHotSpot extends Component{
 
     handleCloseEditHotspot(){
         const {updateHotspotSelect} = this.props
+        this.setState({isAdd:false})
+        updateHotspotSelect(null)
+    }
+
+    onEditConfirmClick(){
+        const {isAdd,sceneId,hotSpotType} = this.state
+        if(isAdd){
+            if(sceneId != null){
+                const {addHotpot} = this.props;
+                if(hotSpotType == 1){
+                    console.log()
+                }
+                addHotpot({action:'switch',target:sceneId})
+            }
+            this.setState({isAdd:false})
+        }
+    }
+
+    onEditDeleteClick(){
+        const {delHotpot,hotpotSelected,updateHotspotSelect} = this.props 
+        delHotpot(hotpotSelected)
         updateHotspotSelect(null)
     }
 
     renderHotpotList(){
+        const {isAdd} = this.state
         const {hotpotSelected} = this.props
-        if(hotpotSelected == null){
+        if(hotpotSelected == null &&　!isAdd){
             const {hotpotList} = this.props
 
             let hotpotArr = hotpotList.map((item,i)=>{
@@ -81,8 +102,9 @@ class EditHotSpot extends Component{
     }
 
     renderEditHotPot(){
+        const {isAdd} = this.state
         const {hotpotSelected} = this.props
-        if(hotpotSelected != null){
+        if(hotpotSelected != null || isAdd){
             return (
                 <div>
                     <div style={{borderBottom:'1px solid #eee'}}>
@@ -108,8 +130,15 @@ class EditHotSpot extends Component{
                         {this.renderSwitchScene()}
                     </div>
                     <div style={{position:'fixed',bottom:0}}>
-                        <FlatButton label="确定" primary onClick={this.onAddHotpotClick.bind(this)} />
-                        <FlatButton label="删除" secondary onClick={this.onAddHotpotClick.bind(this)} />
+                        <FlatButton label="确定" onClick={()=>{
+                            this.onEditConfirmClick()
+                        }} primary/>
+                        {
+                            isAdd ? null :
+                            <FlatButton label="删除" onClick={()=>{
+                                this.onEditDeleteClick()
+                            }} secondary/>
+                        }
                     </div>
                 </div>
             )
@@ -130,7 +159,7 @@ class EditHotSpot extends Component{
             return (
                 <div>
                     <h4>场景列表</h4>
-                    <div>
+                    <div style={{width:'180px',margin: '0 auto'}}>
                         {sceneArr}
                     </div>
                 </div>

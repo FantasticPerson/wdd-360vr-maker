@@ -193,13 +193,11 @@ function mapDispatchToProps(dispatch) {
 const selector = createSelector(
     state => state.vr.list,
     state => state.scene.list,
-    state => {
-        window.r_state = state
-        return state.folder.list
-    },
+    state => state.folder.list,
     state => state.folder.selectId,
+    state => state.router.location.pathname,
 
-    (list,sceneList,folderList,folderSelectedId)=>{
+    (list,sceneList,folderList,folderSelectedId,pathname)=>{
         return {
             vrList:list,
             sceneList:sceneList,

@@ -1,7 +1,7 @@
 import { createAction } from 'redux-act'
 
 import Modals from '../modals';
-import {addHotspotToKrpano,removeHotspotFromKrpano,selectHotspotInKrpano} from '../utils/krpanoFunctions'
+import {addHotspotToKrpano,selectHotspotInKrpano,removeHotspotFromKrpano} from '../utils/krpanoFunctions'
 import getPathOfHotSpotIconPath from '../native/getHotspotIconPath'
 import Hashid from '../utils/generateHashId'
 
@@ -36,7 +36,6 @@ export function updateAllHotpotFromLocal(){
 }
 
 export function addHotpots(){
-    console.log('addHotpots')
     return (dispatch,getState)=>{
         var krpano = getState().krpano.obj
         var hotSpots = getState().hotpot.list
@@ -59,7 +58,7 @@ export function addHotpots(){
     }
 }
 
-export function addHotpot() {
+export function addHotpot(actionData) {
     return (dispatch,getState) => {
         var krpano = getState().krpano.obj
         var selectSceneId = getState().scene.sceneSelected
@@ -76,7 +75,7 @@ export function addHotpot() {
                 animated: true,
                 type: undefined,
                 typeProps: '',
-                action:''
+                action:JSON.stringify(actionData)
             }
             
             Modals.Hotpot.add({...data,sceneId:selectSceneId,id:data._id})
@@ -92,15 +91,19 @@ export function addHotpot() {
     }
 }
 
-export function delHotpot(obj) {
-    return (dispatch)=>{
-        Modals.Hotpot.delete(obj.id)
-        .then(()=>{
-            return Modals.Hotpot.findAll()
-        })
-        .then((list)=>{
-            dispatch(updateAllHotpot(list))
-        })
+export function delHotpot(id) {
+    return (dispatch,getState)=>{
+        var krpano = getState().krpano.obj
+            if(krpano){
+            Modals.Hotpot.delete(id)
+            .then(()=>{
+                return Modals.Hotpot.findAll()
+            })
+            .then((list)=>{
+                dispatch(updateAllHotpot(list))
+                removeHotspotFromKrpano(krpano,id)
+            })
+        }
     }
 }
 

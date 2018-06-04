@@ -19,16 +19,18 @@ class EditSceneContainer extends Component{
 
     componentDidMount(){
         setTimeout(()=>{
-            const {sceneList,updateSceneSelected} = this.props;
+            const {sceneList,updateSceneSelected,vrId,folderId} = this.props;
             if(sceneList.length > 0){
-                updateSceneSelected(sceneList[0].id)
+                updateSceneSelected(sceneList[0].id,vrId,folderId)
             }
         },50)
     }
 
-    onSceneClick(id){
-        const {updateSceneSelected,vrId,folderId} = this.props
-        updateSceneSelected(id,vrId,folderId)
+    sceneClickHandler(id){
+        const {onSceneClick} = this.props
+        // const {updateSceneSelected,vrId,folderId} = this.props
+        // updateSceneSelected(id,vrId,folderId)
+        onSceneClick(id)
     }
     
     render(){
@@ -37,7 +39,7 @@ class EditSceneContainer extends Component{
         return (
             <div className={styles.container}>
                 <div className={styles.content}>
-                    <SceneList changeScene={this.onSceneClick.bind(this)} previewSceneId={sceneSelected} nextSceneId={nextSceneId} modifyScene={modifyScene} addScene={addScene} sceneList={sceneList} vrId ={vrId} folderId={folderId}></SceneList>
+                    <SceneList changeScene={this.sceneClickHandler.bind(this)} previewSceneId={sceneSelected} nextSceneId={nextSceneId} modifyScene={modifyScene} addScene={addScene} sceneList={sceneList} vrId ={vrId} folderId={folderId}></SceneList>
                 </div>
             </div>
         )

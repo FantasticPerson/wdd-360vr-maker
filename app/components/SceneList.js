@@ -16,8 +16,10 @@ class SceneItem extends Component{
     }
 
     onItemClick(){
-        const {changeScene,data} = this.props
-        changeScene(data.id)
+        const {changeScene,data,previewSceneId} = this.props
+        if(previewSceneId != data.id){
+            changeScene(data.id)
+        }
     }
 
     render(){
