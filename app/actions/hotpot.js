@@ -37,8 +37,10 @@ export function updateAllHotpotFromLocal(){
 
 export function addHotpots(){
     return (dispatch,getState)=>{
+        console.log('addHotpots')
         var krpano = getState().krpano.obj
         var hotSpots = getState().hotpot.list
+        console.log(hotSpots)
         if(krpano && hotSpots.length){
             var sceneSelected = getState().scene.sceneSelected
             var hSpots = []

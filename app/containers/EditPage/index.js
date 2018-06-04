@@ -10,8 +10,8 @@ import PanoContainer from '../../components/panoContainer'
 import EditSceneContainer from '../../components/editSceneContainer'
 import getPathOfHotSpotIconPath from '../../native/getHotspotIconPath'
 import getPathOfSceneHeadImg from '../../native/getPathOfSceneHeadImg'
-import {addHotspotToKrpano,selectHotspotInKrpano,addRainEffect,addSnowEffect} from '../../utils/krpanoFunctions'
 import styles from '../../styles/EditPage.css'
+import {addHotspotToKrpano,selectHotspotInKrpano,addRainEffect,addSnowEffect} from '../../utils/krpanoFunctions'
 import * as appActions from '../../actions/app'
 import * as vrActions from '../../actions/vr'
 import * as sceneActions from '../../actions/scene'
@@ -46,12 +46,7 @@ class EditPage extends Component{
         updateAllSceneFromLocal();
         updateAllHotpotFromLocal();
 
-        updateAppShowBack(true)
-
-        let id = pathname.split('/')[2]
-        this.setState({
-            vrId:id
-        })
+        updateAppShowBack(true);
     }
 
     getEditClassName(type){
@@ -203,8 +198,8 @@ class EditPage extends Component{
     }
 
     render(){
-        const {vrId,previewSceneId} = this.state
-        const {vrList} = this.props
+        const {previewSceneId} = this.state
+        const {vrList,vrId} = this.props
         let vrItem = vrList.find((item)=>{
             return item.id ==  vrId
         })
@@ -214,7 +209,7 @@ class EditPage extends Component{
                 {this.renderLeftBtns()}
                 <div className={styles.content}>
                     <div className={styles.panoContainer}>
-                        <PanoContainer previewSceneId={previewSceneId} folderId={vrItem.folderId} vrId={vrId}></PanoContainer>
+                        <PanoContainer previewSceneId={previewSceneId}></PanoContainer>
                     </div>
                     <div className={styles.sceneContainer}>
                         <EditSceneContainer onSceneClick={this.onSceneClick.bind(this)} previewSceneId={previewSceneId} vrId={vrId}></EditSceneContainer>

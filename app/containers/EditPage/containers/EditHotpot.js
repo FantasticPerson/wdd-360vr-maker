@@ -24,6 +24,10 @@ class EditHotSpot extends Component{
         )
     }
 
+    resetState(){
+        this.setState({hotSpotType:1,sceneId:null,isAdd:false})
+    }
+
     onAddHotpotClick(){
         this.setState({isAdd:true,sceneId:null})
     }
@@ -128,6 +132,7 @@ class EditHotSpot extends Component{
                             <MenuItem value={6} primaryText="视频" />
                         </SelectField>
                         {this.renderSwitchScene()}
+                        {this.renderPicList()}
                     </div>
                     <div style={{position:'fixed',bottom:0}}>
                         <FlatButton label="确定" onClick={()=>{
@@ -139,6 +144,28 @@ class EditHotSpot extends Component{
                                 this.onEditDeleteClick()
                             }} secondary/>
                         }
+                    </div>
+                </div>
+            )
+        }
+    }
+
+    renderPicList(){
+        const {hotSpotType,sceneId} = this.state
+        if(hotSpotType == 2){
+            let sceneItemStyle = {margin:'5px',height:'80px',width:'80px',display:'inline-block',overflow:'hidden'}
+            let picArr = []
+            for(var i=0;i<4;i++){
+                picArr.push(<div style={sceneItemStyle}><div style={{height:'80px',width:'80px',overflow:'hidden'}}></div></div>)
+            }
+            return (
+                <div>
+                    <h4>相册</h4>
+                    <FlatButton style={{float: 'right',marginTop: '-37px'}} label="添加图片" primary onClick={()=>{
+                        this.onEditDeleteClick()
+                    }} secondary/>
+                    <div style={{width:'180px',margin: '0 auto'}}>
+                        {picArr}
                     </div>
                 </div>
             )
