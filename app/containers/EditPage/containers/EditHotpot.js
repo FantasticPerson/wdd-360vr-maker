@@ -9,10 +9,13 @@ import MenuItem from 'material-ui/MenuItem';
 import * as hotpotActions from '../../../actions/hotpot'
 import getPathOfSceneHeadImg from '../../../native/getPathOfSceneHeadImg'
 
+import UploadPicModal from './UploadPicModal'
+
+
 class EditHotSpot extends Component{
     constructor(){
         super()
-        this.state = {hotSpotType:1,sceneId:null,isAdd:false}
+        this.state = {hotSpotType:1,sceneId:null,isAdd:false,showUploadModal:false}
     }
 
     render(){
@@ -20,6 +23,7 @@ class EditHotSpot extends Component{
             <div style={{padding:'5px'}}> 
                 {this.renderHotpotList()}
                 {this.renderEditHotPot()}
+                {this.renderUploadModal()}
             </div>
         )
     }
@@ -69,6 +73,15 @@ class EditHotSpot extends Component{
         const {delHotpot,hotpotSelected,updateHotspotSelect} = this.props 
         delHotpot(hotpotSelected)
         updateHotspotSelect(null)
+    }
+
+    renderUploadModal(){
+        const {showUploadModal} = this.state
+        if(showUploadModal){
+            return (
+                <UploadPicModal></UploadPicModal>
+            )
+        }
     }
 
     renderHotpotList(){
@@ -150,6 +163,10 @@ class EditHotSpot extends Component{
         }
     }
 
+    showUploadPic(){
+        this.setState({showUploadModal:true})
+    }
+
     renderPicList(){
         const {hotSpotType,sceneId} = this.state
         if(hotSpotType == 2){
@@ -162,7 +179,7 @@ class EditHotSpot extends Component{
                 <div>
                     <h4>相册</h4>
                     <FlatButton style={{float: 'right',marginTop: '-37px'}} label="添加图片" primary onClick={()=>{
-                        this.onEditDeleteClick()
+                        this.showUploadPic()
                     }} secondary/>
                     <div style={{width:'180px',margin: '0 auto'}}>
                         {picArr}
