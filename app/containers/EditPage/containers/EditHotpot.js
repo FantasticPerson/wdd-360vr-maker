@@ -5,25 +5,42 @@ import { bindActionCreators } from 'redux';
 import FlatButton from 'material-ui/FlatButton';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import TextField from 'material-ui/TextField';
 
 import * as hotpotActions from '../../../actions/hotpot'
+import * as PicActions from '../../../actions/picture'
 import getPathOfSceneHeadImg from '../../../native/getPathOfSceneHeadImg'
 
 import UploadPicModal from './UploadPicModal'
+import CopyImageTmpToImage from '../../../native/copyImageTmpToImage'
+import PicListModal from './PicListModal'
+import getPathOfImage from '../../../native/getPathOfImage'
 
+import EditSelectScene from './EditSelectScene'
+import EditPicture from './EditPicture'
+import EditText from './EditText'
+import EditPicAndText from './EditPicAndText'
 
 class EditHotSpot extends Component{
     constructor(){
         super()
-        this.state = {hotSpotType:1,sceneId:null,isAdd:false,showUploadModal:false}
+        this.titleRef = React.createRef()
+        this.summaryRef = React.createRef()
+        this.state = {
+            hotSpotType:1,
+            sceneId:null,
+            isAdd:false,
+            showPicList:false,
+            picList:[],
+            picTextList:[]
+        }
     }
 
     render(){
         return (
             <div style={{padding:'5px'}}> 
                 {this.renderHotpotList()}
-                {this.renderEditHotPot()}
-                {this.renderUploadModal()}
+                {this.renderEditHotPot()}                
             </div>
         )
     }
@@ -55,7 +72,7 @@ class EditHotSpot extends Component{
         updateHotspotSelect(null)
     }
 
-    onEditConfirmClick(){
+    onEditConfirmClick(){ 
         const {isAdd,sceneId,hotSpotType} = this.state
         if(isAdd){
             if(sceneId != null){
@@ -73,15 +90,6 @@ class EditHotSpot extends Component{
         const {delHotpot,hotpotSelected,updateHotspotSelect} = this.props 
         delHotpot(hotpotSelected)
         updateHotspotSelect(null)
-    }
-
-    renderUploadModal(){
-        const {showUploadModal} = this.state
-        if(showUploadModal){
-            return (
-                <UploadPicModal></UploadPicModal>
-            )
-        }
     }
 
     renderHotpotList(){
@@ -135,8 +143,7 @@ class EditHotSpot extends Component{
                         </span>
                     </div>
                     <div>
-                        <SelectField style={{width:'200px'}} floatingLabelText="热点类型" value={this.state.hotSpotType} onChange={(event, index, value)=>{this.handleTypeChange(event, index, value)}}
-                        >
+                        <SelectField style={{width:'200px'}} floatingLabelText="热点类型" value={this.state.hotSpotType} onChange={(event, index, value)=>{this.handleTypeChange(event, index, value)}}>
                             <MenuItem value={1} primaryText="切换" />
                             <MenuItem value={2} primaryText="相册" />
                             <MenuItem value={3} primaryText="文本" />
@@ -146,6 +153,8 @@ class EditHotSpot extends Component{
                         </SelectField>
                         {this.renderSwitchScene()}
                         {this.renderPicList()}
+                        {this.renderShowText()}
+                        {this.renderShowPicAndText()}
                     </div>
                     <div style={{position:'fixed',bottom:0}}>
                         <FlatButton label="确定" onClick={()=>{
@@ -163,52 +172,49 @@ class EditHotSpot extends Component{
         }
     }
 
-    showUploadPic(){
-        this.setState({showUploadModal:true})
-    }
-
     renderPicList(){
-        const {hotSpotType,sceneId} = this.state
+        const {hotSpotType} = this.state
+        
         if(hotSpotType == 2){
-            let sceneItemStyle = {margin:'5px',height:'80px',width:'80px',display:'inline-block',overflow:'hidden'}
-            let picArr = []
-            for(var i=0;i<4;i++){
-                picArr.push(<div style={sceneItemStyle}><div style={{height:'80px',width:'80px',overflow:'hidden'}}></div></div>)
-            }
+            const {addPicture} =  this.props
             return (
-                <div>
-                    <h4>相册</h4>
-                    <FlatButton style={{float: 'right',marginTop: '-37px'}} label="添加图片" primary onClick={()=>{
-                        this.showUploadPic()
-                    }} secondary/>
-                    <div style={{width:'180px',margin: '0 auto'}}>
-                        {picArr}
-                    </div>
-                </div>
+                <EditPicture list={[]} addPicture={addPicture}></EditPicture>
             )
         }
     }
 
     renderSwitchScene(){
-        const {hotSpotType,sceneId} = this.state
-        if(hotSpotType == 1){
-            const {sceneList,folderId,vrId} = this.props
-            let sceneArr = sceneList.map((item)=>{
-                let sceneItemStyle = sceneId == item.id ? {
-                    margin:'5px',height:'80px',width:'80px',display:'inline-block',border:'3px solid blanchedalmond',overflow:'hidden'
-                } : {margin:'5px',height:'80px',width:'80px',display:'inline-block',overflow:'hidden'}
-
-                return <div onClick={()=>{this.handleScenClick(item.id)}} style={sceneItemStyle} key={item.id}><div style={{height:'80px',width:'80px',overflow:'hidden'}}><img style={{height:'100%'}} src={getPathOfSceneHeadImg(folderId,vrId,item.id)}/></div></div>
-            })
+        if(this.state.hotSpotType == 1){
+            const {sceneList,folderId,vrId} = this.props            
             return (
-                <div>
-                    <h4>场景列表</h4>
-                    <div style={{width:'180px',margin: '0 auto'}}>
-                        {sceneArr}
-                    </div>
-                </div>
+                <EditSelectScene selectId={null} sceneList={sceneList} folderId={folderId} vrId={vrId}></EditSelectScene>
             )
         }
+    }
+
+    renderShowText(){
+        if(this.state.hotSpotType == 3){
+            return (
+                <EditText></EditText>
+            )
+        }
+        
+    }
+
+    renderShowPicAndText(){
+        if(this.state.hotSpotType == 4){
+            const {addPicture} = this.props 
+            return (
+                <EditPicAndText list={[]} addPicture={addPicture}></EditPicAndText>
+            )
+        }
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return {
+        ...bindActionCreators(hotpotActions,dispatch),
+        ...bindActionCreators(PicActions,dispatch)
     }
 }
 
@@ -245,12 +251,6 @@ function filterScene(list,pathname,selectedSceneId){
     return list.filter((item)=>{
         return item.vrid == vrId && item.id !== selectedSceneId
     })
-}
-
-function mapDispatchToProps(dispatch){
-    return {
-        ...bindActionCreators(hotpotActions,dispatch)
-    }
 }
 
 function findFolderId(vrList,pathname){

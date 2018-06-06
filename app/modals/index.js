@@ -4,6 +4,7 @@ import Vr from './Vr';
 import Folder from './Folder';
 import Group from './Group'
 import Hotpot from './Hotpot'
+import Picture from './Picture'
 
 export default {
     Scene,
@@ -11,5 +12,6 @@ export default {
     Vr,
     Folder,
     Group,
-    Hotpot
+    Hotpot,
+    Picture
 };

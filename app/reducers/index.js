@@ -7,6 +7,7 @@ import folder from './folder';
 import app from './app'
 import hotpot from './hotpot'
 import krpano from './krpano'
+import picture from './picture'
 
 const rootReducer = combineReducers({
     scene,
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
     folder,
     app,
     hotpot,
-    krpano
+    krpano,
+    picture
 });
 
 export default rootReducer;

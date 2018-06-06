@@ -49,5 +49,14 @@ export default [
                 'sceneId'
             ]
         }
+    },
+    {
+        ver: 3,
+        stores: {
+            picture:[
+                'id',
+                'extension'
+            ]
+        }
     }
 ];

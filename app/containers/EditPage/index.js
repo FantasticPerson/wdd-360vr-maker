@@ -17,6 +17,7 @@ import * as vrActions from '../../actions/vr'
 import * as sceneActions from '../../actions/scene'
 import * as folderActions from '../../actions/folder'
 import * as hotpotActions from '../../actions/hotpot'
+import * as PictureActions from '../../actions/picture'
 
 import EditHotSpot from './containers/EditHotpot'
 
@@ -37,13 +38,14 @@ class EditPage extends Component{
     }
 
     componentDidMount(){
-        const {updateAppTitle,updateAppShowBack,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal,updateAllHotpotFromLocal} = this.props
+        const {updateAppTitle,updateAppShowBack,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal,updateAllHotpotFromLocal,updatePictureFromLocal} = this.props
         this.lastSceneId = this.state.previewSceneId
         updateAppTitle('编辑全景')
 
         updateFromLocal();
         updateVrFromLocal();
         updateAllSceneFromLocal();
+        updatePictureFromLocal()
         updateAllHotpotFromLocal();
 
         updateAppShowBack(true);
@@ -231,7 +233,8 @@ function mapDispatchToProps(dispatch){
         ...bindActionCreators(sceneActions,dispatch),
         ...bindActionCreators(vrActions,dispatch),
         ...bindActionCreators(folderActions,dispatch),
-        ...bindActionCreators(hotpotActions,dispatch)
+        ...bindActionCreators(hotpotActions,dispatch),
+        ...bindActionCreators(PictureActions,dispatch)
     }
 }
 

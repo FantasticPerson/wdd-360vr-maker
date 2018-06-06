@@ -64,12 +64,15 @@ const initConfig = async () => {
     global.electron_app_vr_path = path.resolve(global.electron_app_assets_path,'./vr')
     global.electron_app_krp_path = path.resolve(global.electron_app_root_path,'../../krp');
     global.electron_app_krpano_path = path.resolve(global.electron_app_root_path,'../../krpano');
-
-    console.log(global.electron_app_assets_path);
+    global.eletron_app_pic_path = path.resolve(global.electron_app_assets_path,'./pic')
+    global.eletron_app_pic_tmp = path.resolve(global.electron_app_assets_path,'./picTmp')
 };
 
 
 const initDir = async () => {
+    console.log(global.eletron_app_pic_path)
+    console.log(global.eletron_app_pic_tmp)
+    console.log(global.electron_app_assets_path)
     if (!fs.existsSync(global.electron_app_assets_path)) {
         fs.mkdirSync(global.electron_app_assets_path);
     }
@@ -84,6 +87,12 @@ const initDir = async () => {
     }
     if(!fs.existsSync(global.electron_app_vr_path)){
         fs.mkdirSync(global.electron_app_vr_path)
+    }
+    if(!fs.existsSync(global.eletron_app_pic_path)){
+        fs.mkdirSync(global.eletron_app_pic_path)
+    }
+    if(!fs.existsSync(global.eletron_app_pic_tmp)){
+        fs.mkdirSync(global.eletron_app_pic_tmp)
     }
 };
 
@@ -114,7 +123,6 @@ app.on('ready', async () => {
         await initConfig();
         await initDir();
         await initServer(global.electron_app_root_path,global)
-
     }
 
     mainWindow = new BrowserWindow({
