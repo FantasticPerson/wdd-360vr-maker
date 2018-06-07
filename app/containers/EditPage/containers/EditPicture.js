@@ -35,11 +35,10 @@ export default class EditPicture extends Component{
         })
         return (
             <div>
-                <h4>相册</h4>
-                <FlatButton style={{float: 'right',marginTop: '-37px',marginRight:'65px'}} label="从图片库添加" primary onClick={()=>{
+                <FlatButton style={{float: 'right'}} label="从图片库添加" primary onClick={()=>{
                     this.setState({showPicListModal:true})
                 }} secondary/>
-                <FlatButton style={{float: 'right',marginTop: '-37px'}} label="添加图片" primary onClick={()=>{
+                <FlatButton style={{float: 'right'}} label="添加图片" primary onClick={()=>{
                     this.setState({showUploadModal:true})
                 }} secondary/>
                 <div style={{width:'180px',margin: '0 auto'}}>

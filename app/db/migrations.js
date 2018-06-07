@@ -58,5 +58,18 @@ export default [
                 'extension'
             ]
         }
+    },
+    {
+        ver: 4,
+        stores: {
+            audio:[
+                'id',
+                'extension'
+            ],
+            video:[
+                'id',
+                'url'
+            ]
+        }
     }
 ];

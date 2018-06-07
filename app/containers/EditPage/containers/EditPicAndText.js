@@ -29,8 +29,7 @@ export default class EditPicAndText extends Component{
         })
         return (
             <div>
-                <h4>图文</h4>
-                <FlatButton style={{float: 'right',marginTop: '-37px',marginRight:'65px'}} label="从图片库添加" primary onClick={()=>{
+                <FlatButton style={{marginTop: '-37px',marginRight:'65px'}} label="从图片库添加" primary onClick={()=>{
                     this.setState({showPicListModal:true})
                 }} secondary/>
                 <FlatButton style={{float: 'right',marginTop: '-37px'}} label="添加图片" primary onClick={()=>{

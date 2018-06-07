@@ -51,7 +51,6 @@ export default class EditSelectScene extends Component{
 
         return (
             <div>
-                <h4>场景列表</h4>
                 <div style={{width:'180px',margin: '0 auto'}}>
                     {sceneArr}
                 </div>

@@ -5,6 +5,8 @@ import Folder from './Folder';
 import Group from './Group'
 import Hotpot from './Hotpot'
 import Picture from './Picture'
+import Audio from './Audio'
+import Video from './Video'
 
 export default {
     Scene,
@@ -13,5 +15,7 @@ export default {
     Folder,
     Group,
     Hotpot,
-    Picture
+    Picture,
+    Audio,
+    Video
 };

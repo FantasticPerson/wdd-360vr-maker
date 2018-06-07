@@ -66,6 +66,8 @@ const initConfig = async () => {
     global.electron_app_krpano_path = path.resolve(global.electron_app_root_path,'../../krpano');
     global.eletron_app_pic_path = path.resolve(global.electron_app_assets_path,'./pic')
     global.eletron_app_pic_tmp = path.resolve(global.electron_app_assets_path,'./picTmp')
+    global.eletron_app_audio_path = path.resolve(global.electron_app_assets_path,'./audio')
+    global.eletron_app_audio_tmp = path.resolve(global.electron_app_assets_path,'./audioTmp')
 };
 
 
@@ -93,6 +95,12 @@ const initDir = async () => {
     }
     if(!fs.existsSync(global.eletron_app_pic_tmp)){
         fs.mkdirSync(global.eletron_app_pic_tmp)
+    }
+    if(!fs.existsSync(global.eletron_app_audio_path)){
+        fs.mkdirSync(global.eletron_app_audio_path)
+    }
+    if(!fs.existsSync(global.eletron_app_audio_tmp)){
+        fs.mkdirSync(global.eletron_app_audio_tmp)
     }
 };
 

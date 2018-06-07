@@ -8,6 +8,8 @@ import app from './app'
 import hotpot from './hotpot'
 import krpano from './krpano'
 import picture from './picture'
+import audio from './audio'
+import video from './video'
 
 const rootReducer = combineReducers({
     scene,
@@ -17,7 +19,9 @@ const rootReducer = combineReducers({
     app,
     hotpot,
     krpano,
-    picture
+    picture,
+    audio,
+    video
 });
 
 export default rootReducer;

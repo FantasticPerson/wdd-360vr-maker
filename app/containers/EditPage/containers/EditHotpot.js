@@ -20,6 +20,7 @@ import EditSelectScene from './EditSelectScene'
 import EditPicture from './EditPicture'
 import EditText from './EditText'
 import EditPicAndText from './EditPicAndText'
+import EditAudio from './EditAudio'
 
 class EditHotSpot extends Component{
     constructor(){
@@ -151,10 +152,13 @@ class EditHotSpot extends Component{
                             <MenuItem value={5} primaryText="音频" />
                             <MenuItem value={6} primaryText="视频" />
                         </SelectField>
-                        {this.renderSwitchScene()}
-                        {this.renderPicList()}
-                        {this.renderShowText()}
-                        {this.renderShowPicAndText()}
+                        <div style={{position: 'absolute',left: '0',right: '0',bottom: '35px',top: '117px',margin: '5px',padding: '5px',border: '2px solid #eee',borderRadius: '5px',overflowY:'auto'}}>
+                            {this.renderSwitchScene()}
+                            {this.renderPicList()}
+                            {this.renderShowText()}
+                            {this.renderShowPicAndText()}
+                            {this.renderShowAudio()}
+                        </div>
                     </div>
                     <div style={{position:'fixed',bottom:0}}>
                         <FlatButton label="确定" onClick={()=>{
@@ -173,9 +177,7 @@ class EditHotSpot extends Component{
     }
 
     renderPicList(){
-        const {hotSpotType} = this.state
-        
-        if(hotSpotType == 2){
+        if(this.state.hotSpotType == 2){
             const {addPicture} =  this.props
             return (
                 <EditPicture list={[]} addPicture={addPicture}></EditPicture>
@@ -198,7 +200,6 @@ class EditHotSpot extends Component{
                 <EditText></EditText>
             )
         }
-        
     }
 
     renderShowPicAndText(){
@@ -206,6 +207,14 @@ class EditHotSpot extends Component{
             const {addPicture} = this.props 
             return (
                 <EditPicAndText list={[]} addPicture={addPicture}></EditPicAndText>
+            )
+        }
+    }
+
+    renderShowAudio(){
+        if(this.state.hotSpotType == 5){
+            return (
+                <EditAudio url={null}></EditAudio>
             )
         }
     }

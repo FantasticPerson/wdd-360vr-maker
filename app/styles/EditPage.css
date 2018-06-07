@@ -22,6 +22,7 @@
     flex: 0 0 230px;
     order: 3;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px;
+    position: relative;
 }
 
 .panoContainer{
