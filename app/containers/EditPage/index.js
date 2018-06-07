@@ -18,6 +18,7 @@ import * as sceneActions from '../../actions/scene'
 import * as folderActions from '../../actions/folder'
 import * as hotpotActions from '../../actions/hotpot'
 import * as PictureActions from '../../actions/picture'
+import * as audioActions from '../../actions/audio'
 
 import EditHotSpot from './containers/EditHotpot'
 
@@ -38,7 +39,7 @@ class EditPage extends Component{
     }
 
     componentDidMount(){
-        const {updateAppTitle,updateAppShowBack,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal,updateAllHotpotFromLocal,updatePictureFromLocal} = this.props
+        const {updateAppTitle,updateAppShowBack,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal,updateAllHotpotFromLocal,updatePictureFromLocal,updateAudioFromLocal} = this.props
         this.lastSceneId = this.state.previewSceneId
         updateAppTitle('编辑全景')
 
@@ -47,6 +48,7 @@ class EditPage extends Component{
         updateAllSceneFromLocal();
         updatePictureFromLocal()
         updateAllHotpotFromLocal();
+        updateAudioFromLocal()
 
         updateAppShowBack(true);
     }
@@ -234,7 +236,8 @@ function mapDispatchToProps(dispatch){
         ...bindActionCreators(vrActions,dispatch),
         ...bindActionCreators(folderActions,dispatch),
         ...bindActionCreators(hotpotActions,dispatch),
-        ...bindActionCreators(PictureActions,dispatch)
+        ...bindActionCreators(PictureActions,dispatch),
+        ...bindActionCreators(audioActions,dispatch)
     }
 }
 

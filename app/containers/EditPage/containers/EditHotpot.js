@@ -9,6 +9,7 @@ import TextField from 'material-ui/TextField';
 
 import * as hotpotActions from '../../../actions/hotpot'
 import * as PicActions from '../../../actions/picture'
+import * as AudioActions from '../../../actions/audio'
 import getPathOfSceneHeadImg from '../../../native/getPathOfSceneHeadImg'
 
 import UploadPicModal from './UploadPicModal'
@@ -21,6 +22,7 @@ import EditPicture from './EditPicture'
 import EditText from './EditText'
 import EditPicAndText from './EditPicAndText'
 import EditAudio from './EditAudio'
+import EditVideo from './EditVideo'
 
 class EditHotSpot extends Component{
     constructor(){
@@ -158,6 +160,7 @@ class EditHotSpot extends Component{
                             {this.renderShowText()}
                             {this.renderShowPicAndText()}
                             {this.renderShowAudio()}
+                            {this.renderShowVideo()}
                         </div>
                     </div>
                     <div style={{position:'fixed',bottom:0}}>
@@ -213,8 +216,18 @@ class EditHotSpot extends Component{
 
     renderShowAudio(){
         if(this.state.hotSpotType == 5){
+            const {addAudio} = this.props
             return (
-                <EditAudio url={null}></EditAudio>
+                <EditAudio url={null} addAudio={addAudio}></EditAudio>
+            )
+        }
+    }
+
+    renderShowVideo(){
+        if(this.state.hotSpotType == 6){
+            const {video} = this.props
+            return (
+                <EditVideo></EditVideo>
             )
         }
     }
@@ -223,7 +236,8 @@ class EditHotSpot extends Component{
 function mapDispatchToProps(dispatch){
     return {
         ...bindActionCreators(hotpotActions,dispatch),
-        ...bindActionCreators(PicActions,dispatch)
+        ...bindActionCreators(PicActions,dispatch),
+        ...bindActionCreators(AudioActions,dispatch)
     }
 }
 

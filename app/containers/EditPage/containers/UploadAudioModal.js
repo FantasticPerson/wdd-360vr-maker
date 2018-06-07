@@ -7,6 +7,7 @@ import styles from '../../../styles/createSceneModal.css'//../styles/createScene
 import openAudio from '../../../native/openAudio'
 import CopyAudioToAudioTmp from '../../../native/copyAudioToTmpAudio'
 import getPathOfAudio from '../../../native/getPathOfAudio'
+import ReactAudioPlayer from 'react-audio-player';
 
 class UploadPicModal extends Component{
     constructor(){
@@ -18,10 +19,15 @@ class UploadPicModal extends Component{
         if(!audioName){
             return <div className={styles.imgContainer}>等待上传</div>
         } else {
-            let imgUrl = getPathOfAudio(true,imageName)
+            let audioSrc = getPathOfAudio(true,audioName)
             return (
                 <div className={styles.imgContainer}>
-                    <img className={styles.thumb} src={imgUrl}/>
+                    <ReactAudioPlayer
+                        src={audioSrc}
+                        controls
+                        style={{width:'100px'}}
+                    />
+                    {/* <img className={styles.thumb} src={imgUrl}/> */}
                 </div>
             )
         }

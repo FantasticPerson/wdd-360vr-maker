@@ -5,6 +5,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect'
 import { bindActionCreators } from 'redux';
+import getPathOfAudio from '../../../native/getPathOfAudio'
+import ReactAudioPlayer from 'react-audio-player';
 
 
 class PicListModal extends Component{
@@ -40,7 +42,11 @@ class PicListModal extends Component{
             }
             return (
                 <div onClick={()=>{this.onPicClick(item)}} key={item.id} style={style}>
-                    <img style={{width:'100%'}} src={getPathOfAudio(false,`${item.id}.${item.extension}`)}/>
+                    <ReactAudioPlayer
+                        src={getPathOfAudio(false,`${item.id}.${item.extension}`)}
+                        controls
+                        style={{width:'100px',marginTop:'21px',marginLeft:'10px'}}
+                    />
                 </div>
             )
         })

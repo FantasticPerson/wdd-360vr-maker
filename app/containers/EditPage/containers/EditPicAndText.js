@@ -35,7 +35,6 @@ export default class EditPicAndText extends Component{
                 <FlatButton style={{float: 'right',marginTop: '-37px'}} label="添加图片" primary onClick={()=>{
                     this.setState({showUploadModal:true})
                 }} secondary/>
-                <h5>标题</h5>
                 <TextField defaultValue={''} fullWidth hintText="请输入作品名称" floatingLabelText="标题" ref={(input) => this.titleRef = input} />
                 <br />
                 <div style={{width:'180px',margin: '0 auto'}}>
