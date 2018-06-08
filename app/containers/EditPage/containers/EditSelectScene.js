@@ -10,7 +10,15 @@ export default class EditSelectScene extends Component{
 
     componentDidMount(){
         const {selectId} = this.props
-        this.setState({selected:selectId})
+        this.setState({selectId:selectId})
+    }
+
+    getResult(){
+        const {selectId} = this.state
+        if(selectId != null){
+            return  JSON.stringify({type:'switch',toId:this.state.selectId})
+        }
+        return ''
     }
 
     onItemClick(id){

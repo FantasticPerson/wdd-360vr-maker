@@ -6,17 +6,33 @@ import UploadAudioModal from './UploadAudioModal'
 import CopyAudioTmpToAudio from '../../../native/copyAudioTmpToAudio'
 import AudioListModal from './AudioListModal'
 import getPathOfAudio from '../../../native/getPathOfAudio'
+import ReactAudioPlayer from 'react-audio-player'; 
 
 export default class EditAudio extends Component{
     constructor(){
         super()
         this.state = {url:null,showUploadModal:false,showListModal:false}
+        this.titleRef = React.createRef()
     }
 
     componentDidMount(){
         const {url} = this.props
 
         this.setState({url:url})
+    }
+
+    getResult(){
+        const {url} = this.state
+        let title = this.titleRef.input.value.trim()
+        if(title.length == 0){
+            alert('请填写标题')
+            return false
+        }
+        if(!url){
+            alert('请选择一个音乐文件')
+            return false
+        }
+        return JSON.stringify({type:'audio',title:title,url:url})
     }
 
     render(){

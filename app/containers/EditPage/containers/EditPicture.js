@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
 
 import UploadPicModal from './UploadPicModal'
 import CopyImageTmpToImage from '../../../native/copyImageTmpToImage'
@@ -10,11 +11,38 @@ export default class EditPicture extends Component{
     constructor(){
         super()
         this.state = {list:[],showUploadModal:false,showPicListModal:false}
+        this.titleRef = React.createRef()
     }
 
     componentDidMount(){
         const {list} = this.props
         this.setState({list:list})
+    }
+
+    onRemoveClick(item){
+        const {list} = this.state
+        let index = list.indexOf(item)
+        if(index >= 0){
+            list.splice(index,1)
+            this.setState({list,list})
+        }
+    }
+
+    getResult(){
+        const {list} = this.state
+        let title = this.titleRef.input.value.trim()
+
+        if(title.length == 0){
+            alert('标题不能为空')
+            return false
+        } else if(list.length == 0){
+            alert('请选择图片')
+            return false
+        } else if(selectId == null){
+            alert('请选择一个场景')
+            return false
+        }
+        return  JSON.stringify({type:'pictures',pics:list,title:title})
     }
 
     render(){
@@ -24,17 +52,21 @@ export default class EditPicture extends Component{
             height:'80px',
             width:'80px',
             display:'inline-block',
-            overflow:'hidden'
+            overflow:'hidden',
+            position:'relative'
         }
         let picArr = list.map((item)=>{
             return (
                 <div style={sceneItemStyle}>
+                    <i onClick={()=>this.onRemoveClick(item)} className="fa fa-times pictureCloseBtn" aria-hidden="true"></i>
                     <img style={{width:'100%'}} src={getPathOfImage(false,item)}/>
                 </div>
             )
         })
         return (
             <div>
+                <TextField defaultValue={''} fullWidth hintText="请输入标题" floatingLabelText="标题" ref={(input) => this.titleRef = input} />
+                <br />
                 <FlatButton style={{float: 'right'}} label="从图片库添加" primary onClick={()=>{
                     this.setState({showPicListModal:true})
                 }} secondary/>

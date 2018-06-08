@@ -41,3 +41,17 @@ a:hover {
   text-decoration: none;
   cursor: pointer;
 }
+
+.pictureCloseBtn{
+  position: absolute;
+  z-index: 10;
+  top: 3px;
+  right: 3px;
+  font-size: 20px;
+  /* color: red; */
+  cursor: pointer;
+}
+
+.pictureCloseBtn:hover{
+  color: red
+}

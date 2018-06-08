@@ -8,6 +8,20 @@ export default class EditText extends Component{
         this.summaryRef = React.createRef()
     }
 
+    getResult(){
+        let title = this.titleRef.input.value.trim()
+        let summary = this.summaryRef.input.value.trim()
+
+        if(title.length  == 0){
+            alert('请填写标题')
+            return false
+        }else if(summary.length == 0){
+            alert('请填写内容')
+            return false
+        }
+        return JSON.parse({type:'text',title:title,content:summary})
+    }    
+
     render(){
         return (
             <div>

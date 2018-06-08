@@ -27,8 +27,7 @@ import EditVideo from './EditVideo'
 class EditHotSpot extends Component{
     constructor(){
         super()
-        this.titleRef = React.createRef()
-        this.summaryRef = React.createRef()
+
         this.state = {
             hotSpotType:1,
             sceneId:null,
@@ -37,15 +36,8 @@ class EditHotSpot extends Component{
             picList:[],
             picTextList:[]
         }
-    }
 
-    render(){
-        return (
-            <div style={{padding:'5px'}}> 
-                {this.renderHotpotList()}
-                {this.renderEditHotPot()}                
-            </div>
-        )
+        this.editEle = React.createRef()
     }
 
     resetState(){
@@ -65,10 +57,6 @@ class EditHotSpot extends Component{
         this.setState({hotSpotType:value});
     }
 
-    handleScenClick(id){
-        this.setState({sceneId:id})
-    }
-
     handleCloseEditHotspot(){
         const {updateHotspotSelect} = this.props
         this.setState({isAdd:false})
@@ -76,6 +64,8 @@ class EditHotSpot extends Component{
     }
 
     onEditConfirmClick(){ 
+        this.getEditResult()
+        return 
         const {isAdd,sceneId,hotSpotType} = this.state
         if(isAdd){
             if(sceneId != null){
@@ -89,10 +79,25 @@ class EditHotSpot extends Component{
         }
     }
 
+    getEditResult(){
+        const {hotSpotType} = this.state
+        console.log(hotSpotType)
+        console.log(this.editEle.getResult())
+    }
+
     onEditDeleteClick(){
         const {delHotpot,hotpotSelected,updateHotspotSelect} = this.props 
         delHotpot(hotpotSelected)
         updateHotspotSelect(null)
+    }
+
+    render(){
+        return (
+            <div style={{padding:'5px'}}> 
+                {this.renderHotpotList()}
+                {this.renderEditHotPot()}                
+            </div>
+        )
     }
 
     renderHotpotList(){
@@ -155,12 +160,7 @@ class EditHotSpot extends Component{
                             <MenuItem value={6} primaryText="视频" />
                         </SelectField>
                         <div style={{position: 'absolute',left: '0',right: '0',bottom: '35px',top: '117px',margin: '5px',padding: '5px',border: '2px solid #eee',borderRadius: '5px',overflowY:'auto'}}>
-                            {this.renderSwitchScene()}
-                            {this.renderPicList()}
-                            {this.renderShowText()}
-                            {this.renderShowPicAndText()}
-                            {this.renderShowAudio()}
-                            {this.renderShowVideo()}
+                            {this.renderEditByType()}
                         </div>
                     </div>
                     <div style={{position:'fixed',bottom:0}}>
@@ -179,56 +179,48 @@ class EditHotSpot extends Component{
         }
     }
 
-    renderPicList(){
-        if(this.state.hotSpotType == 2){
-            const {addPicture} =  this.props
-            return (
-                <EditPicture list={[]} addPicture={addPicture}></EditPicture>
-            )
-        }
-    }
+    renderEditByType(){
+        const {hotSpotType} = this.state
+        switch(hotSpotType){
+            case 1:{
+                const {sceneList,folderId,vrId} = this.props            
+                return (
+                    <EditSelectScene ref={(ref)=>{this.editEle = ref}} selectId={null} sceneList={sceneList} folderId={folderId} vrId={vrId}></EditSelectScene>
+                )
+            }break;
+            
+            case 2:{
+                const {addPicture} =  this.props
+                return (
+                    <EditPicture ref={(ref)=>{this.editEle = ref}} list={[]} addPicture={addPicture}></EditPicture>
+                )
+            }break;
 
-    renderSwitchScene(){
-        if(this.state.hotSpotType == 1){
-            const {sceneList,folderId,vrId} = this.props            
-            return (
-                <EditSelectScene selectId={null} sceneList={sceneList} folderId={folderId} vrId={vrId}></EditSelectScene>
-            )
-        }
-    }
+            case 3:{
+                return (
+                    <EditText ref={(ref)=>{this.editEle = ref}} ></EditText>
+                )
+            }break;
 
-    renderShowText(){
-        if(this.state.hotSpotType == 3){
-            return (
-                <EditText></EditText>
-            )
-        }
-    }
+            case 4:{
+                const {addPicture} = this.props 
+                return (
+                    <EditPicAndText ref={(ref)=>{this.editEle = ref}} list={[]} addPicture={addPicture}></EditPicAndText>
+                )
+            } break;
 
-    renderShowPicAndText(){
-        if(this.state.hotSpotType == 4){
-            const {addPicture} = this.props 
-            return (
-                <EditPicAndText list={[]} addPicture={addPicture}></EditPicAndText>
-            )
-        }
-    }
+            case 5:{
+                const {addAudio} = this.props
+                return (
+                    <EditAudio ref={(ref)=>{this.editEle = ref}} url={null} addAudio={addAudio}></EditAudio>
+                )
+            }break;
 
-    renderShowAudio(){
-        if(this.state.hotSpotType == 5){
-            const {addAudio} = this.props
-            return (
-                <EditAudio url={null} addAudio={addAudio}></EditAudio>
-            )
-        }
-    }
-
-    renderShowVideo(){
-        if(this.state.hotSpotType == 6){
-            const {video} = this.props
-            return (
-                <EditVideo></EditVideo>
-            )
+            case 6:{
+                return (
+                    <EditVideo ref={(ref)=>{this.editEle = ref}}></EditVideo>
+                )
+            } break;
         }
     }
 }
