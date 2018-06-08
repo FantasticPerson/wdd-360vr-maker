@@ -59,7 +59,7 @@ class EditHotSpot extends Component{
 
     handleCloseEditHotspot(){
         const {updateHotspotSelect} = this.props
-        this.setState({isAdd:false})
+        this.setState({isAdd:false,hotSpotType:1})
         updateHotspotSelect(null)
     }
 
@@ -80,16 +80,10 @@ class EditHotSpot extends Component{
         this.handleCloseEditHotspot()
     }
 
-    getEditResult(){
-        const {hotSpotType} = this.state
-        console.log(hotSpotType)
-        console.log(this.editEle.getResult())
-    }
-
     onEditDeleteClick(){
         const {delHotpot,hotpotSelected,updateHotspotSelect} = this.props 
         delHotpot(hotpotSelected)
-        updateHotspotSelect(null)
+        this.handleCloseEditHotspot()
     }
 
     render(){
@@ -138,7 +132,6 @@ class EditHotSpot extends Component{
     renderEditHotPot(){
         const {isAdd} = this.state
         const {hotpotSelected} = this.props
-        console.log("hotpotSelected",hotpotSelected)
         if(hotpotSelected != null || isAdd){
             return (
                 <div>

@@ -19,6 +19,7 @@ import * as folderActions from '../../actions/folder'
 import * as hotpotActions from '../../actions/hotpot'
 import * as PictureActions from '../../actions/picture'
 import * as audioActions from '../../actions/audio'
+import * as krpanoActions from '../../actions/krpano'
 
 import EditHotSpot from './containers/EditHotpot'
 
@@ -67,15 +68,15 @@ class EditPage extends Component{
 
     onEditClick(type){
         this.setState({editType:type})
-        if(type == 0){
-            if(this.krpano){
-                this.krpano.call('show_view_frame();')
-            }
-        } else {
-            if(this.krpano){
-                this.krpano.call('hide_view_frame();')
-            }
-        }
+        // if(type == 0){
+        //     if(this.krpano){
+        //         this.krpano.call('show_view_frame();')
+        //     }
+        // } else {
+        //     if(this.krpano){
+        //         this.krpano.call('hide_view_frame();')
+        //     }
+        // }
     }
 
     renderEditHotPot(){
@@ -87,25 +88,27 @@ class EditPage extends Component{
         }
     }
 
-    onChooseSpecislShowChange(name){
-        if(name == 'rain'){
-            let rainSelected = this.radioGroup1.getSelectedValue()
-            if(rainSelected != '0'){
-                this.radioGroup2.setSelectedValue('0')
-
-                if(this.krpano){
-                    addRainEffect(this.krpano,rainSelected)
+    onChooseSpecislShowChange(name,e){
+        const {AddEffect} = this.props
+        console.log(name)
+        setTimeout(()=>{
+            if(name == 'rain'){
+                let rainSelected = this.radioGroup1.getSelectedValue()
+                console.log('rainSelected:'+rainSelected)
+                if(rainSelected != '0'){
+                    this.radioGroup2.setSelectedValue('0')
                 }
-            }
-        } else {
-            let snowSelected = this.radioGroup2.getSelectedValue()
-            if(snowSelected != '0'){
-                this.radioGroup1.setSelectedValue('0')
-                if(snowSelected){
-                    addSnowEffect(this.krpano,snowSelected)
+                AddEffect('rain',rainSelected)
+            } else {
+                let snowSelected = this.radioGroup2.getSelectedValue()
+                console.log('snowSelected:'+snowSelected)
+                if(snowSelected != '0'){
+                    this.radioGroup1.setSelectedValue('0')
                 }
+                AddEffect('snow',snowSelected)
             }
-        }
+        },50)
+        
     }
 
     renderEditMusic(){
@@ -159,18 +162,18 @@ class EditPage extends Component{
                     </div>
                     <div>
                         <div>下雨</div>
-                        <RadioButtonGroup name="rain" ref={(rg)=>{this.radioGroup1=rg}} defaultSelected={'0'}onChange={()=>this.onChooseSpecislShowChange('rain')}>
+                        <RadioButtonGroup name="rain" ref={(rg)=>{this.radioGroup1=rg}} defaultSelected={'0'}onChange={(e)=>this.onChooseSpecislShowChange('rain',e)}>
                             <RadioButton value="0" label="关闭" style={styles.radioButton}/>
-                            <RadioButton value="3" label="小雨" style={styles.radioButton}/>
+                            <RadioButton value="1" label="小雨" style={styles.radioButton}/>
                             <RadioButton value="2" label="中雨" style={styles.radioButton}/>
-                            <RadioButton value="1" label="大雨" style={styles.radioButton}/>
+                            <RadioButton value="3" label="大雨" style={styles.radioButton}/>
                         </RadioButtonGroup>
                         <div>下雪</div>
-                        <RadioButtonGroup name="snow" ref={(rg)=>{this.radioGroup2=rg}} defaultSelected={'0'} onChange={()=>this.onChooseSpecislShowChange('snow')}>
+                        <RadioButtonGroup name="snow" ref={(rg)=>{this.radioGroup2=rg}} defaultSelected={'0'} onChange={(e)=>this.onChooseSpecislShowChange('snow',e)}>
                             <RadioButton value="0" label="关闭" style={styles.radioButton}/>
-                            <RadioButton value="3" label="小雪" style={styles.radioButton}/>
+                            <RadioButton value="1" label="小雪" style={styles.radioButton}/>
                             <RadioButton value="2" label="中雪" style={styles.radioButton}/>
-                            <RadioButton value="1" label="大雪" style={styles.radioButton}/>
+                            <RadioButton value="3" label="大雪" style={styles.radioButton}/>
                         </RadioButtonGroup>
                     </div>
                 </div>  
@@ -237,7 +240,8 @@ function mapDispatchToProps(dispatch){
         ...bindActionCreators(folderActions,dispatch),
         ...bindActionCreators(hotpotActions,dispatch),
         ...bindActionCreators(PictureActions,dispatch),
-        ...bindActionCreators(audioActions,dispatch)
+        ...bindActionCreators(audioActions,dispatch),
+        ...bindActionCreators(krpanoActions,dispatch)
     }
 }
 

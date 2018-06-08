@@ -27,14 +27,12 @@ export default class EditPicAndText extends Component{
     }
 
     getResult(){
-
         const {pickedPic,list} = this.state
         let item2 = list.find((obj,index)=>{
             return obj.pic == pickedPic
         })
         if(item2){
             item2.text = this.summaryRef.getValue().trim()
-            console.log(item2.text)
             this.setState({list:list})
         }
 
@@ -71,9 +69,7 @@ export default class EditPicAndText extends Component{
         })
         if(item2){
             item2.text = this.summaryRef.getValue().trim()
-            console.log(item2.text)
             this.setState({list:list})
-            console.log(list)
         }
         this.summaryRef.input.setValue(item.text || "")
         this.setState({pickedPic:item.pic})
@@ -175,7 +171,6 @@ export default class EditPicAndText extends Component{
             }
             this.setState({list:list})
         }
-        
         this.onLocalPicListCancel()
     }
 
