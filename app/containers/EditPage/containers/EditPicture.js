@@ -15,8 +15,14 @@ export default class EditPicture extends Component{
     }
 
     componentDidMount(){
-        const {list} = this.props
-        this.setState({list:list})
+        const {action} = this.props
+        if(action.length > 0){
+            let obj = JSON.parse(action)
+            if(obj.type == 'pictures'){
+                this.titleRef.input.value = obj.title
+                this.setState({list:obj.pics})
+            }
+        }
     }
 
     onRemoveClick(item){
@@ -38,9 +44,6 @@ export default class EditPicture extends Component{
         } else if(list.length == 0){
             alert('请选择图片')
             return false
-        } else if(selectId == null){
-            alert('请选择一个场景')
-            return false
         }
         return  JSON.stringify({type:'pictures',pics:list,title:title})
     }
@@ -57,7 +60,7 @@ export default class EditPicture extends Component{
         }
         let picArr = list.map((item)=>{
             return (
-                <div style={sceneItemStyle}>
+                <div style={sceneItemStyle} key={item}>
                     <i onClick={()=>this.onRemoveClick(item)} className="fa fa-times pictureCloseBtn" aria-hidden="true"></i>
                     <img style={{width:'100%'}} src={getPathOfImage(false,item)}/>
                 </div>

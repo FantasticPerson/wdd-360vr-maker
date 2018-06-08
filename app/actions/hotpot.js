@@ -77,7 +77,7 @@ export function addHotpot(actionData) {
                 animated: true,
                 type: undefined,
                 typeProps: '',
-                action:JSON.stringify(actionData)
+                action:actionData
             }
             
             Modals.Hotpot.add({...data,sceneId:selectSceneId,id:data._id})

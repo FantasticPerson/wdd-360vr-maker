@@ -16,12 +16,27 @@ export default class EditPicAndText extends Component{
     }
 
     componentDidMount(){
-        const {list} = this.props
-        this.setState({list:list})
+        const {action} = this.props
+        if(action.length > 0){
+            let obj = JSON.parse(action)
+            if(obj.type == 'picAndText'){
+                this.setState({list:obj.picArr})
+                this.title.input.value = obj.title
+            }
+        }
     }
 
     getResult(){
-        const {list} = this.state
+
+        const {pickedPic,list} = this.state
+        let item2 = list.find((obj,index)=>{
+            return obj.pic == pickedPic
+        })
+        if(item2){
+            item2.text = this.summaryRef.getValue().trim()
+            console.log(item2.text)
+            this.setState({list:list})
+        }
 
         let title = this.title.input.value.trim()
         
@@ -70,8 +85,6 @@ export default class EditPicAndText extends Component{
 
         let sceneItemStyle = {margin:'5px',height:'80px',width:'80px',display:'inline-block',overflow:'hidden',position:'relative',cursor:'pointer'}
 
-
-
         let picArr = list.map((item)=>{
             let styleObj = sceneItemStyle
             if(pickedPic == item.pic){
@@ -87,7 +100,7 @@ export default class EditPicAndText extends Component{
         })
         return (
             <div>
-                <TextField ref={(input)=>{this.title=input}} defaultValue={''} fullWidth hintText="请输入标题" floatingLabelText="标题" ref={(input) => this.titleRef = input} />
+                <TextField ref={(input)=>{this.title=input}} defaultValue={''} fullWidth hintText="请输入标题" floatingLabelText="标题" />
                 <br />
                 <FlatButton style={{marginTop: '-37px',marginRight:'65px'}} label="从图片库添加" primary onClick={()=>{
                     this.setState({showPicListModal:true})

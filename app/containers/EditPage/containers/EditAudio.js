@@ -16,9 +16,14 @@ export default class EditAudio extends Component{
     }
 
     componentDidMount(){
-        const {url} = this.props
-
-        this.setState({url:url})
+        const {action} = this.props
+        if(action.length > 0){
+            let obj = JSON.parse(action)
+            if(obj.type == 'audio'){
+                this.setState({url:obj.url})
+                this.titleRef.input.value = obj.title
+            }
+        }
     }
 
     getResult(){

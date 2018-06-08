@@ -64,19 +64,20 @@ class EditHotSpot extends Component{
     }
 
     onEditConfirmClick(){ 
-        this.getEditResult()
-        return 
+        let result = this.editEle.getResult()
         const {isAdd,sceneId,hotSpotType} = this.state
         if(isAdd){
             if(sceneId != null){
                 const {addHotpot} = this.props;
-                if(hotSpotType == 1){
-                    console.log()
-                }
-                addHotpot({action:'switch',target:sceneId})
+                addHotpot(result)
             }
-            this.setState({isAdd:false})
+        } else {
+            const {theHotSpot,modifyHotpot} = this.props
+            if(theHotSpot){
+                modifyHotpot({...theHotSpot,action:result})
+            }
         }
+        this.handleCloseEditHotspot()
     }
 
     getEditResult(){
@@ -137,6 +138,7 @@ class EditHotSpot extends Component{
     renderEditHotPot(){
         const {isAdd} = this.state
         const {hotpotSelected} = this.props
+        console.log("hotpotSelected",hotpotSelected)
         if(hotpotSelected != null || isAdd){
             return (
                 <div>
@@ -181,44 +183,46 @@ class EditHotSpot extends Component{
 
     renderEditByType(){
         const {hotSpotType} = this.state
+        const {theHotSpot} = this.props
+        let action = theHotSpot ? theHotSpot.action : ''
         switch(hotSpotType){
             case 1:{
                 const {sceneList,folderId,vrId} = this.props            
                 return (
-                    <EditSelectScene ref={(ref)=>{this.editEle = ref}} selectId={null} sceneList={sceneList} folderId={folderId} vrId={vrId}></EditSelectScene>
+                    <EditSelectScene action = {action} ref={(ref)=>{this.editEle = ref}} selectId={null} sceneList={sceneList} folderId={folderId} vrId={vrId}></EditSelectScene>
                 )
             }break;
             
             case 2:{
                 const {addPicture} =  this.props
                 return (
-                    <EditPicture ref={(ref)=>{this.editEle = ref}} list={[]} addPicture={addPicture}></EditPicture>
+                    <EditPicture action={action} ref={(ref)=>{this.editEle = ref}} addPicture={addPicture}></EditPicture>
                 )
             }break;
 
             case 3:{
                 return (
-                    <EditText ref={(ref)=>{this.editEle = ref}} ></EditText>
+                    <EditText action={action} ref={(ref)=>{this.editEle = ref}} ></EditText>
                 )
             }break;
 
             case 4:{
                 const {addPicture} = this.props 
                 return (
-                    <EditPicAndText ref={(ref)=>{this.editEle = ref}} list={[]} addPicture={addPicture}></EditPicAndText>
+                    <EditPicAndText action={action} ref={(ref)=>{this.editEle = ref}} addPicture={addPicture}></EditPicAndText>
                 )
             } break;
 
             case 5:{
                 const {addAudio} = this.props
                 return (
-                    <EditAudio ref={(ref)=>{this.editEle = ref}} url={null} addAudio={addAudio}></EditAudio>
+                    <EditAudio action={action} ref={(ref)=>{this.editEle = ref}} addAudio={addAudio}></EditAudio>
                 )
             }break;
 
             case 6:{
                 return (
-                    <EditVideo ref={(ref)=>{this.editEle = ref}}></EditVideo>
+                    <EditVideo action={action} ref={(ref)=>{this.editEle = ref}}></EditVideo>
                 )
             } break;
         }
@@ -250,10 +254,19 @@ const selector = createSelector(
             vrId: pathname.split('/')[2],
             folderId:findFolderId(vrList,pathname),
             sceneSelected:sceneSelected,
-            hotpotSelected:hotpotSelected
+            hotpotSelected:hotpotSelected,
+            theHotSpot:getTheHotSpot(hotpotSelected,sceneSelected,hotpotList)
         }
     }
 )
+
+function getTheHotSpot(selectedId,sceneId,oList){
+    let list = filterHotSpot(oList,sceneId)
+    let item = list.find((item)=>{
+        return item.id == selectedId
+    })
+    return item
+}
 
 function filterHotSpot(list,sceneSelected){
     return list.filter((item)=>{

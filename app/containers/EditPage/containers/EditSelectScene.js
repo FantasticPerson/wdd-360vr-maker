@@ -9,8 +9,11 @@ export default class EditSelectScene extends Component{
     }
 
     componentDidMount(){
-        const {selectId} = this.props
-        this.setState({selectId:selectId})
+        const {action} = this.props
+        if(action.length > 0){
+            let obj = JSON.parse(action)
+            this.setState({selectId:obj.toId})
+        }
     }
 
     getResult(){

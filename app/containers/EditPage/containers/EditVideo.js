@@ -8,6 +8,16 @@ export default class EditVideo extends Component{
         this.summaryRef = React.createRef()
     }
 
+    componentDidMount(){
+        const {action} = this.props
+        if(action.length > 0){
+            let obj = JSON.parse(action)
+            if(obj.type == 'video'){
+                this.titleRef.input.value = obj.title
+                this.summaryRef.input.value = obj.url
+            }
+        }
+    }
 
     getResult(){
         let title = this.titleRef.input.value.trim()
@@ -22,7 +32,7 @@ export default class EditVideo extends Component{
             alert('请输入视频地址')
             return false
         }
-        return JSON.stringify({type:'video',title:title})
+        return JSON.stringify({type:'video',title:title,url:content})
     }
 
     render(){
