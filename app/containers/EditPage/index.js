@@ -90,18 +90,15 @@ class EditPage extends Component{
 
     onChooseSpecislShowChange(name,e){
         const {AddEffect} = this.props
-        console.log(name)
         setTimeout(()=>{
             if(name == 'rain'){
                 let rainSelected = this.radioGroup1.getSelectedValue()
-                console.log('rainSelected:'+rainSelected)
                 if(rainSelected != '0'){
                     this.radioGroup2.setSelectedValue('0')
                 }
                 AddEffect('rain',rainSelected)
             } else {
                 let snowSelected = this.radioGroup2.getSelectedValue()
-                console.log('snowSelected:'+snowSelected)
                 if(snowSelected != '0'){
                     this.radioGroup1.setSelectedValue('0')
                 }

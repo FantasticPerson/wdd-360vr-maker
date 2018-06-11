@@ -65,6 +65,9 @@ class EditHotSpot extends Component{
 
     onEditConfirmClick(){ 
         let result = this.editEle.getResult()
+        if(!result){
+            return
+        }
         const {isAdd,sceneId,hotSpotType} = this.state
         if(isAdd){
             if(sceneId != null){
@@ -102,9 +105,27 @@ class EditHotSpot extends Component{
             const {hotpotList} = this.props
 
             let hotpotArr = hotpotList.map((item,i)=>{
+                console.log(item)
+                let type = JSON.parse(item.action).tye
+
+                var typeText = ''
+                if(type == 'switch'){
+                    typeText = "切换"
+                } else if(type == 'pictures'){
+                    typeText = "相册"
+                } else if(type == 'text'){
+                    typeText = '文本'
+                } else if(type == 'picAndText'){
+                    typeText = '图文'
+                } else if(type == 'audio'){
+                    typeText = '音频'
+                } else if(type == 'video'){
+                    typeText = "视频"
+                }
+
                 return (
                     <div key={item.id} onClick={()=>{this.selectHotSpot(item.id)}}>
-                        {item.id}
+                        {`${typeText} ${item.id}`}
                     </div>
                 )
             })

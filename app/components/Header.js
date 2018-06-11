@@ -25,14 +25,26 @@ class Header extends Component {
         packageKrpano()
     }
 
+    onSaveClick(){
+        console.log('onSaveClick')
+    }
+
     render() {
         const {showBack,title} = this.props
         if(showBack){
             return (
                 <AppBar
                     title={title}
-                    iconElementLeft={<IconButton onClick={this.onBackClick.bind(this)}><NavigationClose /></IconButton>}
-                    iconElementRight={<FlatButton label="导出" onClick={this.onOutputClick.bind(this)}/>}
+                    iconElementLeft={
+                        <div>
+                            <IconButton onClick={this.onBackClick.bind(this)}><NavigationClose /></IconButton>
+                        </div>}
+                    iconElementRight={
+                        <div style={{marginTop:'8px'}}>
+                            <FlatButton style={{color: 'rgb(255,255,255)'}} label="保存" onClick={this.onSaveClick.bind(this)}/>
+                            <FlatButton style={{color: 'rgb(255,255,255)'}} label="导出" onClick={this.onOutputClick.bind(this)}/>
+                        </div>
+                    }
                 />
             );
         } else {
@@ -47,14 +59,40 @@ class Header extends Component {
 }
 
 const selector = createSelector(
-    state=>state.app.title,
-    state=>state.app.showBack,
-    (title, showBack) => {
+    state => state.app.title,
+    state => state.app.showBack,
+    state => state.vr.list,
+    state => state.hotpot.list,
+    state => state.scene.list,
+    state => state.router.location.pathname,
+
+    (title, showBack,vrList,hotpotList,sceneList,pathname) => {
         return {
             title,
-            showBack
+            showBack,
+            vrList : vrList,
+            vrId: pathname.split('/')[2],
+            folderId:findFolderId(vrList,pathname),
+            sceneList : filterScene(sceneList,pathname),
+            hotpotList : hotpotList
         }
     }
+
 )
+
+function filterScene(list,pathname,selectedSceneId){
+    var vrId = pathname.split('/')[2]
+    return list.filter((item)=>{
+        return item.vrid == vrId
+    })
+}
+
+function findFolderId(vrList,pathname){
+    var vrId = pathname.split('/')[2]
+    let item = vrList.find((item)=>{
+        return item.id == vrId
+    })
+    return item ? item.folderId : -1
+}
 
 export default connect(selector)(Header);

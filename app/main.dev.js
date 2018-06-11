@@ -68,10 +68,14 @@ const initConfig = async () => {
     global.electron_app_pic_tmp = path.resolve(global.electron_app_assets_path,'./picTmp')
     global.electron_app_audio_path = path.resolve(global.electron_app_assets_path,'./audio')
     global.electron_app_audio_tmp = path.resolve(global.electron_app_assets_path,'./audioTmp')
+    global.electron_app_output_path = path.resolve(global.electron_app_assets_path,'./output')
 };
 
 
 const initDir = async () => {
+    if(!fs.existsSync(global.electron_app_output_path)){
+        fs.mkdirSync(global.electron_app_output_path)
+    }
     if (!fs.existsSync(global.electron_app_assets_path)) {
         fs.mkdirSync(global.electron_app_assets_path);
     }
