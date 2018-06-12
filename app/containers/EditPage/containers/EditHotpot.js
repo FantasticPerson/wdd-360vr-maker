@@ -105,7 +105,6 @@ class EditHotSpot extends Component{
             const {hotpotList} = this.props
 
             let hotpotArr = hotpotList.map((item,i)=>{
-                console.log(item)
                 let type = JSON.parse(item.action).tye
 
                 var typeText = ''
@@ -117,6 +116,8 @@ class EditHotSpot extends Component{
                     typeText = '文本'
                 } else if(type == 'picAndText'){
                     typeText = '图文'
+                } else if(type == 'link'){
+                    typeText = '链接'
                 } else if(type == 'audio'){
                     typeText = '音频'
                 } else if(type == 'video'){
@@ -172,8 +173,9 @@ class EditHotSpot extends Component{
                             <MenuItem value={2} primaryText="相册" />
                             <MenuItem value={3} primaryText="文本" />
                             <MenuItem value={4} primaryText="图文" />
-                            <MenuItem value={5} primaryText="音频" />
-                            <MenuItem value={6} primaryText="视频" />
+                            <MenuItem value={5} primaryText="链接" />
+                            <MenuItem value={6} primaryText="音频" />
+                            <MenuItem value={7} primaryText="视频" />
                         </SelectField>
                         <div style={{position: 'absolute',left: '0',right: '0',bottom: '35px',top: '117px',margin: '5px',padding: '5px',border: '2px solid #eee',borderRadius: '5px',overflowY:'auto'}}>
                             {this.renderEditByType()}

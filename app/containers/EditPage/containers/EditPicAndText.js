@@ -10,9 +10,10 @@ import getPathOfImage from '../../../native/getPathOfImage'
 export default class EditPicAndText extends Component{
     constructor(){
         super()
-        this.state = {list:[],showUploadModal:false,showPicListModal:false,pickedPic:null}
+        this.state = {list:[],showUploadModal:false,showPicListModal:false,pickedPic:null,check:true,openInNewWindow:true}
         this.title = React.createRef()
         this.summaryRef = React.createRef()
+        this.moreInfo = React.createRef()
     }
 
     componentDidMount(){
@@ -20,14 +21,15 @@ export default class EditPicAndText extends Component{
         if(action.length > 0){
             let obj = JSON.parse(action)
             if(obj.type == 'picAndText'){
-                this.setState({list:obj.picArr})
+                this.setState({list:obj.picArr,check:obj.check,openInNewWindow:obj.openInNewWindow})
                 this.title.input.value = obj.title
+                this.moreInfo.input.value = obj.moreInfo
             }
         }
     }
 
     getResult(){
-        const {pickedPic,list} = this.state
+        const {pickedPic,list,check,openInNewWindow} = this.state
         let item2 = list.find((obj,index)=>{
             return obj.pic == pickedPic
         })
@@ -37,6 +39,7 @@ export default class EditPicAndText extends Component{
         }
 
         let title = this.title.input.value.trim()
+        let moreInfo = this.moreInfo.input.value.trim()
         
         if(title.length == 0){
             alert('请填写标题')
@@ -47,7 +50,7 @@ export default class EditPicAndText extends Component{
             alert('请选择图片')
             return false
         }
-        return JSON.stringify({type:'picAndText',title:title,picArr:list})
+        return JSON.stringify({type:'picAndText',title:title,picArr:list,moreInfo,check,openInNewWindow})
     }
 
     onRemoveClick(item){
@@ -75,6 +78,14 @@ export default class EditPicAndText extends Component{
         this.setState({pickedPic:item.pic})
     }
 
+    updateCheck(){
+        this.setState({check:!this.state.check})
+    }  
+
+    updateCheckNew(){
+        this.setState({openInNewWindow:!this.state.openInNewWindow})
+    }
+
     render(){
         const {list} = this.state
         const {pickedPic} = this.state
@@ -96,6 +107,7 @@ export default class EditPicAndText extends Component{
         })
         return (
             <div>
+                <Checkbox labelPosition="left" checked={this.state.check} onCheck={this.updateCheck.bind(this)} label="在全景中显示"></Checkbox>
                 <TextField ref={(input)=>{this.title=input}} defaultValue={''} fullWidth hintText="请输入标题" floatingLabelText="标题" />
                 <br />
                 <FlatButton style={{marginTop: '-37px',marginRight:'65px'}} label="从图片库添加" primary onClick={()=>{
@@ -109,6 +121,8 @@ export default class EditPicAndText extends Component{
                 </div>
                 <h5>文字介绍</h5>
                 <TextField fullWidth hintText="文字介绍" floatingLabelText="请输入文字介绍" multiLine rows={2} rowsMax={4} ref={(input) => this.summaryRef = input} />
+                <Checkbox labelPosition="left" checked={this.state.openInNewWindow} onCheck={this.updateCheckNew.bind(this)} label="在新窗口中打开"></Checkbox>
+                <TextField defaultValue={''} fullWidth hintText="填写网站地址 展示更多内容" floatingLabelText="更多内容" ref={(input) => this.moreInfo = input} />
                 {this.renderPicListModal()}
                 {this.renderUploadModal()}
             </div>

@@ -11,7 +11,7 @@ import ReactAudioPlayer from 'react-audio-player';
 export default class EditAudio extends Component{
     constructor(){
         super()
-        this.state = {url:null,showUploadModal:false,showListModal:false}
+        this.state = {url:null,showUploadModal:false,showListModal:false,check:true}
         this.titleRef = React.createRef()
     }
 
@@ -20,14 +20,14 @@ export default class EditAudio extends Component{
         if(action.length > 0){
             let obj = JSON.parse(action)
             if(obj.type == 'audio'){
-                this.setState({url:obj.url})
+                this.setState({url:obj.url,check:obj.check})
                 this.titleRef.input.value = obj.title
             }
         }
     }
 
     getResult(){
-        const {url} = this.state
+        const {url,check} = this.state
         let title = this.titleRef.input.value.trim()
         if(title.length == 0){
             alert('请填写标题')
@@ -37,12 +37,17 @@ export default class EditAudio extends Component{
             alert('请选择一个音乐文件')
             return false
         }
-        return JSON.stringify({type:'audio',title:title,url:url})
+        return JSON.stringify({type:'audio',title:title,url:url,check})
     }
+
+    updateCheck(){
+        this.setState({check:!this.state.check})
+    }  
 
     render(){
         return (
             <div>
+                <Checkbox labelPosition="left" checked={this.state.check} onCheck={this.updateCheck.bind(this)} label="在全景中显示"></Checkbox>
                 <TextField defaultValue={''} fullWidth hintText="标题" floatingLabelText="标题" ref={(input) => this.titleRef = input} />
                 <br />
                 <FlatButton label="从音乐库中添加" primary onClick={()=>{
