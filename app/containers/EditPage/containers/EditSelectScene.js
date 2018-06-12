@@ -73,7 +73,7 @@ export default class EditSelectScene extends Component{
         return (
             <div>
                 <div style={{width:'180px',margin: '0 auto'}}>
-                    <SelectField style={{width:'200px'}} floatingLabelText="过渡类型" value={this.state.type} onChange={(event, index, value)=>{this.onTypeChange(event, index, value)}}>
+                    <SelectField style={{width:'180px'}} floatingLabelText="过渡类型" value={this.state.type} onChange={(event, index, value)=>{this.onTypeChange(event, index, value)}}>
                         <MenuItem value={0} primaryText="淡入淡出" />
                         <MenuItem value={1} primaryText="缩放过渡" />
                         <MenuItem value={2} primaryText="黑场过渡" />
