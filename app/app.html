@@ -3,11 +3,6 @@
   <head>
     <meta charset="utf-8">
     <title>Hello Electron React!</title>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <script>
       (function() {
         if (!process.env.HOT) {
@@ -22,7 +17,7 @@
   </head>
   <body>
     <div id="root"></div>
-    <script src="./krpano/krpano.js"></script>
+    <script src="../krpano/krpano.js"></script>
     <script>
       window.render_electron = require('electron');
 
@@ -42,11 +37,12 @@
         window.electron_app_server_port = native_global('electron_app_server_port')
         window.electron_app_krp_assets_path = native_global('electron_app_krp_path')
         window.electron_app_krpano_assets_path = native_global('electron_app_krpano_path')
-        window.electron_app_pic_path = native_global('eletron_app_pic_path')
+        window.electron_app_pic_path = native_global('electron_app_pic_path')
         window.electron_app_pic_tmp = native_global('electron_app_pic_tmp')
         window.electron_app_audio_path = native_global('electron_app_audio_path')
         window.electron_app_audio_tmp = native_global('electron_app_audio_tmp')
         window.electron_app_output_path = native_global('electron_app_output_path')
+        window.etectron_app_vr_output = native_global('etectron_app_vr_output')
       }
     </script>
     <script>
@@ -64,12 +60,12 @@
         scripts.push(
           (process.env.HOT)
             ? 'http://localhost:' + port + '/dist/renderer.dev.js'
-            : './dist/renderer.dev.js'
+            : './dist/renderer.prod.js'
         );
 
         document.write(
           scripts
-            .map(script => '<script defer src="' + script + '"><\/script>')
+            .map(script => `<script defer src="${script}"><\/script>`)
             .join('')
         );
       }

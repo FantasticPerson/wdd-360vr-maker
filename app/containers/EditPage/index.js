@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import FlatButton from 'material-ui/FlatButton';
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import {createSelector} from 'reselect'
+
+import FlatButton from '@material-ui/core/Button';
+import RadioButton from '@material-ui/core/Radio';
+import RadioButtonGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
 
 import Hashid from '../../utils/generateHashId'
 import PanoContainer from '../../components/panoContainer'
@@ -27,21 +31,17 @@ class EditPage extends Component{
     constructor(){
         super()
         this.state = {
-            vrId : -1,
             editType : 0,
             editHotpot:false,
-            selectSceneId:-1
+            rainType:'0',
+            snowType:'0'
         }
-        this.hotspots = []
-        this.selectedHotspotId = null
-        this.lastSceneId = null
         this.radioGroup1 = React.createRef()
         this.radioGroup2 = React.createRef()
     }
 
     componentDidMount(){
         const {updateAppTitle,updateAppShowBack,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal,updateAllHotpotFromLocal,updatePictureFromLocal,updateAudioFromLocal} = this.props
-        this.lastSceneId = this.state.previewSceneId
         updateAppTitle('编辑全景')
 
         updateFromLocal();
@@ -68,49 +68,18 @@ class EditPage extends Component{
 
     onEditClick(type){
         this.setState({editType:type})
-        // if(type == 0){
-        //     if(this.krpano){
-        //         this.krpano.call('show_view_frame();')
-        //     }
-        // } else {
-        //     if(this.krpano){
-        //         this.krpano.call('hide_view_frame();')
-        //     }
-        // }
     }
 
     renderEditHotPot(){
-        const {editType} = this.state
-        if(editType == 0){
+        if(this.state.editType == 1){
             return (
                 <EditHotSpot></EditHotSpot>
             )
         }
     }
 
-    onChooseSpecislShowChange(name,e){
-        const {AddEffect} = this.props
-        setTimeout(()=>{
-            if(name == 'rain'){
-                let rainSelected = this.radioGroup1.getSelectedValue()
-                if(rainSelected != '0'){
-                    this.radioGroup2.setSelectedValue('0')
-                }
-                AddEffect('rain',rainSelected)
-            } else {
-                let snowSelected = this.radioGroup2.getSelectedValue()
-                if(snowSelected != '0'){
-                    this.radioGroup1.setSelectedValue('0')
-                }
-                AddEffect('snow',snowSelected)
-            }
-        },50)
-        
-    }
-
     renderEditMusic(){
-        const {editType} = this.state
-        if(editType == 1){
+        if(this.state.editType == 2){
             return (
                 <div style={{padding:'5px'}}>
                     <div style={{
@@ -128,12 +97,12 @@ class EditPage extends Component{
                         <div style={{marginTop:'10px',borderBottom:'1px solid #eee'}}>背景音乐设置</div>
                         <div>
                             <span>选择一首音乐</span>
-                            <FlatButton label="添加" primary/>
+                            <FlatButton color="primary">添加</FlatButton>
                         </div>
                         <div style={{marginTop:'10px',borderBottom:'1px solid #eee'}}>解说音乐设置</div>
                         <div>
                             <span>选择一首音乐</span>
-                            <FlatButton label="添加" primary/>
+                            <FlatButton color="primary">添加</FlatButton>
                         </div>
                     </div>
                 </div>
@@ -141,9 +110,43 @@ class EditPage extends Component{
         }
     }
 
+
+    onChooseSpecislShowChange(event,value){
+        const {AddEffect} = this.props
+
+        if(event.target.name == 'rain'){
+            if(value != '0'){
+                this.setState({snowType:'0'})
+            }
+            this.setState({rainType:value})
+            AddEffect('rain',value)
+        } else {
+            if(value != '0'){
+                this.setState({rainType:'0'})
+            }
+            this.setState({snowType:value})
+            AddEffect('snow',value)
+        }
+    }
+
     renderSpecialShow(){
-        const {editType} = this.state
-        if(editType == 2){
+        if(this.stateeditType == 3){
+            let rainTypes = ["关闭","小雨","中雨","大雨"]
+            let snowTypes = ["关闭","小雪","中雪","大雪"]
+
+            let rainFormControls = rainTypes.map((item,index)=>{
+                return (
+                    <FormControlLabel value={index+''} style={{height:'25px'}} control={<RadioButton color="primary" />} label={item} />
+                )
+            })
+
+            let snowFormControls = snowTypes.map((item,index)=>{
+                return (
+                    <FormControlLabel value={index+''} style={{height:'25px'}} control={<RadioButton color="primary" />} label={item} />
+                )
+            })
+
+            const {rainType,snowType} = this.state
             return (
                 <div style={{padding:'5px'}}>
                     <div style={{
@@ -154,23 +157,26 @@ class EditPage extends Component{
                             <span style={{
                                 marginLeft:'5px'
                             }}>特效编辑</span> 
-                            <FlatButton label="添加特效" primary />
+                            <FlatButton primary >添加特效</FlatButton>
                         </span>
                     </div>
                     <div>
                         <div>下雨</div>
-                        <RadioButtonGroup name="rain" ref={(rg)=>{this.radioGroup1=rg}} defaultSelected={'0'}onChange={(e)=>this.onChooseSpecislShowChange('rain',e)}>
-                            <RadioButton value="0" label="关闭" style={styles.radioButton}/>
-                            <RadioButton value="1" label="小雨" style={styles.radioButton}/>
-                            <RadioButton value="2" label="中雨" style={styles.radioButton}/>
-                            <RadioButton value="3" label="大雨" style={styles.radioButton}/>
+                        <RadioButtonGroup
+                            name="rain"
+                            value={rainType}
+                            onChange={this.onChooseSpecislShowChange.bind(this)}
+                        >
+                            {rainFormControls}
                         </RadioButtonGroup>
+
                         <div>下雪</div>
-                        <RadioButtonGroup name="snow" ref={(rg)=>{this.radioGroup2=rg}} defaultSelected={'0'} onChange={(e)=>this.onChooseSpecislShowChange('snow',e)}>
-                            <RadioButton value="0" label="关闭" style={styles.radioButton}/>
-                            <RadioButton value="1" label="小雪" style={styles.radioButton}/>
-                            <RadioButton value="2" label="中雪" style={styles.radioButton}/>
-                            <RadioButton value="3" label="大雪" style={styles.radioButton}/>
+                        <RadioButtonGroup
+                            name="snow"
+                            value={snowType}
+                            onChange={this.onChooseSpecislShowChange.bind(this)}
+                        >
+                            {snowFormControls}
                         </RadioButtonGroup>
                     </div>
                 </div>  
@@ -179,24 +185,23 @@ class EditPage extends Component{
     }
 
     renderLeftBtns(){
+        let btnProps = [
+            {class:'fa fa-eye',name:'视角'},
+            {class:'fa fa-dot-circle-o',name:'热点'},
+            {class:'fa fa-music',name:'音乐'},
+            {class:'fa fa-magic',name:'特效'}
+        ]
+        let btns = btnProps.map((item,index)=>{
+            return  (
+                <div key={index} className={this.getEditClassName(index)} onClick={()=>{this.onEditClick(index)}}>
+                    <i className={item.class}></i>
+                    <p>{item.name}</p>
+                </div>
+            )
+        })
         return (
             <div className={styles.leftBar}>
-                <div className={styles.btn}>
-                    <i className="fa fa-eye"></i>
-                    <p>视角</p>
-                </div>
-                <div className={this.getEditClassName(0)} onClick={()=>{this.onEditClick(0)}}>
-                    <i className="fa fa-dot-circle-o"></i>
-                    <p>热点</p>
-                </div>
-                <div className={this.getEditClassName(1)} onClick={()=>{this.onEditClick(1)}}>
-                    <i className="fa fa-music"></i>
-                    <p>音乐</p>
-                </div>
-                <div className={this.getEditClassName(2)} onClick={()=>{this.onEditClick(2)}}>
-                    <i className="fa fa-magic"></i>
-                    <p>特效</p>
-                </div>
+                {btns}
             </div>
         )
     }

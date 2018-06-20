@@ -4,11 +4,14 @@ import { bindActionCreators } from 'redux';
 import {createSelector} from 'reselect'
 
 import packageKrpano from '../native/packageKrpano'
-import AppBar from 'material-ui/AppBar';
-import IconButton from 'material-ui/IconButton';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
-import FlatButton from 'material-ui/FlatButton';
+import FlatButton from '@material-ui/core/Button';
 import { createHashHistory } from 'history'
+import { getProductionXml } from '../utils/xmlBuilder2'
+import {GenerateOutput} from '../utils/generateOutput'
 
 class Header extends Component {
     constructor(){
@@ -17,7 +20,6 @@ class Header extends Component {
     }
 
     onBackClick(){
-        console.log(this.history)
         this.history.goBack()
     }
 
@@ -26,7 +28,11 @@ class Header extends Component {
     }
 
     onSaveClick(){
+        const {vrItem,sceneList,hotpotList} = this.props
+        getProductionXml(vrItem,sceneList,hotpotList)
+        GenerateOutput(vrItem,sceneList,hotpotList)
         console.log('onSaveClick')
+        
     }
 
     render() {
@@ -41,8 +47,8 @@ class Header extends Component {
                         </div>}
                     iconElementRight={
                         <div style={{marginTop:'8px'}}>
-                            <FlatButton style={{color: 'rgb(255,255,255)'}} label="保存" onClick={this.onSaveClick.bind(this)}/>
-                            <FlatButton style={{color: 'rgb(255,255,255)'}} label="导出" onClick={this.onOutputClick.bind(this)}/>
+                            <FlatButton color="primary" style={{color: 'rgb(255,255,255)',fontSize:'15px'}} label="保存" onClick={this.onSaveClick.bind(this)}>保存</FlatButton>
+                            <FlatButton color="primary" style={{color: 'rgb(255,255,255)',fontSize:'15px'}} label="导出" onClick={this.onOutputClick.bind(this)}>导出</FlatButton>
                         </div>
                     }
                 />
@@ -72,13 +78,20 @@ const selector = createSelector(
             showBack,
             vrList : vrList,
             vrId: pathname.split('/')[2],
+            vrItem:findVrItem(vrList,pathname),
             folderId:findFolderId(vrList,pathname),
             sceneList : filterScene(sceneList,pathname),
             hotpotList : hotpotList
         }
     }
-
 )
+
+function findVrItem(vrList,pathname){
+    let vrId = pathname.split('/')[2]
+    return vrList.find((item)=>{
+        return item.id == vrId
+    })
+}
 
 function filterScene(list,pathname,selectedSceneId){
     var vrId = pathname.split('/')[2]

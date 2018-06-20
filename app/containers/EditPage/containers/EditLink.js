@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
 
+import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
 export default class EditLink extends Component{
     constructor(){
         super()
-        this.setState({check:true,openInNewWindow:true})
+        this.state = {check:false,openInNewWindow:true}
 
         this.titleRef = React.createRef()
         this.urlRef = React.createRef()
     }
 
     getResult(){
-        let title = this.titleRef.input.value.trim()
-        let url = this.urlRef.input.value.trim()
+        let title = this.titleRef.value.trim()
+        let url = this.urlRef.value.trim()
 
         const {check,openInNewWindow} = this.state
 
@@ -31,8 +35,8 @@ export default class EditLink extends Component{
         if(action.length > 0){
             let obj = JSON.parse(action)
             if(obj.type == 'link'){
-                this.titleRef.input.value = obj.title
-                this.urlRef.input.value = obj.url
+                this.titleRef.value = obj.title
+                this.urlRef.value = obj.url
 
                 this.setState({check:obj.check,openInNewWindow:obj.openInNewWindow})
             }
@@ -50,11 +54,46 @@ export default class EditLink extends Component{
     render(){
         return (
             <div>
-                <Checkbox labelPosition="left" checked={this.state.check} onCheck={this.updateCheck.bind(this)} label="在全景中显示"></Checkbox>
-                <TextField defaultValue={''} fullWidth hintText="标题" floatingLabelText="标题" ref={(input) => this.titleRef = input} />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                        checked={this.state.check}
+                        onChange={this.updateCheck.bind(this)}
+                        value="在新窗口中打开"
+                        color="primary"
+                        />
+                    }
+                    label="在全景中显示"
+                />
+                
+                <TextField 
+                    id="with-placeholder"
+                    label="请输入标题"
+                    placeholder="标题"
+                    margin="normal"
+                    inputRef={(input) => this.titleRef = input}
+                />
+
                 <br />
-                <Checkbox labelPosition="left" checked={this.state.openInNewWindow} onCheck={this.updateCheckNew.bind(this)} label="在新窗口中打开"></Checkbox>
-                <TextField defaultValue={''} fullWidth hintText="链接地址" floatingLabelText="链接地址" ref={(input) => this.urlRef = input} />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                        checked={this.state.openInNewWindow}
+                        onChange={this.updateCheckNew.bind(this)}
+                        value="在新窗口中打开"
+                        color="primary"
+                        />
+                    }
+                    label="在新窗口中打开"
+                />
+
+                <TextField 
+                    id="with-placeholder"
+                    label="链接地址"
+                    placeholder="链接地址"
+                    margin="normal"
+                    inputRef={(input) => this.urlRef = input}
+                />
             </div>
         )  
     }

@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
+// import FlatButton from 'material-ui/FlatButton';
+// import TextField from 'material-ui/TextField';
+
+
+import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
+import FlatButton from '@material-ui/core/Button';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import UploadAudioModal from './UploadAudioModal'
 import CopyAudioTmpToAudio from '../../../native/copyAudioTmpToAudio'
@@ -21,14 +27,14 @@ export default class EditAudio extends Component{
             let obj = JSON.parse(action)
             if(obj.type == 'audio'){
                 this.setState({url:obj.url,check:obj.check})
-                this.titleRef.input.value = obj.title
+                this.titleRef.value = obj.title
             }
         }
     }
 
     getResult(){
         const {url,check} = this.state
-        let title = this.titleRef.input.value.trim()
+        let title = this.titleRef.value.trim()
         if(title.length == 0){
             alert('请填写标题')
             return false
@@ -47,15 +53,30 @@ export default class EditAudio extends Component{
     render(){
         return (
             <div>
-                <Checkbox labelPosition="left" checked={this.state.check} onCheck={this.updateCheck.bind(this)} label="在全景中显示"></Checkbox>
-                <TextField defaultValue={''} fullWidth hintText="标题" floatingLabelText="标题" ref={(input) => this.titleRef = input} />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                        checked={this.state.check}
+                        onChange={this.updateCheck.bind(this)}
+                        value="在新窗口中打开"
+                        color="primary"
+                        />
+                    }
+                    label="在全景中显示"
+                />
+                <TextField 
+                    id="with-placeholder"
+                    label="标题"
+                    placeholder="标题"
+                    margin="normal"
+                    inputRef={(input) => this.titleRef = input}
+                />
+
                 <br />
-                <FlatButton label="从音乐库中添加" primary onClick={()=>{
-                    this.setState({showListModal:true})
-                }}></FlatButton>
-                <FlatButton label="添加音乐" style={{position:'absolute',marginLeft:'-10px'}} primary onClick={()=>{
-                    this.setState({showUploadModal:true})
-                }}></FlatButton>
+                <FlatButton color="primary" onClick={()=>this.setState({showListModal:true})}>{'从音乐库中添加'}</FlatButton>
+
+                <FlatButton color="primary" style={{position:'absolute',marginLeft:'-10px'}} onClick={()=>this.setState({showUploadModal:true})}>{'添加音乐'}</FlatButton>
+
                 {this.renderMusic()}
                 {this.renderUploadModal()}
                 {this.renderListModal()}

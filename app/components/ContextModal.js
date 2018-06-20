@@ -9,7 +9,7 @@ export default class ContextModal extends Component{
     }
 
     componentDidMount(){
-        setTimeout(() => {
+        // setTimeout(() => {
             const {posX,posY} = this.props.data
             const {clientHeight} = this.dom
             let clientWidth = 150
@@ -33,7 +33,7 @@ export default class ContextModal extends Component{
                     top:posTop+'px'
                 }
             })
-        }, 50);
+        // }, 50);
     }
 
     onBgClick(e){

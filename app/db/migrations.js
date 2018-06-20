@@ -18,7 +18,9 @@ export default [
             scene: [
                 'id',
                 'name',
-                'vrid'
+                'vrid',
+                'action',
+                'groupId'
             ],
             folder: [
                 'id',
@@ -29,14 +31,7 @@ export default [
                 'name',
                 'folderId',
                 'vrId'
-            ]
-            
-        },
-        upgrade: null
-    },
-    {
-        ver: 2,
-        stores: {
+            ],
             hotpot:[
                 'id',
                 'type',
@@ -47,21 +42,7 @@ export default [
                 'atv',
                 'action',
                 'sceneId'
-            ]
-        }
-    },
-    {
-        ver: 3,
-        stores: {
-            picture:[
-                'id',
-                'extension'
-            ]
-        }
-    },
-    {
-        ver: 4,
-        stores: {
+            ],
             audio:[
                 'id',
                 'extension'
@@ -69,6 +50,16 @@ export default [
             video:[
                 'id',
                 'url'
+            ]
+            
+        },
+        upgrade: null
+    },{
+        ver: 2,
+        stores: {
+            picture:[
+                'id',
+                'extension'
             ]
         }
     }

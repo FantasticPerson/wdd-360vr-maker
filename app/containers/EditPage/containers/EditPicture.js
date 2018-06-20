@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
+
+import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
+import FlatButton from '@material-ui/core/Button';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import UploadPicModal from './UploadPicModal'
 import CopyImageTmpToImage from '../../../native/copyImageTmpToImage'
 import PicListModal from './PicListModal'
 import getPathOfImage from '../../../native/getPathOfImage'
-import Checkbox from 'material-ui/Checkbox';
 
 export default class EditPicture extends Component{
     constructor(){
         super()
-        this.state = {list:[],showUploadModal:false,showPicListModal:false,check:true,openInNewWindow:true}
+        this.state = {list:[],showUploadModal:false,showPicListModal:false,check:false,openInNewWindow:true}
         this.titleRef = React.createRef()
         this.moreInfo = React.createRef()
     }
@@ -21,8 +23,8 @@ export default class EditPicture extends Component{
         if(action.length > 0){
             let obj = JSON.parse(action)
             if(obj.type == 'pictures'){
-                this.titleRef.input.value = obj.title
-                this.moreInfo.input.value = obj.moreInfo
+                this.titleRef.value = obj.title
+                this.moreInfo.value = obj.moreInfo
                 this.setState({list:obj.pics,check:obj.check,openInNewWindow:obj.openInNewWindow})
             }
         }
@@ -47,8 +49,8 @@ export default class EditPicture extends Component{
 
     getResult(){
         const {list,check,openInNewWindow} = this.state
-        let title = this.titleRef.input.value.trim()
-        let moreInfo = this.moreInfo.input.value.trim()
+        let title = this.titleRef.value.trim()
+        let moreInfo = this.moreInfo.value.trim()
 
         if(title.length == 0){
             alert('标题不能为空')
@@ -57,7 +59,7 @@ export default class EditPicture extends Component{
             alert('请选择图片')
             return false
         }
-        return  JSON.stringify({type:'pictures',pics:list,title,check,openInNewWindow,moreInfo})
+        return JSON.stringify({type:'pictures',pics:list,title,check,openInNewWindow,moreInfo})
     }
 
     render(){
@@ -80,21 +82,56 @@ export default class EditPicture extends Component{
         })
         return (
             <div>
-                <Checkbox labelPosition="left" checked={this.state.check} onCheck={this.updateCheck.bind(this)} label="在全景中显示"></Checkbox>
-                <TextField defaultValue={''} fullWidth hintText="请输入标题" floatingLabelText="标题" ref={(input) => this.titleRef = input} />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                        checked={this.state.check}
+                        onChange={this.updateCheck.bind(this)}
+                        value="在新窗口中打开"
+                        color="primary"
+                        />
+                    }
+                    label="在全景中显示"
+                />
+
+                <TextField 
+                    id="with-placeholder"
+                    label="请输入标题"
+                    placeholder="标题"
+                    margin="normal"
+                    inputRef={(input) => this.titleRef = input}
+                />
+
                 <br />
-                <FlatButton style={{float: 'right'}} label="从图片库添加" primary onClick={()=>{
-                    this.setState({showPicListModal:true})
-                }} secondary/>
-                <FlatButton style={{float: 'right'}} label="添加图片" primary onClick={()=>{
-                    this.setState({showUploadModal:true})
-                }} secondary/>
+
+                 <FlatButton color="secondary" style={{float:'right'}} onClick={()=>this.setState({showPicListModal:true})}>{'从图片库添加'}</FlatButton>
+
+                <FlatButton color="secondary" style={{float:'right'}} onClick={()=>this.setState({showUploadModal:true})}>{'添加图片'}</FlatButton>
+
                 <div style={{width:'180px',margin: '0 auto'}}>
                     {picArr}
                 </div>
 
-                <Checkbox labelPosition="left" checked={this.state.check} onCheck={this.updateCheckNew.bind(this)} label="在新窗口中打开"></Checkbox>
-                <TextField defaultValue={''} fullWidth hintText="填写网站地址，展示更多内容" floatingLabelText="更多内容" ref={(input) => this.moreInfo = input} />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                        checked={this.state.openInNewWindow}
+                        onChange={this.updateCheckNew.bind(this)}
+                        value="在新窗口中打开"
+                        color="primary"
+                        />
+                    }
+                    label="在新窗口中打开"
+                />
+                
+                <TextField 
+                    id="with-placeholder"
+                    label="填写网站地址，展示更多内容"
+                    placeholder="更多内容"
+                    margin="normal"
+                    inputRef={(input) => this.moreInfo = input}
+                />
+
                 {this.renderUploadModal()}
                 {this.renderPicListModal()}
             </div>

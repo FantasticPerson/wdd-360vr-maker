@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
+
+import TextField from '@material-ui/core/TextField';
+import FlatButton from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import UploadPicModal from './UploadPicModal'
 import CopyImageTmpToImage from '../../../native/copyImageTmpToImage'
@@ -22,8 +25,8 @@ export default class EditPicAndText extends Component{
             let obj = JSON.parse(action)
             if(obj.type == 'picAndText'){
                 this.setState({list:obj.picArr,check:obj.check,openInNewWindow:obj.openInNewWindow})
-                this.title.input.value = obj.title
-                this.moreInfo.input.value = obj.moreInfo
+                this.title.value = obj.title
+                this.moreInfo.value = obj.moreInfo
             }
         }
     }
@@ -34,12 +37,12 @@ export default class EditPicAndText extends Component{
             return obj.pic == pickedPic
         })
         if(item2){
-            item2.text = this.summaryRef.getValue().trim()
+            item2.text = this.summaryRef.value.trim()
             this.setState({list:list})
         }
 
-        let title = this.title.input.value.trim()
-        let moreInfo = this.moreInfo.input.value.trim()
+        let title = this.title.value.trim()
+        let moreInfo = this.moreInfo.value.trim()
         
         if(title.length == 0){
             alert('请填写标题')
@@ -71,10 +74,10 @@ export default class EditPicAndText extends Component{
             return obj.pic == pickedPic
         })
         if(item2){
-            item2.text = this.summaryRef.getValue().trim()
+            item2.text = this.summaryRef.value.trim()
             this.setState({list:list})
         }
-        this.summaryRef.input.setValue(item.text || "")
+        this.summaryRef.value= (item.text || "")
         this.setState({pickedPic:item.pic})
     }
 
@@ -107,22 +110,64 @@ export default class EditPicAndText extends Component{
         })
         return (
             <div>
-                <Checkbox labelPosition="left" checked={this.state.check} onCheck={this.updateCheck.bind(this)} label="在全景中显示"></Checkbox>
-                <TextField ref={(input)=>{this.title=input}} defaultValue={''} fullWidth hintText="请输入标题" floatingLabelText="标题" />
-                <br />
-                <FlatButton style={{marginTop: '-37px',marginRight:'65px'}} label="从图片库添加" primary onClick={()=>{
-                    this.setState({showPicListModal:true})
-                }} secondary/>
-                <FlatButton style={{float: 'right',marginTop: '-37px'}} label="添加图片" primary onClick={()=>{
-                    this.setState({showUploadModal:true})
-                }} secondary/>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                        checked={this.state.check}
+                        onChange={this.updateCheck.bind(this)}
+                        value="在新窗口中打开"
+                        color="primary"
+                        />
+                    }
+                    label="在全景中显示"
+                />
+
+                <TextField 
+                    id="with-placeholder"
+                    label="标题"
+                    placeholder="标题"
+                    margin="normal"
+                    inputRef={(input) => this.title = input}
+                />
+
+                <FlatButton  style={{marginRight:'65px'}} color="secondary" onClick={()=>this.setState({showPicListModal:true})}>{'从图片库添加'}</FlatButton>
+
+                <FlatButton  style={{float: 'right',marginTop: '-37px'}} color="secondary" onClick={()=>this.setState({showUploadModal:true})}>{'添加图片'}</FlatButton>
+
                 <div style={{width:'180px',margin: '0 auto'}}>
                     {picArr}
                 </div>
                 <h5>文字介绍</h5>
-                <TextField fullWidth hintText="文字介绍" floatingLabelText="请输入文字介绍" multiLine rows={2} rowsMax={4} ref={(input) => this.summaryRef = input} />
-                <Checkbox labelPosition="left" checked={this.state.openInNewWindow} onCheck={this.updateCheckNew.bind(this)} label="在新窗口中打开"></Checkbox>
-                <TextField defaultValue={''} fullWidth hintText="填写网站地址 展示更多内容" floatingLabelText="更多内容" ref={(input) => this.moreInfo = input} />
+
+                <TextField 
+                    id="with-placeholder"
+                    label="文字介绍"
+                    placeholder="请输入文字介绍"
+                    margin="normal"
+                    inputRef={(input) => this.summaryRef = input}
+                />
+
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                        checked={this.state.openInNewWindow}
+                        onChange={this.updateCheckNew.bind(this)}
+                        value="在新窗口中打开"
+                        color="primary"
+                        />
+                    }
+                    label="在新窗口中打开"
+                />
+                
+                <TextField 
+                    id="with-placeholder"
+                    label="更多内容"
+                    placeholder="填写网站地址 展示更多内容"
+                    margin="normal"
+                    fullWidth
+                    inputRef={(input) => this.moreInfo = input}
+                />
+
                 {this.renderPicListModal()}
                 {this.renderUploadModal()}
             </div>

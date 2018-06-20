@@ -48,7 +48,7 @@ export function getPanoXml(data){
 export function getProductionXml(vrItem,sceneList,hotpotList){
     let productData = krpanoData(vrItem,sceneList,hotpotList)
 
-    const krpano = builder = builder.create('krpano')
+    const krpano = xmlBuilder.create('krpano')
     krpano.att('version',Common.KR_VERSION)
     krpano.att('clientVersion',Common.KR_VERSION)
 
@@ -57,6 +57,18 @@ export function getProductionXml(vrItem,sceneList,hotpotList){
 
     const displayModeElement = krpano.ele('displayMode')
     displayModeElement.att('export',true)
+
+    productData.panos.map(pano => {
+        getSceneXmlData(pano, krpano)
+    })
+    
+    configXmlData(productData,krpano)
+
+    let xml = krpano.doc().end()
+
+    console.log(xml)
+
+    return xml
 }
 
 function krpanoData(vrItem,sceneList,hotpotList){
@@ -76,10 +88,39 @@ function krpanoData(vrItem,sceneList,hotpotList){
     }
 }
 
-function getSceneXmlData(krpano){
+function getSceneXmlData(pano,krpano){
+    const scene = krpano.ele('scene')
+    scene.att('name',`scene_${pano.scene.id}`)
+    scene.att('pano_id',pano.scene.id)
 
+    const preview = scene.ele('preview')
+    preview.att('url','')
 
-    das
+    const image = scene.ele('image')
+    image.att('type', 'CUBE')
+    image.att('multires', true)
+    image.att('tilesize', 512)
+    image.att('if', '!webvr.isenabled AND device.desktop')
+
+    const cube = image.ele('cube')
+    // cube.att('url', `${pano.rootPath}/pano.tiles/mres_%s/l${pano.multires.length - i}/%v/l${pano.multires.length - i}_%s_%v_%h.jpg`)
+
+    cube.att('url', `23456`)
+
+    const imageMobile = scene.ele('image')
+    // const imageMobile = scene.ele('image')
+    imageMobile.att('if', 'webvr.isenabled OR !device.desktop')
+  
+    const mobile = imageMobile.ele('cube')
+    
+    mobile.att('url', `${pano.rootPath}/pano.tiles/mobile_%s.jpg`)
+
+    for (let i = 0; i < pano.hotspots.length; i++) {
+        if (pano.hotspots[i].error == '') {
+                const hotspot = scene.ele('hotspot')
+                hotspot.att('name', `hotspot_${i}`)
+        }
+    }
 }
 
 function configXmlData(productData,krpano){
@@ -118,7 +159,7 @@ function thumbsXmlData(productData,config){
         panoElement.att('title',pano.scene.name)
 
         panoElement.att('thumb','test')
-        panoElement.att('pano_id',pano.id)
+        panoElement.att('pano_id',pano.scene.id)
     })
 }
 
@@ -133,15 +174,15 @@ function panosXmlData(productData,config){
         info.att('title',pano.scene.name)
 
         const view = panoElement.ele('view')
-        view.att('hloolat',pano.hAov)
-        view.att('vloolat',pano.vAov)
-        view.att('fov',pano.fov)
+        // view.att('hloolat',pano.hAov)
+        // view.att('vloolat',pano.vAov)
+        // view.att('fov',pano.fov)
         view.att('fovtype','MFOV')
         view.att('maxpixelzoom',2.0)
-        view.att('fovmin',pano.fovMin)
-        view.att('fovmax',pano.fovMax)
-        view.att('vlookatmin',pano.vAovMin)
-        view.att('vlookatmax',pano.vAovMax)
+        // view.att('fovmin',pano.fovMin)
+        // view.att('fovmax',pano.fovMax)
+        // view.att('vlookatmin',pano.vAovMin)
+        // view.att('vlookatmax',pano.vAovMax)
         view.att('autorotatekeepview',0)
         view.att('loadscenekeepview',0)
 
@@ -157,11 +198,14 @@ function panosXmlData(productData,config){
             hotspot.att('name', `hotspot_${hotspotIndex}`)
             hotspotIndex++
             if(hotspotData.animated){
-                hotspot.att('style_id',push.basename(hotspotData.icon,'.png'))
+                // hotspot.att('style_id',push.basename(hotspotData.icon,'.png'))
+                hotspot.att('style_id','')
                 hotspot.att('image_type',1)
             } else {
+                
                 hotspot.att('image_type',2)
-                parseMediaPath(memberWorkPath, allMedias, productData.rootPath, hotspotData.icon, false))
+
+                // parseMediaPath(memberWorkPath, allMedias, productData.rootPath, hotspotData.icon, false))
             }
             hotspot.att('ath',hotspotData.ath)
             hotspot.att('atv',hotspotData.atv)
@@ -172,12 +216,16 @@ function panosXmlData(productData,config){
             switch(actionObj.type){
                 case 'switch':
                     hotspot.att('type',0)
-                    hotspot.att('title',actionObj.title)
+                    hotspot.att('title',actionObj.title || '123')
                     hotspot.att('url',actionObj.toId)
                     hotspot.att('blend',0)
                     break
                 case 'link':
-
+                    hotspot.att('type',1)
+                    hotspot.att('title',actionObj.title)
+                    hotspot.att('url',actionObj.url)
+                    hotspot.att('is_blank',actionObj.openInNewWindow)
+                    break;
                 case 'pictures':
                     hotspot.att('type',2)
                     hotspot.att('title',actionObj.title)
@@ -188,7 +236,8 @@ function panosXmlData(productData,config){
                         const imageElement = hotspot.ele('image')
                         imageElement.att('name',`image_${imageIndex}`)
                         imageElement.att('title','')
-                        imageElement.att('url', parseMediaPath(memberWorkPath, allMedias, productData.rootPath, imageURL, false))
+                        imageElement.att('url', '123456')
+                        // imageElement.att('url', parseMediaPath(memberWorkPath, allMedias, productData.rootPath, imageURL, false))
 
                         imageIndex++
                     })

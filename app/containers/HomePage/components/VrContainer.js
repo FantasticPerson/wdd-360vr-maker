@@ -7,7 +7,10 @@ import generateVrFolder from '../../../native/generateVrFolder'
 import copyImageToScene from '../../../native/copyImageToScene'
 import getScenePath from '../../../native/getScenePath'
 
-import FlatButton from 'material-ui/FlatButton';
+
+import {vrContainerConfig,getSelector} from '../../../store/getStore'
+
+import FlatButton from '@material-ui/core/Button';
 
 import styles from '../../../styles/VrContainer.css'
 import * as vrActions from '../../../actions/vr'
@@ -40,7 +43,10 @@ class VrContainer extends Component{
     }
 
     renderContent(){
+        console.log(this.props)
         let  vrArr = this.getVrByFolderId()
+
+
         if(vrArr.length > 0){
             let vrItems =  vrArr.map((item,index)=>{
                    return <VrItem key={index}  onContextMenu={this.onVrItemContext.bind(this)} history={this.history} data={item}></VrItem>     
@@ -60,7 +66,10 @@ class VrContainer extends Component{
                 <div className={styles.header}>
                     <div style={{paddingLeft:'10px'}} onClick={()=>{this.onAddClick()}}>
                         <i className={"fa fa-plus "+styles.plusIcon}/>
-                        <FlatButton primary={true} label="创建全景" style={{height:'30px',lineHeight:'30px',paddingLeft:'20px'}}/>
+                        <FlatButton color="primary"  style={{height:'30px',lineHeight:'30px',paddingLeft:'32px',marginTop:'-4px'}}>
+                            创建全景
+                        </FlatButton>
+                        {/* <FlatButton primary={true} label="创建全景" style={{height:'30px',lineHeight:'30px',paddingLeft:'20px'}}/> */}
                     </div>
                 </div>
                 <div className={styles.content}>
@@ -135,15 +144,15 @@ let vrModalContext={
     onCreateClick(title,brief,isTmpImageReady){
         const {vrContextItem} = this.state
         if(!vrContextItem){
-            const {nextVrId,nextSceneId,selectedFolderId,addScene,addVr} = this.props
+            const {nextVrId,nextSceneId,folderSelectedId,addScene,addVr} = this.props
 
-            let previewImg = getPathOfPreviewImg(false,nextVrId,selectedFolderId,nextSceneId)
+            let previewImg = getPathOfPreviewImg(false,nextVrId,folderSelectedId,nextSceneId)
 
             addVr({
                 id:nextVrId,
                 title:title,
                 brief:brief,
-                folderId:selectedFolderId,
+                folderId:folderSelectedId,
                 headImg:previewImg
             })
 
@@ -154,9 +163,9 @@ let vrModalContext={
             })
 
             setTimeout(()=>{
-                generateVrFolder(selectedFolderId,nextVrId,nextSceneId)
+                generateVrFolder(folderSelectedId,nextVrId,nextSceneId)
                 .then(()=>{
-                    return copyImageToScene(getScenePath(selectedFolderId,nextVrId,nextSceneId))
+                    return copyImageToScene(getScenePath(folderSelectedId,nextVrId,nextSceneId))
                 })
                 .catch((e)=>{
                     console.error(e)
@@ -174,23 +183,13 @@ let vrModalContext={
     },
     renderCreateVrModal(){
         const {showCreateVrModal,vrContextItem} = this.state
-        if(showCreateVrModal){
+        // if(showCreateVrModal){
             return (
-                <CreateVrModal itemData={vrContextItem} onCancel={this.onCancelClick.bind(this)} onCreate={this.onCreateClick.bind(this)}></CreateVrModal>
+                <CreateVrModal show={showCreateVrModal} itemData={vrContextItem} onCancel={this.onCancelClick.bind(this)} onCreate={this.onCreateClick.bind(this)}></CreateVrModal>
             )
-        }
+        // }
     }
 }
-
-const getNextId = (arr, startIndex) => {
-    let id = startIndex;
-    arr.map(item => {
-        if (item.id > id) {
-            id = item.id;
-        }
-    });
-    return ++id;
-};
 
 function mapDispatchToProps(dispatch){
     return {
@@ -199,19 +198,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-const selector = createSelector(
-    state => state.vr.list,
-    state => state.scene.list,
-    state => state.folder.selectId,
-    (list,sceneList,folderSelectedId)=>{
-        return {
-            vrList:list,
-            sceneList:sceneList,
-            folderSelectedId:folderSelectedId,
-            nextVrId:getNextId(list,0),
-            nextSceneId:getNextId(sceneList,0)
-        }
-    }
-)
-
-export default connect(selector,mapDispatchToProps)(VrContainer)
+export default connect(getSelector(vrContainerConfig),mapDispatchToProps)(VrContainer)

@@ -2,13 +2,13 @@ export default class Common{ }
 
 Common.KR_VERSION = '1.19-pr7'
 Common.KR_EMBED = { 
-    xml: './krpano/edit_api.xml', 
+    xml: '../krpano/edit_api.xml', 
     html5: 'only+webgl+preservedrawingbuffer', 
     mobilescale: 1.0, 
     passQueryParameters: true 
 }
 Common.KR_EMBED_PREVIEW = { 
-    xml: './krpano/krp_empty.xml', 
+    xml: '../krpano/krp_empty.xml', 
     html5: 'auto', 
     mobilescale: 1.0, 
     passQueryParameters: true 

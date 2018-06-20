@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
+// import Dialog from 'material-ui/Dialog';
+
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+
+import FlatButton from '@material-ui/core/Button';
+
+// import FlatButton from 'material-ui/FlatButton';
+// import RaisedButton from 'material-ui/RaisedButton';
+
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect'
 import { bindActionCreators } from 'redux';
@@ -51,18 +60,39 @@ class PicListModal extends Component{
             )
         })
 
-        const actions = [
-            <FlatButton label="取消" onClick={this.onCancelClick.bind(this)} primary />,
-            <FlatButton label="确认" onClick={this.onConfirmClick.bind(this)} primary />
-        ];
+        // const actions = [
+        //     <FlatButton label="取消" onClick={this.onCancelClick.bind(this)} primary />,
+        //     <FlatButton label="确认" onClick={this.onConfirmClick.bind(this)} primary />
+        // ];
         
         return (
-            <Dialog title="选择图片" open actions={actions}>
-                <div style={{height:'300px',overflowY:'auto'}}>
-                    {list}
-                </div>
+            <Dialog
+                open
+                onClose={this.onCancelClick.bind(this)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{'选择图片'}</DialogTitle>
+                <DialogContent style={{width:'500px'}}>
+                    <div style={{height:'300px',overflowY:'auto'}}>
+                        {list}
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <FlatButton onClick={this.onCancelClick.bind(this)}>取消</FlatButton>,
+                    <FlatButton onClick={this.onConfirmClick.bind(this)}>确认</FlatButton>
+                </DialogActions>
             </Dialog>
         )
+
+        // return (
+
+        //     <Dialog title="选择图片" open actions={actions}>
+        //         <div style={{height:'300px',overflowY:'auto'}}>
+        //             {list}
+        //         </div>
+        //     </Dialog>
+        // )
     }
 }
 

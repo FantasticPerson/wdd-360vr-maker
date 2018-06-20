@@ -2,10 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect'
 import { bindActionCreators } from 'redux';
-import FlatButton from 'material-ui/FlatButton';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import TextField from 'material-ui/TextField';
+
+// import FlatButton from 'material-ui/FlatButton';
+// import SelectField from 'material-ui/SelectField';
+// import MenuItem from 'material-ui/MenuItem';
+// import TextField from 'material-ui/TextField';
+
+import SelectField from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import TextField from '@material-ui/core/TextField';
+import FlatButton from '@material-ui/core/Button';
 
 import * as hotpotActions from '../../../actions/hotpot'
 import * as PicActions from '../../../actions/picture'
@@ -23,6 +29,9 @@ import EditText from './EditText'
 import EditPicAndText from './EditPicAndText'
 import EditAudio from './EditAudio'
 import EditVideo from './EditVideo'
+import EditLink from './EditLink'
+
+import {editHotPotConfig,getSelector} from '../../../store/getStore'
 
 class EditHotSpot extends Component{
     constructor(){
@@ -30,7 +39,6 @@ class EditHotSpot extends Component{
 
         this.state = {
             hotSpotType:1,
-            sceneId:null,
             isAdd:false,
             showPicList:false,
             picList:[],
@@ -41,11 +49,11 @@ class EditHotSpot extends Component{
     }
 
     resetState(){
-        this.setState({hotSpotType:1,sceneId:null,isAdd:false})
+        this.setState({hotSpotType:1,isAdd:false})
     }
 
     onAddHotpotClick(){
-        this.setState({isAdd:true,sceneId:null})
+        this.setState({isAdd:true})
     }
 
     selectHotSpot(id){
@@ -53,8 +61,9 @@ class EditHotSpot extends Component{
         updateHotspotSelect(id)
     }
 
-    handleTypeChange(event, index, value){
-        this.setState({hotSpotType:value});
+    handleTypeChange(event){
+        // type:event.target.value
+        this.setState({hotSpotType:event.target.value});
     }
 
     handleCloseEditHotspot(){
@@ -68,16 +77,16 @@ class EditHotSpot extends Component{
         if(!result){
             return
         }
-        const {isAdd,sceneId,hotSpotType} = this.state
-        if(isAdd){
-            if(sceneId != null){
+        const {sceneSelected} = this.props
+        if(this.state.isAdd){
+            if(sceneSelected != null){
                 const {addHotpot} = this.props;
                 addHotpot(result)
             }
         } else {
-            const {theHotSpot,modifyHotpot} = this.props
-            if(theHotSpot){
-                modifyHotpot({...theHotSpot,action:result})
+            const {hotpotSelected,modifyHotpot} = this.props
+            if(hotpotSelected){
+                modifyHotpot({...hotpotSelected,action:result})
             }
         }
         this.handleCloseEditHotspot()
@@ -138,7 +147,7 @@ class EditHotSpot extends Component{
                         <span style={{
                             marginLeft:'5px'
                         }}>热点编辑</span> 
-                        <FlatButton label="添加热点" primary onClick={this.onAddHotpotClick.bind(this)} />
+                        <FlatButton color="primary" onClick={this.onAddHotpotClick.bind(this)}>添加热点</FlatButton>
                     </span>
                     <div>
                         {`当前场景共有热点${hotpotList.length}个`}
@@ -161,35 +170,34 @@ class EditHotSpot extends Component{
                         <span>
                             <i className='fa fa-dot-circle-o'></i>
                             <span style={{
-                                marginLeft:'5px',
-                                marginRight:'85px'
+                                marginLeft:'5px'
                             }}>编辑</span>
-                            <FlatButton onClick={()=>{this.handleCloseEditHotspot()}} label="关闭" primary/>
+                            <FlatButton color="primary" onClick={()=>{this.handleCloseEditHotspot()}} >关闭</FlatButton>
                         </span>
                     </div>
                     <div>
-                        <SelectField style={{width:'200px'}} floatingLabelText="热点类型" value={this.state.hotSpotType} onChange={(event, index, value)=>{this.handleTypeChange(event, index, value)}}>
-                            <MenuItem value={1} primaryText="切换" />
-                            <MenuItem value={2} primaryText="相册" />
-                            <MenuItem value={3} primaryText="文本" />
-                            <MenuItem value={4} primaryText="图文" />
-                            <MenuItem value={5} primaryText="链接" />
-                            <MenuItem value={6} primaryText="音频" />
-                            <MenuItem value={7} primaryText="视频" />
+                        <SelectField
+                            value={this.state.hotSpotType}
+                            onChange={this.handleTypeChange.bind(this)}
+                            style={{width:'200px'}}
+                        >
+                            <MenuItem value={1}>切换</MenuItem>
+                            <MenuItem value={2}>相册</MenuItem>
+                            <MenuItem value={3}>文本</MenuItem>
+                            <MenuItem value={4}>图文</MenuItem>
+                            <MenuItem value={5}>链接</MenuItem>
+                            <MenuItem value={6}>音频</MenuItem>
+                            <MenuItem value={7}>视频</MenuItem>
                         </SelectField>
-                        <div style={{position: 'absolute',left: '0',right: '0',bottom: '35px',top: '117px',margin: '5px',padding: '5px',border: '2px solid #eee',borderRadius: '5px',overflowY:'auto'}}>
+                        <div style={{position: 'absolute',left: '0',right: '0',bottom: '35px',top: '87px',margin: '5px',padding: '5px',border: '2px solid #eee',borderRadius: '5px',overflowY:'auto'}}>
                             {this.renderEditByType()}
                         </div>
                     </div>
                     <div style={{position:'fixed',bottom:0}}>
-                        <FlatButton label="确定" onClick={()=>{
-                            this.onEditConfirmClick()
-                        }} primary/>
+                        <FlatButton color="primary" onClick={()=>this.onEditConfirmClick()}>{'确定'}</FlatButton>
                         {
                             isAdd ? null :
-                            <FlatButton label="删除" onClick={()=>{
-                                this.onEditDeleteClick()
-                            }} secondary/>
+                            <FlatButton color="secondary" onClick={()=>this.onEditDeleteClick()}>{'删除'}</FlatButton>
                         }
                     </div>
                 </div>
@@ -199,8 +207,8 @@ class EditHotSpot extends Component{
 
     renderEditByType(){
         const {hotSpotType} = this.state
-        const {theHotSpot} = this.props
-        let action = theHotSpot ? theHotSpot.action : ''
+        const {hotpotSelected} = this.props
+        let action = hotpotSelected ? hotpotSelected.action : ''
         switch(hotSpotType){
             case 1:{
                 const {sceneList,folderId,vrId} = this.props            
@@ -230,13 +238,20 @@ class EditHotSpot extends Component{
             } break;
 
             case 5:{
+                const {addPicture} = this.props 
+                return (
+                    <EditLink action={action} ref={(ref)=>{this.editEle = ref}}></EditLink>
+                )
+            } break;
+
+            case 6:{
                 const {addAudio} = this.props
                 return (
                     <EditAudio action={action} ref={(ref)=>{this.editEle = ref}} addAudio={addAudio}></EditAudio>
                 )
             }break;
 
-            case 6:{
+            case 7:{
                 return (
                     <EditVideo action={action} ref={(ref)=>{this.editEle = ref}}></EditVideo>
                 )
@@ -253,56 +268,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-const selector = createSelector(
-    state => state.vr.list,
-    state => state.hotpot.list,
-    state => state.scene.list,
-    state => state.router.location.pathname,
-    state => state.scene.sceneSelected,
-    state => state.hotpot.selected,
-
-    (vrList,hotpotList,sceneList,pathname,sceneSelected,hotpotSelected)=>{
-        return {
-            vrList : vrList,
-            hotpotList : filterHotSpot(hotpotList,sceneSelected),
-            sceneList : filterScene(sceneList,pathname,sceneSelected),
-            pathname : pathname,
-            vrId: pathname.split('/')[2],
-            folderId:findFolderId(vrList,pathname),
-            sceneSelected:sceneSelected,
-            hotpotSelected:hotpotSelected,
-            theHotSpot:getTheHotSpot(hotpotSelected,sceneSelected,hotpotList)
-        }
-    }
-)
-
-function getTheHotSpot(selectedId,sceneId,oList){
-    let list = filterHotSpot(oList,sceneId)
-    let item = list.find((item)=>{
-        return item.id == selectedId
-    })
-    return item
-}
-
-function filterHotSpot(list,sceneSelected){
-    return list.filter((item)=>{
-        return item.sceneId == sceneSelected
-    })
-}
-
-function filterScene(list,pathname,selectedSceneId){
-    var vrId = pathname.split('/')[2]
-    return list.filter((item)=>{
-        return item.vrid == vrId && item.id !== selectedSceneId
-    })
-}
-
-function findFolderId(vrList,pathname){
-    var vrId = pathname.split('/')[2]
-    let item = vrList.find((item)=>{
-        return item.id == vrId
-    })
-    return item ? item.folderId : -1
-}
-
-export default connect(selector,mapDispatchToProps)(EditHotSpot)
+export default connect(getSelector(editHotPotConfig),mapDispatchToProps)(EditHotSpot)

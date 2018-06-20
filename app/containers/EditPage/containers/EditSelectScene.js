@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import getPathOfSceneHeadImg from '../../../native/getPathOfSceneHeadImg'
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import Checkbox from 'material-ui/Checkbox';
+// import SelectField from 'material-ui/SelectField';
+
+import SelectField from '@material-ui/core/Select';
+// import MenuItem from 'material-ui/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem';
+// import Checkbox from 'material-ui/Checkbox';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 export default class EditSelectScene extends Component{
     constructor(){
@@ -19,6 +24,7 @@ export default class EditSelectScene extends Component{
     }
 
     getResult(){
+        debugger
         const {selectId,type,check} = this.state
         if(selectId != null){
             return  JSON.stringify({type:'switch',toId:this.state.selectId,type:type,check:check})
@@ -35,8 +41,8 @@ export default class EditSelectScene extends Component{
         return selectId
     }
 
-    onTypeChange(event, index, value){
-        this.setState({type:value})
+    onTypeChange(event){
+        this.setState({type:event.target.value})
     }
 
     updateCheck(){
@@ -73,18 +79,32 @@ export default class EditSelectScene extends Component{
         return (
             <div>
                 <div style={{width:'180px',margin: '0 auto'}}>
-                    <SelectField style={{width:'180px'}} floatingLabelText="过渡类型" value={this.state.type} onChange={(event, index, value)=>{this.onTypeChange(event, index, value)}}>
-                        <MenuItem value={0} primaryText="淡入淡出" />
-                        <MenuItem value={1} primaryText="缩放过渡" />
-                        <MenuItem value={2} primaryText="黑场过渡" />
-                        <MenuItem value={3} primaryText="白场过渡" />
-                        <MenuItem value={4} primaryText="从右至左" />
-                        <MenuItem value={5} primaryText="对角线" />
-                        <MenuItem value={6} primaryText="原型展开" />
-                        <MenuItem value={7} primaryText="水平展开" />
-                        <MenuItem value={8} primaryText="椭圆缩放" />
+                    <SelectField
+                        value={this.state.type}
+                        onChange={this.onTypeChange.bind(this)}
+                    >
+                        <MenuItem value={0}>淡入淡出</MenuItem>
+                        <MenuItem value={1}>缩放过渡</MenuItem>
+                        <MenuItem value={2}>黑场过渡</MenuItem>
+                        <MenuItem value={3}>白场过渡</MenuItem>
+                        <MenuItem value={4}>从右至左</MenuItem>
+                        <MenuItem value={5}>对角线</MenuItem>
+                        <MenuItem value={6}>原型展开</MenuItem>
+                        <MenuItem value={7}>水平展开</MenuItem>
+                        <MenuItem value={8}>椭圆缩放</MenuItem>
                     </SelectField>
-                    <Checkbox labelPosition="left" checked={this.state.check} onCheck={this.updateCheck.bind(this)} label="显示场景名"></Checkbox>
+                    
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                            checked={this.state.check}
+                            onChange={this.updateCheck.bind(this)}
+                            value="在新窗口中打开"
+                            color="primary"
+                            />
+                        }
+                        label="在新窗口中打开"
+                    />
                     {sceneArr}
                 </div>
             </div>

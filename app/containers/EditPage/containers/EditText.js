@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import TextField from 'material-ui/TextField';
-import Checkbox from 'material-ui/Checkbox';
+// import TextField from 'material-ui/TextField';
+import TextField from '@material-ui/core/TextField';
+// import Checkbox from 'material-ui/Checkbox';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 export default class EditText extends Component{
     constructor(){
@@ -9,7 +12,7 @@ export default class EditText extends Component{
         this.summaryRef = React.createRef()
         this.moreInfo = React.createRef()
 
-        this.state = {check:true,openInNewWindow:true}
+        this.state = {check:false,openInNewWindow:true}
     }
 
     componentDidMount(){
@@ -17,9 +20,9 @@ export default class EditText extends Component{
         if(action.length > 0){
             let obj = JSON.parse(action)
             if(obj.type == 'text'){
-                this.titleRef.input.value = obj.title
-                this.moreInfo.input.value = obj.moreInfo
-                this.summaryRef.input.setValue(obj.content)
+                this.titleRef.value = obj.title
+                this.moreInfo.value = obj.moreInfo
+                this.summaryRef.value = obj.content
 
                 this.setState({check:obj.check,openInNewWindow:obj.openInNewWindow})
                 
@@ -28,9 +31,9 @@ export default class EditText extends Component{
     }
 
     getResult(){
-        let title = this.titleRef.input.value.trim()
-        let moreInfo = this.moreInfo.input.value.trim()
-        let summary = this.summaryRef.getValue().trim()
+        let title = this.titleRef.value.trim()
+        let moreInfo = this.moreInfo.value.trim()
+        let summary = this.summaryRef.value.trim()
 
         const {check,openInNewWindow} = this.state
 
@@ -55,12 +58,58 @@ export default class EditText extends Component{
     render(){
         return (
             <div>
-                <Checkbox labelPosition="left" checked={this.state.check} onCheck={this.updateCheck.bind(this)} label="在全景中显示"></Checkbox>
-                <TextField defaultValue={''} fullWidth hintText="请输入作品名称" floatingLabelText="标题" ref={(input) => this.titleRef = input} />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                        checked={this.state.check}
+                        onChange={this.updateCheck.bind(this)}
+                        value="在新窗口中打开"
+                        color="primary"
+                        />
+                    }
+                    label="在全景中显示"
+                />
+
+                <TextField 
+                    id="with-placeholder"
+                    label="请输入作品名称"
+                    placeholder="标题"
+                    margin="normal"
+                    inputRef={(input) => this.titleRef = input}
+                />
+
                 <br />
-                <TextField defaultValue={''} fullWidth hintText="请输入作品简介" floatingLabelText="内容" multiLine rows={2} rowsMax={4} ref={(input) => this.summaryRef = input} />
-                <Checkbox labelPosition="left" checked={this.state.openInNewWindow} onCheck={this.updateCheckNew.bind(this)} label="在新窗口中打开"></Checkbox>
-                <TextField defaultValue={''} fullWidth hintText="填写网站地址 展示更多内容" floatingLabelText="更多内容" ref={(input) => this.moreInfo = input} />
+                <TextField 
+                    id="with-placeholder"
+                    label="请输入作品简介"
+                    placeholder="内容"
+                    margin="normal"
+                    multiline rows={2} rowsMax={4}
+                    fullWidth
+                    inputRef={(input) => this.summaryRef = input}
+                />
+
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                        checked={this.state.openInNewWindow}
+                        onChange={this.updateCheckNew.bind(this)}
+                        value="在新窗口中打开"
+                        color="primary"
+                        />
+                    }
+                    label="在新窗口中打开"
+                />
+
+                <TextField 
+                    id="with-placeholder"
+                    label="更多内容"
+                    placeholder="填写网站地址 展示更多内容"
+                    margin="normal"
+                    multiline rows={2} rowsMax={4}
+                    fullWidth
+                    inputRef={(input) => this.moreInfo = input}
+                />
             </div>
         )
     }

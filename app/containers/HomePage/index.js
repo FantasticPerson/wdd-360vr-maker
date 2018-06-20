@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {createSelector} from 'reselect'
-import { List, ListItem } from 'material-ui/List';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 
 import styles from '../../styles/Home.css';
 
@@ -18,6 +23,8 @@ import FolderContextMenu from './components/folderContextMenu'
 
 import MapToReactComponent from '../../utils/mapToReactComponent'
 
+import {homePageConfig,getSelector} from '../../store/getStore'
+
 class Home extends Component {
     constructor(props) {
         super(props);
@@ -25,13 +32,19 @@ class Home extends Component {
             showCreateFolderItem: false,
             showFolderMenu:false,
             posData:{},
-            contextFolderData:{}
+            contextFolderData:{},
         };
         MapToReactComponent(this,folderContextObj)
         MapToReactComponent(this,folderModalObj)
     }
 
+    
+    componentWillUnmount() {
+        this._mounted = false
+    }
+    
     componentDidMount() {
+        this._mounted=true
         const { updateFromLocal,updateVrFromLocal,updateAppTitle,updateAppShowBack,updateAllSceneFromLocal } = this.props;
         updateFromLocal();
         updateVrFromLocal();
@@ -53,11 +66,26 @@ class Home extends Component {
         const icon = <i className="fa fa-folder" style={{ top: '4px' }} aria-hidden="true" />;
         const icon1 = <i className="fa fa-folder-open" style={{ top: '4px' }} aria-hidden="true" />;
         
+        let items = folderList.map((item, index) => {
+            return (
+                <ListItem  
+                    style={{padding:'5px'}}
+                    button
+                    key={item.id} 
+                    onClick={() => {this.onFolderItemClick(item,index)}} 
+                    onContextMenu={(e)=>{this.onFolderContext(e,item)}}
+                >
+                    <ListItemIcon>
+                        {item.id === folderSelectedId ? icon1 : icon} 
+                    </ListItemIcon>
+                    <ListItemText primary={item.title} />
+                </ListItem>
+            )
+        })
+
         return (
-            <List>
-                {
-                    folderList.map((item, index) => <ListItem key={item.id} primaryText={item.title} leftIcon={item.id === folderSelectedId ? icon1 : icon} onClick={() => {this.onFolderItemClick(item,index)}} onContextMenu={(e)=>{this.onFolderContext(e,item)}}/>)
-                }
+            <List component="nav">
+                {items}
             </List>
         );
     }
@@ -105,10 +133,12 @@ let folderModalObj = {
         });
     },
     onCreateFolderClick() {
-        this.setState({
-            showCreateFolderItem: true,
-            contextFolderData:null
-        });
+        if(this._mounted=true){
+            this.setState({
+                showCreateFolderItem: true,
+                contextFolderData:null
+            });
+        }
     },
     onCreateFolder(title) {
         const { addFolder, nextFolderId ,updateFolder} = this.props;
@@ -171,16 +201,6 @@ let folderContextObj = {
     }
 }
 
-const getNextId = (arr, startIndex) => {
-    let id = startIndex;
-    arr.map(item => {
-        if (item.id > id) {
-            id = item.id;
-        }
-    });
-    return ++id;
-};
-
 function mapDispatchToProps(dispatch) {
     return {
         ...bindActionCreators(vrActions, dispatch),
@@ -190,23 +210,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-const selector = createSelector(
-    state => state.vr.list,
-    state => state.scene.list,
-    state => state.folder.list,
-    state => state.folder.selectId,
-    state => state.router.location.pathname,
-
-    (list,sceneList,folderList,folderSelectedId,pathname)=>{
-        return {
-            vrList:list,
-            sceneList:sceneList,
-            folderList:folderList,
-            folderSelectedId:folderSelectedId,
-            nextVrId:getNextId(list,0),
-            nextFolderId:getNextId(folderList,2)
-        }
-    }
-)
-
-export default connect(selector,mapDispatchToProps)(Home);
+export default connect(getSelector(homePageConfig),mapDispatchToProps)(Home);

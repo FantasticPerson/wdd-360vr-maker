@@ -1,18 +1,4 @@
-/* eslint global-require: 0, flowtype-errors/show-errors: 0 */
-
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `npm run build` or `npm run build-main`, this file is compiled to
- * `./app/main.prod.js` using webpack. This gives us some performance wins.
- *
- * @flow
- */
 import { app, BrowserWindow,globalShortcut } from 'electron';
-import MenuBuilder from './menu';
-import { globalAgent } from 'http';
 import initServer from './server'
 
 const path = require('path');
@@ -69,15 +55,18 @@ const initConfig = async () => {
     global.electron_app_audio_path = path.resolve(global.electron_app_assets_path,'./audio')
     global.electron_app_audio_tmp = path.resolve(global.electron_app_assets_path,'./audioTmp')
     global.electron_app_output_path = path.resolve(global.electron_app_assets_path,'./output')
+    global.etectron_app_vr_output = path.resolve(global.electron_app_assets_path,'./vrOutput')
 };
 
-
-const initDir = async () => {
-    if(!fs.existsSync(global.electron_app_output_path)){
-        fs.mkdirSync(global.electron_app_output_path)
-    }
+const initDir = async () => {  
     if (!fs.existsSync(global.electron_app_assets_path)) {
         fs.mkdirSync(global.electron_app_assets_path);
+    }
+    if(!fs.existsSync(global.etectron_app_vr_output)){
+      fs.mkdirSync(global.etectron_app_vr_output) 
+    }
+    if(!fs.existsSync(global.electron_app_output_path)){
+        fs.mkdirSync(global.electron_app_output_path)
     }
     if (!fs.existsSync(global.electron_app_krpano_path)) {
         fs.mkdirSync(global.electron_app_krpano_path);
@@ -105,21 +94,11 @@ const initDir = async () => {
     }
 };
 
-/**
- * Add event listeners...
- */
-
 app.on('will-quit', () => {
-    // Unregister a shortcut.
-    // globalShortcut.unregister('CommandOrControl+X')
-  
-    // Unregister all shortcuts.
     globalShortcut.unregisterAll()
   })
 
 app.on('window-all-closed', () => {
-    // Respect the OSX convention of having the application in memory even
-    // after all windows have been closed
     if (process.platform !== 'darwin') {
         app.quit();
     }
@@ -142,8 +121,6 @@ app.on('ready', async () => {
 
     mainWindow.loadURL(`file://${__dirname}/app.html`);
 
-    // @TODO: Use 'ready-to-show' event
-    //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
     mainWindow.webContents.on('did-finish-load', () => {
         if (!mainWindow) {
             throw new Error('"mainWindow" is not defined');
@@ -156,8 +133,7 @@ app.on('ready', async () => {
         mainWindow = null;
     });
 
-    // const menuBuilder = new MenuBuilder(mainWindow);
-    // menuBuilder.buildMenu();
+    // mainWindow.openDevTools()
     const ret = globalShortcut.register('ctrl+m', () => {
         if(mainWindow){
             mainWindow.openDevTools()

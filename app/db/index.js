@@ -4,7 +4,6 @@ import modals from '../modals';
 
 export default () => {
     const app_db = new Dexie('wdd-vr-maker');
-
     window.app_db = app_db;
 
     migrations.forEach((migration, idx) => {

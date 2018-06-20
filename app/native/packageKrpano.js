@@ -1,7 +1,7 @@
 const nativeRequire = window.native_require
 const {dialog} = nativeRequire('electron')
 let assetsPath = window.electron_app_assets_path
-let copyFile = nativeRequire('fs-copy-file');
+let copyFile = require('fs-copy-file');
 let path = nativeRequire('path')
 
 export default function packageKrpano(){

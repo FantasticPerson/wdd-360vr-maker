@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+    <krpano version="1.19-pr7" clientVersion="1.19-pr7">
+        <include url="api_export.xml"/><displayMode export="true"/>
+            <scene name="scene_1" pano_id="1"><preview url=""/>
+                <image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled AND device.desktop">
+                    <cube url="23456"/></image><image if="webvr.isenabled OR !device.desktop"><cube url="undefined/pano.tiles/mobile_%s.jpg"/>
+                </image></scene><scene name="scene_2" pano_id="2">
+                <preview url=""/>
+                <image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled AND device.desktop">
+                   <cube url="23456"/>
+                </image>
+                <image if="webvr.isenabled OR !device.desktop">
+                    <cube url="undefined/pano.tiles/mobile_%s.jpg"/>
+                </image>
+            </scene>
+            <scene name="scene_3" pano_id="3">
+                <preview url=""/>
+                <image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled AND device.desktop">
+                   <cube url="23456"/>
+                </image>
+                <image if="webvr.isenabled OR !device.desktop">
+                   <cube url="undefined/pano.tiles/mobile_%s.jpg"/>
+                </image>
+            </scene>
+            <scene name="scene_4" pano_id="4">
+                <preview url=""/>
+                <image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled AND device.desktop">
+                   <cube url="23456"/>
+                </image>
+                <image if="webvr.isenabled OR !device.desktop">
+                    <cube url="undefined/pano.tiles/mobile_%s.jpg"/>
+                </image></scene><scene name="scene_5" pano_id="5">
+                <preview url=""/>
+                <image type="CUBE" multires="true" tilesize="512" if="!webvr.isenabled AND device.desktop">
+                    <cube url="23456"/>
+                </image>
+                <image if="webvr.isenabled OR !device.desktop">
+                    <cube url="undefined/pano.tiles/mobile_%s.jpg"/>
+                </image>
+            </scene>
+            <config>
+                <info id="1" title="阿斯顿" desc="阿斯顿"/>
+                    <auth auth_name="中威科技"/>
+                    <thumbs title="全景列表" show_thumb="1">
+                    <category name="category0" title="groupName" thumb="">
+                        <pano name="pano_1" title="test" thumb="test" pano_id="1"/>
+                        <pano name="pano_2" title="阿瑟大时代" thumb="test" pano_id="2"/>
+                        <pano name="pano_3" title="123" thumb="test" pano_id="3"/>
+                        <pano name="pano_4" title="345" thumb="test" pano_id="4"/>
+                        <pano name="pano_5" title="678" thumb="test" pano_id="5"/>
+                    </category>
+                    </thumbs>
+                    <panos>
+                    <pano name="scene_1"><info pano_id="1" title="test"/><view fovtype="MFOV" maxpixelzoom="2" autorotatekeepview="0" loadscenekeepview="0"/><start_image_pc/><start_image_mobile/><hotspots><hotspot name="hotspot_0" style_id="" image_type="1" ath="0" atv="0" show_txt="0" keep_view="0"/><hotspot name="hotspot_1" style_id="" image_type="1" ath="0.0009560229448929" atv="0" show_txt="0" keep_view="0" type="0" title="123" url="2" blend="0"/></hotspots></pano><pano name="scene_2"><info pano_id="2" title="阿瑟大时代"/><view fovtype="MFOV" maxpixelzoom="2" autorotatekeepview="0" loadscenekeepview="0"/><start_image_pc/><start_image_mobile/><hotspots/></pano><pano name="scene_3"><info pano_id="3" title="123"/><view fovtype="MFOV" maxpixelzoom="2" autorotatekeepview="0" loadscenekeepview="0"/><start_image_pc/><start_image_mobile/><hotspots/></pano><pano name="scene_4"><info pano_id="4" title="345"/><view fovtype="MFOV" maxpixelzoom="2" autorotatekeepview="0" loadscenekeepview="0"/><start_image_pc/><start_image_mobile/><hotspots/></pano><pano name="scene_5"><info pano_id="5" title="678"/><view fovtype="MFOV" maxpixelzoom="2" autorotatekeepview="0" loadscenekeepview="0"/><start_image_pc/><start_image_mobile/><hotspots/></pano></panos></config></krpano>
