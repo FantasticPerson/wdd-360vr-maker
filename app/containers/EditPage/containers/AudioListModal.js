@@ -61,10 +61,10 @@ class PicListModal extends Component{
             )
         })
 
-        const actions = [
-            <FlatButton label="取消" onClick={this.onCancelClick.bind(this)} primary />,
-            <FlatButton label="确认" onClick={this.onConfirmClick.bind(this)} primary />
-        ];
+        // const actions = [
+        //     <FlatButton label="取消" onClick={this.onCancelClick.bind(this)} color='primary' />,
+        //     <FlatButton label="确认" onClick={this.onConfirmClick.bind(this)} primary />
+        // ];
         
         return (
             <Dialog

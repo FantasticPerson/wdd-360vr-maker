@@ -114,7 +114,7 @@ class EditHotSpot extends Component{
             const {hotpotList} = this.props
 
             let hotpotArr = hotpotList.map((item,i)=>{
-                let type = JSON.parse(item.action).tye
+                let type = JSON.parse(item.action).type
 
                 var typeText = ''
                 if(type == 'switch'){
@@ -133,8 +133,19 @@ class EditHotSpot extends Component{
                     typeText = "视频"
                 }
 
+
+                let itemStyle = {
+                    backgroundColor: 'aliceblue',
+                    padding: '5px',
+                    border: '1px solid #eee',
+                    borderRadius: '5px',
+                    marginBottom: '5px',
+                    marginTop: '5px',
+                    cursor:'pointer'
+                }
+
                 return (
-                    <div key={item.id} onClick={()=>{this.selectHotSpot(item.id)}}>
+                    <div style={itemStyle} key={item.id} onClick={()=>{this.selectHotSpot(item.id)}}>
                         {`${typeText} ${item.id}`}
                     </div>
                 )

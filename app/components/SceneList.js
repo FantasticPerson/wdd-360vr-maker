@@ -70,11 +70,12 @@ export default class SceneList extends Component{
     render(){
         const {sceneList,vrId,folderId,changeScene,previewSceneId} = this.props
 
+        const cWidth = sceneList.length * 105 + 90 +'px'
         let sceneItemList = sceneList.map((item,index)=>{
             return <SceneItem previewSceneId={previewSceneId} changeScene={changeScene} onContext={this.onSceneContext.bind(this)} key={item.id} data={item} vrId={vrId} folderId={folderId}></SceneItem>
         })
         return (
-            <div>
+            <div style={{width:cWidth}}>
                 <div>{sceneItemList}{this.renderAddSceneBtn()}</div>
                 {this.renderContextMenu()}
                 {this.renderEditModal()}

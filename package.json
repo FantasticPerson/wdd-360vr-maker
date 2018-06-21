@@ -202,6 +202,7 @@
   "dependencies": {
     "@material-ui/core": "1.2.1",
     "@material-ui/icons": "1.1.0",
+    "@material-ui/lab": "1.0.0-alpha.5",
     "dank-copyfile": "^0.0.2",
     "devtron": "^1.4.0",
     "dexie": "^2.0.2",
@@ -223,6 +224,7 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.6",
+    "react-slider": "0.11.2",
     "redux": "^4.0.0",
     "redux-act": "^1.7.4",
     "redux-thunk": "^2.2.0",

@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {createSelector} from 'reselect'
 
-// import packageKrpano from '../native/packageKrpano'
-
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -33,13 +31,13 @@ class Header extends Component {
     //     packageKrpano()
     // }
 
-    // onSaveClick(){
-    //     const {vrItem,sceneList,hotpotList} = this.props
-    //     getProductionXml(vrItem,sceneList,hotpotList)
-    //     GenerateOutput(vrItem,sceneList,hotpotList)
-    //     console.log('onSaveClick')
+    onSaveClick(){
+        const {vrItem,sceneList,hotpotList} = this.props
+        // getProductionXml(vrItem,sceneList,hotpotList)
+        GenerateOutput(vrItem,sceneList,hotpotList)
+        console.log('onSaveClick')
         
-    // }
+    }
 
     render(){
         const {showBack,title} = this.props
@@ -69,7 +67,7 @@ class Header extends Component {
     renderBtns(){
         if(this.props.showBack){
             return <div>
-                <Button style={{color:'#FFF'}}>
+                <Button onClick={this.onSaveClick.bind(this)} style={{color:'#FFF'}}>
                     Save
                 </Button>
                 <Button style={{color:'#FFF'}}>

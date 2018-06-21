@@ -62,5 +62,43 @@ export default [
                 'extension'
             ]
         }
+    },{
+        ver: 3,
+        stores: {
+            scene: [
+                'id',
+                'name',
+                'vrid',
+                'action',
+                'groupId',
+                'hlookat',
+                'vlookat',
+                'fov',
+                'fovmin',
+                'fovmax',
+                'vlookatmin',
+                'vlookatmax'
+            ]
+        }
+    },{
+        ver: 4,
+        stores: {
+            scene: [
+                'id',
+                'name',
+                'vrid',
+                'action',
+                'groupId',
+                'hlookat',
+                'vlookat',
+                'fov',
+                'fovmin',
+                'fovmax',
+                'vlookatmin',
+                'vlookatmax',
+                'effectType',
+                'effectLevel'
+            ]
+        }
     }
 ];

@@ -88,7 +88,7 @@ class UploadPicModal extends Component{
                 <DialogTitle id="alert-dialog-title">添加音乐</DialogTitle>
                 <DialogContent style={{width:'500px'}}>
                     <div style={{display:'inline-block',width:'100%',height:'260px',verticalAlign:'top'}}>
-                        <FlatButton onClick={this.onUploadClick.bind(this)} label="添加音乐" primary={true} style={{marginLeft:'47px'}}>添加音乐</FlatButton>
+                        <FlatButton onClick={this.onUploadClick.bind(this)} label="添加音乐" color="primary" style={{marginLeft:'47px'}}>添加音乐</FlatButton>
                         {this.renderUploadPic()}
                     </div>
                 </DialogContent>

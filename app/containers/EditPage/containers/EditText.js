@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-// import TextField from 'material-ui/TextField';
 import TextField from '@material-ui/core/TextField';
-// import Checkbox from 'material-ui/Checkbox';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
@@ -25,7 +23,6 @@ export default class EditText extends Component{
                 this.summaryRef.value = obj.content
 
                 this.setState({check:obj.check,openInNewWindow:obj.openInNewWindow})
-                
             }
         }
     }

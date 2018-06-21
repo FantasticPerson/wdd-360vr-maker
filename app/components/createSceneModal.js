@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
 
-// import Dialog from 'material-ui/Dialog';
-// import TextField from 'material-ui/TextField';
-// import FlatButton from 'material-ui/FlatButton';
-// import RaisedButton from 'material-ui/RaisedButton';
-
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -107,23 +102,5 @@ export default class CreateVrModal extends Component {
                 </DialogActions>
             </Dialog>
         )
-
-        /*const actions = [
-          <FlatButton label="取消" primary onClick={this.onCancelClick.bind(this)} />,
-          <FlatButton label="确认" primary onClick={this.onConfirmClick.bind(this)} />
-        ];
-
-        return (
-            <Dialog title={'创建场景'} open actions={actions}>
-                <div style={{display:'inline-block',width:'50%',height:'160px'}}>
-                    <TextField fullWidth hintText="请输入场景名称" floatingLabelText="请输入场景名称" ref={(input) => this.titleRef = input} />
-                    <br />
-                </div>
-                <div style={{display:'inline-block',width:'50%',height:'260px',verticalAlign:'top'}}>
-                    <RaisedButton label="添加全景" primary={true} style={{marginLeft:'47px'}} onClick={this.onOpenFileClick.bind(this)}/>
-                    {this.renderUploadPic()}
-                </div>
-            </Dialog>
-        );*/
     }
 }

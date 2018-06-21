@@ -28,6 +28,73 @@ export function updateSceneSelected(id,vrId,folderId){
     }
 }
 
+export function updateInitViewPort(sceneId){
+    return (dispatch,getState)=>{
+        let krpano = getState().krpano.obj
+        let sceneList = getState().scene.list
+        let sceneItem = sceneList.find(item=>item.id == sceneId)
+
+        if(krpano && sceneItem){
+            var hAov= krpano.get('view.hlookat')
+            var vAov= krpano.get('view.vlookat')
+
+            sceneItem.vlookat = vAov
+            sceneItem.hlookat = hAov
+
+            Modals.Scene.update(sceneItem)
+            .then(()=>{
+                return Modals.Scene.findAll()
+            })
+            .then((list)=>{
+                dispatch(updateAllScene(list))
+            })
+        }
+    }
+}
+
+export function updateViewRange(id,fov,fovmax,fovmin,vlookatmin,vlookatmax){
+    return (dispatch,getState)=>{
+        let sceneList = getState().scene.list
+        let sceneItem = sceneList.find(item=>item.id == id)
+
+        if(sceneItem){
+            sceneItem.fov = fov
+            sceneItem.fovmin = fovmin
+            sceneItem.fovmax = fovmax
+            sceneItem.vlookatmin = vlookatmin
+            sceneItem.vlookatmax = vlookatmax
+
+            Modals.Scene.update(sceneItem)
+            .then(()=>{
+                return Modals.Scene.findAll()
+            })
+            .then((list)=>{
+                dispatch(updateAllScene(list))
+            })
+        }
+    }
+}
+
+export function updateEffect(id,type,level){
+    return (dispatch,getState)=>{
+        let sceneList = getState().scene.list
+        let sceneItem = sceneList.find(item=>item.id == id)
+
+        if(sceneItem){
+            sceneItem.effectType = type
+            sceneItem.effectLevel = level
+
+            Modals.Scene.update(sceneItem)
+            .then(()=>{
+                return Modals.Scene.findAll()
+            })
+            .then((list)=>{
+                dispatch(updateAllScene(list))
+            })
+        }
+    }
+}
+
 export function updateAllSceneFromLocal(){
     return (dispatch)=>{
         Modals.Scene.findAll()

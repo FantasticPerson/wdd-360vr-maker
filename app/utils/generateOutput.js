@@ -18,11 +18,14 @@ const path = native_require('path')
 const swig = require('swig')
 
 export function GenerateOutput(vrItem,sceneList,hotpotList){
+
+    console.log(FeatureXMLExport)
+
     let config = {}
     let vrPath = path.resolve(electron_app_output_path,`./vr-${vrItem.id}`)
-    let mediaPath = path.resolve(vrPath,'./media')
-    let picPath = path.resolve(media,'./picture')
-    let audioPath = path.resolve(media,'./audio')
+
+    let picPath = path.resolve(vrPath,'./picture')
+    let audioPath = path.resolve(vrPath,'./audio')
     let scenePathArr = []
     let hotspots = []
     let picArr = []
@@ -61,15 +64,13 @@ export function GenerateOutput(vrItem,sceneList,hotpotList){
     if(!fs.existsSync(vrPath)){
         fs.mkdirSync(vrPath)
     }
+    console.log(vrPath)
 
-    if(!fs.existsSync(mediaPath)){
-        fs.mkdirSync(mediaPath)
-    }
 
     for(let i = 0;i<sceneList.length;i++){
         let scene = sceneList[i]
         let srcPath = path.resolve(electron_app_vr_path,`./folder_${vrItem.folderId}_vr_${vrItem.id}/scene_${scene.id}`)
-        let destPath = path.resolve(mediaPath,`./scene_${scene.id}`)
+        let destPath = path.resolve(vrPath,`./scene_${scene.id}`)
         if(!fs.existsSync(destPath)){
             fs.mkdirSync(destPath)
         }
@@ -88,6 +89,7 @@ export function GenerateOutput(vrItem,sceneList,hotpotList){
         fse.copySync(srcPath,destPath)
     }
 
+    console.log(vrPath)
     if(!fs.existsSync(audioPath)){
         fs.mkdirSync(audioPath)
     }
@@ -96,25 +98,24 @@ export function GenerateOutput(vrItem,sceneList,hotpotList){
         let srcPath = path.resolve(electron_app_audio_path,`./${audioArr[i]}`)
         let destPath = path.resolve(audioPath,`./${audioArr[i]}`)
         fse.copySync(srcPath,destPath)
+        console.log(destPath)
     }
-
-    const dataOutputPath = ''
-    const panoOutputPath = ''
 
     const template = swig.compileFile(path.resolve(electron_app_root_path, '../../html/pano.html'))
 
-    fs.writeFileSync(path.resolve(dataOutputPath, './index.html'), template({ title: product.name }))
-    fs.writeFileSync(path.resolve(dataOutputPath,'./api_export.xml'),FeatureXMLExport)
-    fs.writeFileSync(path.resolve(dataOutputPath, './data.xml'), getProductionXml(vrItem,sceneList,hotpotList))
+    fs.writeFileSync(path.resolve(vrPath, './index.html'), template({ title: '666' }))
 
-    fse.copySync(path.join(remote.getGlobal('sharedObj').appRoot, 'dist', 'offline.js'), path.join(productDataOutPath, 'offline.js'))
-    fse.copySync(path.join(remote.getGlobal('sharedObj').appRoot, 'js', 'viewer.js'), path.join(productDataOutPath, 'viewer.js'))
+    fs.writeFileSync(path.resolve(vrPath,'./api_export.xml'),FeatureXMLExport)
 
-    fse.copySync(path.join(remote.getGlobal('sharedObj').appRoot, 'krpano', 'krpano.js'), path.join(productDataOutPath, 'krpano.js'))
-    fse.copySync(path.join(remote.getGlobal('sharedObj').appRoot, 'krpano', 'krpano.swf'), path.join(productDataOutPath, 'krpano.swf'))
-    fse.copySync(path.join(remote.getGlobal('sharedObj').appRoot, 'krp'), path.join(productDataOutPath, 'krp'))
-    fse.copySync(path.join(remote.getGlobal('sharedObj').appRoot, 'tools', '点击运行.app'), path.join(productOutPath, 'mac点击运行.app'))
-    fse.copySync(path.join(remote.getGlobal('sharedObj').appRoot, 'tools', '点击运行.exe'), path.join(productOutPath, 'win点击运行.exe'))
-    fse.copySync(path.join(remote.getGlobal('sharedObj').appRoot, 'tools', 'mac版离线包运行说明.pdf'), path.join(productOutPath, 'mac版离线包运行说明.pdf'))
-    fse.copySync(path.join(remote.getGlobal('sharedObj').appRoot, 'tools', 'win版离线包运行说明.pdf'), path.join(productOutPath, 'win版离线包运行说明.pdf'))
+    fs.writeFileSync(path.resolve(vrPath, './data.xml'), getProductionXml(vrItem,sceneList,hotpotList))
+
+    fse.copySync(path.resolve(electron_app_root_path, './js/offline.js'), path.resolve(vrPath, './offline.js'))
+
+    fse.copySync(path.resolve(electron_app_root_path, './js/viewer.js'), path.resolve(vrPath, './viewer.js'))
+
+    fse.copySync(path.resolve(electron_app_root_path, '../../krpano/krpano.js'), path.resolve(vrPath, './krpano.js'))
+
+    fse.copySync(path.resolve(electron_app_root_path, '../../krpano/krpano.swf'), path.resolve(vrPath, './krpano.swf'))
+
+    fse.copySync(path.resolve(electron_app_root_path, '../../krp'), path.resolve(vrPath, 'krp'))
 }

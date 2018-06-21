@@ -35,12 +35,22 @@ export function updateAllHotpotFromLocal(){
     }
 }
 
+export function updateHotpotPos(obj){
+    return (dispatch)=>{
+        Modals.Hotpot.update(obj)
+        .then(()=>{
+            return Modals.Hotpot.findAll()
+        })
+        .then((list)=>{
+            dispatch(updateAllHotpot(list))
+        })
+    }
+}
+
 export function addHotpots(){
     return (dispatch,getState)=>{
-        console.log('addHotpots')
         var krpano = getState().krpano.obj
         var hotSpots = getState().hotpot.list
-        console.log(hotSpots)
         if(krpano && hotSpots.length){
             var sceneSelected = getState().scene.sceneSelected
             var hSpots = []
