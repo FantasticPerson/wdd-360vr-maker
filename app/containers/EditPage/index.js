@@ -27,7 +27,6 @@ import * as audioActions from '../../actions/audio'
 import * as krpanoActions from '../../actions/krpano'
 
 import EditViewPort from './containers/EditViewPort'
-
 import EditHotSpot from './containers/EditHotpot'
 
 class EditPage extends Component{
@@ -124,7 +123,6 @@ class EditPage extends Component{
             )
         }
     }
-
 
     onChooseSpecislShowChange(event,value){
         const {AddEffect} = this.props
