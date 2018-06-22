@@ -12,6 +12,7 @@ import getPathOfAudio from '../../../native/getPathOfAudio'
 import ReactAudioPlayer from 'react-audio-player';
 
 import * as audioActions from '../../../actions/audio'
+import * as vrActions from '../../../actions/vr'
 
 class EditMusic extends Component{
     constructor(){
@@ -20,7 +21,17 @@ class EditMusic extends Component{
     }
 
     componentDidMount(){
-
+        const {vrItem} = this.props
+        let stateObj = {}
+        if(vrItem && vrItem.url){
+            stateObj.url = vrItem.url
+        }
+        if(vrItem && vrItem.url2){
+            stateObj.url2 = vrItem.url2
+        }
+        setTimeout(()=>{
+            this.setState(stateObj)
+        },100)
     }
 
     onAddMusicLocal(type){
@@ -106,7 +117,11 @@ class EditMusic extends Component{
     }
 
     onConfirmClick(){
-        console.log('onConfirmClick')
+        const {addMusic,vrItem} = this.props
+        const {url,url2} = this.state
+        if(vrItem){
+            addMusic(vrItem.id,url,url2)
+        }
     }
 
     render(){
@@ -153,14 +168,27 @@ class EditMusic extends Component{
 }
 
 const selector = createSelector(
-    ()=>{
-        return {}
+    state => state.scene.sceneSelected,
+    state => state.scene.list,
+    state => state.vr.list,
+    (sceneSelected,sceneList,vrList)=>{
+        return {
+            vrItem:getVrItem(sceneSelected,sceneList,vrList)
+        }
     }
 )
 
+function getVrItem(sId,sList,vList){
+    let item = sList.find(item=>item.id == sId)
+    if(item){
+        return vList.find(item2=>item2.id == item.vrid)
+    }
+}
+
 function mapDispatchToProps(dispatch){
     return {
-        ...bindActionCreators(audioActions,dispatch)
+        ...bindActionCreators(audioActions,dispatch),
+        ...bindActionCreators(vrActions,dispatch)
     }
 }
 

@@ -12,6 +12,21 @@ export function updateVrFromLocal(){
     }
 }
 
+export function addMusic(vrId,music1,music2){
+    return (dispatch,getState)=>{
+        let vrItem = getState().vr.list.find(item=>item.id == vrId)
+        if(vrItem){
+            vrItem.music1 = music1
+            vrItem.music2 = music2
+            Modals.Vr.update(vrItem)
+            .then(() => Modals.Vr.findAll())
+            .then((list) => {
+                dispatch(updateAllVr(list));
+            });
+        }
+    }
+}
+
 export function addVr(vrObj) {
     return (dispatch) => {
         Modals.Vr.add(vrObj)

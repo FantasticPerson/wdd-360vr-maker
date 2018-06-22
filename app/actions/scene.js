@@ -76,7 +76,6 @@ export function updateViewRange(id,fov,fovmax,fovmin,vlookatmin,vlookatmax){
 }
 
 export function updateEffect(id,type,level){
-    debugger
     return (dispatch,getState)=>{
         let sceneList = getState().scene.list
         let sceneItem = sceneList.find(item=>item.id == id)

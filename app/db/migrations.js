@@ -100,5 +100,19 @@ export default [
                 'effectLevel'
             ]
         }
+    },{
+        ver: 5,
+        stores:{
+            vr: [
+                'id',
+                'title',
+                'brief',
+                'folderId',
+                'headImg',
+                'tabs',
+                'music1',
+                'music2'
+            ]
+        }
     }
 ];

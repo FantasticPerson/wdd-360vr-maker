@@ -40,6 +40,12 @@ export const editHotPotConfig = {
     hotpotSelectedId:true
 }
 
+export const editViewPortConfig = {
+    krpano:true,
+    sceneSelected:true,
+    sceneSelectedItem:true
+}
+
 export function getSelector(config){
     return createSelector(
         state => state.app.title,
@@ -52,8 +58,9 @@ export function getSelector(config){
         state => state.folder.selectId,
         state => state.hotpot.selected,
         state => state.scene.sceneSelected,
+        state => state.krpano.obj,
 
-        (title, showBack,vrList,hotpotList,sceneList,pathname,folderList,folderSelectedId,hotpotSelectId,sceneSelected) => {
+        (title, showBack,vrList,hotpotList,sceneList,pathname,folderList,folderSelectedId,hotpotSelectId,sceneSelected,krpano) => {
             let result = {}
             if(config.title)            result.title = title
             if(config.showBack)         result.showBack=showBack
@@ -71,10 +78,16 @@ export function getSelector(config){
             if(config.sceneSelected)    result.sceneSelected = sceneSelected
             if(config.hotpotSelectedId) result.hotpotSelectedId = hotpotSelectId
             if(config.hotpotSelected)   result.hotpotSelected = getTheHotSpot(hotpotSelectId,sceneSelected,hotpotList)
+            if(config.krpano)           result.krpano = krpano
+            if(config.sceneSelectedItem)result.sceneSelectedItem = getSceneSelectItem(sceneList,sceneSelected)
             
             return result
         }
     )
+}
+
+function getSceneSelectItem(list,id){
+    return list.find(item=>item.id == id)
 }
 
 function getTheHotSpot(selectedId,sceneId,oList){

@@ -9,7 +9,6 @@ const defaultState = {
 
 const scene = createReducer({
     [actions.updateAllScene]:(state,list)=>{
-        console.log(list)
         return {...state,list:list}
     },
     [actions.dUpdateSceneSelected]:(state,id)=>{

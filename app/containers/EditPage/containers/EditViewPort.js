@@ -9,11 +9,64 @@ import Button from '@material-ui/core/Button';
 import {createSelector} from 'reselect'
 
 import * as sceneActions from '../../../actions/scene'
+import {editViewPortConfig,getSelector} from '../../../store/getStore'
 
 class EditViewPort extends Component{
     constructor(){
         super()
         this.state = {max:155,min:-5,start:75,max1:90,min1:-90}
+    }
+
+    componentDidMount(){
+        let sceneObj = this.props.sceneSelectedItem
+        let newStateObj = {max:155,min:-5,start:75,max1:90,min1:-90}
+        if(sceneObj){
+            if(sceneObj.fovmin != undefined){
+                newStateObj.min = sceneObj.fovmin 
+            }
+            if(sceneObj.fovmax != undefined){
+                newStateObj.max = sceneObj.fovmax
+            }
+            if(sceneObj.fov != undefined){
+                newStateObj.start = sceneObj.fov
+            }
+            if(sceneObj.vlookatmax != undefined){
+                newStateObj.max1 = sceneObj.vlookatmax
+            }
+            if(sceneObj.vlookatmin != undefined){
+                newStateObj.min1 = sceneObj.vlookatmin
+            }
+        }
+        setTimeout(()=>{
+            this.setState(newStateObj)
+        },100)
+    }
+
+    componentWillReceiveProps(props,state){
+        if(props.sceneSelected != this.props.sceneSelected){
+            let newStateObj = {max:155,min:-5,start:75,max1:90,min1:-90}
+            let sceneObj = props.sceneSelectedItem
+            if(sceneObj){
+                if(sceneObj.fovmin != undefined){
+                    newStateObj.min = sceneObj.fovmin 
+                }
+                if(sceneObj.fovmax != undefined){
+                    newStateObj.max = sceneObj.fovmax
+                }
+                if(sceneObj.fov != undefined){
+                    newStateObj.start = sceneObj.fov
+                }
+                if(sceneObj.vlookatmax != undefined){
+                    newStateObj.max1 = sceneObj.vlookatmax
+                }
+                if(sceneObj.vlookatmin != undefined){
+                    newStateObj.min1 = sceneObj.vlookatmin
+                }
+            }
+            setTimeout(()=>{
+                this.setState(newStateObj)
+            },100)
+        }
     }
 
     onMax1Change(event,value){
@@ -150,15 +203,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-const selector = createSelector(
-    state => state.krpano.obj,
-    state => state.scene.sceneSelected,
-    (krpano,sceneSelected)=>{
-        return {
-            krpano:krpano,
-            sceneSelected:sceneSelected
-        }
-    }
-)
-
-export default connect(selector,mapDispatchToProps)(EditViewPort)
+export default connect(getSelector(editViewPortConfig),mapDispatchToProps)(EditViewPort)
