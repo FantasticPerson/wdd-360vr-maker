@@ -1,8 +1,4 @@
 import React, { Component } from 'react';
-// import FlatButton from 'material-ui/FlatButton';
-// import TextField from 'material-ui/TextField';
-
-
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import FlatButton from '@material-ui/core/Button';

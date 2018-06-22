@@ -28,6 +28,7 @@ import * as krpanoActions from '../../actions/krpano'
 
 import EditViewPort from './containers/EditViewPort'
 import EditHotSpot from './containers/EditHotpot'
+import EditMusic from './containers/EditMusic'
 
 class EditPage extends Component{
     constructor(){
@@ -92,35 +93,17 @@ class EditPage extends Component{
         }
     }
 
+    onAddMusicLocal(type){
+        console.log(type)
+    }
+
+    onAddMusic2(type){
+        console.log(type)
+    }
+
     renderEditMusic(){
         if(this.state.editType == 2){
-            return (
-                <div style={{padding:'5px'}}>
-                    <div style={{
-                        borderBottom:'1px solid #eee'
-                    }}>
-                        <span>
-                            <i className='fa fa-music'></i>
-                            <span style={{
-                                marginLeft:'5px'
-                            }}>音乐</span> 
-                            
-                        </span>
-                    </div>
-                    <div>
-                        <div style={{marginTop:'10px',borderBottom:'1px solid #eee'}}>背景音乐设置</div>
-                        <div>
-                            <span>选择一首音乐</span>
-                            <FlatButton color="primary">添加</FlatButton>
-                        </div>
-                        <div style={{marginTop:'10px',borderBottom:'1px solid #eee'}}>解说音乐设置</div>
-                        <div>
-                            <span>选择一首音乐</span>
-                            <FlatButton color="primary">添加</FlatButton>
-                        </div>
-                    </div>
-                </div>
-            )
+            return <EditMusic></EditMusic>
         }
     }
 
