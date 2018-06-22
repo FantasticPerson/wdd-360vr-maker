@@ -16,10 +16,6 @@ class EditViewPort extends Component{
         this.state = {max:155,min:-5,start:75,max1:90,min1:-90}
     }
 
-    componentDidMount(){
-
-    }
-
     onMax1Change(event,value){
         const {min1} = this.state
         if(value >= min1){
@@ -35,7 +31,6 @@ class EditViewPort extends Component{
     }
 
     onMaxChange(event,value){
-        console.log(value)
         const {min,start} = this.state
         if(value >= min && value >= start){
             this.setState({max:value})
@@ -57,7 +52,7 @@ class EditViewPort extends Component{
     }
 
     onApplyToKarpano(){
-        const {max,min,start} = this.state
+        const {max,min,start,min1,max1} = this.state
         const {krpano} = this.props
 
         if(krpano){

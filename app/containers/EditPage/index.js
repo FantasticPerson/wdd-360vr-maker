@@ -206,6 +206,7 @@ class EditPage extends Component{
         } else if(snowType > 0){
             updateEffect(sceneSelected,'snow',snowType)
         }
+        
     }
 
     renderEditViewPort(){
