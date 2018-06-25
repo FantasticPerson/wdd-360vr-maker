@@ -24,7 +24,6 @@ export default class EditSelectScene extends Component{
     }
 
     getResult(){
-        debugger
         const {selectId,type,check} = this.state
         if(selectId != null){
             return  JSON.stringify({type:'switch',toId:this.state.selectId,type:type,check:check})
@@ -51,7 +50,7 @@ export default class EditSelectScene extends Component{
 
     render(){
         const {selectId} = this.state
-        const {sceneList,folderId,vrId} = this.props
+        const {sceneList,folderId,vrId,sceneSelected} = this.props
 
         let sceneItemStyle = {
             margin:'5px',
@@ -61,7 +60,11 @@ export default class EditSelectScene extends Component{
             overflow:'hidden'
         }
 
-        let sceneArr = sceneList.map((item)=>{
+        let sceneArrRes = sceneList.filter(item=>{
+            return item.id != sceneSelected
+        })
+
+        let sceneArr = sceneArrRes.map((item)=>{
             let itemStyle = sceneItemStyle
             if(selectId == item.id){
                 itemStyle = {...itemStyle,border:'3px solid blanchedalmond'}

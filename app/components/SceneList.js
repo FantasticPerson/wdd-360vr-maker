@@ -98,7 +98,14 @@ let createSceneObj={
                 addScene({
                     id:nextSceneId,
                     vrid:vrId,
-                    name:name
+                    name:name,
+                    fov:75,
+                    fovmax:155,
+                    fovmin:-5,
+                    hlookat:0,
+                    vlookat:0,
+                    vlookatmax:90,
+                    vlookatmin:-90
                 })
             },20) 
         })

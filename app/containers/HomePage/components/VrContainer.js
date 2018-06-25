@@ -153,13 +153,22 @@ let vrModalContext={
                 title:title,
                 brief:brief,
                 folderId:folderSelectedId,
-                headImg:previewImg
+                headImg:previewImg,
+                music1:null,
+                music2:null
             })
 
             addScene({
                 id:nextSceneId,
                 vrid:nextVrId,
-                name:'test'
+                name:'test',
+                fov:75,
+                fovmax:155,
+                fovmin:-5,
+                hlookat:0,
+                vlookat:0,
+                vlookatmax:90,
+                vlookatmin:-90
             })
 
             setTimeout(()=>{

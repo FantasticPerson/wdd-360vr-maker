@@ -45,6 +45,8 @@
     "appId": "org.develar.ElectronReact",
     "files": [
       "dist/",
+      "krpano/",
+      "krp/",
       "node_modules/",
       "app.html",
       "main.prod.js",

@@ -9,7 +9,6 @@ const {
 } = window
 
 import {IMG_NAME_ARR} from '../constants.js'
-import FeatureXMLExport from '../../krpano/api_export.xml'
 import {getProductionXml} from './xmlBuilder2'
 
 const fse = require('fs-extra')
@@ -18,9 +17,6 @@ const path = native_require('path')
 const swig = require('swig')
 
 export function GenerateOutput(vrItem,sceneList,hotpotList){
-
-    console.log(FeatureXMLExport)
-
     let config = {}
     let vrPath = path.resolve(electron_app_output_path,`./vr-${vrItem.id}`)
 
@@ -64,8 +60,6 @@ export function GenerateOutput(vrItem,sceneList,hotpotList){
     if(!fs.existsSync(vrPath)){
         fs.mkdirSync(vrPath)
     }
-    console.log(vrPath)
-
 
     for(let i = 0;i<sceneList.length;i++){
         let scene = sceneList[i]
@@ -89,7 +83,6 @@ export function GenerateOutput(vrItem,sceneList,hotpotList){
         fse.copySync(srcPath,destPath)
     }
 
-    console.log(vrPath)
     if(!fs.existsSync(audioPath)){
         fs.mkdirSync(audioPath)
     }
@@ -105,7 +98,7 @@ export function GenerateOutput(vrItem,sceneList,hotpotList){
 
     fs.writeFileSync(path.resolve(vrPath, './index.html'), template({ title: '666' }))
 
-    fs.writeFileSync(path.resolve(vrPath,'./api_export.xml'),FeatureXMLExport)
+    fse.copySync(path.resolve(electron_app_root_path, '../../krpano/api_export.xml'), path.resolve(vrPath, './api_export.xml'))
 
     fs.writeFileSync(path.resolve(vrPath, './data.xml'), getProductionXml(vrItem,sceneList,hotpotList))
 

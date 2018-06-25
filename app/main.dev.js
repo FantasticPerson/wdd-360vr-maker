@@ -37,11 +37,13 @@ const initConfig = async () => {
     global.electron_app = global.electron.app;
     global.electron_app_path = electron_app.getAppPath();
 
-
     if (process.env.NODE_ENV === 'development') {
         global.electron_app_root_path = path.resolve(electron_app.getPath('exe'), '../../../../app/dist');
+
+        global.NODE_ENV == 'dev'
     } else {
-        global.electron_app_root_path = path.resolve(electron_app.getPath('exe'), '..');
+        global.electron_app_root_path = path.resolve(global.electron_app_path, '..');
+        global.NODE_ENV == 'prod'
     }
     global.electron_app_assets_path = path.resolve(global.electron_app_root_path, './assets');
     global.electron_app_krpano_path = path.resolve(global.electron_app_assets_path, './krpano');
@@ -108,6 +110,10 @@ app.on('window-all-closed', () => {
 app.on('ready', async () => {
     if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
         await installExtensions();
+        await initConfig();
+        await initDir();
+        await initServer(global.electron_app_root_path,global)
+    } else {
         await initConfig();
         await initDir();
         await initServer(global.electron_app_root_path,global)

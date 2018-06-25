@@ -109,11 +109,18 @@ class EditHotSpot extends Component{
 
     renderHotpotList(){
         const {isAdd} = this.state
-        const {hotpotSelected} = this.props
+        const {hotpotSelected,sceneSelected} = this.props
         if(hotpotSelected == null &&　!isAdd){
+
+            
+
             const {hotpotList} = this.props
 
-            let hotpotArr = hotpotList.map((item,i)=>{
+            let hList = hotpotList.filter(item=>{
+                return item.sceneId == sceneSelected
+            })
+
+            let hotpotArr = hList.map((item,i)=>{
                 let type = JSON.parse(item.action).type
 
                 var typeText = ''
@@ -161,7 +168,7 @@ class EditHotSpot extends Component{
                         <FlatButton color="primary" onClick={this.onAddHotpotClick.bind(this)}>添加热点</FlatButton>
                     </span>
                     <div>
-                        {`当前场景共有热点${hotpotList.length}个`}
+                        {`当前场景共有热点${hList.length}个`}
                     </div>
                     <div>
                         {hotpotArr}
@@ -218,13 +225,13 @@ class EditHotSpot extends Component{
 
     renderEditByType(){
         const {hotSpotType} = this.state
-        const {hotpotSelected} = this.props
+        const {hotpotSelected,sceneSelected} = this.props
         let action = hotpotSelected ? hotpotSelected.action : ''
         switch(hotSpotType){
             case 1:{
                 const {sceneList,folderId,vrId} = this.props            
                 return (
-                    <EditSelectScene action = {action} ref={(ref)=>{this.editEle = ref}} selectId={null} sceneList={sceneList} folderId={folderId} vrId={vrId}></EditSelectScene>
+                    <EditSelectScene action = {action} ref={(ref)=>{this.editEle = ref}} selectId={null} sceneList={sceneList} folderId={folderId} sceneSelected={sceneSelected} vrId={vrId}></EditSelectScene>
                 )
             }break;
             

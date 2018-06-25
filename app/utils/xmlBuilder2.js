@@ -33,15 +33,6 @@ export function getPanoXml(data){
     const cube = image.ele('cube')
     cube.attribute('url',`${data.scenePath}/mobile_%s.jpg`)
 
-    // for (let i = 0; i < data.multires.length; i++) {
-    //     const level = image.ele('level')
-    //     level.att('tiledimagewidth', data.multires[i])
-    //     level.att('tiledimageheight', data.multires[i])
-
-    //     const cube = level.ele('cube')
-    //     cube.att('url', path.join(data.rootPath, 'pano.tiles', `mres_%s/l${data.multires.length - i}/%v/l${data.multires.length - i}_%s_%v_%h.jpg`))
-    // }
-
     return krpano.doc().end()
 }
 
@@ -53,7 +44,7 @@ export function getProductionXml(vrItem,sceneList,hotpotList){
     krpano.att('clientVersion',Common.KR_VERSION)
 
     const includeFeatureElement = krpano.ele('include')
-    includeFeatureElement.att('url','api_export.xml')
+    includeFeatureElement.att('url','./api_export.xml')
 
     const displayModeElement = krpano.ele('displayMode')
     displayModeElement.att('export',true)
@@ -65,8 +56,6 @@ export function getProductionXml(vrItem,sceneList,hotpotList){
     configXmlData(productData,krpano)
 
     let xml = krpano.doc().end()
-
-    console.log(xml)
 
     return xml
 }
@@ -94,7 +83,7 @@ function getSceneXmlData(pano,krpano){
     scene.att('pano_id',pano.scene.id)
 
     const preview = scene.ele('preview')
-    preview.att('url','')
+    preview.att('url',`./scene_${pano.scene.id}/preview.jpg`)
 
     const image = scene.ele('image')
     image.att('type', 'CUBE')
@@ -103,9 +92,8 @@ function getSceneXmlData(pano,krpano){
     image.att('if', '!webvr.isenabled AND device.desktop')
 
     const cube = image.ele('cube')
-    // cube.att('url', `${pano.rootPath}/pano.tiles/mres_%s/l${pano.multires.length - i}/%v/l${pano.multires.length - i}_%s_%v_%h.jpg`)
 
-    cube.att('url', `23456`)
+    cube.att('url', `./scene_${pano.scene.id}/mobile_%s.jpg`)
 
     const imageMobile = scene.ele('image')
     // const imageMobile = scene.ele('image')
@@ -113,13 +101,13 @@ function getSceneXmlData(pano,krpano){
   
     const mobile = imageMobile.ele('cube')
     
-    mobile.att('url', `${pano.rootPath}/pano.tiles/mobile_%s.jpg`)
+    mobile.att('url', `./scene_${pano.scene.id}/mobile_%s.jpg`)
 
     for (let i = 0; i < pano.hotspots.length; i++) {
-        if (pano.hotspots[i].error == '') {
-                const hotspot = scene.ele('hotspot')
-                hotspot.att('name', `hotspot_${i}`)
-        }
+        // if (pano.hotspots[i].error == '') {
+            const hotspot = scene.ele('hotspot')
+            hotspot.att('name', `hotspot_${i}`)
+        // }
     }
 }
 
@@ -150,7 +138,7 @@ function thumbsXmlData(productData,config){
     
     let category = thumbs.ele('category')
     category.att('name','category0')
-    category.att('title','groupName')
+    category.att('title','全景列表')
     category.att('thumb','')
 
     productData.panos.map((pano)=>{
@@ -158,12 +146,14 @@ function thumbsXmlData(productData,config){
         panoElement.att('name',`pano_${pano.scene.id}`)
         panoElement.att('title',pano.scene.name)
 
-        panoElement.att('thumb','test')
+        panoElement.att('thumb',`./scene_${pano.scene.id}/thumb.jpg`)
         panoElement.att('pano_id',pano.scene.id)
     })
 }
 
 function panosXmlData(productData,config){
+    // sceneArr.push({scene:sceneObj,hotspots:hotspots})
+
     const panos = config.ele('panos')
     productData.panos.map(pano=>{
         const panoElement = panos.ele('pano')
@@ -174,15 +164,16 @@ function panosXmlData(productData,config){
         info.att('title',pano.scene.name)
 
         const view = panoElement.ele('view')
-        // view.att('hloolat',pano.hAov)
-        // view.att('vloolat',pano.vAov)
-        // view.att('fov',pano.fov)
+        view.att('hloolat',pano.scene.hlookat || 0)
+        view.att('vloolat',pano.scene.vlookat || 0)
+        view.att('fov',pano.scene.fov || 75)
         view.att('fovtype','MFOV')
         view.att('maxpixelzoom',2.0)
-        // view.att('fovmin',pano.fovMin)
-        // view.att('fovmax',pano.fovMax)
-        // view.att('vlookatmin',pano.vAovMin)
-        // view.att('vlookatmax',pano.vAovMax)
+        view.att('fovmin',pano.scene.fovmin || -5)
+        view.att('fovmax',pano.scene.fovmax || 155)
+        view.att('vlookatmin',pano.scene.vlookatmin || -90)
+        view.att('vlookatmax',pano.scene.vlookatmax || 90)
+
         view.att('autorotatekeepview',0)
         view.att('loadscenekeepview',0)
 
@@ -199,20 +190,35 @@ function panosXmlData(productData,config){
             hotspotIndex++
             if(hotspotData.animated){
                 // hotspot.att('style_id',push.basename(hotspotData.icon,'.png'))
-                hotspot.att('style_id','')
-                hotspot.att('image_type',1)
+                // hotspot.att('style_id',`new_spotd01_gif`)
+                // hotspot.att('image_type',1)
+
+
+                hotspot.att('style_id', `new_spotd01_gif`)
+                hotspot.att('image_type', 1)
+                // hotspot.att('image_url', `./krp/hotspotIcons/new_spotd01_gif.png`)
             } else {
-                
+                // hotspot.att('style_id','')
                 hotspot.att('image_type',2)
+                hotspot.att('image_url', `./krp/hotspotIcons/new_spotd01_gif.png`)
 
                 // parseMediaPath(memberWorkPath, allMedias, productData.rootPath, hotspotData.icon, false))
             }
+            // hotspot.att('image_type',2)
+            // hotspot.att('image_url', `./krp/hotspotIcons/new_spotd01_gif.png`)
+
+
             hotspot.att('ath',hotspotData.ath)
             hotspot.att('atv',hotspotData.atv)
 
             hotspot.att('show_txt',hotspotData.typeProps.showTitle ? 1: 0)
             hotspot.att('keep_view',0)
 
+            hotspot.att('type',0)
+            hotspot.att('title',actionObj.title || '123')
+            hotspot.att('url','scene_2')
+            hotspot.att('blend',0)
+/*
             switch(actionObj.type){
                 case 'switch':
                     hotspot.att('type',0)
@@ -280,7 +286,7 @@ function panosXmlData(productData,config){
                     break
                 case 'viewer':
                     break
-            }
+            }*/
 
             /*if(pano.assets){
                 const embeds = panoElement.ele('embeds')

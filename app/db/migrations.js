@@ -13,14 +13,25 @@ export default [
                 'brief',
                 'folderId',
                 'headImg',
-                'tabs'
+                'tabs',
+                'music1',
+                'music2'
             ],
             scene: [
                 'id',
                 'name',
                 'vrid',
                 'action',
-                'groupId'
+                'groupId',
+                'hlookat',
+                'vlookat',
+                'fov',
+                'fovmin',
+                'fovmax',
+                'vlookatmin',
+                'vlookatmax',
+                'effectType',
+                'effectLevel'
             ],
             folder: [
                 'id',
@@ -50,69 +61,12 @@ export default [
             video:[
                 'id',
                 'url'
-            ]
-            
-        },
-        upgrade: null
-    },{
-        ver: 2,
-        stores: {
+            ],
             picture:[
                 'id',
                 'extension'
             ]
-        }
-    },{
-        ver: 3,
-        stores: {
-            scene: [
-                'id',
-                'name',
-                'vrid',
-                'action',
-                'groupId',
-                'hlookat',
-                'vlookat',
-                'fov',
-                'fovmin',
-                'fovmax',
-                'vlookatmin',
-                'vlookatmax'
-            ]
-        }
-    },{
-        ver: 4,
-        stores: {
-            scene: [
-                'id',
-                'name',
-                'vrid',
-                'action',
-                'groupId',
-                'hlookat',
-                'vlookat',
-                'fov',
-                'fovmin',
-                'fovmax',
-                'vlookatmin',
-                'vlookatmax',
-                'effectType',
-                'effectLevel'
-            ]
-        }
-    },{
-        ver: 5,
-        stores:{
-            vr: [
-                'id',
-                'title',
-                'brief',
-                'folderId',
-                'headImg',
-                'tabs',
-                'music1',
-                'music2'
-            ]
-        }
+        },
+        upgrade: null
     }
 ];
