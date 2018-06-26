@@ -92,7 +92,11 @@ class EditHotSpot extends Component{
         } else {
             const {hotpotSelected,modifyHotpot} = this.props
             if(hotpotSelected){
-                modifyHotpot({...hotpotSelected,action:result,icon:hotpotIndex})
+                if(hotpotSelected.icon != hotpotIndex){
+                    modifyHotpot({...hotpotSelected,action:result,icon:hotpotIndex},true)
+                } else {
+                    modifyHotpot({...hotpotSelected,action:result,icon:hotpotIndex},false)
+                }
             }
         }
         this.handleCloseEditHotspot()

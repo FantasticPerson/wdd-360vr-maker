@@ -183,8 +183,10 @@ function panosXmlData(productData,config){
             const hotspot = hotspots.ele('hotspot')
             hotspot.att('name', `hotspot_${hotspotIndex}`)
             hotspotIndex++
+
+            let iconId = String(hotspotData.icon).length == 1 ? 0+''+hotspotData.icon:String(hotspotData.icon)
             if(hotspotData.animated){
-                hotspot.att('style_id', `new_spotd01`)
+                hotspot.att('style_id', `new_spotd${iconId}`)
                 hotspot.att('image_type', 1)
             } else {
                 hotspot.att('image_type',2)

@@ -7,7 +7,7 @@ export function addHotspotToKrpano(krpano, data, autoSelect = false) {
 }
 
 export function updateHotspotIcon(krpano, id, icon, animated) {
-  const krpIcon = animated ? icon.replace(path.extname(icon), `_gif${path.extname(icon)}`) : icon
+  const krpIcon = icon
   krpano.call(`update_hotspot_image(${id},${krpIcon},${animated})`)
 }
 

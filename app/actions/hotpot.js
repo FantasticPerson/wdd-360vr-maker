@@ -1,7 +1,7 @@
 import { createAction } from 'redux-act'
 
 import Modals from '../modals';
-import {addHotspotToKrpano,selectHotspotInKrpano,removeHotspotFromKrpano} from '../utils/krpanoFunctions'
+import {addHotspotToKrpano,selectHotspotInKrpano,removeHotspotFromKrpano,updateHotspotIcon} from '../utils/krpanoFunctions'
 import getPathOfHotSpotIconPath from '../native/getHotspotIconPath'
 import Hashid from '../utils/generateHashId'
 
@@ -121,14 +121,20 @@ export function delHotpot(id) {
     }
 }
 
-export function modifyHotpot(obj) {
-    return (dispatch)=>{
-        Modals.Hotpot.update(obj)
-        .then(()=>{
-            return Modals.Hotpot.findAll()
-        })
-        .then((list)=>{
-            dispatch(updateAllHotpot (list))
-        })
+export function modifyHotpot(obj,updateIcon) {
+    return (dispatch,getState)=>{
+        var krpano = getState().krpano.obj
+        if(krpano){
+            Modals.Hotpot.update(obj)
+            .then(()=>{
+                return Modals.Hotpot.findAll()
+            })
+            .then((list)=>{
+                let icon = getPathOfHotSpotIconPath(obj.icon)
+                // addHotspotToKrpano(krpano,{...data,icon:icon},false)
+                updateHotspotIcon(krpano,obj.id,icon,true)
+                dispatch(updateAllHotpot (list))
+            })
+        }
     }
 }
