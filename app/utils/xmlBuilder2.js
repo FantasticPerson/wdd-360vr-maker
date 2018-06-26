@@ -96,7 +96,6 @@ function getSceneXmlData(pano,krpano){
     cube.att('url', `./scene_${pano.scene.id}/mobile_%s.jpg`)
 
     const imageMobile = scene.ele('image')
-    // const imageMobile = scene.ele('image')
     imageMobile.att('if', 'webvr.isenabled OR !device.desktop')
   
     const mobile = imageMobile.ele('cube')
@@ -104,10 +103,8 @@ function getSceneXmlData(pano,krpano){
     mobile.att('url', `./scene_${pano.scene.id}/mobile_%s.jpg`)
 
     for (let i = 0; i < pano.hotspots.length; i++) {
-        // if (pano.hotspots[i].error == '') {
-            const hotspot = scene.ele('hotspot')
-            hotspot.att('name', `hotspot_${i}`)
-        // }
+        const hotspot = scene.ele('hotspot')
+        hotspot.att('name', `hotspot_${i}`)
     }
 }
 
@@ -152,8 +149,6 @@ function thumbsXmlData(productData,config){
 }
 
 function panosXmlData(productData,config){
-    // sceneArr.push({scene:sceneObj,hotspots:hotspots})
-
     const panos = config.ele('panos')
     productData.panos.map(pano=>{
         const panoElement = panos.ele('pano')

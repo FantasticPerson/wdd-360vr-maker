@@ -3,11 +3,6 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect'
 import { bindActionCreators } from 'redux';
 
-// import FlatButton from 'material-ui/FlatButton';
-// import SelectField from 'material-ui/SelectField';
-// import MenuItem from 'material-ui/MenuItem';
-// import TextField from 'material-ui/TextField';
-
 import SelectField from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
@@ -42,10 +37,20 @@ class EditHotSpot extends Component{
             isAdd:false,
             showPicList:false,
             picList:[],
-            picTextList:[]
+            picTextList:[],
+            hotpotIndex:1
         }
 
         this.editEle = React.createRef()
+    }
+
+    componentWillReceiveProps(nProp,cProp){
+        let nHotSpotItem = nProp.hotpotSelected
+        let cHotSpotItem = cProp.hotpotSelected
+
+        if((nHotSpotItem && !cHotSpotItem) || (nHotSpotItem && cHotSpotItem && nHotSpotItem.id != cHotSpotItem.id)){
+            this.setState({hotpotIndex:nHotSpotItem.icon})
+        }
     }
 
     resetState(){
@@ -78,15 +83,16 @@ class EditHotSpot extends Component{
             return
         }
         const {sceneSelected} = this.props
+        const {hotpotIndex} = this.state
         if(this.state.isAdd){
             if(sceneSelected != null){
                 const {addHotpot} = this.props;
-                addHotpot(result)
+                addHotpot(result,hotpotIndex)
             }
         } else {
             const {hotpotSelected,modifyHotpot} = this.props
             if(hotpotSelected){
-                modifyHotpot({...hotpotSelected,action:result})
+                modifyHotpot({...hotpotSelected,action:result,icon:hotpotIndex})
             }
         }
         this.handleCloseEditHotspot()
@@ -111,9 +117,6 @@ class EditHotSpot extends Component{
         const {isAdd} = this.state
         const {hotpotSelected,sceneSelected} = this.props
         if(hotpotSelected == null &&　!isAdd){
-
-            
-
             const {hotpotList} = this.props
 
             let hList = hotpotList.filter(item=>{
@@ -139,7 +142,6 @@ class EditHotSpot extends Component{
                 } else if(type == 'video'){
                     typeText = "视频"
                 }
-
 
                 let itemStyle = {
                     backgroundColor: 'aliceblue',
@@ -178,6 +180,42 @@ class EditHotSpot extends Component{
         }
     }
 
+
+    onHotSpotIconClick(index){
+        if(index != this.state.hotpotIndex){
+            this.setState({hotpotIndex:index})
+        }
+    }
+
+    renderHotpotIcon(){
+        const krpPath = window.electron_app_krp_assets_path
+        const nativeRequire = window.native_require
+        const {hotpotSelected} = this.props
+        const path = nativeRequire('path')
+        const {hotpotIndex} = this.state
+
+        let style = {
+            width:'34px',height:'34px',display:'inline-block',border:'2px solid transparent'
+        }
+
+        let iconArr = [1,2,3,4,5,6,7,8,9,10,11]
+        
+        return iconArr.map((item)=>{
+            let cStyle = {...style}
+            if(hotpotIndex == item){
+                cStyle.border = "2px solid #eee"
+            }
+
+            let id = String(item).length == 1 ? 0+''+item : String(item)
+
+            return (
+                <div key={item} onClick={()=>{this.onHotSpotIconClick(item)}} style={cStyle}>
+                    <img style={{width:'30px',height:'30px'}} src={path.resolve(krpPath,`./hotspotIcons/new_spotd${id}.png`)}/> 
+                </div>
+            )
+        })
+    }
+
     renderEditHotPot(){
         const {isAdd} = this.state
         const {hotpotSelected} = this.props
@@ -194,6 +232,10 @@ class EditHotSpot extends Component{
                         </span>
                     </div>
                     <div>
+                        <span>选择图标</span>
+                        <div>{this.renderHotpotIcon()}</div>
+                    </div>
+                    <div>
                         <SelectField
                             value={this.state.hotSpotType}
                             onChange={this.handleTypeChange.bind(this)}
@@ -207,7 +249,7 @@ class EditHotSpot extends Component{
                             <MenuItem value={6}>音频</MenuItem>
                             <MenuItem value={7}>视频</MenuItem>
                         </SelectField>
-                        <div style={{position: 'absolute',left: '0',right: '0',bottom: '35px',top: '87px',margin: '5px',padding: '5px',border: '2px solid #eee',borderRadius: '5px',overflowY:'auto'}}>
+                        <div style={{position: 'absolute',left: '0',right: '0',bottom: '35px',top: '165px',margin: '5px',padding: '5px',border: '2px solid #eee',borderRadius: '5px',overflowY:'auto'}}>
                             {this.renderEditByType()}
                         </div>
                     </div>
