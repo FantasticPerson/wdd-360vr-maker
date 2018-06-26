@@ -26,7 +26,7 @@ export default class EditSelectScene extends Component{
     getResult(){
         const {selectId,type,check} = this.state
         if(selectId != null){
-            return  JSON.stringify({type:'switch',toId:this.state.selectId,type:type,check:check})
+            return  JSON.stringify({type:'switch',toId:this.state.selectId,switchType:type,check:check})
         }
         return ''
     }

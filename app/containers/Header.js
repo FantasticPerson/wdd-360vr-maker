@@ -36,7 +36,15 @@ class Header extends Component {
         // getProductionXml(vrItem,sceneList,hotpotList)
         GenerateOutput(vrItem,sceneList,hotpotList)
         console.log('onSaveClick')
-        
+    }
+
+    onPreviewClick(){
+        const {vrId} = this.props
+        console.log(vrId)
+
+        let url = `http://127.0.0.1:${window.electron_app_server_port}/assets/output/vr-${vrId}/index.html`
+
+        window.open(url,'预览',)
     }
 
     render(){
@@ -69,6 +77,9 @@ class Header extends Component {
             return <div>
                 <Button onClick={this.onSaveClick.bind(this)} style={{color:'#FFF'}}>
                     Save
+                </Button>
+                <Button onClick={this.onPreviewClick.bind(this)} style={{color:'#FFF'}}>
+                    Preview
                 </Button>
                 <Button style={{color:'#FFF'}}>
                     Export

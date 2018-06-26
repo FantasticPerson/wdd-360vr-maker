@@ -110,5 +110,7 @@ export function GenerateOutput(vrItem,sceneList,hotpotList){
 
     fse.copySync(path.resolve(electron_app_root_path, '../krpano/krpano.swf'), path.resolve(vrPath, './krpano.swf'))
 
-    fse.copySync(path.resolve(electron_app_root_path, '../krp'), path.resolve(vrPath, 'krp'))
+    fse.copySync(path.resolve(electron_app_root_path, '../krp'), path.resolve(vrPath, './krp'))
+
+    fse.copySync(path.resolve(electron_app_root_path, '../krp/hotspotIcons'), path.resolve(vrPath, './hotspots'))
 }

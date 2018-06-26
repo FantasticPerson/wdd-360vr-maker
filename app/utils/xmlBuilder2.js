@@ -194,7 +194,7 @@ function panosXmlData(productData,config){
                 // hotspot.att('image_type',1)
 
 
-                hotspot.att('style_id', `new_spotd01_gif`)
+                hotspot.att('style_id', `new_spotd01`)
                 hotspot.att('image_type', 1)
                 // hotspot.att('image_url', `./krp/hotspotIcons/new_spotd01_gif.png`)
             } else {
@@ -210,44 +210,37 @@ function panosXmlData(productData,config){
 
             hotspot.att('ath',hotspotData.ath)
             hotspot.att('atv',hotspotData.atv)
+            // hotspot.att('show_txt',1)
+            // hotspot.att('keep_view',0)
+            // hotspot.att('type',0)
+            // hotspot.att('title',actionObj.title || '123')
+            // hotspot.att('url','scene_2')
+            // hotspot.att('blend',0)
 
-            hotspot.att('show_txt',1)
-            hotspot.att('keep_view',0)
-
-
-            
-
-            hotspot.att('type',0)
-            hotspot.att('title',actionObj.title || '123')
-            hotspot.att('url','scene_2')
-            hotspot.att('blend',0)
-/*
             switch(actionObj.type){
                 case 'switch':
                     hotspot.att('type',0)
                     hotspot.att('title',actionObj.title || '123')
                     hotspot.att('url',actionObj.toId)
-                    hotspot.att('blend',0)
+                    hotspot.att('blend',actionObj.switchType)
                     break
                 case 'link':
                     hotspot.att('type',1)
                     hotspot.att('title',actionObj.title)
                     hotspot.att('url',actionObj.url)
-                    hotspot.att('is_blank',actionObj.openInNewWindow)
+                    hotspot.att('is_blank',actionObj.openInNewWindow ? 1 : 0)
                     break;
                 case 'pictures':
                     hotspot.att('type',2)
                     hotspot.att('title',actionObj.title)
-                    hotspot.att('url',actionObj.url ? actionObj.url : '')
-                    hotspot.att('is_blank',actionObj.openInNewWindow)
+                    hotspot.att('url',actionObj.moreInfo ? actionObj.moreInfo : '')
+                    hotspot.att('is_blank',actionObj.openInNewWindow ? 1 : 0)
                     let imageIndex = 0
-                    actionObj.list.map((item)=>{
+                    actionObj.pics.map((item)=>{
                         const imageElement = hotspot.ele('image')
                         imageElement.att('name',`image_${imageIndex}`)
                         imageElement.att('title','')
-                        imageElement.att('url', '123456')
-                        // imageElement.att('url', parseMediaPath(memberWorkPath, allMedias, productData.rootPath, imageURL, false))
-
+                        imageElement.att('url', `./picture/${item}`)
                         imageIndex++
                     })
                     break
@@ -255,41 +248,40 @@ function panosXmlData(productData,config){
                     hotspot.att('type',3)
                     hotspot.att('text',actionObj.url)
                     hotspot.att('title',actionObj.title)
-                    hotspot.att('url','')
-                    hotspot.att('is_blank',actionObj.openInNewWindow)
+                    hotspot.att('url',actionObj.moreInfo)
+                    hotspot.att('is_blank',actionObj.openInNewWindow ? 1 : 0)
                     break
                 case 'text':
                     hotspot.att('type',4)
                     hotspot.att('text',actionObj.content)
                     hotspot.att('title',actionObj.title)
-                    hotspot.att('url','')
-                    hotspot.att('is_blank',actionObj.openInNewWindow)
+                    hotspot.att('url',actionObj.moreInfo)
+                    hotspot.att('is_blank',actionObj.openInNewWindow ? 1 : 0)
                     break
                 case 'audio':
                     hotspot.att('type',5)
                     hotspot.att('title',actionObj.title)
-                    hotspot.att('url',actionObj.url)
+                    hotspot.att('url',`./audio/${actionObj.url}`)
                     break
-                case 'mix':
+                case 'picAndText':
                     hotspot.att('type',6)
                     hotspot.att('title',actionObj.title)
-                    hotspot.att('url','')
-                    hotspot.att('is_blank',actionObj.openInNewWindow)
+                    hotspot.att('url',actionObj.moreInfo ? actionObj.moreInfo : '')
+                    hotspot.att('is_blank',actionObj.openInNewWindow ? 1 : 0)
 
                     let mixIndex = 0
-                    hotspot.list.map(item=>{
+                    actionObj.picArr.map(item=>{
                         const imageElement = hotspot.ele('image')
                         imageElement.att('name',`image_${mixIndex}`)
-                        imageElement.att('title','')
-                        imageElement.att('url',item.pic)
+                        imageElement.att('title',item.text)
+                        imageElement.att('url',`./picture/${item.pic}`)
                         imageElement.att('text',item.text)
-
                         mixIndex++
                     })
                     break
                 case 'viewer':
                     break
-            }*/
+            }
 
             /*if(pano.assets){
                 const embeds = panoElement.ele('embeds')
