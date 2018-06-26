@@ -1,5 +1,5 @@
 const xmlBuilder = require('xmlbuilder')
-import Common from '../common'
+import Common from '../utils/common'
 import { builder } from './xmlBuilder';
 
 export function getPanoXml(data){
@@ -211,8 +211,11 @@ function panosXmlData(productData,config){
             hotspot.att('ath',hotspotData.ath)
             hotspot.att('atv',hotspotData.atv)
 
-            hotspot.att('show_txt',hotspotData.typeProps.showTitle ? 1: 0)
+            hotspot.att('show_txt',1)
             hotspot.att('keep_view',0)
+
+
+            
 
             hotspot.att('type',0)
             hotspot.att('title',actionObj.title || '123')

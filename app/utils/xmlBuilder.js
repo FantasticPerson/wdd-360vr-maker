@@ -1,5 +1,5 @@
 const xmlBuilder = require('xmlbuilder');
-import Common from '../common'
+import Common from '../utils/common'
 
 export function builder(data) {
     const krpano = xmlBuilder.create('krpano');

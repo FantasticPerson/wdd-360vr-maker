@@ -294,7 +294,7 @@
       set(hotspot[hotspot_selected_bg].type, container);
       set(hotspot[hotspot_selected_bg].keep, true);
       set(hotspot[hotspot_selected_bg].scale, 0.5);
-      set(hotspot[hotspot_selected_bg].url, '../krpano/skin/hotspot_selected_bg.png');
+      set(hotspot[hotspot_selected_bg].url, './krpano/skin/hotspot_selected_bg.png');
       set(hotspot[hotspot_selected_bg].edge, center);
       set(hotspot[hotspot_selected_bg].scale9grid, 20|20|100|100 );
       set(hotspot[hotspot_selected_bg].enabled, false);
@@ -612,7 +612,7 @@
     addplugin(snow);
     set(plugin[snow].onloaded,
       set(plugin[snow].mode,          image);
-      set(plugin[snow].imageurl,      '../krpano/skin/rain.png');
+      set(plugin[snow].imageurl,      './krpano/skin/rain.png');
       set(plugin[snow].blendmode,     normal);
       set(plugin[snow].flakes,        1000);
       mul(plugin[snow].flakes,        rain_size);
@@ -627,9 +627,9 @@
       set(plugin[snow].wind,          2.0);
     );
     if(device.flash,
-  		set(plugin[snow].url,          '../krp/plugins/snow.swf');
+  		set(plugin[snow].url,          './krp/plugins/snow.swf');
       ,
-  		set(plugin[snow].url,          '../krp/plugins/snow.js');
+  		set(plugin[snow].url,          './krp/plugins/snow.js');
     );
   </action>
   <action name="remove_rain">
@@ -657,7 +657,7 @@
     addplugin(snow);
     set(plugin[snow].onloaded,
       set(plugin[snow].mode,          image);
-      set(plugin[snow].imageurl,      '../krpano/skin/snow.png');
+      set(plugin[snow].imageurl,      './krpano/skin/snow.png');
       set(plugin[snow].blendmode,     normal);
       set(plugin[snow].flakes,        1500);
       mul(plugin[snow].flakes,        snow_size);
@@ -672,9 +672,9 @@
       sub(plugin[snow].wind,          snow_size);
     );
     if(device.flash,
-  		set(plugin[snow].url,          '../krp/plugins/snow.swf');
+  		set(plugin[snow].url,          './krp/plugins/snow.swf');
       ,
-  		set(plugin[snow].url,          '../krp/plugins/snow.js');
+  		set(plugin[snow].url,          './krp/plugins/snow.js');
     );
 
 
@@ -720,9 +720,9 @@
       set(plugin[snow].wind,          0);
     );
     if(device.flash,
-  		set(plugin[snow].url,          '../krp/plugins/snow.swf');
+  		set(plugin[snow].url,          './krp/plugins/snow.swf');
       ,
-  		set(plugin[snow].url,          '../krp/plugins/snow.js');
+  		set(plugin[snow].url,          './krp/plugins/snow.js');
     );
 
 	</action>

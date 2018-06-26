@@ -1,6 +1,6 @@
 import React,{Component} from 'react'
 import styles from '../styles/panoContainer.css'
-import Common from '../common'
+import Common from '../utils/common'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 

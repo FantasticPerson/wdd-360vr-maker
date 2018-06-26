@@ -98,7 +98,7 @@ export function GenerateOutput(vrItem,sceneList,hotpotList){
 
     fs.writeFileSync(path.resolve(vrPath, './index.html'), template({ title: '666' }))
 
-    fse.copySync(path.resolve(electron_app_root_path, '../../krpano/api_export.xml'), path.resolve(vrPath, './api_export.xml'))
+    fse.copySync(path.resolve(electron_app_root_path, '../krpano/api_export_jiemi2.xml'), path.resolve(vrPath, './api_export.xml'))
 
     fs.writeFileSync(path.resolve(vrPath, './data.xml'), getProductionXml(vrItem,sceneList,hotpotList))
 
@@ -106,9 +106,9 @@ export function GenerateOutput(vrItem,sceneList,hotpotList){
 
     fse.copySync(path.resolve(electron_app_root_path, './js/viewer.js'), path.resolve(vrPath, './viewer.js'))
 
-    fse.copySync(path.resolve(electron_app_root_path, '../../krpano/krpano.js'), path.resolve(vrPath, './krpano.js'))
+    fse.copySync(path.resolve(electron_app_root_path, '../krpano/krpano.js'), path.resolve(vrPath, './krpano.js'))
 
-    fse.copySync(path.resolve(electron_app_root_path, '../../krpano/krpano.swf'), path.resolve(vrPath, './krpano.swf'))
+    fse.copySync(path.resolve(electron_app_root_path, '../krpano/krpano.swf'), path.resolve(vrPath, './krpano.swf'))
 
-    fse.copySync(path.resolve(electron_app_root_path, '../../krp'), path.resolve(vrPath, 'krp'))
+    fse.copySync(path.resolve(electron_app_root_path, '../krp'), path.resolve(vrPath, 'krp'))
 }
