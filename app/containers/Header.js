@@ -16,6 +16,8 @@ import { getProductionXml } from '../utils/xmlBuilder2'
 import {GenerateOutput} from '../utils/generateOutput'
 import {headerConfig,getSelector} from '../store/getStore'
 
+import packageKrpano from '../native/packageKrpano'
+
 class Header extends Component {
     constructor(){
         super()
@@ -23,24 +25,22 @@ class Header extends Component {
     }
 
     onBackClick(){
-        console.log(this.history)
         this.history.goBack()
     }
 
-    // onOutputClick(){
-    //     packageKrpano()
-    // }
+    onOutputClick(){
+        const {vrId} = this.props
+        packageKrpano(vrId)
+    }
 
     onSaveClick(){
         const {vrItem,sceneList,hotpotList} = this.props
-        // getProductionXml(vrItem,sceneList,hotpotList)
         GenerateOutput(vrItem,sceneList,hotpotList)
         console.log('onSaveClick')
     }
 
     onPreviewClick(){
         const {vrId} = this.props
-        console.log(vrId)
 
         let url = `http://127.0.0.1:${window.electron_app_server_port}/assets/output/vr-${vrId}/index.html`
 
@@ -81,7 +81,7 @@ class Header extends Component {
                 <Button onClick={this.onPreviewClick.bind(this)} style={{color:'#FFF'}}>
                     Preview
                 </Button>
-                <Button style={{color:'#FFF'}}>
+                <Button onClick={this.onOutputClick.bind(this)}  style={{color:'#FFF'}}>
                     Export
                 </Button>
             </div>
