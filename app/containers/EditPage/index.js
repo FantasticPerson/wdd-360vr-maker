@@ -29,6 +29,7 @@ import * as krpanoActions from '../../actions/krpano'
 import EditViewPort from './containers/EditViewPort'
 import EditHotSpot from './containers/EditHotpot'
 import EditMusic from './containers/EditMusic'
+import EditEffect from './containers/EditEffect'
 
 class EditPage extends Component{
     constructor(){
@@ -127,56 +128,57 @@ class EditPage extends Component{
 
     renderSpecialShow(){
         if(this.state.editType == 3){
-            let rainTypes = ["关闭","小雨","中雨","大雨"]
-            let snowTypes = ["关闭","小雪","中雪","大雪"]
+            return <EditEffect></EditEffect>
+            // let rainTypes = ["关闭","小雨","中雨","大雨"]
+            // let snowTypes = ["关闭","小雪","中雪","大雪"]
 
-            let rainFormControls = rainTypes.map((item,index)=>{
-                return (
-                    <FormControlLabel key={index} value={index+''} style={{height:'25px'}} control={<RadioButton color="primary" />} label={item} />
-                )
-            })
+            // let rainFormControls = rainTypes.map((item,index)=>{
+            //     return (
+            //         <FormControlLabel key={index} value={index+''} style={{height:'25px'}} control={<RadioButton color="primary" />} label={item} />
+            //     )
+            // })
 
-            let snowFormControls = snowTypes.map((item,index)=>{
-                return (
-                    <FormControlLabel key={index} value={index+''} style={{height:'25px'}} control={<RadioButton color="primary" />} label={item} />
-                )
-            })
+            // let snowFormControls = snowTypes.map((item,index)=>{
+            //     return (
+            //         <FormControlLabel key={index} value={index+''} style={{height:'25px'}} control={<RadioButton color="primary" />} label={item} />
+            //     )
+            // })
 
-            const {rainType,snowType} = this.state
-            return (
-                <div style={{padding:'5px'}}>
-                    <div style={{
-                        borderBottom:'1px solid #eee'
-                    }}>
-                        <span>
-                            <i className='fa fa-magic'></i>
-                            <span style={{
-                                marginLeft:'5px'
-                            }}>特效编辑</span> 
-                        </span>
-                    </div>
-                    <div>
-                        <div>下雨</div>
-                        <RadioButtonGroup
-                            name="rain"
-                            value={rainType}
-                            onChange={this.onChooseSpecislShowChange.bind(this)}
-                        >
-                            {rainFormControls}
-                        </RadioButtonGroup>
+            // const {rainType,snowType} = this.state
+            // return (
+            //     <div style={{padding:'5px'}}>
+            //         <div style={{
+            //             borderBottom:'1px solid #eee'
+            //         }}>
+            //             <span>
+            //                 <i className='fa fa-magic'></i>
+            //                 <span style={{
+            //                     marginLeft:'5px'
+            //                 }}>特效编辑</span> 
+            //             </span>
+            //         </div>
+            //         <div>
+            //             <div>下雨</div>
+            //             <RadioButtonGroup
+            //                 name="rain"
+            //                 value={rainType}
+            //                 onChange={this.onChooseSpecislShowChange.bind(this)}
+            //             >
+            //                 {rainFormControls}
+            //             </RadioButtonGroup>
 
-                        <div>下雪</div>
-                        <RadioButtonGroup
-                            name="snow"
-                            value={snowType}
-                            onChange={this.onChooseSpecislShowChange.bind(this)}
-                        >
-                            {snowFormControls}
-                        </RadioButtonGroup>
-                    </div>
-                    <FlatButton onClick={this.onSelectEffectConfirm.bind(this)} color="primary" style={{marginLeft:'130px'}}>确定</FlatButton>
-                </div>  
-            )
+            //             <div>下雪</div>
+            //             <RadioButtonGroup
+            //                 name="snow"
+            //                 value={snowType}
+            //                 onChange={this.onChooseSpecislShowChange.bind(this)}
+            //             >
+            //                 {snowFormControls}
+            //             </RadioButtonGroup>
+            //         </div>
+            //         <FlatButton onClick={this.onSelectEffectConfirm.bind(this)} color="primary" style={{marginLeft:'130px'}}>确定</FlatButton>
+            //     </div>  
+            // )
         }
     }
 

@@ -57,6 +57,11 @@ export function GenerateOutput(vrItem,sceneList,hotpotList){
         }
     }
 
+
+    if(fs.existsSync(vrPath)){
+        fse.removeSync(vrPath)
+    }
+
     if(!fs.existsSync(vrPath)){
         fs.mkdirSync(vrPath)
     }

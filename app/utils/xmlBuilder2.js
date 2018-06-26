@@ -189,33 +189,18 @@ function panosXmlData(productData,config){
             hotspot.att('name', `hotspot_${hotspotIndex}`)
             hotspotIndex++
             if(hotspotData.animated){
-                // hotspot.att('style_id',push.basename(hotspotData.icon,'.png'))
-                // hotspot.att('style_id',`new_spotd01_gif`)
-                // hotspot.att('image_type',1)
-
-
                 hotspot.att('style_id', `new_spotd01`)
                 hotspot.att('image_type', 1)
-                // hotspot.att('image_url', `./krp/hotspotIcons/new_spotd01_gif.png`)
             } else {
-                // hotspot.att('style_id','')
                 hotspot.att('image_type',2)
                 hotspot.att('image_url', `./krp/hotspotIcons/new_spotd01_gif.png`)
 
-                // parseMediaPath(memberWorkPath, allMedias, productData.rootPath, hotspotData.icon, false))
             }
-            // hotspot.att('image_type',2)
-            // hotspot.att('image_url', `./krp/hotspotIcons/new_spotd01_gif.png`)
-
 
             hotspot.att('ath',hotspotData.ath)
             hotspot.att('atv',hotspotData.atv)
             // hotspot.att('show_txt',1)
             // hotspot.att('keep_view',0)
-            // hotspot.att('type',0)
-            // hotspot.att('title',actionObj.title || '123')
-            // hotspot.att('url','scene_2')
-            // hotspot.att('blend',0)
 
             switch(actionObj.type){
                 case 'switch':
@@ -283,6 +268,8 @@ function panosXmlData(productData,config){
                     break
             }
 
+            
+
             /*if(pano.assets){
                 const embeds = panoElement.ele('embeds')
                 let embedIndex = 0
@@ -309,6 +296,19 @@ function panosXmlData(productData,config){
 
             
         })
+
+        if(pano.scene.hasOwnProperty('effectLevel') && pano.scene.hasOwnProperty('effectType')){
+            if(parseInt(pano.scene.effectLevel) > 0){
+                const weather = panoElement.ele('weather')
+                if(pano.scene.effectType == 'rain'){
+                    weather.att('id', 1)
+                    weather.att('size', parseInt(pano.scene.effectLevel))
+                } else {
+                    weather.att('id', 0)
+                    weather.att('size', parseInt(pano.scene.effectLevel))
+                }
+            }
+        }
     })
 }
 

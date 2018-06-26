@@ -46,6 +46,11 @@ export const editViewPortConfig = {
     sceneSelectedItem:true
 }
 
+export const editEffectConfig = {
+    sceneSelectedItem:true,
+    sceneSelected:true
+}
+
 export function getSelector(config){
     return createSelector(
         state => state.app.title,
