@@ -4,7 +4,6 @@ import { ConnectedRouter } from 'react-router-redux';
 import { Switch, Route,Redirect } from 'react-router';
 
 import HomePage from './HomePage/index';
-import CounterPage from './CounterPage';
 import Header from './Header'
 import EditPage from './EditPage/index'
 
@@ -25,7 +24,6 @@ export default class Root extends Component<Props> {
             <Header></Header>
             <div style={style}>
               <Switch>
-                <Route path="/counter" component={CounterPage} />
                 <Route path="/homePage" component={HomePage} />
                 <Route path="/edit/:vrid" component={EditPage} />
                 <Redirect from="/" to="/homePage"/>

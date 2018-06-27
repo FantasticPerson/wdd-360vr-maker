@@ -87,34 +87,6 @@ class Header extends Component {
             </div>
         }
     }
-
-    /*render2() {
-        const {showBack,title} = this.props
-        if(showBack){
-            return (
-                <AppBar
-                    title={title}
-                    iconElementLeft={
-                        <div>
-                            <IconButton onClick={this.onBackClick.bind(this)}><NavigationClose /></IconButton>
-                        </div>}
-                    iconElementRight={
-                        <div style={{marginTop:'8px'}}>
-                            <FlatButton color="primary" style={{color: 'rgb(255,255,255)',fontSize:'15px'}} label="保存" onClick={this.onSaveClick.bind(this)}>保存</FlatButton>
-                            <FlatButton color="primary" style={{color: 'rgb(255,255,255)',fontSize:'15px'}} label="导出" onClick={this.onOutputClick.bind(this)}>导出</FlatButton>
-                        </div>
-                    }
-                />
-            );
-        } else {
-            return (
-                <AppBar
-                    title={title}
-                    iconClassNameRight="muidocs-icon-navigation-expand-more"
-                />
-            )
-        }
-    }*/
 }
 
 export default connect(getSelector(headerConfig))(Header);

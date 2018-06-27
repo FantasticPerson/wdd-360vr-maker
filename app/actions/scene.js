@@ -105,8 +105,11 @@ export function updateAllSceneFromLocal(){
 }
 
 export function addScene(obj) {
+    let sceneObj = {
+        ...obj,fov:75,fovmax:155,fovmin:-5,hlookat:0,vlookat:0,vlookatmax:90,vlookatmin:-90
+    }
     return (dispatch) => {
-        Modals.Scene.add(obj)
+        Modals.Scene.add(sceneObj)
         .then(()=>{
             return Modals.Scene.findAll()
         })

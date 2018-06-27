@@ -6,6 +6,9 @@ var path = nativeRequire('path')
 var fs = nativeRequire('fs')
 
 export default function copyImageToScene(dest){
+    if(!fs.existsSync(dest)){
+        fs.mkdirSync(dest)
+    }
     return new Promise((resolve,reject)=>{
         try{
             for(var i=0;i<IMG_NAME_ARR.length;i++){

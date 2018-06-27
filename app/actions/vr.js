@@ -1,5 +1,7 @@
-import Modals from '../modals'
 import { createAction } from 'redux-act'
+
+import Modals from '../modals'
+import Hashid from '../utils/generateHashId'
 
 export const updateAllVr = createAction('update_all_vr')
 
@@ -28,8 +30,9 @@ export function addMusic(vrId,music1,music2){
 }
 
 export function addVr(vrObj) {
-    return (dispatch) => {
-        Modals.Vr.add(vrObj)
+    return (dispatch,getState) => {
+        let selectFolderId = getState().folder.selectId
+        Modals.Vr.add({...vrObj,folderId:selectFolderId})
             .then(() => Modals.Vr.findAll())
             .then((list) => {
                 dispatch(updateAllVr(list));

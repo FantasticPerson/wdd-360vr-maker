@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 
-// import Dialog from 'material-ui/Dialog';
-// import TextField from 'material-ui/TextField';
-// import FlatButton from 'material-ui/FlatButton';
-// import RaisedButton from 'material-ui/RaisedButton';
+import styles from '../../../styles/CreateVrModal.css'
 
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
@@ -17,7 +14,11 @@ import checkPicValid from '../../../native/checkPicValid'
 import copyFileToTmp from '../../../native/copyFileToTmp'
 import getPathOfPreviewImg from '../../../native/getPathOfPreviewImg'
 
-import styles from '../../../styles/CreateVrModal.css'
+import copyImageToScene from '../../../native/copyImageToScene'
+
+import Hashid from '../../../utils/generateHashId'
+
+import {getScenePath,getHeadImgUrl} from '../../../native/pathUtils'
 
 export default class CreateVrModal extends Component {
     constructor() {
@@ -30,20 +31,44 @@ export default class CreateVrModal extends Component {
     }
 
     onCancelClick() {
-        const { onCancel } = this.props;
-
-        onCancel();
+        this.props.functions.onCancel();
     }
 
     onConfirmClick() {
-        const {tmpImgReady} = this.state
-        const { onCreate } = this.props;
+        const { tmpImgReady } = this.state
 
         const title = this.titleRef.value.trim();
         const brief = this.summaryRef.value.trim();
 
         if (title.length > 0) {
-            onCreate(title, brief,tmpImgReady);
+            const {data} = this.props
+            if(!data){
+                if(tmpImgReady){
+                    const {addScene,addVr,onCancel} = this.props.functions
+        
+                    let id = `vr_${new Hashid().encode()}`
+                    let sceneId = `scene_${new Hashid().encode()}`
+
+                    let previewImg = getHeadImgUrl(sceneId)
+                    
+
+                    addVr({title,brief,headImg:previewImg,music1:null,music2:null,id})
+                    addScene({vrid:id,name:title,sceneId:sceneId})
+        
+                    copyImageToScene(getScenePath(sceneId))
+                    .catch((e)=>{
+                        console.error(e)
+                    })
+                } else {
+                    alert('请先上传一个场景!')
+                }
+            } else {
+                const {modifyVr} = this.props.functions
+                modifyVr({...data,title:title,brief:brief})
+            }
+            setTimeout(()=>{
+                this.props.functions.onCancel()
+            },50)
         }
     }
 
@@ -80,25 +105,22 @@ export default class CreateVrModal extends Component {
     }
 
     render() {
-        const {itemData} = this.props;
-        let width = itemData ? '100%' : '50%'
-        let picDisplay = itemData ? 'none' : 'inline-block'
-        let title = itemData ? '编辑作品' : '创建作品'
-        let defaultName = itemData ? itemData.title : ''
-        let defaultBrief = itemData ? itemData.brief : ''
+        const {data} = this.props;
+        let width = data ? '100%' : '50%'
+        let picDisplay = data ? 'none' : 'inline-block'
+        let title = data ? '编辑作品' : '创建作品'
+        let defaultName = data ? data.title : ''
+        let defaultBrief = data ? data.brief : ''
 
         return (
             <Dialog
-                open={this.props.show}
+                open={true}
                 onClose={this.onCancelClick.bind(this)}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
                 <DialogContent style={{width:'500px'}}>
                     <div style={{display:'inline-block',width:width,height:'160px'}}>
                         <TextField 
-                            id="with-placeholder"
                             label="请输入作品名称"
                             placeholder="请输入作品名称"
                             margin="normal"
@@ -107,7 +129,6 @@ export default class CreateVrModal extends Component {
                         />
                         <br />
                         <TextField 
-                            id="with-placeholder"
                             label="请输入作品简介"
                             placeholder="请输入作品简介"
                             margin="normal"
@@ -127,19 +148,5 @@ export default class CreateVrModal extends Component {
                 </DialogActions>
             </Dialog>
         )
-
-        /*return (
-            <Dialog title={title} open actions={actions}>
-                <div style={{display:'inline-block',width:width,height:'160px'}}>
-                    <TextField defaultValue={defaultName} fullWidth hintText="请输入作品名称" floatingLabelText="请输入作品名称" ref={(input) => this.titleRef = input} />
-                    <br />
-                    <TextField defaultValue={defaultBrief} fullWidth hintText="请输入作品简介" floatingLabelText="请输入作品简介" multiLine rows={2} rowsMax={4} ref={(input) => this.summaryRef = input} />
-                </div>
-                <div style={{display:picDisplay,width:'50%',height:'260px',verticalAlign:'top'}}>
-                    <RaisedButton label="添加全景" primary={true} style={{marginLeft:'47px'}} onClick={this.onOpenFileClick.bind(this)}/>
-                    {this.renderUploadPic()}
-                </div>
-            </Dialog>
-        );*/
     }
 }

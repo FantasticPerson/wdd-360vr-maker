@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {createSelector} from 'reselect'
+import { createSelector } from 'reselect'
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
@@ -34,17 +33,9 @@ class Home extends Component {
             posData:{},
             contextFolderData:{},
         };
-        MapToReactComponent(this,folderContextObj)
-        MapToReactComponent(this,folderModalObj)
     }
 
-    
-    componentWillUnmount() {
-        this._mounted = false
-    }
-    
     componentDidMount() {
-        this._mounted=true
         const { updateFromLocal,updateVrFromLocal,updateAppTitle,updateAppShowBack,updateAllSceneFromLocal } = this.props;
         updateFromLocal();
         updateVrFromLocal();
@@ -54,19 +45,17 @@ class Home extends Component {
     }
 
     onFolderItemClick(data, index) {
-        const {updateSelectedFolder} = this.props;
-        this.setState({
-            selectedFolderId:data.id
-        })
-        updateSelectedFolder(data.id)
+        const {updateSelectedFolder,folderSelectedId} = this.props;
+        if(data.id != folderSelectedId){
+            updateSelectedFolder(data.id)
+        }
     } 
     
     renderFolderList() {
         const { folderList,folderSelectedId } = this.props;
-        const icon = <i className="fa fa-folder" style={{ top: '4px' }} aria-hidden="true" />;
-        const icon1 = <i className="fa fa-folder-open" style={{ top: '4px' }} aria-hidden="true" />;
         
-        let items = folderList.map((item, index) => {
+        let listItems = folderList.map((item, index) => {
+            let iconClassName = item.id === folderSelectedId ? 'fa fa-folder-open' : 'fa fa-folder'
             return (
                 <ListItem  
                     style={{padding:'5px'}}
@@ -76,7 +65,7 @@ class Home extends Component {
                     onContextMenu={(e)=>{this.onFolderContext(e,item)}}
                 >
                     <ListItemIcon>
-                        {item.id === folderSelectedId ? icon1 : icon} 
+                        <i className={iconClassName} style={{top:'4px'}} aria-hidden="true"/>
                     </ListItemIcon>
                     <ListItemText primary={item.title} />
                 </ListItem>
@@ -84,10 +73,73 @@ class Home extends Component {
         })
 
         return (
-            <List component="nav">
-                {items}
-            </List>
+            <List component="nav">{listItems}</List>
         );
+    }
+
+    onCreateFolderClick(){
+        this.setState({
+            showCreateFolderItem: true,
+            contextFolderData:null
+        });
+    }
+
+    hideCreateFolderModal() {
+        this.setState({
+            showCreateFolderItem: false
+        });
+    }
+
+    renderCreateFolderModal(){
+        if (this.state.showCreateFolderItem) {
+            const { addFolder,updateFolder} = this.props;
+            const functions = {addFolder,updateFolder,hideCreateFolderModal:this.hideCreateFolderModal.bind(this)}
+            const {contextFolderData} = this.state
+
+            return (
+                <CreateFolderModal data={contextFolderData} functions={functions}/>
+            );
+        }
+    }
+
+    onFolderContext(e,item){
+        e.preventDefault()
+        if(item.id === 0){
+            return
+        }
+        this.setState({
+            showFolderMenu:true,
+            posData:{posX:e.clientX,posY:e.clientY},
+            contextFolderData:item
+        })
+    }
+
+    onFolderContextMenuHide(){
+        this.setState({
+            showFolderMenu : false
+        })
+    }
+
+    handleEditFolder(data){
+        this.setState({
+            showCreateFolderItem: true
+        });
+    }
+
+    renderContextMenu(){
+        if(this.state.showFolderMenu){
+            const {posData,contextFolderData} = this.state
+            const {deleteFolder} = this.props 
+            const functions = {
+                onHide:this.onFolderContextMenuHide.bind(this),
+                onModify:this.handleEditFolder.bind(this),
+                deleteFolder
+            }
+
+            return (
+                <FolderContextMenu posData={posData} folderData={contextFolderData} functions={functions}></FolderContextMenu>
+            )
+        }
     }
 
     render() {
@@ -101,9 +153,9 @@ class Home extends Component {
                             {this.renderFolderList()}
                         </div>
                     </div>
-                    <div className={styles.addProject} onClick={() => { this.onCreateFolderClick(); }}>
+                    <div className={styles.addProject} onClick={() => {this.onCreateFolderClick()}}>
                         <i className="fa fa-plus" />
-                        <span style={{ marginLeft: '17px' }}>新建文件夹</span>
+                        <span style={{marginLeft:'17px'}}>新建文件夹</span>
                     </div>
                 </div>
                 <div className={styles.content}>
@@ -113,91 +165,6 @@ class Home extends Component {
                 {this.renderContextMenu()}
             </div>
         );
-    }
-}
-
-let folderModalObj = {
-    renderCreateFolderModal() {
-        const { showCreateFolderItem } = this.state;
-        if (showCreateFolderItem) {
-            const {contextFolderData} = this.state
-
-            return (
-                <CreateFolderModal onCreate={this.onCreateFolder.bind(this)} folderData={contextFolderData } onCancel={this.onHiderCreateFolderModal.bind(this)} />
-            );
-        }
-    },
-    onHiderCreateFolderModal() {
-        this.setState({
-            showCreateFolderItem: false
-        });
-    },
-    onCreateFolderClick() {
-        if(this._mounted=true){
-            this.setState({
-                showCreateFolderItem: true,
-                contextFolderData:null
-            });
-        }
-    },
-    onCreateFolder(title) {
-        const { addFolder, nextFolderId ,updateFolder} = this.props;
-        const {contextFolderData} = this.state
-        if(contextFolderData){
-            updateFolder({
-                id: contextFolderData.id,
-                title
-            })
-        } else {
-            addFolder({
-                id: nextFolderId,
-                title
-            });
-        }
-        this.onHiderCreateFolderModal()
-    }
-}
-
-let folderContextObj = {
-    renderContextMenu(){
-        const {showFolderMenu} = this.state
-
-        if(showFolderMenu){
-            const {posData,contextFolderData} = this.state
-
-            return (
-                <FolderContextMenu posData={posData} folderData={contextFolderData} bgClick={this.onFolderContextMenuBgClick.bind(this)} onDelete={this.handleDeleteFolder.bind(this)} onModify={this.handleEditFolder.bind(this)}></FolderContextMenu>
-            )
-        }
-    },
-    onFolderContextMenuBgClick(){
-        this.setState({
-            showFolderMenu : false
-        })
-    },
-    handleDeleteFolder(data){
-        const {deleteFolder} = this.props 
-        deleteFolder(data)
-    },
-
-    handleEditFolder(data){
-        this.setState({
-            showCreateFolderItem: true
-        });
-    },
-    onFolderContext(e,item){
-        e.preventDefault()
-        if(item.id === 0){
-            return
-        }
-        this.setState({
-            showFolderMenu:true,
-            posData:{
-                posX:e.clientX,
-                posY:e.clientY
-            },
-            contextFolderData:item
-        })
     }
 }
 

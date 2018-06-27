@@ -22,6 +22,7 @@ export const homePageConfig = {
 
 export const vrContainerConfig = {
     vrList:true,
+    vrListToShow:true,
     sceneList:true,
     folderSelectedId:true,
     nextVrId:true,
@@ -70,6 +71,7 @@ export function getSelector(config){
             if(config.title)            result.title = title
             if(config.showBack)         result.showBack=showBack
             if(config.vrList)           result.vrList = vrList
+            if(config.vrListToShow)     result.vrListToShow = getVrByFolderId(vrList,folderSelectedId)
             if(config.vrId)             result.vrId=pathname.split('/')[2]
             if(config.vrItem)           result.vrItem=findVrItem(vrList,pathname)
             if(config.folderId)         result.folderId=findFolderId(vrList,pathname)
@@ -89,6 +91,12 @@ export function getSelector(config){
             return result
         }
     )
+}
+
+function getVrByFolderId(list,id){
+    return list.filter((item)=>{
+        return item.folderId === id
+    })
 }
 
 function getSceneSelectItem(list,id){
