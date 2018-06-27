@@ -9,7 +9,7 @@ const path = nativeRequire('path')
 Common.KR_VERSION = '1.19-pr7'
 Common.KR_EMBED = { 
     // xml: window.NODE_ENV == 'dev' ? './krpano/edit_api.xml' : path.resolve(rootPath,'./app.asar/krpano/edit_api.xml'), 
-    xml:window.NODE_ENV == 'dev' ? './krpano/edit_api.xml' : '../krpano/edit_api.xml',
+    xml:window.NODE_ENV == 'dev' ? './krpano/edit_api.xml' : './krpano/edit_api.xml',
     html5: 'only+webgl+preservedrawingbuffer', 
     mobilescale: 1.0, 
     passQueryParameters: true 

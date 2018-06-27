@@ -212,9 +212,16 @@ class EditHotSpot extends Component{
 
             let id = String(item).length == 1 ? 0+''+item : String(item)
 
+            let iconPath = path.resolve(krpPath,`./hotspotIcons/new_spotd${id}.png`)
+
+            if(window.NODE_ENV == 'prod'){
+                let appRootPath = window.electron_app_root_path
+                iconPath = path.resolve(appRootPath,`./app.asar/krp/hotspotIcons/new_spotd${id}.png`)
+            }
+
             return (
                 <div key={item} onClick={()=>{this.onHotSpotIconClick(item)}} style={cStyle}>
-                    <img style={{width:'30px',height:'30px'}} src={path.resolve(krpPath,`./hotspotIcons/new_spotd${id}.png`)}/> 
+                    <img style={{width:'30px',height:'30px'}} src={iconPath}/> 
                 </div>
             )
         })

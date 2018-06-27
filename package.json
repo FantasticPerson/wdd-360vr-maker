@@ -48,6 +48,7 @@
       "krpano/",
       "krp/",
       "node_modules/",
+      "html/",
       "app.html",
       "main.prod.js",
       "main.prod.js.map",
