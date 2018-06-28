@@ -1,17 +1,20 @@
 import React,{Component} from 'react'
-import styles from '../styles/panoContainer.css'
-import Common from '../utils/common'
+
+import {panoConfig,getSelector} from '../../../store/getStore'
+
+import styles from '../../../styles/panoContainer.css'
+import Common from '../../../utils/common'
+
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import * as actions from '../actions/krpano'
-import * as hotspotActions from '../actions/hotpot'
-import { createSelector } from 'reselect';
+import * as actions from '../../../actions/krpano'
+import * as hotspotActions from '../../../actions/hotpot'
 
 class PanoContainer extends Component{
     constructor(){
         super()
-        this.state = {updateObj:null,selectId:null}
+        this.state = {updateObj:null}
     }
 
     componentWillUpdate(prop,state){
@@ -19,12 +22,18 @@ class PanoContainer extends Component{
             if(state.updateObj){
                 this.props.updateHotpotPos(state.updateObj)
             }
-            if(state.selectId){
-                this.props.updateHotspotSelect(state.selectId)
-                this.props.showEditHotpot()
-            }
-            this.setState({updateObj:null,selectId:null})
+            this.setState({updateObj:null})
         },20)
+    }
+
+    componentWillReceiveProps(obj){
+        let selectIdNew = obj.sceneSelected
+        let selectIdOld = this.props.sceneSelected                                
+
+        if(selectIdNew != selectIdOld && selectIdNew != null){
+            this.props.updateHotspotSelect(selectIdNew)
+            this.props.showEditHotpot()
+        }
     }
 
 
@@ -80,13 +89,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-const selector = createSelector(
-    state => state.hotpot.list,
-    (hotlist) => {
-        return {
-            hotList : hotlist
-        }
-    }
-)
-
-export default connect(selector,mapDispatchToProps)(PanoContainer)
+export default connect(getSelector(panoConfig),mapDispatchToProps)(PanoContainer)

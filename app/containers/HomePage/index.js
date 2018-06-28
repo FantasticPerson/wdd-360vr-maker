@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { createSelector } from 'reselect'
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -19,8 +18,6 @@ import CreateVrModal from './components/CreateVrModal';
 import CreateFolderModal from './components/CreateFolderModal';
 import VrContainer from './components/VrContainer'
 import FolderContextMenu from './components/folderContextMenu'
-
-import MapToReactComponent from '../../utils/mapToReactComponent'
 
 import {homePageConfig,getSelector} from '../../store/getStore'
 

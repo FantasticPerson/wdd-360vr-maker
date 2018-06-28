@@ -53,7 +53,7 @@ export default class CreateVrModal extends Component {
                     
 
                     addVr({title,brief,headImg:previewImg,music1:null,music2:null,id})
-                    addScene({vrid:id,name:title,sceneId:sceneId})
+                    addScene({vrid:id,name:title,id:sceneId})
         
                     copyImageToScene(getScenePath(sceneId))
                     .catch((e)=>{

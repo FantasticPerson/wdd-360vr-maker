@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {createSelector} from 'reselect'
 
+import {editIndexConfig,getSelector} from '../../store/getStore'
+
+import styles from '../../styles/EditPage.css'
+
 import FlatButton from '@material-ui/core/Button';
 import RadioButton from '@material-ui/core/Radio';
 import RadioButtonGroup from '@material-ui/core/RadioGroup';
@@ -11,11 +15,10 @@ import FormControl from '@material-ui/core/FormControl';
 import Slider from '@material-ui/lab/Slider';
 
 import Hashid from '../../utils/generateHashId'
-import PanoContainer from '../../components/panoContainer'
+import PanoContainer from './containers/panoContainer'
 import EditSceneContainer from '../../components/editSceneContainer'
 import getPathOfHotSpotIconPath from '../../native/getHotspotIconPath'
 import getPathOfSceneHeadImg from '../../native/getPathOfSceneHeadImg'
-import styles from '../../styles/EditPage.css'
 import {addHotspotToKrpano,selectHotspotInKrpano,addRainEffect,addSnowEffect} from '../../utils/krpanoFunctions'
 import * as appActions from '../../actions/app'
 import * as vrActions from '../../actions/vr'
@@ -34,64 +37,23 @@ import EditEffect from './containers/EditEffect'
 class EditPage extends Component{
     constructor(){
         super()
-        this.state = {
-            editType : 0,
-            editHotpot:false,
-            rainType:'0',
-            snowType:'0',
-            zuijin:5,
-            zuiyuan:150,
-            zuidi:-90,
-            zuigao:90,
-            sliderWidth:300
-        }
-        this.radioGroup1 = React.createRef()
-        this.radioGroup2 = React.createRef()
+        this.state = {editType : 0}
     }
 
     componentDidMount(){
-        const {updateAppTitle,updateAppShowBack,pathname,updateFromLocal,updateVrFromLocal,updateAllSceneFromLocal,updateAllHotpotFromLocal,updatePictureFromLocal,updateAudioFromLocal} = this.props
-        updateAppTitle('编辑全景')
-
-        updateFromLocal();
-        updateVrFromLocal();
-        updateAllSceneFromLocal();
-        updatePictureFromLocal()
-        updateAllHotpotFromLocal();
-        updateAudioFromLocal()
-
-        updateAppShowBack(true);
-    }
-
-    getEditClassName(type){
-        const {editType} = this.state
-        return editType == type ? `${styles.btn} ${styles.btnSelected}` : `${styles.btn}`
+        this.props.updateAppTitle('编辑全景')
+        this.props.updateFromLocal();
+        this.props.updateVrFromLocal();
+        this.props.updateAllSceneFromLocal();
+        this.props.updatePictureFromLocal()
+        this.props.updateAllHotpotFromLocal();
+        this.props.updateAudioFromLocal()
+        this.props.updateAppShowBack(true);
     }
 
     onSceneClick(id){
         const {updateSceneSelected,vrId,folderId} = this.props
         updateSceneSelected(id,vrId,folderId)
-
-        this.setState({editHotpot:false})
-    }
-
-    onEditClick(type){
-        this.setState({editType:type})
-        if(type != 1){
-            this.props.updateHotspotSelect(null)
-        }
-    }
-
-    showHotspotEdit(){
-        this.setState({editType:1})
-    }
-
-    renderEditHotPot(){
-        if(this.state.editType == 1){
-            return (
-                <EditHotSpot></EditHotSpot>
-            )
-        }
     }
 
     onAddMusicLocal(type){
@@ -102,101 +64,40 @@ class EditPage extends Component{
         console.log(type)
     }
 
+    showHotspotEdit(){
+        this.setState({editType:1})
+    }
+
+    onEditClick(type){
+        this.setState({editType:type})
+        if(type != 1){
+            this.props.updateHotspotSelect(null)
+        }
+    }
+
+    renderEditViewPort(){
+        if(this.state.editType == 0){
+            return <EditViewPort></EditViewPort>
+        }
+    }
+
+    renderEditHotPot(){
+        if(this.state.editType == 1){
+            return (
+                <EditHotSpot></EditHotSpot>
+            )
+        }
+    }
+
     renderEditMusic(){
         if(this.state.editType == 2){
             return <EditMusic></EditMusic>
         }
     }
 
-    onChooseSpecislShowChange(event,value){
-        const {AddEffect} = this.props
-
-        if(event.target.name == 'rain'){
-            if(value != '0'){
-                this.setState({snowType:'0'})
-            }
-            this.setState({rainType:value})
-            AddEffect('rain',value)
-        } else {
-            if(value != '0'){
-                this.setState({rainType:'0'})
-            }
-            this.setState({snowType:value})
-            AddEffect('snow',value)
-        }
-    }
-
     renderSpecialShow(){
         if(this.state.editType == 3){
             return <EditEffect></EditEffect>
-            // let rainTypes = ["关闭","小雨","中雨","大雨"]
-            // let snowTypes = ["关闭","小雪","中雪","大雪"]
-
-            // let rainFormControls = rainTypes.map((item,index)=>{
-            //     return (
-            //         <FormControlLabel key={index} value={index+''} style={{height:'25px'}} control={<RadioButton color="primary" />} label={item} />
-            //     )
-            // })
-
-            // let snowFormControls = snowTypes.map((item,index)=>{
-            //     return (
-            //         <FormControlLabel key={index} value={index+''} style={{height:'25px'}} control={<RadioButton color="primary" />} label={item} />
-            //     )
-            // })
-
-            // const {rainType,snowType} = this.state
-            // return (
-            //     <div style={{padding:'5px'}}>
-            //         <div style={{
-            //             borderBottom:'1px solid #eee'
-            //         }}>
-            //             <span>
-            //                 <i className='fa fa-magic'></i>
-            //                 <span style={{
-            //                     marginLeft:'5px'
-            //                 }}>特效编辑</span> 
-            //             </span>
-            //         </div>
-            //         <div>
-            //             <div>下雨</div>
-            //             <RadioButtonGroup
-            //                 name="rain"
-            //                 value={rainType}
-            //                 onChange={this.onChooseSpecislShowChange.bind(this)}
-            //             >
-            //                 {rainFormControls}
-            //             </RadioButtonGroup>
-
-            //             <div>下雪</div>
-            //             <RadioButtonGroup
-            //                 name="snow"
-            //                 value={snowType}
-            //                 onChange={this.onChooseSpecislShowChange.bind(this)}
-            //             >
-            //                 {snowFormControls}
-            //             </RadioButtonGroup>
-            //         </div>
-            //         <FlatButton onClick={this.onSelectEffectConfirm.bind(this)} color="primary" style={{marginLeft:'130px'}}>确定</FlatButton>
-            //     </div>  
-            // )
-        }
-    }
-
-    onSelectEffectConfirm(){
-        const {rainType,snowType} = this.state
-        const {updateEffect,sceneSelected} = this.props
-
-        if(rainType > 0){
-            updateEffect(sceneSelected,'rain',rainType)
-        } else if(snowType > 0){
-            updateEffect(sceneSelected,'snow',snowType)
-        }
-        
-    }
-
-    renderEditViewPort(){
-        if(this.state.editType == 0){
-            return <EditViewPort></EditViewPort>
         }
     }
 
@@ -208,8 +109,10 @@ class EditPage extends Component{
             {class:'fa fa-magic',name:'特效'}
         ]
         let btns = btnProps.map((item,index)=>{
+            let btnClassName =  this.state.editType == index ? `${styles.btn} ${styles.btnSelected}` : `${styles.btn}`
+
             return  (
-                <div key={item.class} className={this.getEditClassName(index)} onClick={()=>{this.onEditClick(index)}}>
+                <div key={item.class} className={btnClassName} onClick={()=>{this.onEditClick(index)}}>
                     <i className={item.class}></i>
                     <p>{item.name}</p>
                 </div>
@@ -264,33 +167,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-const selector = createSelector(
-    state => state.vr.list,
-    state => state.hotpot.list,
-    state => state.scene.list,
-    
-    state => state.router.location.pathname,
-    state => state.scene.sceneSelected,
-
-    (vrList,hotpotList,sceneList,pathname,sceneSelected)=>{
-        return {
-            vrList : vrList,
-            hotpotList : hotpotList,
-            sceneList : sceneList,
-            pathname : pathname,
-            vrId:pathname.split('/')[2],
-            folderId:findFolderId(pathname,vrList),
-            sceneSelected:sceneSelected
-        }
-    }
-)
-
-function findFolderId(pathname,vrList){
-    var vrId = pathname.split('/')[2]
-    let item = vrList.find((item)=>{
-        return item.id == vrId
-    })
-    return item ? item.folderId : -1
-}
-
-export default connect(selector,mapDispatchToProps)(EditPage)
+export default connect(getSelector(editIndexConfig),mapDispatchToProps)(EditPage)

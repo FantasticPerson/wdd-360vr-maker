@@ -9,6 +9,10 @@ import SceneList from './SceneList'
 import * as sceneActions from '../actions/scene'
 
 import styles from '../styles/editSceneContainer.css'
+
+
+import {editSceneConfig,getSelector} from '../store/getStore'
+
 import { debug } from 'util';
 
 class EditSceneContainer extends Component{
@@ -24,7 +28,7 @@ class EditSceneContainer extends Component{
         setTimeout(()=>{
             const {sceneList,updateSceneSelected,vrId,folderId} = this.props;
             if(sceneList.length > 0){
-                updateSceneSelected(sceneList[0].id,vrId,folderId)
+                updateSceneSelected(sceneList[0].id)
             }
         },50)
 
@@ -71,36 +75,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-const selector = createSelector(
-    state => state.scene.list,
-    state => state.scene.sceneSelected,
-    state => state.vr.list,
-    state => state.router.location.pathname,
-    (sceneList,sceneSelected,vrList,pathname) => {
-        return {
-            sceneList:filterScene(pathname,sceneList),
-            vrList:vrList,
-            sceneSelected:sceneSelected,
-            nextSceneId:getNextId(sceneList,'id',0),
-            vrId:pathname.split('/')[2],
-            folderId:findFolderId(pathname,vrList)
-        }
-    }
-)
-
-function findFolderId(pathname,vrList){
-    var vrId = pathname.split('/')[2]
-    let item = vrList.find((item)=>{
-        return item.id == vrId
-    })
-    return item ? item.folderId : -1
-}
-
-function filterScene(pathname,sceneList) {
-    var vrId = pathname.split('/')[2]
-    return sceneList.filter((item)=>{
-        return item.vrid == vrId
-    })
-}
-
-export default connect(selector,mapDispatchToProps)(EditSceneContainer);
+export default connect(getSelector(editSceneConfig),mapDispatchToProps)(EditSceneContainer);

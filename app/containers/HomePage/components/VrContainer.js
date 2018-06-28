@@ -51,7 +51,7 @@ class VrContainer extends Component{
     }
 
     onAddClick(){
-        this.setState({showCreateVrModal:true})
+        this.setState({showCreateVrModal:true,vrContextItem:null})
     }
 
     onCancelClick(){

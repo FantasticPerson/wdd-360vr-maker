@@ -1,6 +1,9 @@
 import React,{Component} from 'react'
 import styles from '../styles/SceneList.css'
 import getPathOfSceneHeadImg from '../native/getPathOfSceneHeadImg'
+
+import {getHeadImgUrl} from '../native/pathUtils'
+
 import SceneContextMenu from './SceneContextMenu'
 import EditSceneModal from './EditSceneModal'
 import MapToReactComponent from '../utils/mapToReactComponent'
@@ -29,7 +32,7 @@ class SceneItem extends Component{
         return (
             <div className={styles.sceneContainer} onContextMenu={(e)=>{this.onContextMenu(e)}} onClick={this.onItemClick.bind(this)}>
                 <div className={className}>
-                    <img style={{height:'100%'}} src={getPathOfSceneHeadImg(folderId,vrId,data.id)}></img>
+                    <img style={{height:'100%'}} src={getHeadImgUrl(data.id)}></img>
                 </div>
                 <div className={styles.name}>{data.name}</div>
             </div>

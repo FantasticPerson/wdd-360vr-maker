@@ -52,6 +52,27 @@ export const editEffectConfig = {
     sceneSelected:true
 }
 
+export const editIndexConfig = {
+    vrList:true,
+    sceneList:true,
+    hotpotList:true,
+    vrId:true,
+    folderId:true,
+    sceneSelected:true
+}
+
+export const panoConfig = {
+    hotpotList:true,
+    sceneSelected:true
+}
+
+export const editSceneConfig = {
+    sceneList:true,
+    vrList:true,
+    sceneSelected:true,
+    vrId:true
+}
+
 export function getSelector(config){
     return createSelector(
         state => state.app.title,

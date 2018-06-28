@@ -4,18 +4,20 @@ import {addHotspotToKrpano} from '../utils/krpanoFunctions'
 import Hashid from '../utils/generateHashId'
 import getPathOfHotSpotIconPath from '../native/getHotspotIconPath'
 import getPathOfSceneHeadImg from '../native/getPathOfSceneHeadImg'
-import getScenePath from '../native/getScenePath'
+// import getScenePath from '../native/getScenePath'
 import {getPanoXml} from '../utils/xmlBuilder'
 import {addHotpots} from './hotpot'
+
+import {getScenePath} from '../native/pathUtils'
 
 export const updateAllScene = createAction('update_all_scene')
 export const dUpdateSceneSelected = createAction('update_scene_selected')
 
-export function updateSceneSelected(id,vrId,folderId){
+export function updateSceneSelected(id){
     return (dispatch,getState)=>{
         let krpano = getState().krpano.obj
         if(krpano){
-            let scenePath = getScenePath(folderId,vrId,id)
+            let scenePath = getScenePath(id)
             if(krpano){
                 const xml = getPanoXml({
                     scenePath:scenePath
