@@ -1,12 +1,10 @@
 import React,{Component} from 'react'
-
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import {panoConfig,getSelector} from '../../../store/getStore'
 
 import styles from '../../../styles/panoContainer.css'
 import Common from '../../../utils/common'
-
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import * as actions from '../../../actions/krpano'
 import * as hotspotActions from '../../../actions/hotpot'
@@ -20,10 +18,8 @@ class PanoContainer extends Component{
 
     componentWillUpdate(prop,state){
         setTimeout(()=>{
-            if(state.updateObj){
+            if(this._mounted && state.updateObj){
                 this.props.updateHotpotPos(state.updateObj)
-            }
-            if(this._mounted){
                 this.setState({updateObj:null})
             }
         },20)
@@ -41,8 +37,8 @@ class PanoContainer extends Component{
 
     updateHotSpot(hotspotId, ath, atv){
         const {updateHotpotPos} = this.props
-        const {hotList} = this.props
-        let item = hotList.find(item=>item.id == hotspotId)
+        const {hotpotList} = this.props
+        let item = hotpotList.find(item=>item.id == hotspotId)
         if(item){
             if(ath != item.ath || atv != item.atv){
                 this.setState({updateObj:{...item,ath,atv}})
@@ -51,6 +47,7 @@ class PanoContainer extends Component{
     }
 
     componentDidMount(){
+        this._mounted = true
         embedpano({
             target:'pano',
             ...Common.KR_EMBED,
@@ -60,14 +57,13 @@ class PanoContainer extends Component{
             }
         })
 
-        window.onKrpHotspotMoveEnd = this.updateHotSpot.bind(this)
-        window.onKrpHotspotClick = hotspotId => {
-            const {hotList} = this.props
-            let item = hotList.find(item=>item.id == hotspotId)
-            if(item){
-                if(this._mounted){
-                    this.setState({selectId:hotspotId})
-                }
+        top.window.onKrpHotspotMoveEnd = this.updateHotSpot.bind(this)
+        top.window.onKrpHotspotClick = hotspotId => {
+            const {hotpotList} = this.props
+            let item = hotpotList.find(item=>item.id == hotspotId)
+            if(item,this._mounted){
+                                
+                this.setState({selectId:hotspotId})
             }
         }
     }

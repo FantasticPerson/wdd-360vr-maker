@@ -17,6 +17,7 @@ export function updateSceneSelected(id){
         let krpano = getState().krpano.obj
         if(krpano){
             let scenePath = getScenePath(id)
+            console.log(scenePath)
             if(krpano){
                 const xml = getPanoXml({
                     scenePath:scenePath
