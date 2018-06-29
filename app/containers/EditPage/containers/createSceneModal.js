@@ -52,7 +52,7 @@ export default class CreateVrModal extends Component {
                     addScene({
                         id:sceneId,
                         vrid:vrId,
-                        name:name
+                        name:title
                     })
                 },20) 
             })
