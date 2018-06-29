@@ -1,8 +1,4 @@
-import React, { Component } from 'react';
-// import Dialog from 'material-ui/Dialog';
-// import TextField from 'material-ui/TextField';
-// import FlatButton from 'material-ui/FlatButton';
-// import RaisedButton from 'material-ui/RaisedButton';
+import React, { Component } from 'react'; 
 
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';

@@ -1,16 +1,12 @@
 import React,{Component} from 'react'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { createHashHistory } from 'history'
-import {createSelector} from 'reselect'
-
-import getNextId from '../../../utils/getNextId'
-import * as sceneActions from '../../../actions/scene'
 
 import styles from '../../../styles/editSceneContainer.css'
 
-import {getHeadImgUrl,getScenePath} from '../../../native/pathUtils'
+import * as sceneActions from '../../../actions/scene'
 
+import {getHeadImgUrl,getScenePath} from '../../../native/pathUtils'
 import {editSceneConfig,getSelector} from '../../../store/getStore'
 
 import CreateSceneModal from './createSceneModal'
@@ -20,7 +16,6 @@ import SceneContextMenu from './SceneContextMenu'
 class EditSceneContainer extends Component{
     constructor(){
         super()
-        this.history = createHashHistory()
         this._isMounted = false
         this.state = {
             containerWidth:'',
@@ -35,7 +30,7 @@ class EditSceneContainer extends Component{
     componentDidMount(){
         this._isMounted = true
         setTimeout(()=>{
-            const {sceneList,updateSceneSelected,vrId,folderId} = this.props;
+            const {sceneList,updateSceneSelected} = this.props;
             if(sceneList.length > 0){
                 updateSceneSelected(sceneList[0].id)
             }
@@ -65,9 +60,7 @@ class EditSceneContainer extends Component{
     }
 
     onAddSceneClick(){
-        this.setState({
-            showCreateScene:true
-        })
+        this.setState({showCreateScene:true})
     }
 
     renderSceneList(){
@@ -98,14 +91,11 @@ class EditSceneContainer extends Component{
     }
 
     onCancelCreateModal(){
-        this.setState({
-            showCreateScene:false
-        })        
+        this.setState({showCreateScene:false})        
     }
 
     renderCreateModal(){
-        const {showCreateScene} = this.state
-        if(showCreateScene){
+        if(this.state.showCreateScene){
             const {addScene,vrId} = this.props
             const functions = {
                 onCancel:this.onCancelCreateModal.bind(this),
@@ -118,9 +108,7 @@ class EditSceneContainer extends Component{
     }
 
     onEditCancel(){
-        this.setState({
-            showEditModal:false
-        })
+        this.setState({showEditModal:false})
     }
 
     renderEditModal(){
@@ -134,10 +122,8 @@ class EditSceneContainer extends Component{
     }
 
     onSceneContext(e,item){
-        console.log(item)
         e.preventDefault()
         e.stopPropagation()
-        const {sceneList} = this.props
         this.setState({
             showMenu:true,
             posData:{posX:e.clientX,posY:e.clientY},
@@ -146,15 +132,11 @@ class EditSceneContainer extends Component{
     }
 
     onHideContextMenu(){
-        this.setState({
-            showMenu:false
-        })
+        this.setState({showMenu:false})
     }
 
     handleEditScene(){
-        this.setState({
-            showEditModal:true
-        })
+        this.setState({showEditModal:true})
     }
 
     renderContextMenu(){
@@ -173,8 +155,6 @@ class EditSceneContainer extends Component{
     }
 
     render(){
-        const {modifyScene,addScene,nextSceneId,sceneSelected,folderId,vrId,sceneList} = this.props
-
         const {containerWidth} = this.state
 
         return (
