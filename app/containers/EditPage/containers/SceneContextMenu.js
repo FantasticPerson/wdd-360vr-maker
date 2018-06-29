@@ -4,10 +4,6 @@ import ContextModal from '../../../components/ContextModal'
 
 export default class SceneContextModal extends Component{
     onDeleteClick(){
-        const {onDelete,sceneData} = this.props
-
-        onDelete(sceneData)
-
         this.props.functions.delScene(this.props.sceneData)
         this.props.functions.onHide()
     }

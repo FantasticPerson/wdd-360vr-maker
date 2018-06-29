@@ -19,10 +19,10 @@ export default class EditSceneModal extends Component{
 
     onConfirmClick(){
         const {onModify,itemData} = this.props
-        const name = this.titleRef.input.value.trim();
+        const name = this.titleRef.value.trim();
 
         if (name.length > 0) {
-            onModify({...itemData,name:value});
+            onModify({...itemData,name:name});
         }
         this.onCancelClick()
     }
@@ -48,7 +48,7 @@ export default class EditSceneModal extends Component{
                         label="请输入场景名称"
                         placeholder="请输入场景名称"
                         margin="normal"
-                        ref={(input) => this.titleRef = input}
+                        inputRef={(input) => this.titleRef = input}
                         defaultValue={title}
                     />
                 </DialogContent>

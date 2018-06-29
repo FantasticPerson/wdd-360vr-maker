@@ -14,6 +14,7 @@ export const updateAllScene = createAction('update_all_scene')
 export const dUpdateSceneSelected = createAction('update_scene_selected')
 
 export function updateSceneSelected(id){
+    console.log(id)
     return (dispatch,getState)=>{
         let krpano = getState().krpano.obj
         if(krpano){

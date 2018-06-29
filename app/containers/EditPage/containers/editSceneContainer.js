@@ -77,7 +77,7 @@ class EditSceneContainer extends Component{
         let sceneItemList = sceneList.map((item,index)=>{
             let className = `${styles.scene} ${item.id == sceneSelected ? styles.selected : ''}`
             return (
-                <div className={styles.sceneContainer} key={item.id} onContextMenu={this.onSceneContext.bind(this)} onClick={this.sceneClickHandler.bind(this)}>
+                <div className={styles.sceneContainer} key={item.id} onContextMenu={(e)=>this.onSceneContext(e,item)} onClick={()=>this.sceneClickHandler(item.id)}>
                     <div className={className}>
                         <img style={{height:'100%'}} src={getHeadImgUrl(item.id)}></img>
                     </div>
@@ -134,6 +134,7 @@ class EditSceneContainer extends Component{
     }
 
     onSceneContext(e,item){
+        console.log(item)
         e.preventDefault()
         e.stopPropagation()
         const {sceneList} = this.props

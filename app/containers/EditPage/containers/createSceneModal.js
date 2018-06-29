@@ -14,6 +14,8 @@ import getPathOfPreviewImg from '../../../native/getPathOfPreviewImg'
 
 import {getScenePath,getPreviewPath} from '../../../native/pathUtils'
 
+import copyImageToScene from '../../../native/copyImageToScene'
+
 import Hashid from '../../../utils/generateHashId'
 
 import styles from '../../../styles/createSceneModal.css'

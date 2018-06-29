@@ -10,13 +10,7 @@ import EditPage from './EditPage/index'
 
 export default class Root extends Component<Props> {
   render() {
-    let style = {
-      position: 'fixed',
-      top:'64px',
-      bottom: 0,
-      left: 0,
-      right: 0
-    }
+    let style = {position: 'fixed',top:'64px',bottom: 0,left: 0,right: 0}
     return (
       <Provider store={this.props.store}>
         <ConnectedRouter history={this.props.history}>
