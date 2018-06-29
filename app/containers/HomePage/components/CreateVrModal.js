@@ -92,7 +92,6 @@ export default class CreateVrModal extends Component {
 
     renderUploadPic(){
         const {tmpImgReady} = this.state
-        console.log(tmpImgReady)
         if(!tmpImgReady){
             return <div className={styles.imgContainer}>等待上传</div>
         } else {

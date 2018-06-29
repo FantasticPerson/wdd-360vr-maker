@@ -16,7 +16,7 @@ import Slider from '@material-ui/lab/Slider';
 
 import Hashid from '../../utils/generateHashId'
 import PanoContainer from './containers/panoContainer'
-import EditSceneContainer from '../../components/editSceneContainer'
+import EditSceneContainer from './containers/editSceneContainer'
 import getPathOfHotSpotIconPath from '../../native/getHotspotIconPath'
 import getPathOfSceneHeadImg from '../../native/getPathOfSceneHeadImg'
 import {addHotspotToKrpano,selectHotspotInKrpano,addRainEffect,addSnowEffect} from '../../utils/krpanoFunctions'

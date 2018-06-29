@@ -15,9 +15,12 @@ class EditViewPort extends Component{
     constructor(){
         super()
         this.state = {max:155,min:-5,start:75,max1:90,min1:-90}
+
+        this._mounted = false 
     }
 
     componentDidMount(){
+        this._mounted = true
         let sceneObj = this.props.sceneSelectedItem
         let newStateObj = {max:155,min:-5,start:75,max1:90,min1:-90}
         if(sceneObj){
@@ -38,7 +41,9 @@ class EditViewPort extends Component{
             }
         }
         setTimeout(()=>{
-            this.setState(newStateObj)
+            if(this._mounted){
+                this.setState(newStateObj)
+            }
         },100)
     }
 
@@ -64,9 +69,15 @@ class EditViewPort extends Component{
                 }
             }
             setTimeout(()=>{
-                this.setState(newStateObj)
+                if( this._mounted){
+                    this.setState(newStateObj)
+                }
             },100)
         }
+    }
+
+    componentWillUnmount(){
+        this._mounted = false
     }
 
     onMax1Change(event,value){

@@ -1,25 +1,28 @@
 import React,{Component} from 'react'
-import ContextModal from './ContextModal'
-import styles from '../styles/SceneContextMenu.css'
+import styles from '../../../styles/SceneContextMenu.css'
+import ContextModal from '../../../components/ContextModal'
 
 export default class SceneContextModal extends Component{
     onDeleteClick(){
         const {onDelete,sceneData} = this.props
 
         onDelete(sceneData)
+
+        this.props.functions.delScene(this.props.sceneData)
+        this.props.functions.onHide()
     }
 
     onModifyClick(){
-        const {onModify,sceneData} = this.props
-
-        onModify(sceneData)
+        this.props.functions.showEdit(this.props.sceneData)
+        this.props.functions.onHide()
     }
 
     render(){
-        const {bgClick,posData} = this.props
+        const {onHide} = this.props.functions
+        const {posData} = this.props
 
         return (
-            <ContextModal bgClick={bgClick} data={posData}>
+            <ContextModal bgClick={onHide} data={posData}>
                 <ul>
                     <li>
                         <div onClick={this.onDeleteClick.bind(this)}>

@@ -18,12 +18,13 @@ export default class EditSceneModal extends Component{
     }
 
     onConfirmClick(){
-        const {onModify} = this.props
+        const {onModify,itemData} = this.props
         const name = this.titleRef.input.value.trim();
 
         if (name.length > 0) {
-            onModify(name);
+            onModify({...itemData,name:value});
         }
+        this.onCancelClick()
     }
 
     onCancelClick(){
@@ -35,7 +36,7 @@ export default class EditSceneModal extends Component{
         let title = this.props.itemData ? this.props.itemData.name : ''
         return (
             <Dialog
-                open={this.props.show}
+                open={true}
                 onClose={this.onCancelClick.bind(this)}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
@@ -57,18 +58,5 @@ export default class EditSceneModal extends Component{
                 </DialogActions>
             </Dialog>
         )
-
-        /*const {itemData} = this.props;
-        const actions = [
-            <FlatButton label="取消" primary onClick={this.onCancelClick.bind(this)} />,
-            <FlatButton label="确认" primary onClick={this.onConfirmClick.bind(this)} />
-        ];
-        return (
-            <Dialog title="编辑场景" open actions={actions}>
-              <div>
-                  <TextField defaultValue={itemData ? itemData.name : ''} fullWidth hintText="请输入场景名称" floatingLabelText="请输入场景名称" ref={(input) => this.titleRef = input} />
-                </div>
-            </Dialog>
-        )*/
     }
 }

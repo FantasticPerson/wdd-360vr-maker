@@ -15,6 +15,7 @@ class PanoContainer extends Component{
     constructor(){
         super()
         this.state = {updateObj:null}
+        this._mounted = false
     }
 
     componentWillUpdate(prop,state){
@@ -22,7 +23,9 @@ class PanoContainer extends Component{
             if(state.updateObj){
                 this.props.updateHotpotPos(state.updateObj)
             }
-            this.setState({updateObj:null})
+            if(this._mounted){
+                this.setState({updateObj:null})
+            }
         },20)
     }
 
@@ -35,7 +38,6 @@ class PanoContainer extends Component{
             this.props.showEditHotpot()
         }
     }
-
 
     updateHotSpot(hotspotId, ath, atv){
         const {updateHotpotPos} = this.props
@@ -63,7 +65,9 @@ class PanoContainer extends Component{
             const {hotList} = this.props
             let item = hotList.find(item=>item.id == hotspotId)
             if(item){
-                this.setState({selectId:hotspotId})
+                if(this._mounted){
+                    this.setState({selectId:hotspotId})
+                }
             }
         }
     }
@@ -71,6 +75,8 @@ class PanoContainer extends Component{
     componentWillUnmount() {
         delete window.onKrpHotspotMoveEnd
         delete window.onKrpHotspotClick
+
+        this._mounted = false
     }
     
     render(){
