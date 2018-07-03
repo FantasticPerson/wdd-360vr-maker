@@ -60,8 +60,8 @@ export function addHotpots(){
                 }
             }
             if(hSpots.length){
-                for(let i = 0;i<hotSpots.length;i++){
-                    var data = hotSpots[i]
+                for(let i = 0;i<hSpots.length;i++){
+                    var data = hSpots[i]
                     data._id = data.id
                     let icon = getPathOfHotSpotIconPath(data.icon)
                     addHotspotToKrpano(krpano,{...data,icon:icon},false)

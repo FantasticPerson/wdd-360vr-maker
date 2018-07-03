@@ -62,8 +62,8 @@ class PanoContainer extends Component{
             const {hotpotList} = this.props
             let item = hotpotList.find(item=>item.id == hotspotId)
             if(item,this._mounted){
-                                
-                this.setState({selectId:hotspotId})
+                this.props.updateHotspotSelect(hotspotId)
+                this.props.showEditHotpot()
             }
         }
     }

@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import Slider from '@material-ui/lab/Slider';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-
-import {createSelector} from 'reselect'
+import Typography from '@material-ui/core/Typography';
 
 import * as sceneActions from '../../../actions/scene'
 import {editViewPortConfig,getSelector} from '../../../store/getStore'
