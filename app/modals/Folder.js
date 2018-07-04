@@ -4,7 +4,7 @@ Folder.store = null;
 
 Folder.findAll = () => Folder.store.toArray();
 
-Folder.add = (obj) => Folder.store.put({...obj,timestamp:(new Date().valueOf()));
+Folder.add = (obj) => Folder.store.put({...obj,timestamp:(new Date().valueOf())});
 
 Folder.update = (obj) => {
     return Folder.store.where("id").equals(obj.id).modify({title: obj.title});

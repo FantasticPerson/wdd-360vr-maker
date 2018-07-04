@@ -4,7 +4,7 @@ Vr.store = null;
 
 Vr.findAll = () => Vr.store.toArray();
 
-Vr.add = (obj) => Vr.store.put({...obj,timestamp:(new Date().valueOf()));
+Vr.add = (obj) => Vr.store.put({...obj,timestamp:(new Date().valueOf())});
 
 Vr.update = (obj) => {
     return Vr.store.where("id").equals(obj.id).modify({
