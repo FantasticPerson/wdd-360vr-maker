@@ -120,7 +120,6 @@ export default class CreateVrModal extends Component {
         return (
             <Dialog
                 open={true}
-                onClose={this.onCancelClick.bind(this)}
             >
                 <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
                 <DialogContent style={{width:'500px'}}>

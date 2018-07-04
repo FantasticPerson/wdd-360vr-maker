@@ -85,20 +85,6 @@ export default class CreateVrModal extends Component {
             console.error(err)
             alert('上传图片失败!请重试')
         })
-        // .then((res)=>{
-        //     return checkPicValid(res[0])
-        // })
-        // .then((res)=>{
-        //     return copyFileToTmp(res.rootPath)
-        // })
-        // .then(()=>{
-        //     setTimeout(()=>{
-        //         this.setState({tmpImgReady:true})
-        //     },300)
-        // })
-        // .catch((err)=>{
-        //     console.error(err)
-        // })
     }
 
     renderUploadPic(){
@@ -118,9 +104,6 @@ export default class CreateVrModal extends Component {
         return (
             <Dialog
                 open={true}
-                onClose={this.onCancelClick.bind(this)}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">{"创建场景"}</DialogTitle>
                 <DialogContent>

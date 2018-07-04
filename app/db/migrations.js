@@ -5,7 +5,8 @@ export default [
             userInfo: [
                 'id',
                 'name',
-                'avatar'
+                'avatar',
+                'timestamp'
             ],
             vr: [
                 'id',
@@ -15,7 +16,8 @@ export default [
                 'headImg',
                 'tabs',
                 'music1',
-                'music2'
+                'music2',
+                'timestamp'
             ],
             scene: [
                 'id',
@@ -31,17 +33,20 @@ export default [
                 'vlookatmin',
                 'vlookatmax',
                 'effectType',
-                'effectLevel'
+                'effectLevel',
+                'timestamp'
             ],
             folder: [
                 'id',
-                'name'
+                'name',
+                'timestamp'
             ],
             group: [
                 'id',
                 'name',
                 'folderId',
-                'vrId'
+                'vrId',
+                'timestamp'
             ],
             hotpot:[
                 'id',
@@ -52,19 +57,23 @@ export default [
                 'ath',
                 'atv',
                 'action',
-                'sceneId'
+                'sceneId',
+                'timestamp'
             ],
             audio:[
                 'id',
-                'extension'
+                'extension',
+                'timestamp'
             ],
             video:[
                 'id',
-                'url'
+                'url',
+                'timestamp'
             ],
             picture:[
                 'id',
-                'extension'
+                'extension',
+                'timestamp'
             ]
         },
         upgrade: null

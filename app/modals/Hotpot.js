@@ -4,7 +4,7 @@ Hotpot.store = null;
 
 Hotpot.findAll = () => Hotpot.store.toArray();
 
-Hotpot.add = (obj) => Hotpot.store.put(obj);
+Hotpot.add = (obj) => Hotpot.store.put({...obj,timestamp:(new Date().valueOf()));
 
 Hotpot.update = (obj) => {
     return Hotpot.store.where("id").equals(obj.id).modify({

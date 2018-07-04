@@ -4,7 +4,7 @@ Video.store = null
 
 Video.findAll = () => Video.store.toArray();
 
-Video.add = (obj) => Video.store.put(obj);
+Video.add = (obj) => Video.store.put({...obj,timestamp:(new Date().valueOf()));
 
 Video.update = (obj) => {
     return Video.store.where("id").equals(obj.id).modify({title: obj.title});
