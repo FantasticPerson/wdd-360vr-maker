@@ -51,9 +51,6 @@ const initConfig = async () => {
     global.electron_app_tmp_path = path.resolve(global.electron_app_assets_path,'./tmp')
     global.electron_app_vr_path = path.resolve(global.electron_app_assets_path,'./vr')
     global.electron_app_krp_path = path.resolve(global.electron_app_root_path,'../krp');
-
-    console.log(global.electron_app_krp_path)
-
     global.electron_app_krpano_path = path.resolve(global.electron_app_root_path,'../../krpano');
     global.electron_app_pic_path = path.resolve(global.electron_app_assets_path,'./pic')
     global.electron_app_pic_tmp = path.resolve(global.electron_app_assets_path,'./picTmp')
@@ -61,6 +58,7 @@ const initConfig = async () => {
     global.electron_app_audio_tmp = path.resolve(global.electron_app_assets_path,'./audioTmp')
     global.electron_app_output_path = path.resolve(global.electron_app_assets_path,'./output')
     global.etectron_app_vr_output = path.resolve(global.electron_app_assets_path,'./vrOutput')
+    global.electron_app_cpano_path = path.resolve(global.electron_app_root_path,'./cpano')
 };
 
 const initDir = async () => {  
@@ -96,6 +94,9 @@ const initDir = async () => {
     }
     if(!fs.existsSync(global.electron_app_audio_tmp)){
         fs.mkdirSync(global.electron_app_audio_tmp)
+    }
+    if(!fs.existsSync(global.electron_app_cpano_path)){
+        fs.mkdirSync(global.electron_app_cpano_path)
     }
 };
 

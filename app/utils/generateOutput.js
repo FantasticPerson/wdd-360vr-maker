@@ -8,6 +8,8 @@ const {
     electron_app_root_path
 } = window
 
+import {getScenePath} from '../native/pathUtils'
+
 import {IMG_NAME_ARR} from '../constants.js'
 import {getProductionXml} from './xmlBuilder2'
 
@@ -70,7 +72,7 @@ export function GenerateOutput(vrItem,sceneList,hotpotList){
 
     for(let i = 0;i<sceneList.length;i++){
         let scene = sceneList[i]
-        let srcPath = path.resolve(electron_app_vr_path,`./folder_${vrItem.folderId}_vr_${vrItem.id}/scene_${scene.id}`)
+        let srcPath = getScenePath(scene.id)
         let destPath = path.resolve(vrPath,`./scene_${scene.id}`)
         if(!fs.existsSync(destPath)){
             fs.mkdirSync(destPath)

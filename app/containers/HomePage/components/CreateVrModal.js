@@ -18,13 +18,16 @@ import copyImageToScene from '../../../native/copyImageToScene'
 
 import Hashid from '../../../utils/generateHashId'
 
-import {getScenePath,getHeadImgUrl} from '../../../native/pathUtils'
+import createPano from '../../../utils/createPano'
+
+import {getScenePath,getHeadImgUrl,getTmpPreviewPath} from '../../../native/pathUtils'
+
 
 export default class CreateVrModal extends Component {
     constructor() {
         super();
-        this.state = {tmpImgReady:false}
-        this.previewImg = getPathOfPreviewImg(true)
+        this.state = {tmpImgStatus:'empty'}
+        this.previewImg = getTmpPreviewPath()
 
         this.titleRef = React.createRef();
         this.summaryRef = React.createRef();
@@ -35,7 +38,7 @@ export default class CreateVrModal extends Component {
     }
 
     onConfirmClick() {
-        const { tmpImgReady } = this.state
+        const { tmpImgStatus } = this.state
 
         const title = this.titleRef.value.trim();
         const brief = this.summaryRef.value.trim();
@@ -43,7 +46,7 @@ export default class CreateVrModal extends Component {
         if (title.length > 0) {
             const {data} = this.props
             if(!data){
-                if(tmpImgReady){
+                if(tmpImgStatus == 'ready'){
                     const {addScene,addVr,onCancel} = this.props.functions
         
                     let id = `vr_${new Hashid().encode()}`
@@ -75,25 +78,28 @@ export default class CreateVrModal extends Component {
     onOpenFileClick(){
         openFolder()
         .then((res)=>{
-            return checkPicValid(res[0])
-        })
-        .then((res)=>{
-            return copyFileToTmp(res.rootPath)
+            if(res[0] && res[0].indexOf('.jpg') >= 0){
+                this.setState({tmpImgStatus:'process'})
+                return createPano(res[0])
+            } else {
+                return new Promise.reject()
+            }
         })
         .then(()=>{
             setTimeout(()=>{
-                this.setState({tmpImgReady:true})
+                this.setState({tmpImgStatus:'ready'})
             },800)
         })
         .catch((err)=>{
             console.error(err)
+            alert('上传图片失败!请重试')
         })
     }
 
     renderUploadPic(){
-        const {tmpImgReady} = this.state
-        if(!tmpImgReady){
-            return <div className={styles.imgContainer}>等待上传</div>
+        const {tmpImgStatus} = this.state
+        if(tmpImgStatus != 'ready'){
+            return <div className={styles.imgContainer}>{tmpImgStatus=='empty' ? '等待上传' : '处理图片中 请稍候...'}</div>
         } else {
             return (
                 <div className={styles.imgContainer}>

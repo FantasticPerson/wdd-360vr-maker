@@ -51,11 +51,6 @@ class EditPage extends Component{
         this.props.updateAppShowBack(true);
     }
 
-    onSceneClick(id){
-        const {updateSceneSelected,vrId,folderId} = this.props
-        updateSceneSelected(id,vrId,folderId)
-    }
-
     onAddMusicLocal(type){
         console.log(type)
     }
@@ -137,10 +132,10 @@ class EditPage extends Component{
                 {this.renderLeftBtns()}
                 <div className={styles.content}>
                     <div className={styles.panoContainer}>
-                        <PanoContainer showEditHotpot={this.showHotspotEdit.bind(this)} previewSceneId={previewSceneId}></PanoContainer>
+                        <PanoContainer showEditHotpot={this.showHotspotEdit.bind(this)}></PanoContainer>
                     </div>
                     <div className={styles.sceneContainer}>
-                        <EditSceneContainer onSceneClick={this.onSceneClick.bind(this)} previewSceneId={previewSceneId} vrId={vrId}></EditSceneContainer>
+                        <EditSceneContainer></EditSceneContainer>
                     </div>
                 </div>
                 <div className={styles.rightBar}>
