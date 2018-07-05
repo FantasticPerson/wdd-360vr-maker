@@ -106,7 +106,7 @@ export default class CreateVrModal extends Component {
                 open={true}
             >
                 <DialogTitle id="alert-dialog-title">{"创建场景"}</DialogTitle>
-                <DialogContent>
+                <DialogContent style={{width:'500px'}}>
                     <div style={{display:'inline-block',width:'50%',height:'160px'}}>
                         <TextField
                             id="with-placeholder"

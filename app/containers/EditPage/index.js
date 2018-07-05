@@ -14,7 +14,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Slider from '@material-ui/lab/Slider';
 
-import Hashid from '../../utils/generateHashId'
 import PanoContainer from './containers/panoContainer'
 import EditSceneContainer from './containers/editSceneContainer'
 import getPathOfHotSpotIconPath from '../../native/getHotspotIconPath'
@@ -97,7 +96,7 @@ class EditPage extends Component{
     }
 
     renderLeftBtns(){
-        let btnProps = [
+        let btnProps = [ 
             {class:'fa fa-eye',name:'视角'},
             {class:'fa fa-dot-circle-o',name:'热点'},
             {class:'fa fa-music',name:'音乐'},

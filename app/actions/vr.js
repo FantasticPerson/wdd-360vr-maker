@@ -5,11 +5,23 @@ import Hashid from '../utils/generateHashId'
 
 export const updateAllVr = createAction('update_all_vr')
 
+export function updateAllDVr(list){
+    return (dispatch)=>{
+        list.sort((item1,item2)=>{
+            return item1.timestamp > item2.timestamp
+        })
+        dispatch(updateAllVr(list))
+    }
+}
+
 export function updateVrFromLocal(){
     return (dispatch)=>{
         Modals.Vr.findAll()
         .then((list)=>{
-            dispatch(updateAllVr(list))
+            list.sort((item1,item2)=>{
+                return item1.timestamp > item2.timestamp
+            })
+            dispatch(updateAllDVr(list))
         })
     }
 }
@@ -23,7 +35,7 @@ export function addMusic(vrId,music1,music2){
             Modals.Vr.update(vrItem)
             .then(() => Modals.Vr.findAll())
             .then((list) => {
-                dispatch(updateAllVr(list));
+                dispatch(updateAllDVr(list));
             });
         }
     }
@@ -33,29 +45,29 @@ export function addVr(vrObj) {
     return (dispatch,getState) => {
         let selectFolderId = getState().folder.selectId
         Modals.Vr.add({...vrObj,folderId:selectFolderId})
-            .then(() => Modals.Vr.findAll())
-            .then((list) => {
-                dispatch(updateAllVr(list));
-            });
+        .then(() => Modals.Vr.findAll())
+        .then((list) => {
+            dispatch(updateAllDVr(list));
+        });
     };
 }
 
 export function delVr(vrObj) {
     return (dispatch) => {
         Modals.Vr.delete(vrObj.id)
-            .then(() => Modals.Vr.findAll())
-            .then((list) => {
-                dispatch(updateAllVr(list));
-            });
+        .then(() => Modals.Vr.findAll())
+        .then((list) => {
+            dispatch(updateAllDVr(list));
+        });
     };
 }
-
+ 
 export function modifyVr(vrObj) {
     return (dispatch) => {
         Modals.Vr.update(vrObj)
-            .then(() => Modals.Vr.findAll())
-            .then((list) => {
-                dispatch(updateAllVr(list));
-            });
+        .then(() => Modals.Vr.findAll())
+        .then((list) => {
+            dispatch(updateAllDVr(list));
+        });
     };
 }

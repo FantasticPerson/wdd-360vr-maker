@@ -2,7 +2,9 @@ export default class Scene { }
 
 Scene.store = null;
 
-Scene.findAll = () => Scene.store.toArray();
+Scene.findAll = () => {
+    return Scene.store.toArray()
+}
 
 Scene.add = (obj) => Scene.store.put({...obj,timestamp:(new Date().valueOf())});
 

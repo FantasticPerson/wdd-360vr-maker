@@ -12,12 +12,20 @@ import {getScenePath} from '../native/pathUtils'
 export const updateAllScene = createAction('update_all_scene')
 export const dUpdateSceneSelected = createAction('update_scene_selected')
 
+export function updateDAllScene(list){
+    return (dispatch)=>{
+        list.sort((item1,item2)=>{
+            return item1.timestamp > item2.timestamp
+        })
+        dispatch(updateAllScene(list))
+    }
+}
+
 export function updateSceneSelected(id){
     return (dispatch,getState)=>{
         let krpano = getState().krpano.obj
         if(krpano){
             let scenePath = getScenePath(id)
-            console.log(scenePath)
             if(krpano){
                 const xml = getPanoXml({
                     scenePath:scenePath
@@ -48,7 +56,7 @@ export function updateInitViewPort(sceneId){
                 return Modals.Scene.findAll()
             })
             .then((list)=>{
-                dispatch(updateAllScene(list))
+                dispatch(updateDAllScene(list))
             })
         }
     }
@@ -71,7 +79,7 @@ export function updateViewRange(id,fov,fovmax,fovmin,vlookatmin,vlookatmax){
                 return Modals.Scene.findAll()
             })
             .then((list)=>{
-                dispatch(updateAllScene(list))
+                dispatch(updateDAllScene(list))
             })
         }
     }
@@ -91,7 +99,7 @@ export function updateEffect(id,type,level){
                 return Modals.Scene.findAll()
             })
             .then((list)=>{
-                dispatch(updateAllScene(list))
+                dispatch(updateDAllScene(list))
             })
         }
     }
@@ -101,7 +109,7 @@ export function updateAllSceneFromLocal(){
     return (dispatch)=>{
         Modals.Scene.findAll()
         .then((list)=>{
-            dispatch(updateAllScene(list))
+            dispatch(updateDAllScene(list))
         })
     }
 }
@@ -116,7 +124,7 @@ export function addScene(obj) {
             return Modals.Scene.findAll()
         })
         .then((list)=>{
-            dispatch(updateAllScene(list))
+            dispatch(updateDAllScene(list))
         })
     }
 }
@@ -128,7 +136,7 @@ export function delScene(obj) {
             return Modals.Scene.findAll()
         })
         .then((list)=>{
-            dispatch(updateAllScene(list))
+            dispatch(updateDAllScene(list))
         })
     }
 }
@@ -140,7 +148,7 @@ export function modifyScene(obj) {
             return Modals.Scene.findAll()
         })
         .then((list)=>{
-            dispatch(updateAllScene(list))
+            dispatch(updateDAllScene(list))
         })
     }
 }

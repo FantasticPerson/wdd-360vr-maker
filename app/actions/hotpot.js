@@ -12,6 +12,9 @@ export const dUpdateHotpotSelect = createAction('update_hotpot_select')
 
 export function updateAllHotpot(arr) {
     return (dispatch)=>{
+        arr.sort((item1,item2)=>{
+            return item1.timestamp > item2.timestamp
+        })
         dispatch(dUpdateAllHotpot(arr))
     }
 }

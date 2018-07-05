@@ -11,7 +11,9 @@ Vr.update = (obj) => {
         title:obj.title,
         brief:obj.brief,
         folderId:obj.folderId,
-        headImg:obj.headImg
+        headImg:obj.headImg,
+        music1:obj.music1,
+        music2:obj.music2
     });
 }
 
