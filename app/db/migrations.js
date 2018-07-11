@@ -43,10 +43,11 @@ export default [
             ],
             group: [
                 'id',
-                'name',
-                'folderId',
+                'title',
                 'vrId',
-                'timestamp'
+                'timestamp',
+                'music1',
+                'music2'
             ],
             hotpot:[
                 'id',

@@ -25,8 +25,8 @@
 
 .sceneContainer{
     width: 100px;
-    height: 146px;
-    padding-top: 23px;
+    height: 111px;
+    /* padding-top: 23px; */
     display: inline-block;
     box-sizing: border-box;
     padding-left:5px;
@@ -68,7 +68,7 @@
     padding: 5px;
     border: 1px dashed #ccc;
     display: inline-block;
-    vertical-align: 20px;
+    margin-bottom: 20px;
     text-align: center;
     font-size: 20px;
     cursor: pointer;

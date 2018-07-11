@@ -78,7 +78,10 @@ export default class EditSelectScene extends Component{
                 </div>
             )
         })
-
+        let switchTypes = ['淡入淡出','缩放过渡','黑场过渡','白场过渡','从右至左','对角线','原型展开','水平展开','椭圆缩放']
+        let swtichItems = switchTypes.map((item,i)=>{
+            return <MenuItem value={i} key={i}>{item}</MenuItem>
+        })
         return (
             <div>
                 <div style={{width:'180px',margin: '0 auto'}}>
@@ -86,15 +89,7 @@ export default class EditSelectScene extends Component{
                         value={this.state.type}
                         onChange={this.onTypeChange.bind(this)}
                     >
-                        <MenuItem value={0}>淡入淡出</MenuItem>
-                        <MenuItem value={1}>缩放过渡</MenuItem>
-                        <MenuItem value={2}>黑场过渡</MenuItem>
-                        <MenuItem value={3}>白场过渡</MenuItem>
-                        <MenuItem value={4}>从右至左</MenuItem>
-                        <MenuItem value={5}>对角线</MenuItem>
-                        <MenuItem value={6}>原型展开</MenuItem>
-                        <MenuItem value={7}>水平展开</MenuItem>
-                        <MenuItem value={8}>椭圆缩放</MenuItem>
+                        {swtichItems}
                     </SelectField>
                     
                     <FormControlLabel

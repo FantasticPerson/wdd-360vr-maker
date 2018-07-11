@@ -9,6 +9,7 @@ import krpano from './krpano'
 import picture from './picture'
 import audio from './audio'
 import video from './video'
+import group from './group'
 
 const rootReducer = combineReducers({
     scene,
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
     krpano,
     picture,
     audio,
-    video
+    video,
+    group
 });
 
 export default rootReducer;

@@ -8,7 +8,9 @@ export const headerConfig = {
     vrItem:true,
     folderId:true,
     sceneList:true,
-    hotpotList:true
+    hotpotList:true,
+    groupList:true,
+    allSceneList:true
 }
 
 export const homePageConfig = {
@@ -68,9 +70,19 @@ export const panoConfig = {
 
 export const editSceneConfig = {
     sceneList:true,
+    allSceneList:true,
     vrList:true,
     sceneSelected:true,
-    vrId:true
+    vrId:true,
+    groupList:true,
+    groupSelectId:true
+}
+
+export const editMusicConfig={
+    groupSelectId:true,
+    groupList:true,
+    vrItem:true,
+    groupSelectItem:true
 }
 
 export function getSelector(config){
@@ -86,8 +98,10 @@ export function getSelector(config){
         state => state.hotpot.selected,
         state => state.scene.sceneSelected,
         state => state.krpano.obj,
+        state => state.group.list,
+        state => state.group.selectId,
 
-        (title, showBack,vrList,hotpotList,sceneList,pathname,folderList,folderSelectedId,hotpotSelectId,sceneSelected,krpano) => {
+        (title, showBack,vrList,hotpotList,sceneList,pathname,folderList,folderSelectedId,hotpotSelectId,sceneSelected,krpano,groupList,groupSelectId) => {
             let result = {}
             if(config.title)            result.title = title
             if(config.showBack)         result.showBack=showBack
@@ -96,7 +110,8 @@ export function getSelector(config){
             if(config.vrId)             result.vrId=pathname.split('/')[2]
             if(config.vrItem)           result.vrItem=findVrItem(vrList,pathname)
             if(config.folderId)         result.folderId=findFolderId(vrList,pathname)
-            if(config.sceneList)        result.sceneList=filterScene(sceneList,pathname)
+            if(config.sceneList)        result.sceneList=filterScene(sceneList,pathname,groupSelectId)
+            if(config.allSceneList)     result.allSceneList = filterAllScene(sceneList,pathname)
             if(config.hotpotList)       result.hotpotList = hotpotList
             if(config.folderList)       result.folderList = folderList
             if(config.folderSelectedId) result.folderSelectedId = folderSelectedId
@@ -108,10 +123,29 @@ export function getSelector(config){
             if(config.hotpotSelected)   result.hotpotSelected = getTheHotSpot(hotpotSelectId,sceneSelected,hotpotList)
             if(config.krpano)           result.krpano = krpano
             if(config.sceneSelectedItem)result.sceneSelectedItem = getSceneSelectItem(sceneList,sceneSelected)
+            if(config.groupList)        result.groupList = getGroupList(groupList,pathname)
+            if(config.groupSelectId)    result.groupSelectId = groupSelectId
+            if(config.groupSelectItem)  result.groupSelectItem = getGroupSelectItem(groupList,groupSelectId)
             
             return result
         }
     )
+}
+
+function getGroupSelectItem(list,id){
+    console.log(list,id)
+    let item = list.find((item)=>{
+        return item.id == id
+    })
+
+    return item
+}
+
+function getGroupList(list,pathname){
+    let id = pathname.split('/')[2]
+    return list.filter((item)=>{
+        return item.vrId === id
+    })
 }
 
 function getVrByFolderId(list,id){
@@ -145,7 +179,14 @@ function findVrItem(vrList,pathname){
     })
 }
 
-function filterScene(list,pathname,selectedSceneId){
+function filterScene(list,pathname,groupId){
+    var vrId = pathname.split('/')[2]
+    return list.filter((item)=>{
+        return item.vrid == vrId && item.groupId == groupId
+    })
+}
+
+function filterAllScene(list,pathname){
     var vrId = pathname.split('/')[2]
     return list.filter((item)=>{
         return item.vrid == vrId

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {createSelector} from 'reselect'
 
 import FlatButton from '@material-ui/core/Button';
 
@@ -13,6 +12,9 @@ import ReactAudioPlayer from 'react-audio-player';
 
 import * as audioActions from '../../../actions/audio'
 import * as vrActions from '../../../actions/vr'
+import * as GroupActions from '../../../actions/group'
+
+import {editMusicConfig,getSelector} from '../../../store/getStore'
 
 class EditMusic extends Component{
     constructor(){
@@ -21,17 +23,10 @@ class EditMusic extends Component{
     }
 
     componentDidMount(){
-        const {vrItem} = this.props
-        let stateObj = {}
-        if(vrItem && vrItem.url){
-            stateObj.url = vrItem.url
+        const {groupSelectItem} = this.props
+        if(groupSelectItem){
+            this.setState({url:groupSelectItem.music1,url2:groupSelectItem.music2})
         }
-        if(vrItem && vrItem.url2){
-            stateObj.url2 = vrItem.url2
-        }
-        setTimeout(()=>{
-            this.setState(stateObj)
-        },100)
     }
 
     onAddMusicLocal(type){
@@ -97,7 +92,6 @@ class EditMusic extends Component{
         }
     }
 
-
     renderMusic(){
         const {url} = this.state
         if(url){
@@ -117,10 +111,20 @@ class EditMusic extends Component{
     }
 
     onConfirmClick(){
-        const {addMusic,vrItem} = this.props
+        const {groupSelectItem,updateGroupMusic,onfinish} = this.props
         const {url,url2} = this.state
-        if(vrItem){
-            addMusic(vrItem.id,url,url2)
+        if(groupSelectItem){
+            updateGroupMusic(groupSelectItem,url,url2)
+            onfinish()
+        }
+    }
+
+    onAllConfirmClick(){
+        const {groupList,updateAllGroupMusic,onfinish} = this.props
+        const {url,url2} = this.state
+        if(groupList.length > 0){
+            updateAllGroupMusic(groupList,url,url2)
+            onfinish()
         }
     }
 
@@ -160,6 +164,7 @@ class EditMusic extends Component{
                     </div>
                 </div>
                 <FlatButton  color="primary" onClick={this.onConfirmClick.bind(this)}>确定</FlatButton>
+                <FlatButton  color="primary" onClick={this.onAllConfirmClick.bind(this)}>应用到全部分组</FlatButton>
                 {this.renderUploadModal()}
                 {this.renderListModal()}
             </div>
@@ -167,29 +172,12 @@ class EditMusic extends Component{
     }
 }
 
-const selector = createSelector(
-    state => state.scene.sceneSelected,
-    state => state.scene.list,
-    state => state.vr.list,
-    (sceneSelected,sceneList,vrList)=>{
-        return {
-            vrItem:getVrItem(sceneSelected,sceneList,vrList)
-        }
-    }
-)
-
-function getVrItem(sId,sList,vList){
-    let item = sList.find(item=>item.id == sId)
-    if(item){
-        return vList.find(item2=>item2.id == item.vrid)
-    }
-}
-
 function mapDispatchToProps(dispatch){
     return {
         ...bindActionCreators(audioActions,dispatch),
-        ...bindActionCreators(vrActions,dispatch)
+        ...bindActionCreators(vrActions,dispatch),
+        ...bindActionCreators(GroupActions,dispatch)
     }
 }
 
-export default connect(selector,mapDispatchToProps)(EditMusic)
+export default connect(getSelector(editMusicConfig),mapDispatchToProps)(EditMusic)

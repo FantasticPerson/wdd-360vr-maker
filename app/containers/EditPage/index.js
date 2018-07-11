@@ -27,11 +27,12 @@ import * as hotpotActions from '../../actions/hotpot'
 import * as PictureActions from '../../actions/picture'
 import * as audioActions from '../../actions/audio'
 import * as krpanoActions from '../../actions/krpano'
+import * as groupActions from '../../actions/group'
 
 import EditViewPort from './containers/EditViewPort'
 import EditHotSpot from './containers/EditHotpot'
-import EditMusic from './containers/EditMusic'
 import EditEffect from './containers/EditEffect'
+import EditMusic from './containers/EditMusic'
 
 class EditPage extends Component{
     constructor(){
@@ -48,6 +49,7 @@ class EditPage extends Component{
         this.props.updateAllHotpotFromLocal();
         this.props.updateAudioFromLocal()
         this.props.updateAppShowBack(true);
+        this.props.updateGroupFromLocal()
     }
 
     onAddMusicLocal(type){
@@ -71,7 +73,7 @@ class EditPage extends Component{
 
     renderEditViewPort(){
         if(this.state.editType == 0){
-            return <EditViewPort></EditViewPort>
+            return <EditViewPort onfinish={this.showHotspotEdit.bind(this)}></EditViewPort>
         }
     }
 
@@ -85,13 +87,13 @@ class EditPage extends Component{
 
     renderEditMusic(){
         if(this.state.editType == 2){
-            return <EditMusic></EditMusic>
+            return <EditMusic onfinish={this.showHotspotEdit.bind(this)}></EditMusic>
         }
     }
 
     renderSpecialShow(){
         if(this.state.editType == 3){
-            return <EditEffect></EditEffect>
+            return <EditEffect onfinish={this.showHotspotEdit.bind(this)}></EditEffect>
         }
     }
 
@@ -157,7 +159,9 @@ function mapDispatchToProps(dispatch){
         ...bindActionCreators(hotpotActions,dispatch),
         ...bindActionCreators(PictureActions,dispatch),
         ...bindActionCreators(audioActions,dispatch),
-        ...bindActionCreators(krpanoActions,dispatch)
+        ...bindActionCreators(krpanoActions,dispatch),
+        ...bindActionCreators(groupActions,dispatch)
+
     }
 }
 

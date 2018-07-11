@@ -13,6 +13,7 @@ import * as vrActions from '../../actions/vr';
 import * as sceneActions from '../../actions/scene';
 import * as folderActions from '../../actions/folder';
 import * as appActions from '../../actions/app'
+import * as groupActions from '../../actions/group'
 
 import CreateVrModal from './components/CreateVrModal';
 import CreateFolderModal from './components/CreateFolderModal';
@@ -170,7 +171,9 @@ function mapDispatchToProps(dispatch) {
         ...bindActionCreators(vrActions, dispatch),
         ...bindActionCreators(sceneActions, dispatch),
         ...bindActionCreators(folderActions, dispatch),
-        ...bindActionCreators(appActions,dispatch)
+        ...bindActionCreators(appActions,dispatch),
+        ...bindActionCreators(groupActions,dispatch),
+
     };
 }
 

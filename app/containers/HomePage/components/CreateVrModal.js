@@ -47,16 +47,20 @@ export default class CreateVrModal extends Component {
             const {data} = this.props
             if(!data){
                 if(tmpImgStatus == 'ready'){
-                    const {addScene,addVr,onCancel} = this.props.functions
+                    const {addScene,addVr,onCancel,addGroup} = this.props.functions
         
                     let id = `vr_${new Hashid().encode()}`
                     let sceneId = `scene_${new Hashid().encode()}`
+
+                    let groupId = `group_${new Hashid().encode()}`
 
                     let previewImg = getHeadImgUrl(sceneId)
                     
 
                     addVr({title,brief,headImg:previewImg,music1:null,music2:null,id})
-                    addScene({vrid:id,name:title,id:sceneId})
+                    addScene({vrid:id,name:title,id:sceneId,groupId:groupId})
+
+                    addGroup('默认',id,groupId)
         
                     copyImageToScene(getScenePath(sceneId))
                     .catch((e)=>{

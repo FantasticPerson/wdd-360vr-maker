@@ -34,8 +34,8 @@ class Header extends Component {
     }
 
     onSaveClick(){
-        const {vrItem,sceneList,hotpotList} = this.props
-        GenerateOutput(vrItem,sceneList,hotpotList)
+        const {vrItem,sceneList,hotpotList,groupList,allSceneList} = this.props
+        GenerateOutput(vrItem,sceneList,hotpotList,groupList,allSceneList)
         console.log('onSaveClick')
     }
 

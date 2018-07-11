@@ -58,13 +58,14 @@ class EditEffect extends Component{
 
     onSelectEffectConfirm(){
         const {rainType,snowType} = this.state
-        const {updateEffect,sceneSelected} = this.props
+        const {updateEffect,sceneSelected,onfinish} = this.props
 
         if(rainType > 0){
             updateEffect(sceneSelected,'rain',rainType)
         } else if(snowType > 0){
             updateEffect(sceneSelected,'snow',snowType)
         }
+        onfinish()
     }
 
     onChooseSpecislShowChange(event,value){
