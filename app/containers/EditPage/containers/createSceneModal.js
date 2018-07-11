@@ -45,7 +45,7 @@ export default class CreateVrModal extends Component {
 
         if (title.length > 0 && tmpImgStatus == 'ready') {
             let sceneId = `scene_${new Hashid().encode()}`
-            const {vrId} = this.props
+            const {vrId,groupId} = this.props
             const {onCancel,addScene} = this.props.functions
             
             copyImageToScene(getScenePath(sceneId))
@@ -54,7 +54,8 @@ export default class CreateVrModal extends Component {
                     addScene({
                         id:sceneId,
                         vrid:vrId,
-                        name:title
+                        name:title,
+                        groupId
                     })
                 },20) 
             })

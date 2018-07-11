@@ -30,12 +30,12 @@ export function GenerateOutput(vrItem,sceneList,hotpotList,groupList,allSceneLis
     let hotspots = []
     let picArr = []
     let audioArr = []
-    for(let i=0;i<sceneList.length;i++){
-        scenePathArr.push(sceneList[i].id)
+    for(let i=0;i<allSceneList.length;i++){
+        scenePathArr.push(allSceneList[i].id)
     }
-    for(let i = 0;i<sceneList.length;i++){
+    for(let i = 0;i<allSceneList.length;i++){
         for(let j=0;j<hotpotList.length;j++){
-            if(hotpotList[j].sceneId == sceneList[i].id){
+            if(hotpotList[j].sceneId == allSceneList[i].id){
                 hotspots.push(hotpotList[j])
             }
         }
@@ -70,8 +70,8 @@ export function GenerateOutput(vrItem,sceneList,hotpotList,groupList,allSceneLis
         fs.mkdirSync(vrPath)
     }
 
-    for(let i = 0;i<sceneList.length;i++){
-        let scene = sceneList[i]
+    for(let i = 0;i<allSceneList.length;i++){
+        let scene = allSceneList[i]
         let srcPath = getScenePath(scene.id)
         let destPath = path.resolve(vrPath,`./scene_${scene.id}`)
         if(!fs.existsSync(destPath)){

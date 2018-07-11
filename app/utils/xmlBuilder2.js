@@ -144,20 +144,15 @@ function authXmlData(productData,config){
 function thumbsXmlData(productData,config){
     const thumbs = config.ele('thumbs')
     thumbs.att('title','全景列表')
-    thumbs.att('show_thumb',1)
-    
-    let category = thumbs.ele('category')
-    category.att('name','category0')
-    category.att('title','全景列表')
-    category.att('thumb','')
+    thumbs.att('show_thumb',2)
 
-    productData.groups.map((group)=>{
+    productData.groups.map((group,i)=>{
         let category = thumbs.ele('category')
-        category.att('name',group.group.title)
+        category.att('name',`category${i}`)
         category.att('title',group.group.title)
-        category.att('thumb',`./scene_${group.scene[0].id}/thumb.jpg`)
+        category.att('thumb',`./scene_${group.scene[0].scene.id}/thumb.jpg`)
 
-        group.scene.map(pano=>{
+        group.scene.map((pano,i)=>{
             let panoElement = category.ele('pano')
             panoElement.att('name',`pano_${pano.scene.id}`)
             panoElement.att('title',pano.scene.name)

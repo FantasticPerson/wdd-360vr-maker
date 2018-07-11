@@ -281,13 +281,13 @@ class EditSceneContainer extends Component{
 
     renderCreateModal(){
         if(this.state.showCreateScene){
-            const {addScene,vrId} = this.props
+            const {addScene,vrId,groupSelectId} = this.props
             const functions = {
                 onCancel:this.onCancelCreateModal.bind(this),
                 addScene
             } 
             return (
-                <CreateSceneModal functions={functions} vrId={vrId}></CreateSceneModal>
+                <CreateSceneModal functions={functions} groupId={groupSelectId} vrId={vrId}></CreateSceneModal>
             )
         }
     }
