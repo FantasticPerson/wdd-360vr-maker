@@ -27,274 +27,276 @@ export function getPanoXml(data){
 
     const view = scene.ele('view')
 
-    // view.att('hlookat', '1')
     view.att('fovtype', 'MFOV')
     view.att('fovmin', 70)
     view.att('fovmax', 140)
-    // view.att('hlookat', data.hAov)
-    // view.att('vlookat', data.vAov)
-    // view.att('vlookatmin', data.vAovMin)
-    // view.att('vlookatmax', data.vAovMax)
-    // view.att('limitview', 'auto')
     view.att('limitview', 'lookat')
 
     const image = scene.ele('image')
     image.att('type', 'CUBE')
-    // image.att('multires', true)
-    // image.att('tilesize', 512)
 
     const cube = image.ele('cube')
     cube.attribute('url',`${data.scenePath}/mobile_%s.jpg`)
 
-    // for (let i = 0; i < data.multires.length; i++) {
-    //     const level = image.ele('level')
-    //     level.att('tiledimagewidth', data.multires[i])
-    //     level.att('tiledimageheight', data.multires[i])
-
-    //     const cube = level.ele('cube')
-    //     cube.att('url', path.join(data.rootPath, 'pano.tiles', `mres_%s/l${data.multires.length - i}/%v/l${data.multires.length - i}_%s_%v_%h.jpg`))
-    // }
-
     return krpano.doc().end()
 }
 
-export function getProductionXml(vrId,sceneList,hotpotList){
-    const krpano = builder.create('krpano')
-    krpano.att('version', Common.KR_VERSION)
-    krpano.att('clientVersion', Common.VERSION)
+export function getProductionXml(vrItem,sceneList,hotpotList,groupList,allSceneList){
+    let productData = krpanoData(vrItem,sceneList,hotpotList,groupList,allSceneList)
+
+    const krpano = xmlBuilder.create('krpano')
+    krpano.att('version',Common.KR_VERSION)
+    krpano.att('clientVersion',Common.KR_VERSION)
 
     const includeFeatureElement = krpano.ele('include')
-    includeFeatureElement.att('url', 'api_export.xml')
+    includeFeatureElement.att('url','./api_export.xml')
 
     const displayModeElement = krpano.ele('displayMode')
-    displayModeElement.att('export', true)
+    displayModeElement.att('export',true)
 
-    let useLensflare = false
-    productData.panoGroups.map(group => {
-        group.panos.map(pano => {
-            sceneXmlData(pano, krpano, options.memberWorkPath, options.allMedias, options.isPreview)
-            useLensflare = pano.effects.sunlightShow ? true : useLensflare
+    productData.groups.map((group)=>{
+        group.scene.map(item=>{
+            getSceneXmlData(item, krpano)
         })
     })
-
-    if (useLensflare) {
-        const includeFeatureElement = krpano.ele('include')
-        
-        includeFeatureElement.att('url', 'krp/lensflare/lensflare.xml')
-    }
-
-    configXmlData(productData, krpano, options.memberWorkPath, options.allMedias, options.isExport)
+    
+    configXmlData(productData,krpano)
 
     let xml = krpano.doc().end()
 
-    if (options.isExport) {
-        xml = replacePathForExport(productData, xml)
-    } else if (!options.isPreview) {
-        xml = replacePathFor720(productData, options.memberWorkPath, xml)
-    } else if (options.isPreview) {
-        xml = replacePathForPreview(options.memberWorkPath, xml)
-    }
-
-    let xmlFormat = xml.replace(/&#xd;/g, '&#xa;')
-    xmlFormat = xmlFormat.replace(/(&#x[^a|A];|&#x.{2};)/g, '')
-
-    return xmlFormat
+    return xml
 }
 
-function sceneXmlData(pano, krpanoXmlNode, memberWorkPath, allMedias, isPreview){
-    const scene = krpanoXmlNode.ele('scene')
-    scene.att('name', `scene_${pano._id}`)
-    scene.att('pano_id', pano._id)
-  
-    const preview = scene.ele('preview')
+function krpanoData(vrItem,sceneList,hotpotList,groupList,allSceneList){
+    let sceneArr = []
 
-    preview.att('url', `${pano.rootPath}/pano.tiles/preview.jpg`)
-    
+    let outPut = []
+
+    for(let i=0;i<groupList.length;i++){
+        
+        let result = []
+        let sArr = allSceneList.filter((item)=>{
+            return item.groupId == groupList[i].id
+        })
+        if(sArr.length > 0){
+            for(let j=0;j<sArr.length;j++){
+                let hotspots = getHotspotList(hotpotList,sArr[j].id)
+                result.push({scene:sArr[j],hotspots:hotspots})
+            }
+            outPut.push({group:groupList[i],scene:result})
+        }
+    }
+    return {item:vrItem,groups:outPut}
+
+    function getHotspotList(list,id){
+        return list.filter((item)=>{
+            return item.sceneId == id
+        })
+    }
+}
+
+function getSceneXmlData(pano,krpano){
+    const scene = krpano.ele('scene')
+    scene.att('name',`scene_${pano.scene.id}`)
+    scene.att('pano_id',pano.scene.id)
+
+    const preview = scene.ele('preview')
+    preview.att('url',`./scene_${pano.scene.id}/preview.jpg`)
+
     const image = scene.ele('image')
     image.att('type', 'CUBE')
     image.att('multires', true)
     image.att('tilesize', 512)
     image.att('if', '!webvr.isenabled AND device.desktop')
-  
-    for (let i = 0; i < pano.multires.length; i++) {
-        const level = image.ele('level')
-        level.att('tiledimagewidth', pano.multires[i])
-        level.att('tiledimageheight', pano.multires[i])
-    
-        const cube = level.ele('cube')
-        cube.att('url', `${pano.rootPath}/pano.tiles/mres_%s/l${pano.multires.length - i}/%v/l${pano.multires.length - i}_%s_%v_%h.jpg`)
-    }
-  
+
+    const cube = image.ele('cube')
+
+    cube.att('url', `./scene_${pano.scene.id}/mobile_%s.jpg`)
+
     const imageMobile = scene.ele('image')
     imageMobile.att('if', 'webvr.isenabled OR !device.desktop')
   
     const mobile = imageMobile.ele('cube')
     
-    mobile.att('url', `${pano.rootPath}/pano.tiles/mobile_%s.jpg`)
-  
+    mobile.att('url', `./scene_${pano.scene.id}/mobile_%s.jpg`)
+
     for (let i = 0; i < pano.hotspots.length; i++) {
-        if (pano.hotspots[i].error == '') {
-                const hotspot = scene.ele('hotspot')
-                hotspot.att('name', `hotspot_${i}`)
-        }
+        const hotspot = scene.ele('hotspot')
+        hotspot.att('name', `hotspot_${i}`)
     }
 }
 
-function configXmlData(productData, krpanoXmlNode, memberWorkPath, allMedias, isExport){
-    const config = krpanoXmlNode.ele('config')
-  
-    infoXmlData(productData, config, memberWorkPath, allMedias, isExport)
-    authXmlData(productData, config, memberWorkPath, allMedias, isExport)
-    featureXmlData(productData, config, memberWorkPath, allMedias, isExport)
-    qrXmlData(productData, config, memberWorkPath, allMedias, isExport)
-    logoXmlData(productData, config, memberWorkPath, allMedias, isExport)
-    thumbsXmlData(productData, config, memberWorkPath, allMedias, isExport)
-    linksXmlData(productData, config, memberWorkPath, allMedias, isExport)
-    panosXmlData(productData, config, memberWorkPath, allMedias, isExport)
+function configXmlData(productData,krpano){
+    const config = krpano.ele('config')
+    infoXmlData(productData,config)
+    authXmlData(productData,config)
+    thumbsXmlData(productData,config)
+    panosXmlData(productData,config)
+} 
+
+function infoXmlData(productData,config){
+    const info = config.ele('info')
+    info.att('id',productData.item.id)
+    info.att('title',productData.item.title)
+    info.att('desc',productData.item.brief)
 }
 
-function replacePathForPreview(memberWorkPath, xml){
-
-    // 为避免将rootPath中的()替换，用一个特殊临时字符串将rootPath替换
-    let tempRootPath = '-R-0O-t_P-aT-H-'
-    if (memberWorkPath.indexOf('(') !== -1) {
-        xml = replaceAll(xml, memberWorkPath, tempRootPath)
-    }
-
-    xml = replacePathForRegExp(xml, '%$PLAYER_DOMAIN%/krp', 'krp')
-    xml = replacePathForRegExp(xml, '%$PLAYER_DOMAIN%/krp/1.19-pr10', 'krp')
-
-    // 将正确的rootPath替换回来
-    if (memberWorkPath.indexOf('(') !== -1) {
-        xml = replaceAll(xml, tempRootPath, memberWorkPath)
-    }
-
-    return xml
+function authXmlData(productData,config){
+    const auth = config.ele('auth')
+    auth.att('auth_name','中威科技')
 }
 
-function infoXmlData(productData, configXmlNode){
-    const info = configXmlNode.ele('info')
-    info.att('pid', productData.pid)
-    info.att('id', productData.dbId ? productData.dbId : productData._id)
-    info.att('title', productData.name)
-    info.att('desc', productData.desc)
-}
-  
-function authXmlData(productData, configXmlNode){
-    const auth = configXmlNode.ele('auth')
-    auth.att('auth_name', productData.member.property.nickname)
-    auth.att('uid', productData.member.property.uid)
-    auth.att('status', productData.member.type)
-    auth.att('link', `https://720yun.com/u/${productData.member.property.uid}`)
-}
-  
-function featureXmlData(productData, configXmlNode){
-    const feature = configXmlNode.ele('feature')
-    feature.att('enable_comment', productData.enableComment === false ? 0 : 1)
-    feature.att('show_comment', productData.showComment === false ? 0 : 1)
-    feature.att('enable_vr', productData.vr === false ? 0 : 1)
-    feature.att('enable_like', productData.like === false ? 0 : 1)
-    feature.att('show_pv', productData.pv === false ? 0 : 1)
-    if (productData.password && productData.password != '') {
-        feature.att('enable_password', 1)
-    } else {
-        feature.att('enable_password', 0)
-    }
-    if (productData.desc && productData.desc != '') {
-        feature.att('enable_intro', 1)
-    } else {
-        feature.att('enable_intro', 0)
-    }
-  
-    feature.att('enable_selected', '0')
-    feature.att('show_auth', productData.author === false ? 0 : 1)
-    feature.att('enable_gyro', productData.gyroscope === true ? 1 : 0)
-    feature.att('enable_littleplanet', productData.starView === false ? 0 : 1)
-    feature.att('enable_share', (productData.share === false || productData.qrLogo == undefined) ? 0 : 1)
-    feature.att('enable_autorotate', productData.autoTour === false ? 0 : 1)
-}
-  
-function qrXmlData(productData, configXmlNode){
-    const qrImage = configXmlNode.ele('qr')
-    qrImage.att('url', 'http://static-qiniu.720static.com/qrlogo.png')
-    if (productData.member.property.avatar != undefined && productData.member.property.avatar != '' ) {
-        qrImage.att('url', `%$AVATAR_DOMAIN%${productData.member.property.avatar}`)
-    }
-    if (productData.qrLogo != undefined && productData.qrLogo != '' ) {
-        qrImage.att('url', `${Common.PRODUCT_DOMAIN}/@/${productData.member.property.uid}/${productData._id}/${productData.qrLogo}`)
-    }
-}
-  
-function logoXmlData(productData, configXmlNode, memberWorkPath, allMedias, isExport){
-    const logo = configXmlNode.ele('logo')
-    if (productData.logo) {
-        if (productData.logo.img === '') {
-            logo.att('enabled', 0)
-        } else {
-            logo.att('enabled', 1)
-            logo.att('align', 1)
-            if (productData.logo.img === '/media/720yunLOGO.png') {
-                logo.att('is_720', 1)
-            } else {
-                logo.att('is_720', 0)
-            }
-            logo.att('url', parseMediaPath(memberWorkPath, allMedias, productData.rootPath, productData.logo.img, false))
+function thumbsXmlData(productData,config){
+    const thumbs = config.ele('thumbs')
+    thumbs.att('title','全景列表')
+    thumbs.att('show_thumb',2)
 
-            logo.att('link', productData.logo.url)
-        }
-  
-    } else {
-        logo.att('enabled', 1)
-        logo.att('align', 1)
-        logo.att('is_720', 1)
-        logo.att('link', productData.logo.url)
-    }
-}
-  
-function thumbsXmlData(productData, configXmlNode, memberWorkPath, allMedias, isExport){
-    const thumbs = configXmlNode.ele('thumbs')
-    thumbs.att('title', '全景列表')
-    thumbs.att('show_thumb', productData.showMenu === false ? 0 : 1)
-  
-    let categoryIndex = 0
-    productData.panoGroups.map(group => {
-        if (group.panos.length > 0) {
-            let category = thumbs.ele('category')
-            category.att('name', `category${categoryIndex}`)
-            category.att('title', group.name)
-            category.att('thumb', '')
-            categoryIndex++
-    
-            group.panos.map(pano => {
-                let panoElement = category.ele('pano')
-                panoElement.att('name', `pano_${pano._id}`)
-                panoElement.att('title', pano.name)
-    
-                panoElement.att('thumb', `${pano.rootPath}${parseMediaPath(memberWorkPath, allMedias, pano.rootPath, pano.thumb, false)}`)
-                
-                panoElement.att('pano_id', pano._id)
-        
-            })
-        }
+    productData.groups.map((group,i)=>{
+        let category = thumbs.ele('category')
+        category.att('name',`category${i}`)
+        category.att('title',group.group.title)
+        category.att('thumb',`./scene_${group.scene[0].scene.id}/thumb.jpg`)
+
+        group.scene.map((pano,i)=>{
+            let panoElement = category.ele('pano')
+            panoElement.att('name',`pano_${pano.scene.id}`)
+            panoElement.att('title',pano.scene.name)
+
+            panoElement.att('thumb',`./scene_${pano.scene.id}/thumb.jpg`)
+            panoElement.att('pano_id',pano.scene.id)
+        })
     })
 }
-  
-function linksXmlData(productData, configXmlNode, memberWorkPath, allMedias, isExport){ 
-    const links = configXmlNode.ele('links')
-    if (productData.linkAndPhone) {
-        let linkIndex = 0
-        productData.linkAndPhone.map(link => {
-            if (link.value != '' && link.title != '') {
-                const linkElement = links.ele('link')
-                linkElement.att('name', `link_${linkIndex}`)
-                linkIndex++
-                linkElement.att('title', link.title)
 
-                linkElement.att('url', parseMediaPath(memberWorkPath, allMedias,productData.rootPath, link.icon, false))
-              
-                linkElement.att('link_type', 1)
-                linkElement.att('link', link.value)
+function panosXmlData(productData,config){
+    const panos = config.ele('panos')
+
+    productData.groups.map(group=>{
+        group.scene.map(pano=>{
+            const panoElement = panos.ele('pano')
+            panoElement.att('name',`scene_${pano.scene.id}`)
+
+            const info = panoElement.ele('info')
+            info.att('pano_id',pano.scene.id)
+            info.att('title',pano.scene.name)
+
+            const view = panoElement.ele('view')
+            view.att('hloolat',pano.scene.hlookat || 0)
+            view.att('vloolat',pano.scene.vlookat || 0)
+            view.att('fov',pano.scene.fov || 75)
+            view.att('fovtype','MFOV')
+            view.att('maxpixelzoom',2.0)
+            view.att('fovmin',pano.scene.fovmin || -5)
+            view.att('fovmax',pano.scene.fovmax || 155)
+            view.att('vlookatmin',pano.scene.vlookatmin || -90)
+            view.att('vlookatmax',pano.scene.vlookatmax || 90)
+
+            view.att('autorotatekeepview',0)
+            view.att('loadscenekeepview',0)
+
+            panoElement.ele('start_image_pc')
+            panoElement.ele('start_image_mobile')
+
+            const hotspots = panoElement.ele('hotspots')
+
+            let hotspotIndex = 0
+            pano.hotspots.map(hotspotData=>{
+                let actionObj = JSON.parse(hotspotData.action)
+                const hotspot = hotspots.ele('hotspot')
+                hotspot.att('name', `hotspot_${hotspotIndex}`)
+                hotspotIndex++
+
+                let iconId = String(hotspotData.icon).length == 1 ? 0+''+hotspotData.icon:String(hotspotData.icon)
+                if(hotspotData.animated){
+                    hotspot.att('style_id', `new_spotd${iconId}`)
+                    hotspot.att('image_type', 1)
+                } else {
+                    hotspot.att('image_type',2)
+                    hotspot.att('image_url', `./krp/hotspotIcons/new_spotd01_gif.png`)
+
+                }
+
+                hotspot.att('ath',hotspotData.ath)
+                hotspot.att('atv',hotspotData.atv)
+
+                switch(actionObj.type){
+                    case 'switch':
+                        hotspot.att('type',0)
+                        hotspot.att('title',actionObj.title || '123')
+                        hotspot.att('url',actionObj.toId)
+                        hotspot.att('blend',actionObj.switchType)
+                        break
+                    case 'link':
+                        hotspot.att('type',1)
+                        hotspot.att('title',actionObj.title)
+                        hotspot.att('url',actionObj.url)
+                        hotspot.att('is_blank',actionObj.openInNewWindow ? 1 : 0)
+                        break;
+                    case 'pictures':
+                        hotspot.att('type',2)
+                        hotspot.att('title',actionObj.title)
+                        hotspot.att('url',actionObj.moreInfo ? actionObj.moreInfo : '')
+                        hotspot.att('is_blank',actionObj.openInNewWindow ? 1 : 0)
+                        let imageIndex = 0
+                        actionObj.pics.map((item)=>{
+                            const imageElement = hotspot.ele('image')
+                            imageElement.att('name',`image_${imageIndex}`)
+                            imageElement.att('title','')
+                            imageElement.att('url', `./picture/${item}`)
+                            imageIndex++
+                        })
+                        break
+                    case 'video':
+                        hotspot.att('type',3)
+                        hotspot.att('text',actionObj.url)
+                        hotspot.att('title',actionObj.title)
+                        hotspot.att('url',actionObj.moreInfo)
+                        hotspot.att('is_blank',actionObj.openInNewWindow ? 1 : 0)
+                        break
+                    case 'text':
+                        hotspot.att('type',4)
+                        hotspot.att('text',actionObj.content)
+                        hotspot.att('title',actionObj.title)
+                        hotspot.att('url',actionObj.moreInfo)
+                        hotspot.att('is_blank',actionObj.openInNewWindow ? 1 : 0)
+                        break
+                    case 'audio':
+                        hotspot.att('type',5)
+                        hotspot.att('title',actionObj.title)
+                        hotspot.att('url',`./audio/${actionObj.url}`)
+                        break
+                    case 'picAndText':
+                        hotspot.att('type',6)
+                        hotspot.att('title',actionObj.title)
+                        hotspot.att('url',actionObj.moreInfo ? actionObj.moreInfo : '')
+                        hotspot.att('is_blank',actionObj.openInNewWindow ? 1 : 0)
+
+                        let mixIndex = 0
+                        actionObj.picArr.map(item=>{
+                            const imageElement = hotspot.ele('image')
+                            imageElement.att('name',`image_${mixIndex}`)
+                            imageElement.att('title',item.text)
+                            imageElement.att('url',`./picture/${item.pic}`)
+                            imageElement.att('text',item.text)
+                            mixIndex++
+                        })
+                        break
+                    case 'viewer':
+                        break
+                } 
+            })
+            if(pano.scene.hasOwnProperty('effectLevel') && pano.scene.hasOwnProperty('effectType')){
+                if(parseInt(pano.scene.effectLevel) > 0){
+                    const weather = panoElement.ele('weather')
+                    if(pano.scene.effectType == 'rain'){
+                        weather.att('id', 1)
+                        weather.att('size', parseInt(pano.scene.effectLevel))
+                    } else {
+                        weather.att('id', 0)
+                        weather.att('size', parseInt(pano.scene.effectLevel))
+                    }
+                }
             }
         })
-    }
+    })
 }

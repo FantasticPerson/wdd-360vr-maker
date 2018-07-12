@@ -14,21 +14,13 @@ export function getPanoXml(data){
 
     const view = scene.ele('view')
 
-    // view.att('hlookat', '1')
     view.att('fovtype', 'MFOV')
     view.att('fovmin', 70)
     view.att('fovmax', 140)
-    // view.att('hlookat', data.hAov)
-    // view.att('vlookat', data.vAov)
-    // view.att('vlookatmin', data.vAovMin)
-    // view.att('vlookatmax', data.vAovMax)
-    // view.att('limitview', 'auto')
     view.att('limitview', 'lookat')
 
     const image = scene.ele('image')
     image.att('type', 'CUBE')
-    // image.att('multires', true)
-    // image.att('tilesize', 512)
 
     const cube = image.ele('cube')
     cube.attribute('url',`${data.scenePath}/mobile_%s.jpg`)

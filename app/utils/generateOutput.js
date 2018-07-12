@@ -11,7 +11,7 @@ const {
 import {getScenePath} from '../native/pathUtils'
 
 import {IMG_NAME_ARR} from '../constants.js'
-import {getProductionXml} from './xmlBuilder2'
+import {getProductionXml} from './xmlBuilder'
 
 import copyFolder from '../native/copyFolder'
 
@@ -105,7 +105,7 @@ export function GenerateOutput(vrItem,sceneList,hotpotList,groupList,allSceneLis
 
     const template = swig.compileFile(path.resolve(electron_app_root_path, window.NODE_ENV == 'prod' ? './app.asar/html/pano.html' : '../html/pano.html'))
 
-    fs.writeFileSync(path.resolve(vrPath, './index.html'), template({ title: '666' }))
+    fs.writeFileSync(path.resolve(vrPath, './index.html'), template({ title: vrItem.title }))
 
     fs.createReadStream(path.resolve(electron_app_root_path, window.NODE_ENV == 'prod' ? './app.asar/krpano/api_export_jiemi2.xml' : '../krpano/api_export_jiemi2.xml'),).pipe(fs.createWriteStream(path.resolve(vrPath, './api_export.xml')));
 
