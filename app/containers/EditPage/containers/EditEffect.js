@@ -20,9 +20,8 @@ class EditEffect extends Component{
         this.state = {rainType:'0',snowType:'0'}
     }
 
-
     componentDidMount(){
-        const {sceneSelectedItem,sceneSelected,updateEffect,AddEffect} = this.props
+        const {sceneSelectedItem,sceneSelected,updateEffect,AddEffect,AddSunlight} = this.props
 
         if(sceneSelectedItem.hasOwnProperty('effectType') && sceneSelectedItem.hasOwnProperty('effectLevel')){
             if(sceneSelectedItem.effectType == 'rain'){
@@ -33,13 +32,20 @@ class EditEffect extends Component{
                 AddEffect('snow',sceneSelectedItem.effectLevel)
             }
         }
+        if(sceneSelectedItem.hasOwnProperty('sunlight')){
+            let sunlight = sceneSelectedItem.sunlight
+            if(sunlight.length > 0){
+                let sunObj = JSON.parse(sunlight)
+
+                AddSunlight(sunObj)
+            }
+        }
     }
 
     componentWillReceiveProps(obj,cObj){
 
         let nItem = obj.sceneSelectedItem
         let cItem = cObj.sceneSelectedItem
-
 
         const {AddEffect} = this.props
 
@@ -86,6 +92,26 @@ class EditEffect extends Component{
         }
     }
 
+    addSunlight(){
+        const {sceneSelectedItem} = this.props
+        if(sceneSelectedItem){
+            if(sceneSelectedItem.sunlight && sceneSelectedItem.sunlight.length > 0){
+                return 
+            }
+            const {addSunlight,sceneSelected} = this.props
+            addSunlight(sceneSelected)
+        }
+    }
+
+    removeSunlight(){
+        const {sceneSelectedItem,removeSunlight} = this.props
+        if(sceneSelectedItem){
+            if(sceneSelectedItem.sunlight && sceneSelectedItem.sunlight.length > 0){
+                removeSunlight(sceneSelectedItem.id)
+            }
+        }
+    }
+
     render(){
         let rainTypes = ["关闭","小雨","中雨","大雨"]
         let snowTypes = ["关闭","小雪","中雪","大雪"]
@@ -117,6 +143,8 @@ class EditEffect extends Component{
                     </span>
                 </div>
                 <div>
+                    <FlatButton variant="contained" color="primary" style={{marginLeft:'10px'}} onClick={this.addSunlight.bind(this)}>添加阳光</FlatButton>
+                    <FlatButton  style={{marginLeft:'10px'}} onClick={this.removeSunlight.bind(this)}>删除</FlatButton>
                     <div>下雨</div>
                     <RadioButtonGroup
                         name="rain"

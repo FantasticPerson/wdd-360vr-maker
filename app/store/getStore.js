@@ -65,7 +65,8 @@ export const editIndexConfig = {
 
 export const panoConfig = {
     hotpotList:true,
-    sceneSelected:true
+    sceneSelected:true,
+    sceneSelectedItem:true
 }
 
 export const editSceneConfig = {
@@ -82,7 +83,10 @@ export const editMusicConfig={
     groupSelectId:true,
     groupList:true,
     vrItem:true,
-    groupSelectItem:true
+    groupSelectItem:true,
+    sceneSelected:true,
+    sceneSelectedItem:true,
+    sceneList:true
 }
 
 export function getSelector(config){

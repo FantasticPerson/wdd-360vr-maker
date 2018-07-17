@@ -130,7 +130,7 @@ function configXmlData(productData,krpano){
     const config = krpano.ele('config')
     infoXmlData(productData,config)
     authXmlData(productData,config)
-    thumbsXmlData(productData,config)
+    thumbsXmlData(productData,config,krpano)
     panosXmlData(productData,config)
 } 
 
@@ -146,10 +146,12 @@ function authXmlData(productData,config){
     auth.att('auth_name','中威科技')
 }
 
-function thumbsXmlData(productData,config){
+function thumbsXmlData(productData,config,krpano){
     const thumbs = config.ele('thumbs')
     thumbs.att('title','全景列表')
     thumbs.att('show_thumb',2)
+
+    let useSunlight = false
 
     productData.groups.map((group,i)=>{
         let category = thumbs.ele('category')
@@ -164,8 +166,18 @@ function thumbsXmlData(productData,config){
 
             panoElement.att('thumb',`./scene_${pano.scene.id}/thumb.jpg`)
             panoElement.att('pano_id',pano.scene.id)
+
+            if(pano.scene.hasOwnProperty('sunlight') && pano.scene.sunlight.length > 0){
+                useSunlight = true
+            }
         })
     })
+
+    if(useSunlight){
+        const includeFeatureElement = krpano.ele('include')
+
+        includeFeatureElement.att('url', './krp/lensflare/lensflare.xml')
+    }
 }
 
 function panosXmlData(productData,config){
@@ -285,6 +297,16 @@ function panosXmlData(productData,config){
                         break
                 } 
             })
+            if (pano.scene.music1) {
+                const sound = panoElement.ele('sound')
+                sound.att('url', `./audio/${pano.scene.music1}`)
+            }
+
+            if(pano.scene.music2){
+                const voice = panoElement.ele('voice')
+                voice.att('url', `./audio/${pano.scene.music2}`)
+            }
+
             if(pano.scene.hasOwnProperty('effectLevel') && pano.scene.hasOwnProperty('effectType')){
                 if(parseInt(pano.scene.effectLevel) > 0){
                     const weather = panoElement.ele('weather')
@@ -295,6 +317,17 @@ function panosXmlData(productData,config){
                         weather.att('id', 0)
                         weather.att('size', parseInt(pano.scene.effectLevel))
                     }
+                }
+            }
+            if(pano.scene.hasOwnProperty('sunlight')){
+                if(pano.scene.sunlight.length > 0){
+                    let sunlightObj = JSON.parse(pano.scene.sunlight)
+                    const sunlight = panoElement.ele('sun')
+                    
+                    sunlight.att('enabled', 1)
+                    sunlight.att('id', 2)
+                    sunlight.att('ath', sunlightObj.ath)
+                    sunlight.att('atv', sunlightObj.atv)
                 }
             }
         })

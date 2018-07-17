@@ -34,7 +34,10 @@ export default [
                 'vlookatmax',
                 'effectType',
                 'effectLevel',
-                'timestamp'
+                'timestamp',
+                'sunlight',
+                'music1',
+                'music2'
             ],
             folder: [
                 'id',

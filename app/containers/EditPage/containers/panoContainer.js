@@ -8,11 +8,12 @@ import Common from '../../../utils/common'
 
 import * as actions from '../../../actions/krpano'
 import * as hotspotActions from '../../../actions/hotpot'
+import * as sceneActions from '../../../actions/scene'
 
 class PanoContainer extends Component{
     constructor(){
         super()
-        this.state = {updateObj:null}
+        this.state = {updateObj:null,updateSunlightObj:null}
         this._mounted = false
     }
 
@@ -21,6 +22,12 @@ class PanoContainer extends Component{
             if(this._mounted && state.updateObj){
                 this.props.updateHotpotPos(state.updateObj)
                 this.setState({updateObj:null})
+            }
+
+            if(this._mounted && state.updateSunlightObj){
+                const {id,ath,atv} = state.updateSunlightObj
+                this.props.updateSunlight(id,ath,atv)
+                this.setState({updateSunlightObj:null})
             }
         },20)
     }
@@ -46,6 +53,21 @@ class PanoContainer extends Component{
         }
     }
 
+    updateSunlight(ath,atv){
+        const {sceneSelectedItem} = this.props
+        if(sceneSelectedItem){
+            let sunlightObj = sceneSelectedItem.sunlight && sceneSelectedItem.sunlight.length > 0 ? JSON.parse(sceneSelectedItem.sunlight) : null 
+            
+            if(sunlightObj){
+                if(sunlightObj.ath == ath || sunlightObj.atv == atv){
+                    return
+                }
+            }
+
+            this.setState({updateSunlightObj:{id:sceneSelectedItem.id,ath,atv}})
+        }
+    }
+
     componentDidMount(){
         this._mounted = true
         embedpano({
@@ -66,6 +88,8 @@ class PanoContainer extends Component{
                 this.props.showEditHotpot()
             }
         }
+
+        top.window.onKrpSunHotspotMoveEnd = this.updateSunlight.bind(this)
     }
 
     componentWillUnmount() {
@@ -87,7 +111,8 @@ class PanoContainer extends Component{
 function mapDispatchToProps(dispatch){
     return {
         ...bindActionCreators(actions,dispatch),
-        ...bindActionCreators(hotspotActions,dispatch)
+        ...bindActionCreators(hotspotActions,dispatch),
+        ...bindActionCreators(sceneActions,dispatch)
     }
 }
 

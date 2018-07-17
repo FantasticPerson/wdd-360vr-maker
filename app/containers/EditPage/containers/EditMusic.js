@@ -13,6 +13,7 @@ import ReactAudioPlayer from 'react-audio-player';
 import * as audioActions from '../../../actions/audio'
 import * as vrActions from '../../../actions/vr'
 import * as GroupActions from '../../../actions/group'
+import * as sceneActions from '../../../actions/scene'
 
 import {editMusicConfig,getSelector} from '../../../store/getStore'
 
@@ -23,9 +24,9 @@ class EditMusic extends Component{
     }
 
     componentDidMount(){
-        const {groupSelectItem} = this.props
-        if(groupSelectItem){
-            this.setState({url:groupSelectItem.music1,url2:groupSelectItem.music2})
+        const {sceneSelectedItem} = this.props
+        if(sceneSelectedItem){
+            this.setState({url:sceneSelectedItem.music1,url2:sceneSelectedItem.music2})
         }
     }
 
@@ -92,38 +93,52 @@ class EditMusic extends Component{
         }
     }
 
+    onRemoveMusic1(){
+        this.setState({url:null})
+    }
+
     renderMusic(){
         const {url} = this.state
         if(url){
             return (
-                <div>{url}</div>
+                <div>
+                    {url}
+                    <FlatButton color="primary" onClick={()=>{this.onRemoveMusic1()}}>删除</FlatButton>
+                </div>
             )
         }
+    }
+
+    onRemoveMusic2(){
+        this.setState({url2:null})
     }
 
     renderMusic2(){
         const {url2} = this.state
         if(url2){
             return (
-                <div>{url2}</div>
+                <div>
+                    {url2}
+                    <FlatButton color="primary" onClick={()=>{this.onRemoveMusic2()}}>删除</FlatButton>
+                </div>
             )
         }
     }
 
     onConfirmClick(){
-        const {groupSelectItem,updateGroupMusic,onfinish} = this.props
+        const {onfinish,updateSceneMusic,sceneSelectedItem} = this.props
         const {url,url2} = this.state
-        if(groupSelectItem){
-            updateGroupMusic(groupSelectItem,url,url2)
+        if(sceneSelectedItem){
+            updateSceneMusic(sceneSelectedItem,url,url2)
             onfinish()
         }
     }
 
     onAllConfirmClick(){
-        const {groupList,updateAllGroupMusic,onfinish} = this.props
+        const {onfinish,updateAllMusic,sceneList} = this.props
         const {url,url2} = this.state
-        if(groupList.length > 0){
-            updateAllGroupMusic(groupList,url,url2)
+        if(sceneList.length > 0){
+            updateAllMusic(sceneList,url,url2)
             onfinish()
         }
     }
@@ -176,7 +191,8 @@ function mapDispatchToProps(dispatch){
     return {
         ...bindActionCreators(audioActions,dispatch),
         ...bindActionCreators(vrActions,dispatch),
-        ...bindActionCreators(GroupActions,dispatch)
+        ...bindActionCreators(GroupActions,dispatch),
+        ...bindActionCreators(sceneActions,dispatch)
     }
 }
 
