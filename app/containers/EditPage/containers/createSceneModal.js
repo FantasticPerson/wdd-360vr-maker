@@ -37,6 +37,12 @@ export default class CreateVrModal extends Component {
         onCancel();
     }
 
+
+    onUploadMoreClick(){
+        const {showAddScenes} = this.props.functions
+        showAddScenes()
+    }
+
     onConfirmClick() {
         const {tmpImgStatus} = this.state
         const { onCancel,addScene } = this.props.functions;
@@ -110,8 +116,6 @@ export default class CreateVrModal extends Component {
                 <DialogContent style={{width:'500px'}}>
                     <div style={{display:'inline-block',width:'50%',height:'160px'}}>
                         <TextField
-                            id="with-placeholder"
-                            label="With placeholder"
                             placeholder="Placeholder"
                             margin="normal"
                             inputRef={(input) => this.titleRef = input}
@@ -120,6 +124,7 @@ export default class CreateVrModal extends Component {
                     </div>
                     <div style={{display:'inline-block',width:'50%',height:'260px',verticalAlign:'top'}}>
                         <Button  variant="contained" color="primary"style={{marginLeft:'47px'}} onClick={this.onOpenFileClick.bind(this)}>{'添加全景'}</Button>
+                        <Button  variant="contained" color="primary"style={{    marginLeft: '140px',marginTop: '-60px'}} onClick={this.onUploadMoreClick.bind(this)}>{'批量上传'}</Button>
                         {this.renderUploadPic()}
                     </div>
                 </DialogContent>

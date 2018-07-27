@@ -11,6 +11,7 @@ import {getHeadImgUrl,getScenePath} from '../../../native/pathUtils'
 import {editSceneConfig,getSelector} from '../../../store/getStore'
 
 import CreateSceneModal from './createSceneModal'
+import CreateScenesModal from './CreateScenesModal'
 import EditSceneModal from './EditSceneModal'
 import SceneContextMenu from './SceneContextMenu'
 import CreateGroupModal from './CreateGroupModal'
@@ -30,6 +31,7 @@ class EditSceneContainer extends Component{
             contextSceneData:{},
             showEditModal:false,
             showCreateScene:false,
+            showCreateScenes:false,
             hasSelectedId:false,
             contextGroupData:null,
             showCreateGroup:false,
@@ -97,7 +99,6 @@ class EditSceneContainer extends Component{
             this.props.updateSelected(id)
         }
     }
-
 
     showCreateGroupModal(){
         this.setState({showCreateGroup:true})
@@ -279,15 +280,38 @@ class EditSceneContainer extends Component{
         this.setState({showCreateScene:false})        
     }
 
+    onShowUploadScenes(){
+        this.setState({showCreateScene:false,showCreateScenes:true})
+    }
+
     renderCreateModal(){
         if(this.state.showCreateScene){
             const {addScene,vrId,groupSelectId} = this.props
             const functions = {
                 onCancel:this.onCancelCreateModal.bind(this),
-                addScene
+                addScene,
+                showAddScenes:this.onShowUploadScenes.bind(this)
             } 
             return (
                 <CreateSceneModal functions={functions} groupId={groupSelectId} vrId={vrId}></CreateSceneModal>
+            )
+        }
+    }
+
+
+    onCancelCreateScenes(){
+        this.setState({showCreateScenes:false})
+    }
+
+    renedrCreateScenes(){
+        if(this.state.showCreateScenes){
+            const {addScene,vrId,groupSelectId} = this.props
+            const functions = {
+                onCancel:this.onCancelCreateScenes.bind(this),
+                addScene
+            } 
+            return (
+                <CreateScenesModal functions={functions} groupId={groupSelectId} vrId={vrId}></CreateScenesModal>
             )
         }
     }
@@ -354,6 +378,7 @@ class EditSceneContainer extends Component{
                     {this.renderCreateGroupModal()}
                     {this.renderGroupContext()}
                     {this.renderSceneMove()}
+                    {this.renedrCreateScenes()}
                 </div>
             </div>
         )

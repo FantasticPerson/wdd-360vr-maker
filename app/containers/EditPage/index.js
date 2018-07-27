@@ -34,6 +34,8 @@ import EditHotSpot from './containers/EditHotpot'
 import EditEffect from './containers/EditEffect'
 import EditMusic from './containers/EditMusic'
 
+import CreateScenesModal from './containers/CreateScenesModal'
+
 class EditPage extends Component{
     constructor(){
         super()
@@ -145,6 +147,7 @@ class EditPage extends Component{
                     {this.renderEditMusic()}
                     {this.renderEditViewPort()}
                 </div>
+                {/* <CreateScenesModal></CreateScenesModal> */}
             </div>
         )
     }
