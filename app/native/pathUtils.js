@@ -18,7 +18,7 @@ export function getPreviewPath(){
 }
 
 export function getPanoTool(){
-    let toolPath = path.resolve(window.electron_app_root_path, window.NODE_ENV == 'prod' ? './app.asar/tools' : '../tools')
+    let toolPath = path.resolve(window.electron_app_root_path, window.NODE_ENV == 'prod' ? './tools' : '../tools')
 
     const platform = os.platform()
     const arch = os.arch()
