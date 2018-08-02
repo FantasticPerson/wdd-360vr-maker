@@ -45,14 +45,15 @@ export default class CreateVrModal extends Component {
 
     onConfirmClick() {
         const {tmpImgStatus} = this.state
-        const { onCancel,addScene } = this.props.functions;
+        const { onCancel,addScene,updateGroup } = this.props.functions;
+        const {groupItem} = this.props
 
         const title = this.titleRef.value.trim();
 
         if (title.length > 0 && tmpImgStatus == 'ready') {
             let sceneId = `scene_${new Hashid().encode()}`
             const {vrId,groupId} = this.props
-            const {onCancel,addScene} = this.props.functions
+            const {onCancel,addScene,updateGroup} = this.props.functions
             
             copyImageToScene(getScenePath(sceneId))
             .then(()=>{
@@ -63,6 +64,10 @@ export default class CreateVrModal extends Component {
                         name:title,
                         groupId
                     })
+                    let selectIds = groupItem.sceneListIds || []
+                    selectIds.push(sceneId)
+                    let newGroupItem = {...groupItem,sceneListIds:selectIds}
+                    updateGroup(newGroupItem)
                 },20) 
             })
             .catch((e)=>{

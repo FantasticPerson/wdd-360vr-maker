@@ -33,6 +33,20 @@
     padding-right:5px; 
 }
 
+.sceneContainer span{
+    display: none;
+}
+
+.sceneContainer span:hover{
+    cursor: move
+}
+
+.sceneContainer:hover span{
+    display: block;
+}
+
+
+
 .scene{
     width: 100%;
     height: 90px;

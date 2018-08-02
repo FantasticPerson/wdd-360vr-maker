@@ -3,7 +3,8 @@ import * as actions from '../actions/app'
 
 const defaultState = {
     title:'VR 制作工具',
-    showBack:false
+    showBack:false,
+    showType:1
 }
 
 const app = createReducer({
@@ -12,6 +13,9 @@ const app = createReducer({
     },
     [actions.dUpdataAppShowBack]:(state,showBack)=>{
         return {...state,showBack:showBack}
+    },
+    [actions.dUpdateHomeShowType]:(state,type)=>{
+        return {...state,showType:type}
     }
 },defaultState)
 

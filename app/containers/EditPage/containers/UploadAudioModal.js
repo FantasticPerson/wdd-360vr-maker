@@ -10,10 +10,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import FlatButton from '@material-ui/core/Button';
 
-// import TextField from 'material-ui/TextField';
-// import FlatButton from 'material-ui/FlatButton';
-// import RaisedButton from 'material-ui/RaisedButton';
-import styles from '../../../styles/createSceneModal.css'//../styles/createSceneModal.css
+import styles from '../../../styles/createSceneModal.css'
 import openAudio from '../../../native/openAudio'
 import CopyAudioToAudioTmp from '../../../native/copyAudioToTmpAudio'
 import getPathOfAudio from '../../../native/getPathOfAudio'
@@ -37,7 +34,6 @@ class UploadPicModal extends Component{
                         controls
                         style={{width:'100px'}}
                     />
-                    {/* <img className={styles.thumb} src={imgUrl}/> */}
                 </div>
             )
         }
@@ -52,7 +48,6 @@ class UploadPicModal extends Component{
             }
         })
         .then((name)=>{
-            console.log(name)
             setTimeout(()=>{
                 this.setState({audioName:name})
             },300)
@@ -74,10 +69,6 @@ class UploadPicModal extends Component{
 
     render(){
         const {onConfirm,onCancel} = this.props;
-        // const actions = [
-        //     <FlatButton label="取消" onClick={()=>{onCancel()}} primary />,
-        //     <FlatButton label="确认" onClick={()=>{this.onConfirmClick()}}primary />
-        // ];
         return (
             <Dialog
                 open
@@ -98,14 +89,6 @@ class UploadPicModal extends Component{
                 </DialogActions>
             </Dialog>
         )
-        // return (
-        //     <Dialog title={'添加音乐'} open actions={actions}>
-        //         <div style={{display:'inline-block',width:'100%',height:'260px',verticalAlign:'top'}}>
-        //             <RaisedButton onClick={this.onUploadClick.bind(this)} label="添加音乐" primary={true} style={{marginLeft:'47px'}}/>
-        //             {this.renderUploadPic()}
-        //         </div>
-        //     </Dialog>
-        // )
     }
 }
 

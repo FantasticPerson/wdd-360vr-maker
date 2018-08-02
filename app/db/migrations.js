@@ -37,7 +37,8 @@ export default [
                 'timestamp',
                 'sunlight',
                 'music1',
-                'music2'
+                'music2',
+                'index'
             ],
             folder: [
                 'id',
@@ -50,7 +51,8 @@ export default [
                 'vrId',
                 'timestamp',
                 'music1',
-                'music2'
+                'music2',
+                'sceneListIds'
             ],
             hotpot:[
                 'id',

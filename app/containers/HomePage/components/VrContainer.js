@@ -18,6 +18,7 @@ import getScenePath from '../../../native/getScenePath'
 import * as vrActions from '../../../actions/vr'
 import * as sceneActions from '../../../actions/scene'
 import * as groupActions from '../../../actions/group'
+import * as pictureActions from '../../../actions/picture'
 
 import CreateVrModal from './CreateVrModal'
 import VrItem from './vrItem'
@@ -63,12 +64,13 @@ class VrContainer extends Component{
     renderCreateVrModal(){
         if(this.state.showCreateVrModal){
             const {vrContextItem} = this.state
-            const {addScene,addVr,modifyVr,addGroup} = this.props
+            const {addScene,addVr,modifyVr,addGroup,addPicture} = this.props
             const functions = {
                 addScene,
                 addVr,
                 modifyVr,
                 addGroup,
+                addPicture,
                 onCancel:this.onCancelClick.bind(this)
             }
 
@@ -133,7 +135,8 @@ function mapDispatchToProps(dispatch){
     return {
         ...bindActionCreators(vrActions,dispatch),
         ...bindActionCreators(sceneActions,dispatch),
-        ...bindActionCreators(groupActions,dispatch)
+        ...bindActionCreators(groupActions,dispatch),
+        ...bindActionCreators(pictureActions,dispatch)
     }
 }
 

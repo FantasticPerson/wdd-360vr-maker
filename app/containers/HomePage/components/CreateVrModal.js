@@ -20,14 +20,20 @@ import Hashid from '../../../utils/generateHashId'
 
 import createPano from '../../../utils/createPano'
 
+import checkVrCoverValid from '../../../utils/checkVrCoverValid'
+
 import {getScenePath,getHeadImgUrl,getTmpPreviewPath} from '../../../native/pathUtils'
+
+import {moveImgToImage,copyImagaToTmpImage,copyImageTmpToImage} from '../../../utils/copyUtil'
+
+import {getTmpImagePath,getImagePath} from '../../../native/pathUtils'
 
 
 export default class CreateVrModal extends Component {
     constructor() {
         super();
-        this.state = {tmpImgStatus:'empty'}
-        this.previewImg = getTmpPreviewPath()
+        this.state = {tmpImgStatus:false,imgName:null}
+        
 
         this.titleRef = React.createRef();
         this.summaryRef = React.createRef();
@@ -38,7 +44,7 @@ export default class CreateVrModal extends Component {
     }
 
     onConfirmClick() {
-        const { tmpImgStatus } = this.state
+        const { tmpImgStatus,imgName } = this.state
 
         const title = this.titleRef.value.trim();
         const brief = this.summaryRef.value.trim();
@@ -46,28 +52,28 @@ export default class CreateVrModal extends Component {
         if (title.length > 0) {
             const {data} = this.props
             if(!data){
-                if(tmpImgStatus == 'ready'){
-                    const {addScene,addVr,onCancel,addGroup} = this.props.functions
+                if(tmpImgStatus){
+                    const {addVr,onCancel,addGroup,addPicture} = this.props.functions
         
                     let id = `vr_${new Hashid().encode()}`
                     let sceneId = `scene_${new Hashid().encode()}`
-
                     let groupId = `group_${new Hashid().encode()}`
-
-                    let previewImg = getHeadImgUrl(sceneId)
+                    let previewImg = imgName ? getImagePath(imgName) : null
                     
 
-                    addVr({title,brief,headImg:previewImg,music1:null,music2:null,id})
-                    addScene({vrid:id,name:title,id:sceneId,groupId:groupId})
+                    let arr = imgName.split('.')
+                    let picItem = {
+                        id:arr[0],
+                        extension:arr[1]
+                    }
+                    addPicture(picItem)
 
-                    addGroup('默认',id,groupId)
-        
-                    copyImageToScene(getScenePath(sceneId))
-                    .catch((e)=>{
-                        console.error(e)
-                    })
-                } else {
-                    alert('请先上传一个场景!')
+                    copyImageTmpToImage(imgName)
+
+                    setTimeout(()=>{
+                        addVr({title,brief,headImg:previewImg,music1:null,music2:null,id})
+                        addGroup('默认',id,groupId)
+                    },500)
                 }
             } else {
                 const {modifyVr} = this.props.functions
@@ -80,34 +86,38 @@ export default class CreateVrModal extends Component {
     }
 
     onOpenFileClick(){
-        openFolder()
+        openFolder(['openFile'],[{name: 'Images', extensions: ['jpg', 'png', 'gif']}])
         .then((res)=>{
-            if(res[0] && res[0].indexOf('.jpg') >= 0){
-                this.setState({tmpImgStatus:'process'})
-                return createPano(res[0])
+            if(res[0]){
+                return checkVrCoverValid(res[0])
             } else {
                 return new Promise.reject()
             }
         })
-        .then(()=>{
+        .then((path)=>{
+            return copyImagaToTmpImage(path)
+        })
+        .then((name)=>{
             setTimeout(()=>{
-                this.setState({tmpImgStatus:'ready'})
+                this.setState({tmpImgStatus:true,imgName:name})
             },800)
         })
         .catch((err)=>{
             console.error(err)
-            alert('上传图片失败!请重试')
+            alert(err)
         })
     }
 
     renderUploadPic(){
-        const {tmpImgStatus} = this.state
-        if(tmpImgStatus != 'ready'){
-            return <div className={styles.imgContainer}>{tmpImgStatus=='empty' ? '等待上传' : '处理图片中 请稍候...'}</div>
+        const {tmpImgStatus,imgName} = this.state
+        if(!tmpImgStatus){
+            return <div className={styles.imgContainer}><br/><br/><span>{'上传封面'}</span><br/><span>{'大小:512*512'}</span></div>
         } else {
+            let imgPath = getTmpImagePath(imgName)
+            
             return (
                 <div className={styles.imgContainer}>
-                    <img className={styles.thumb} src={this.previewImg}/>
+                    <img className={styles.thumb} src={imgPath}/>
                 </div>
             )
         }
@@ -122,10 +132,8 @@ export default class CreateVrModal extends Component {
         let defaultBrief = data ? data.brief : ''
 
         return (
-            <Dialog
-                open={true}
-            >
-                <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+            <Dialog open>
+                <DialogTitle>{title}</DialogTitle>
                 <DialogContent style={{width:'500px'}}>
                     <div style={{display:'inline-block',width:width,height:'160px'}}>
                         <TextField 
@@ -146,7 +154,7 @@ export default class CreateVrModal extends Component {
                         />
                     </div>
                     <div style={{display:picDisplay,width:'50%',height:'260px',verticalAlign:'top'}}>
-                        <Button color="primary" style={{marginLeft:'47px'}} onClick={this.onOpenFileClick.bind(this)}>{'添加全景'}</Button>
+                        <Button color="primary" style={{marginLeft:'47px'}} onClick={this.onOpenFileClick.bind(this)}>{'添加封面'}</Button>
                         {this.renderUploadPic()}
                     </div>
                 </DialogContent>

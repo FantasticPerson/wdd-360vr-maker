@@ -17,6 +17,10 @@ export function getPreviewPath(){
     return path.resolve(tmpPath,'./thumb.jpg')
 }
 
+export function getTmpImagePath(name){
+    return path.resolve(window.electron_app_pic_tmp,`./${name}`)
+}
+
 export function getPanoTool(){
     let toolPath = path.resolve(window.electron_app_root_path, window.NODE_ENV == 'prod' ? './tools' : '../tools')
 
@@ -38,4 +42,12 @@ export function getPanoTool(){
 
 export function getTmpPreviewPath(){
     return path.resolve(cPTmep,'./pano.tiles/thumb.jpg')
+}
+
+export function getImagePath(name){
+    return path.resolve(window.electron_app_pic_path,'./'+name)
+}
+
+export function getAudioPath(name){
+    return path.resolve(window.electron_app_audio_path,'./'+name)
 }

@@ -12,7 +12,8 @@ Group.update = (obj)=>{
         folderId:obj.folderId,
         vrId:obj.vrId,
         music1:obj.music1,
-        music2:obj.music2
+        music2:obj.music2,
+        sceneListIds:obj.sceneListIds
     })
 }
 
@@ -23,7 +24,8 @@ Group.updateAllGroup = (arr) => {
             folderId:obj.folderId,
             vrId:obj.vrId,
             music1:obj.music1,
-            music2:obj.music2
+            music2:obj.music2,
+            sceneListIds:obj.sceneListIds
         })
     })
     return Promise.all(promiseArr)   

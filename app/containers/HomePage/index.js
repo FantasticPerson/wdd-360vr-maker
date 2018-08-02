@@ -14,11 +14,16 @@ import * as sceneActions from '../../actions/scene';
 import * as folderActions from '../../actions/folder';
 import * as appActions from '../../actions/app'
 import * as groupActions from '../../actions/group'
+import * as pictureActions from '../../actions/picture'
+import * as audioActions from '../../actions/audio'
 
 import CreateVrModal from './components/CreateVrModal';
 import CreateFolderModal from './components/CreateFolderModal';
 import VrContainer from './components/VrContainer'
 import FolderContextMenu from './components/folderContextMenu'
+
+import PictureContainer from './PictureContainer/index'
+import AudioContainer from './AudioContainer/index'
 
 import {homePageConfig,getSelector} from '../../store/getStore'
 
@@ -34,12 +39,14 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        const { updateFromLocal,updateVrFromLocal,updateAppTitle,updateAppShowBack,updateAllSceneFromLocal } = this.props;
+        const { updateFromLocal,updateVrFromLocal,updateAppTitle,updateAppShowBack,updateAllSceneFromLocal,updatePictureFromLocal,updateAudioFromLocal } = this.props;
         updateFromLocal();
         updateVrFromLocal();
         updateAllSceneFromLocal()
         updateAppTitle('全景制作工具')
         updateAppShowBack(false)
+        updatePictureFromLocal()
+        updateAudioFromLocal()
     }
 
     onFolderItemClick(data, index) {
@@ -141,38 +148,66 @@ class Home extends Component {
     }
 
     render() {
-        const {selectedFolderId} = this.state
-
         return (
-            <div className={styles.container}>
-                <div className={styles.menu}>
-                    <div className={styles.projectList}>
-                        <div>
-                            {this.renderFolderList()}
-                        </div>
-                    </div>
-                    <div className={styles.addProject} onClick={() => {this.onCreateFolderClick()}}>
-                        <i className="fa fa-plus" />
-                        <span style={{marginLeft:'17px'}}>新建文件夹</span>
-                    </div>
-                </div>
-                <div className={styles.content}>
-                    <VrContainer selectedFolderId={selectedFolderId}></VrContainer>
-                </div>
-                {this.renderCreateFolderModal()}
-                {this.renderContextMenu()}
+            <div style={{height:'100%',overflowY:'auto'}}>
+                {this.renderVrContainer()}
+                {this.renderPictureContainer()}
+                {this.renderAudioContainer()}
             </div>
         );
+    }
+
+    renderVrContainer(){
+        const {showType} = this.props
+        const {selectedFolderId} = this.state
+        if(showType == 1){
+            return (
+                <div className={styles.container}>
+                    <div className={styles.menu}>
+                        <div className={styles.projectList}>
+                            <div>
+                                {this.renderFolderList()}
+                            </div>
+                        </div>
+                        <div className={styles.addProject} onClick={() => {this.onCreateFolderClick()}}>
+                            <i className="fa fa-plus" />
+                            <span style={{marginLeft:'17px'}}>新建文件夹</span>
+                        </div>
+                    </div>
+                    <div className={styles.content}>
+                        <VrContainer selectedFolderId={selectedFolderId}></VrContainer>
+                    </div>
+                    {this.renderCreateFolderModal()}
+                    {this.renderContextMenu()}
+                </div>
+            )
+        }
+    }
+
+    renderPictureContainer(){
+        const {showType,picList} = this.props
+        if(showType == 2){
+            return <PictureContainer picList={picList}></PictureContainer>
+        } 
+    }
+
+    renderAudioContainer(){
+        const {showType,audioList} = this.props
+        if(showType == 3){
+            return <AudioContainer audioList={audioList}></AudioContainer>
+        }
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        ...bindActionCreators(vrActions, dispatch),
-        ...bindActionCreators(sceneActions, dispatch),
-        ...bindActionCreators(folderActions, dispatch),
+        ...bindActionCreators(vrActions,dispatch),
+        ...bindActionCreators(sceneActions,dispatch),
+        ...bindActionCreators(folderActions,dispatch),
         ...bindActionCreators(appActions,dispatch),
         ...bindActionCreators(groupActions,dispatch),
+        ...bindActionCreators(pictureActions,dispatch),
+        ...bindActionCreators(audioActions,dispatch)
 
     };
 }

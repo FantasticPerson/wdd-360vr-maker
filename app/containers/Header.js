@@ -10,6 +10,8 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import {NavigateBefore} from '@material-ui/icons';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import { createHashHistory } from 'history'
 import { getProductionXml } from '../utils/xmlBuilder2'
@@ -18,10 +20,13 @@ import {headerConfig,getSelector} from '../store/getStore'
 
 import packageKrpano from '../native/packageKrpano'
 
+import {updateHomeShowType} from '../actions/app'
+
 class Header extends Component {
     constructor(){
         super()
         this.history = createHashHistory()
+        this.state={anchor:null}
     }
 
     onBackClick(){
@@ -36,7 +41,6 @@ class Header extends Component {
     onSaveClick(){
         const {vrItem,sceneList,hotpotList,groupList,allSceneList} = this.props
         GenerateOutput(vrItem,sceneList,hotpotList,groupList,allSceneList)
-        console.log('onSaveClick')
     }
 
     onPreviewClick(){
@@ -44,7 +48,22 @@ class Header extends Component {
 
         let url = `http://127.0.0.1:${window.electron_app_server_port}/assets/output/vr-${vrId}/index.html`
 
-        window.open(url,'预览',)
+        window.open(url,'预览')
+    }
+
+    onMenuClick(e){
+        this.setState({anchor:e.currentTarget})
+    }
+
+    onMenuClose(){
+        this.setState({anchor:null})
+    }
+
+    onMenuItemClick(type){
+        if(type !== this.props.showType){
+            this.props.updateHomeShowType(type)
+        }
+        this.onMenuClose()
     }
 
     render(){
@@ -68,7 +87,22 @@ class Header extends Component {
         if(this.props.showBack){
             return <NavigateBefore onClick={this.onBackClick.bind(this)}/>
         } else {
-            return <MenuIcon />
+            const {anchor} = this.state
+            return (
+                <div>
+                    <MenuIcon aria-owns={anchor ? 'simple-menu' : null} aria-haspopup="true" onClick={this.onMenuClick.bind(this)}/>
+                    <Menu
+                        id="simple-menu"
+                        anchorEl={anchor}
+                        open={Boolean(anchor)}
+                        onClose={this.onMenuClose.bind(this)}
+                    >
+                        <MenuItem onClick={()=>{this.onMenuItemClick(1)}}>全景库</MenuItem>
+                        <MenuItem onClick={()=>{this.onMenuItemClick(2)}}>图片库</MenuItem>
+                        <MenuItem onClick={()=>{this.onMenuItemClick(3)}}>音频库</MenuItem>
+                    </Menu>
+                </div>
+            )
         }
     }
 
@@ -89,4 +123,10 @@ class Header extends Component {
     }
 }
 
-export default connect(getSelector(headerConfig))(Header);
+function mapDispatchToProps(dispatch){
+    return {
+        ...bindActionCreators({updateHomeShowType:updateHomeShowType},dispatch)
+    }
+}
+
+export default connect(getSelector(headerConfig),mapDispatchToProps)(Header);

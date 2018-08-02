@@ -42,56 +42,57 @@ export default class CreateScenes extends Component{
     }
 
     onOpenFolderClick(){
-        openFolder('openDirectory')
+        openFolder(['multiSelections'],[{name: 'Images', extensions: ['jpg']}])
         .then((res)=>{
-            if(res && res[0]){
-                var fs = window.native_require('fs')
+            
+            console.log(res)
+            if(res.length > 0){
+                let picArr = res
                 var path = window.native_require('path')
-                var basePath = res[0]
-                var result = fs.readdirSync(basePath)
-                let picArr = []
-                for(let i=0;i++;i<result.length){
-                    if(/\*.jpg$/.test(result[i])){
-                        picArr.push(result[i])
-                    }
-                }
                 let idx = 0
                 let that = this
-                if(result.length > 0){
-                    this.setState({isLoading:true,totalNum:result.length})
-                    upload()
-                }
+                
+                this.setState({isLoading:true,totalNum:picArr.length})
+                upload()
                 
                 function upload(){
-                    if(idx >= result.length){
+                    if(idx >= picArr.length){
                         console.log('上传完成')
                         that.onCancelClick()
                         return
                     }
                     let promise = new Promise((resolve,reject)=>{
                         try{
-                            let sPath = path.resolve(basePath,result[idx++])
+                            let sPath = picArr[idx++]
                             createPano(sPath)
                             .then(()=>{
                                 console.log(that)
                                 that.setState({completeNum:idx})
                                 let sceneId = `scene_${new Hashid().encode()}`
-                                const {vrId,groupId} = that.props
-                                const {addScene} = that.props.functions
+                                const {vrId,groupId,groupItem} = that.props
+                                const {addScene,updateGroup} = that.props.functions
                                
                                 copyImageToScene(getScenePath(sceneId))
                                 .then(()=>{
-                                    addScene({
-                                        id:sceneId,
-                                        vrid:vrId,
-                                        name:'默认',
-                                        groupId
-                                    })
+                                    setTimeout(() => {
+                                        addScene({
+                                            id:sceneId,
+                                            vrid:vrId,
+                                            name:'默认',
+                                            groupId
+                                        })  
+                                        
+                                        let selectIds = groupItem.sceneListIds || []
+                                        selectIds.push(sceneId)
+                                        let newGroupItem = {...groupItem,sceneListIds:selectIds}
+                                        updateGroup(newGroupItem) 
+                                    }, 800);
+                                    
                                 })
                                 resolve()
                             })
-                            .catch(()=>{
-                                reject()
+                            .catch((e)=>{
+                                reject(e)
                             })
                             
                         } catch(e){
@@ -100,6 +101,10 @@ export default class CreateScenes extends Component{
                     })
                     promise.then(()=>{
                         upload()
+                    })
+                    .catch((err)=>{
+                        alert(err)
+                        that.onCancelClick()
                     })
                 }
             }

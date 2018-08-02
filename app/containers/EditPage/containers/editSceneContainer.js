@@ -18,8 +18,13 @@ import CreateGroupModal from './CreateGroupModal'
 import ContextMenu from './groupContextMenu'
 import GroupContextModal from './groupContextMenu';
 import SceneMove from './sceneMove'
-import { Hidden } from '@material-ui/core';
 
+import {DragSource,DropTarget} from 'react-dnd'
+import { DragDropContextProvider,DragDropContext } from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
+
+
+@DragDropContext(HTML5Backend)
 class EditSceneContainer extends Component{
     constructor(){
         super()
@@ -40,6 +45,7 @@ class EditSceneContainer extends Component{
             showMove:false,
             sceneToMove:null
         }
+        this.sceneListC = null
     }
 
     componentDidMount(){
@@ -222,25 +228,18 @@ class EditSceneContainer extends Component{
         const cWidth = sceneList.length * 105 + 90 +'px'
 
         let sceneItemList = sceneList.map((item,index)=>{
-            let className = `${styles.scene} ${item.id == sceneSelected ? styles.selected : ''}`
-            return (
-                <div className={styles.sceneContainer} key={item.id} onContextMenu={(e)=>this.onSceneContext(e,item)} onClick={()=>this.sceneClickHandler(item.id)}>
-                    <div className={className}>
-                        <img style={{height:'100%'}} src={getHeadImgUrl(item.id)}></img>
-                    </div>
-                    <div className={styles.name}>{item.name}</div>
-                </div>
-            )
+            return <SceneItem onSceneContext={this.onSceneContext.bind(this)} sceneClickHandler={this.sceneClickHandler.bind(this)} item={item} key={item.id} sceneSelected={sceneSelected}></SceneItem>
         })
 
         return (
-            <div style={{width:cWidth,height:'111px',overflow:'hidden',marginTop:'10px'}}>
-                {sceneItemList}
-                <div className={styles.addBtnContainer} onClick={this.onAddSceneClick.bind(this)}>
-                    <div className={`fa fa-plus`}></div>
-                    <div className={styles.addScene}>添加场景</div>
+            
+                <div style={{width:cWidth,height:'111px',overflow:'hidden',marginTop:'10px'}}>
+                    {sceneItemList}
+                    <div className={styles.addBtnContainer} onClick={this.onAddSceneClick.bind(this)}>
+                        <div className={`fa fa-plus`}></div>
+                        <div className={styles.addScene}>添加场景</div>
+                    </div>
                 </div>
-            </div>
         )
     }
 
@@ -286,14 +285,15 @@ class EditSceneContainer extends Component{
 
     renderCreateModal(){
         if(this.state.showCreateScene){
-            const {addScene,vrId,groupSelectId} = this.props
+            const {addScene,vrId,groupSelectId,updateGroup,groupSelectItem} = this.props
             const functions = {
                 onCancel:this.onCancelCreateModal.bind(this),
                 addScene,
+                updateGroup,
                 showAddScenes:this.onShowUploadScenes.bind(this)
             } 
             return (
-                <CreateSceneModal functions={functions} groupId={groupSelectId} vrId={vrId}></CreateSceneModal>
+                <CreateSceneModal groupItem ={groupSelectItem} functions={functions} groupId={groupSelectId} vrId={vrId}></CreateSceneModal>
             )
         }
     }
@@ -305,13 +305,14 @@ class EditSceneContainer extends Component{
 
     renedrCreateScenes(){
         if(this.state.showCreateScenes){
-            const {addScene,vrId,groupSelectId} = this.props
+            const {addScene,vrId,groupSelectId,groupSelectItem,updateGroup} = this.props
             const functions = {
                 onCancel:this.onCancelCreateScenes.bind(this),
-                addScene
+                addScene,
+                updateGroup
             } 
             return (
-                <CreateScenesModal functions={functions} groupId={groupSelectId} vrId={vrId}></CreateScenesModal>
+                <CreateScenesModal functions={functions} groupItem ={groupSelectItem}  groupId={groupSelectId} vrId={vrId}></CreateScenesModal>
             )
         }
     }
@@ -380,6 +381,53 @@ class EditSceneContainer extends Component{
                     {this.renderSceneMove()}
                     {this.renedrCreateScenes()}
                 </div>
+            </div>
+        )
+    }
+}
+
+
+@DragSource('SceneItem',{
+    isDragging(props,monitor,component){
+        console.log(props)
+    },
+    canDrag(){
+        console.log('canDrag')
+        return true
+    }
+},(connect,monitor)=>{
+    return {
+        connectDragSource: connect.dragSource(),
+        isDragging: monitor.isDragging(),
+    }
+})(SceneItem)
+
+@DropTarget('SceneItem',{
+    drop(props,monitor,component){
+        console.log(props)
+    },
+},(connect,monitor)=>{})(SceneItem)
+class SceneItem extends Component{
+    constructor(){
+        super()
+    }
+
+    render(){
+        const {item,sceneSelected,isDragging, connectDragSource} = this.props;
+        let className = `${styles.scene} ${item.id == sceneSelected ? styles.selected : ''}`
+        return (
+            <div className={styles.sceneContainer} key={item.id} onContextMenu={(e)=>this.props.onSceneContext(e,item)} onClick={()=>this.props.sceneClickHandler(item.id)}>
+                {/* <span style={{    
+                    position: 'absolute',
+                    zIndex: 10,
+                    color: '#FFF',
+                    marginLeft: '60px'}}><i style={{    
+                        fontSize: '30px',
+                        color: '#FFF'}} className="iconfont icon-drag"></i></span> */}
+                <div className={className}>
+                    <img style={{height:'100%'}} src={getHeadImgUrl(item.id)}></img>
+                </div>
+                <div className={styles.name}>{item.name}</div>
             </div>
         )
     }

@@ -1,6 +1,6 @@
 {
   "name": "electron-react-boilerplate",
-  "productName": "ElectronReact",
+  "productName": "360vr-maker",
   "version": "0.13.3",
   "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
   "scripts": {
@@ -215,6 +215,8 @@
     "font-awesome": "^4.7.0",
     "fs-copy-file": "^2.1.2",
     "fs-extra": "6.0.1",
+    "get-pixels": "3.3.2",
+    "gm": "1.23.1",
     "hashids": "^1.1.4",
     "history": "^4.7.2",
     "immutable": "^3.8.2",
@@ -224,7 +226,10 @@
     "react": "^16.4.0",
     "react-audio-player": "0.10.0",
     "react-contextmenu": "^2.9.2",
+    "react-dnd": "5.0.0",
+    "react-dnd-html5-backend": "5.0.1",
     "react-dom": "^16.4.0",
+    "react-dragula": "1.1.17",
     "react-hot-loader": "^4.2.0",
     "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
