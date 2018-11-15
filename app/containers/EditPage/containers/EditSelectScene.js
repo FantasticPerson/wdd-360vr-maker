@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import getPathOfSceneHeadImg from '../../../native/getPathOfSceneHeadImg'
+// import getPathOfSceneHeadImg from '../../../native/getPathOfSceneHeadImg'
 // import SelectField from 'material-ui/SelectField';
 
 import SelectField from '@material-ui/core/Select';
@@ -8,6 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 // import Checkbox from 'material-ui/Checkbox';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import {getHeadImgUrl} from '../../../native/pathUtils'
 
 export default class EditSelectScene extends Component{
     constructor(){
@@ -73,7 +74,7 @@ export default class EditSelectScene extends Component{
             return (
                 <div onClick={()=>{this.onItemClick(item.id)}} style={itemStyle} key={item.id}>
                     <div style={{height:'80px',width:'80px',overflow:'hidden'}}>
-                        <img style={{height:'100%'}} src={getPathOfSceneHeadImg(folderId,vrId,item.id)}/>
+                        <img style={{height:'80px',width:'80px'}} src={getHeadImgUrl(item.id)}/>
                     </div>
                 </div>
             )

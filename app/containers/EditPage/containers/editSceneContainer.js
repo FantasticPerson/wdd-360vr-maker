@@ -23,8 +23,10 @@ import {DragSource,DropTarget} from 'react-dnd'
 import { DragDropContextProvider,DragDropContext } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 
+import SceneItem from './SceneItem'
 
-@DragDropContext(HTML5Backend)
+
+// @DragDropContext(HTML5Backend)
 class EditSceneContainer extends Component{
     constructor(){
         super()
@@ -387,51 +389,51 @@ class EditSceneContainer extends Component{
 }
 
 
-@DragSource('SceneItem',{
-    isDragging(props,monitor,component){
-        console.log(props)
-    },
-    canDrag(){
-        console.log('canDrag')
-        return true
-    }
-},(connect,monitor)=>{
-    return {
-        connectDragSource: connect.dragSource(),
-        isDragging: monitor.isDragging(),
-    }
-})(SceneItem)
+// @DragSource('SceneItem',{
+//     isDragging(props,monitor,component){
+//         console.log(props)
+//     },
+//     canDrag(){
+//         console.log('canDrag')
+//         return true
+//     }
+// },(connect,monitor)=>{
+//     return {
+//         connectDragSource: connect.dragSource(),
+//         isDragging: monitor.isDragging(),
+//     }
+// })(SceneItem)
 
-@DropTarget('SceneItem',{
-    drop(props,monitor,component){
-        console.log(props)
-    },
-},(connect,monitor)=>{})(SceneItem)
-class SceneItem extends Component{
-    constructor(){
-        super()
-    }
+// @DropTarget('SceneItem',{
+//     drop(props,monitor,component){
+//         console.log(props)
+//     },
+// },(connect,monitor)=>{})(SceneItem)
+// class SceneItem extends Component{
+//     constructor(){
+//         super()
+//     }
 
-    render(){
-        const {item,sceneSelected,isDragging, connectDragSource} = this.props;
-        let className = `${styles.scene} ${item.id == sceneSelected ? styles.selected : ''}`
-        return (
-            <div className={styles.sceneContainer} key={item.id} onContextMenu={(e)=>this.props.onSceneContext(e,item)} onClick={()=>this.props.sceneClickHandler(item.id)}>
-                {/* <span style={{    
-                    position: 'absolute',
-                    zIndex: 10,
-                    color: '#FFF',
-                    marginLeft: '60px'}}><i style={{    
-                        fontSize: '30px',
-                        color: '#FFF'}} className="iconfont icon-drag"></i></span> */}
-                <div className={className}>
-                    <img style={{height:'100%'}} src={getHeadImgUrl(item.id)}></img>
-                </div>
-                <div className={styles.name}>{item.name}</div>
-            </div>
-        )
-    }
-}
+//     render(){
+//         const {item,sceneSelected,isDragging, connectDragSource} = this.props;
+//         let className = `${styles.scene} ${item.id == sceneSelected ? styles.selected : ''}`
+//         return (
+//             <div className={styles.sceneContainer} key={item.id} onContextMenu={(e)=>this.props.onSceneContext(e,item)} onClick={()=>this.props.sceneClickHandler(item.id)}>
+//                 {/* <span style={{    
+//                     position: 'absolute',
+//                     zIndex: 10,
+//                     color: '#FFF',
+//                     marginLeft: '60px'}}><i style={{    
+//                         fontSize: '30px',
+//                         color: '#FFF'}} className="iconfont icon-drag"></i></span> */}
+//                 <div className={className}>
+//                     <img style={{height:'100%'}} src={getHeadImgUrl(item.id)}></img>
+//                 </div>
+//                 <div className={styles.name}>{item.name}</div>
+//             </div>
+//         )
+//     }
+// }
 
 function mapDispatchToProps(dispatch){
     return {

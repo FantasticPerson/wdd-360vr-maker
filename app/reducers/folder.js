@@ -7,10 +7,10 @@ const defaultState = {
 }
 
 const folder = createReducer({
-    [actions.updateAllFolder]:(state,list)=>{
+    [actions.dUpdateAllFolder]:(state,list)=>{
         return {...state,'list':list}
     },
-    [actions.updateSelectedFolder]:(state,id)=>{
+    [actions.dUpdateFolderSelected]:(state,id)=>{
         return {...state,'selectId':id}
     }
 },defaultState)

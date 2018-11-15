@@ -8,10 +8,10 @@ const defaultProps = {
 }
 
 export default class Hashid {
-  constructor(props={}) {
+  constructor(props = {}) {
     this.props = {
-        ...defaultProps,
-        ...props
+      ...defaultProps,
+      ...props
     }
 
     this.ids = new Hashids(this.props.salt, this.props.length, this.props.alphabet)

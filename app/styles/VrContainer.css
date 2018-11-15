@@ -1,31 +1,38 @@
-.container{
+.container {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
-.header{
+.header {
     height: 30px;
     width: 100%;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
 }
 
-.content{
+.content {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    padding:15px;
-    flex:1;
+    padding: 15px;
+    flex: 1;
     box-sizing: content-box;
     overflow-y: auto;
     padding-top: 10px;
     padding-bottom: 10px;
 }
 
-.plusIcon{
+.plusIcon {
     vertical-align: -2px;
     position: absolute;
     top: 10px;
-    margin-left: 15px;
-    color:rgb(0, 188, 212)
+    margin-left: 2px;
+    color: rgb(0, 188, 212)
+}
+
+.createBtn {
+    height: 30px;
+    line-height: 30px;
+    padding-left: 32px;
+    margin-top: -4px;
 }

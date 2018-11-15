@@ -17,7 +17,8 @@ export default [
                 'tabs',
                 'music1',
                 'music2',
-                'timestamp'
+                'timestamp',
+                'state' // 0 => 未保存 1 => 已保存
             ],
             scene: [
                 'id',

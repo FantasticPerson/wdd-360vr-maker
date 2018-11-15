@@ -9,7 +9,6 @@ const {
 } = window
 
 import {getScenePath} from '../native/pathUtils'
-
 import {IMG_NAME_ARR} from '../constants.js'
 import {getProductionXml} from './xmlBuilder'
 

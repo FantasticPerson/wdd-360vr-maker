@@ -1,24 +1,23 @@
 import { createAction } from 'redux-act'
-
 import Modals from '../modals';
 import Hashid from '../utils/generateHashId'
 
+export const dUpdateAllFolder = createAction('update_all_folder')
+export const dUpdateFolderSelected = createAction('update_selected_folder')
+
 const baseList =  [{id: 0,title: '默认文件夹'}];
 
-export const updateAllFolder = createAction('update_all_folder')
-export const updateSelectedFolder = createAction('update_selected_folder')
-
-export function updateSelected(id){
+export function updateFolderSelected(id){
     return (dispatch) => {
-        dispatch(updateSelectedFolder(id))
+        dispatch(dUpdateFolderSelected(id))
     }
 }
 
-export function updateFromLocal() {
+export function updateFolderFromLocal() {
     return (dispatch) => {
         Modals.Folder.findAll()
         .then((list) => {
-            dispatch(updateAllFolder(baseList.concat(list)));
+            dispatch(dUpdateAllFolder(baseList.concat(list)));
         });
     };
 }
@@ -28,7 +27,7 @@ export function addFolder(title) {
         Modals.Folder.add({title:title,id:`f_${new Hashid().encode()}`})
         .then(() => Modals.Folder.findAll())
         .then((list) => {
-            dispatch(updateAllFolder(baseList.concat(list)));
+            dispatch(dUpdateAllFolder(baseList.concat(list)));
         });
     };
 }
@@ -39,9 +38,9 @@ export function deleteFolder(obj) {
         Modals.Folder.delete(obj.id)
         .then(() => Modals.Folder.findAll())
         .then((list) => {
-            dispatch(updateAllFolder(baseList.concat(list)));
+            dispatch(dUpdateAllFolder(baseList.concat(list)));
             if(selectId == obj.id){
-                dispatch(updateSelected(0))
+                dispatch(dUpdateFolderSelected(0))
             }
         });
     };
@@ -52,7 +51,7 @@ export function updateFolder(obj) {
         Modals.Folder.update(obj)
         .then(() => Modals.Folder.findAll())
         .then((list) => {
-            dispatch(updateAllFolder(baseList.concat(list)));
+            dispatch(dUpdateAllFolder(baseList.concat(list)));
         });
     };
 }

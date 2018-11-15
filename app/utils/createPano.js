@@ -36,11 +36,9 @@ export default function createPano(src){
                     reject(e)
                 }
             })
-
             cmd.stderr.on('data', () => {
                 reject('err')
             })
-
             cmd.on('close',(code)=>{
                 if(isDone && code == 0){
                     resolve()

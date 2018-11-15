@@ -14,7 +14,7 @@ const app = createReducer({
     [actions.dUpdataAppShowBack]:(state,showBack)=>{
         return {...state,showBack:showBack}
     },
-    [actions.dUpdateHomeShowType]:(state,type)=>{
+    [actions.dUpdateAppShowType]:(state,type)=>{
         return {...state,showType:type}
     }
 },defaultState)
