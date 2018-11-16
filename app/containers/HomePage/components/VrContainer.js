@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { createSelector } from 'reselect'
 import { createHashHistory } from 'history'
-
 import FlatButton from '@material-ui/core/Button';
 
 import { getSelector } from '../../../store/getStore'
@@ -18,7 +17,6 @@ import * as pictureActions from '../../../actions/picture'
 
 import CreateVrModal from './CreateVrModal'
 import VrItem from './vrItem'
-import getPathOfPreviewImg from '../../../native/getPathOfPreviewImg'
 import VrContextMenu from './VrContextMenu'
 
 import styles from '../../../styles/VrContainer.css'

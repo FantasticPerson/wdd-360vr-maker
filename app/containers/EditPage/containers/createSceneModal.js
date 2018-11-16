@@ -10,8 +10,6 @@ import Button from '@material-ui/core/Button';
 import openFolder from '../../../native/openFolder'
 import checkPicValid from '../../../native/checkPicValid'
 import copyFileToTmp from '../../../native/copyFileToTmp'
-import getPathOfPreviewImg from '../../../native/getPathOfPreviewImg'
-
 import createPano from '../../../utils/createPano'
 
 import {getScenePath,getHeadImgUrl,getTmpPreviewPath} from '../../../native/pathUtils'

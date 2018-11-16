@@ -1,0 +1,51 @@
+.hotPot-item {
+    background-color: aliceblue;
+    padding: 5px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.edit-type-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 35px;
+    top: 200px;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    overflow-y: auto;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.select-container {
+    width: 220px;
+    padding: 5px;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    margin-top: 2px;
+}
+
+.icon-container{
+    padding: 5px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.hotspot-icon{
+    width: 34px;
+    height: 34px;
+    padding: 2px;
+    display: inline-block;
+    box-shadow: 0 0 5px rgba(0,0,0,0);
+    cursor: pointer;
+}
+
+.hotspot-icon-selected{
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}

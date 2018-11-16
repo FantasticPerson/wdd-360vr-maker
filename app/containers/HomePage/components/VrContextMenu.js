@@ -23,6 +23,7 @@ export default class FolderContextMenu extends Component {
     render() {
         const { posData } = this.props
         const { onHide } = this.props.functions
+
         return (
             <ContextModal bgClick={onHide} data={posData}>
                 <ul>

@@ -32,7 +32,6 @@ export default class AudioContainer extends Component{
         })
         audioItems = audioItems.concat(audioPlaceHolder)
 
-
         return (
             <div style={containerStyle}>{audioItems}</div>
         )

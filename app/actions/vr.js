@@ -17,7 +17,7 @@ export function updateAllDVr(list) {
 export function updateVrByFolderId() {
     return (dispatch,getState) => {
         let id = getState().folder.selectId
-        Modals.Vr.findVrByFolderId(id)
+        Modals.Vr.findByFolderId(id)
             .then((list) => {
                 list.sort((item1, item2) => {
                     return item1.timestamp > item2.timestamp

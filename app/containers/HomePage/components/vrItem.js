@@ -1,5 +1,5 @@
 import React,{Component} from 'react'
-
+import {getImagePath} from '../../../native/pathUtils'
 import styles from '../../../styles/vrItem.css'
 
 export default class VrItem extends Component{
@@ -7,6 +7,7 @@ export default class VrItem extends Component{
         super()
         this.dom = React.createRef()
     }
+    
     onItemDbClick(){
         const {history} = this.props
         const {data} = this.props
@@ -17,7 +18,7 @@ export default class VrItem extends Component{
     renderImage(){
         const { data} = this.props
         if(data.headImg && data.headImg.length>0){
-            return <img style={{height:'100%'}} src={data.headImg}></img>
+            return <img style={{height:'100%'}} src={getImagePath(data.headImg)}></img>
         }
     }
 

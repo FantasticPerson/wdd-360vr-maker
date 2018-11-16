@@ -7,18 +7,8 @@ import { getSelector } from '../../store/getStore'
 
 import styles from '../../styles/EditPage.css'
 
-import FlatButton from '@material-ui/core/Button';
-import RadioButton from '@material-ui/core/Radio';
-import RadioButtonGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Slider from '@material-ui/lab/Slider';
-
 import PanoContainer from './containers/panoContainer'
 import EditSceneContainer from './containers/editSceneContainer'
-import getPathOfHotSpotIconPath from '../../native/getHotspotIconPath'
-import getPathOfSceneHeadImg from '../../native/getPathOfSceneHeadImg'
-import { addHotspotToKrpano, selectHotspotInKrpano, addRainEffect, addSnowEffect } from '../../utils/krpanoFunctions'
 import * as appActions from '../../actions/app'
 import * as vrActions from '../../actions/vr'
 import * as sceneActions from '../../actions/scene'
@@ -45,21 +35,12 @@ class EditPage extends Component {
     componentDidMount() {
         this.props.updateAppTitle('编辑全景')
         this.props.updateFolderFromLocal();
-        // this.props.updateVrFromLocal();
         this.props.updateAllSceneFromLocal();
         this.props.updatePictureFromLocal()
         this.props.updateAllHotpotFromLocal();
         this.props.updateAudioFromLocal()
         this.props.updateAppShowBack(true);
         this.props.updateGroupFromLocal()
-    }
-
-    onAddMusicLocal(type) {
-        console.log(type)
-    }
-
-    onAddMusic2(type) {
-        console.log(type)
     }
 
     showHotspotEdit() {

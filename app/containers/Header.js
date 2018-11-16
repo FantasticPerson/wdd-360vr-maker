@@ -17,6 +17,7 @@ import { NavigateBefore } from '@material-ui/icons';
 import { getProductionXml } from '../utils/xmlBuilder2'
 import { GenerateOutput } from '../utils/generateOutput'
 import { getSelector } from '../store/getStore'
+import { getPreviewUrl } from '../native/pathUtils'
 
 import packageKrpano from '../native/packageKrpano'
 import { updateAppShowType } from '../actions/app'
@@ -45,9 +46,7 @@ class Header extends Component {
     }
 
     onPreviewClick() {
-        const { vrId } = this.props
-        let url = `http://127.0.0.1:${window.electron_app_server_port}/assets/output/vr-${vrId}/index.html`
-        window.open(url, '预览')
+        window.open(getPreviewUrl(this.props.vrId), '预览')
     }
 
     onMenuClick(e) {
@@ -109,13 +108,13 @@ class Header extends Component {
         if (this.props.showBack) {
             return <div>
                 <Button onClick={this.onSaveClick.bind(this)} style={{ color: '#FFF' }}>
-                    Save
+                    保存
                 </Button>
                 <Button onClick={this.onPreviewClick.bind(this)} style={{ color: '#FFF' }}>
-                    Preview
+                    预览
                 </Button>
                 <Button onClick={this.onOutputClick.bind(this)} style={{ color: '#FFF' }}>
-                    Export
+                    导出
                 </Button>
             </div>
         }

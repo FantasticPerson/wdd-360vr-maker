@@ -9,18 +9,6 @@ export const vrContainerConfig = {
     nextSceneId: true
 }
 
-export const editHotPotConfig = {
-    vrList: true,
-    hotpotList: true,
-    sceneList: true,
-    pathname: true,
-    vrId: true,
-    folderId: true,
-    sceneSelected: true,
-    hotpotSelected: true,
-    hotpotSelectedId: true
-}
-
 export const editViewPortConfig = {
     krpano: true,
     sceneSelected: true,

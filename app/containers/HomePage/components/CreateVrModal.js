@@ -9,7 +9,6 @@ import Button from '@material-ui/core/Button';
 import openFolder from '../../../native/openFolder'
 import checkPicValid from '../../../native/checkPicValid'
 import copyFileToTmp from '../../../native/copyFileToTmp'
-import getPathOfPreviewImg from '../../../native/getPathOfPreviewImg'
 import copyImageToScene from '../../../native/copyImageToScene'
 import Hashid from '../../../utils/generateHashId'
 import createPano from '../../../utils/createPano'
@@ -32,78 +31,59 @@ export default class CreateVrModal extends Component {
         this.props.functions.onCancel();
     }
 
-    onConfirmClick() {
+    async onConfirmClick() {
+        const { data } = this.props
         const { tmpImgStatus, imgName } = this.state
+        const { addVr, onCancel, addGroup, addPicture, modifyVr } = this.props.functions
         const title = this.titleRef.value.trim();
         const brief = this.summaryRef.value.trim();
 
-        if (title.length > 0) {
-            const { data } = this.props
-            if (!data) {
-                const { addVr, onCancel, addGroup, addPicture } = this.props.functions
+        let previewImg = null
 
-                let id = `vr_${new Hashid().encode()}`
-                let sceneId = `scene_${new Hashid().encode()}`
-                let groupId = `group_${new Hashid().encode()}`
-                let previewImg = imgName ? getImagePath(imgName) : null
+        if (title.length == 0) return
 
-                if (imgName) {
-                    let arr = imgName.split('.')
-                    let picItem = {
-                        id: arr[0],
-                        extension: arr[1]
-                    }
-                    addPicture(picItem)
+        if (imgName) {
+            let arr = imgName.split('.')
+            let picItem = { id: arr[0], extension: arr[1] }
 
-                    copyImageTmpToImage(imgName)
-                }
+            previewImg = imgName
 
-                setTimeout(() => {
-                    addVr({ title, brief, headImg: previewImg, music1: null, music2: null, id })
-                    addGroup('默认', id, groupId)
-                }, 500)
-            } else {
-                const { modifyVr } = this.props.functions
-                modifyVr({ ...data, title: title, brief: brief })
-            }
-            setTimeout(() => {
-                this.props.functions.onCancel()
-            }, 50)
+            await copyImageTmpToImage(imgName)
+            await addPicture(picItem)
         }
+        if (data) {
+            previewImg = previewImg ? previewImg : data.headImg
+
+            await modifyVr({ ...data, title: title, brief: brief, headImg: previewImg })
+        } else {
+            let id = `vr_${new Hashid().encode()}`
+            let sceneId = `scene_${new Hashid().encode()}`
+            let groupId = `group_${new Hashid().encode()}`
+
+            await addGroup('默认', id, groupId)
+            await addVr({ title, brief, headImgId: previewImg, music1: null, music2: null, id })
+        }
+        onCancel()
     }
 
-    addPoster() {
-        openFolder(['openFile'], [{ name: 'Images', extensions: ['jpg', 'png', 'gif'] }])
-            .then((res) => {
-                if (res && res[0]) {
-                    return checkVrCoverValid(res[0])
-                } else {
-                    throw new Error('')
-                }
-            })
-            .then((path) => {
-                return copyImagaToTmpImage(path)
-            })
-            .then((name) => {
-                setTimeout(() => {
-                    this.setState({ tmpImgStatus: true, imgName: name })
-                }, 800)
-            })
-            .catch((err) => {
-                if(err && err.message == ''){
-                    return
-                }
-                console.error(err)
-                alert(err)
-            })
+    async addPoster() {
+        let res = await openFolder(['openFile'], [{ name: 'Images', extensions: ['jpg', 'png', 'gif'] }])
+        if (!res || !res[0]) {
+            alert('上传失败！')
+            return
+        }
+        let path = await checkVrCoverValid(res[0])
+        let name = await copyImagaToTmpImage(path)
+        this.setState({ tmpImgStatus: true, imgName: name })
     }
 
     renderUploadPic() {
         const { tmpImgStatus, imgName } = this.state
-        if (!tmpImgStatus) {
+        const { data } = this.props
+        if (!tmpImgStatus && (!data || !data.headImg)) {
             return <div className={styles.imgContainer}><br /><br /><span>{'上传封面'}</span><br /><span>{'大小:512*512'}</span></div>
         } else {
-            let imgPath = getTmpImagePath(imgName)
+            let imgPath = imgName ? getTmpImagePath(imgName) : (data.headImg ? getImagePath(data.headImg) : '')
             return (
                 <div className={styles.imgContainer}>
                     <img className={styles.thumb} src={imgPath} />
@@ -114,8 +94,6 @@ export default class CreateVrModal extends Component {
 
     render() {
         const { data } = this.props;
-        let width = data ? '100%' : '50%'
-        let picDisplay = data ? 'none' : 'inline-block'
         let title = data ? '编辑作品' : '创建作品'
         let defaultName = data ? data.title : ''
         let defaultBrief = data ? data.brief : ''
@@ -124,7 +102,7 @@ export default class CreateVrModal extends Component {
             <Dialog open>
                 <DialogTitle>{title}</DialogTitle>
                 <DialogContent style={{ width: '500px' }}>
-                    <div style={{ display: 'inline-block', width: width, height: '160px' }}>
+                    <div style={{ display: 'inline-block', width: '50%', height: '160px' }}>
                         <TextField
                             label="请输入作品名称"
                             placeholder="请输入作品名称"
@@ -142,7 +120,7 @@ export default class CreateVrModal extends Component {
                             multiline rows={2} rowsMax={4}
                         />
                     </div>
-                    <div style={{ display: picDisplay, width: '50%', height: '260px', verticalAlign: 'top' }}>
+                    <div style={{ display: 'inline-block', width: '50%', height: '260px', verticalAlign: 'top' }}>
                         <Button color="primary" style={{ marginLeft: '47px' }} onClick={this.addPoster.bind(this)}>{'添加封面'}</Button>
                         {this.renderUploadPic()}
                     </div>
