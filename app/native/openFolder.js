@@ -5,7 +5,6 @@ export default function openFolder(type=['openFile'],filters=[{name: 'All Files'
     return new Promise((resolve,reject)=>{//, 'openDirectory'
         try{
             dialog.showOpenDialog({properties: type,filters:filters},(res)=>{
-                debugger
                 resolve(res)
             })
         } catch(e){

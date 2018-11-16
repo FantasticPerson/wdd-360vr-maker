@@ -8,7 +8,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import * as vrActions from '../../actions/vr';
-import * as sceneActions from '../../actions/scene';
 import * as folderActions from '../../actions/folder';
 import * as appActions from '../../actions/app'
 import * as groupActions from '../../actions/group'
@@ -22,7 +21,6 @@ import FolderContextMenu from './components/folderContextMenu'
 
 import PictureContainer from './PictureContainer/index'
 import AudioContainer from './AudioContainer/index'
-
 import { getSelector } from '../../store/getStore'
 import { APP_SHOW_TYPE_VR, APP_SHOW_TYPE_PIC, APP_SHOW_TYPE_AUDIO } from '../../actions/app'
 
@@ -40,21 +38,16 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        const { updateFolderFromLocal, updateAppTitle, updateAppShowBack, updateAllSceneFromLocal, updatePictureFromLocal, updateAudioFromLocal, updateVrByFolderId } = this.props;
-        updateFolderFromLocal();
-        updateVrByFolderId();
-        updateAllSceneFromLocal()
-        updateAppTitle('全景制作工具')
-        updateAppShowBack(false)
-        updatePictureFromLocal()
-        updateAudioFromLocal()
+        this.props.updateFolderFromLocal()
+        this.props.updateAppTitle('全景制作工具')
+        this.props.updateAppShowBack(false)
+        this.props.updatePictureFromLocal()
+        this.props.updateAudioFromLocal()
     }
 
     onFolderItemClick(data, index) {
-        const { updateFolderSelected, folderSelectedId, updateVrByFolderId } = this.props;
-        if (data.id != folderSelectedId) {
-            updateFolderSelected(data.id)
-            updateVrByFolderId();
+        if (data.id != this.props.folderSelectedId) {
+            this.props.updateFolderSelected(data.id)
         }
     }
 
@@ -202,7 +195,6 @@ class Home extends Component {
 function mapDispatchToProps(dispatch) {
     return {
         ...bindActionCreators(vrActions, dispatch),
-        ...bindActionCreators(sceneActions, dispatch),
         ...bindActionCreators(folderActions, dispatch),
         ...bindActionCreators(appActions, dispatch),
         ...bindActionCreators(groupActions, dispatch),
@@ -213,11 +205,8 @@ function mapDispatchToProps(dispatch) {
 
 let homePageConfig = {
     vrList: true,
-    sceneList: true,
     folderList: true,
     folderSelectedId: true,
-    nextVrId: true,
-    nextFolderId: true,
     appShowType: true,
     picList: true,
     audioList: true

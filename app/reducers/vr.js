@@ -8,7 +8,7 @@ const defaultState = {
 }
 
 const vr = createReducer({
-    [actions.updateAllVr]: (state, list) => ({ ...state, 'list': list })
+    [actions.dUpdateAllVr]: (state, list) => ({ ...state, 'list': list })
 }, defaultState)
 
 export default vr

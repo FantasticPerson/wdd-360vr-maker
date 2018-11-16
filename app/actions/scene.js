@@ -5,7 +5,7 @@ import Hashid from '../utils/generateHashId'
 import getPathOfHotSpotIconPath from '../native/getHotspotIconPath'
 import getPathOfSceneHeadImg from '../native/getPathOfSceneHeadImg'
 import {getPanoXml} from '../utils/xmlBuilder'
-import {addHotpots} from './hotpot'
+import {addHotspots} from './hotpot'
 
 import {getScenePath} from '../native/pathUtils'
 
@@ -35,7 +35,7 @@ export function updateSceneSelected(id){
                 krpano.call(`load_pano_by_multils(${xml})`)
             }
             dispatch(dUpdateSceneSelected(id))
-            dispatch(addHotpots())
+            dispatch(addHotspots())
         }
     }
 }

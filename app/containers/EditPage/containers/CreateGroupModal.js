@@ -24,13 +24,13 @@ export default class CreateFolderModal extends Component {
         const title = this.titleRef.value.trim();
 
         if (title.length > 0) {
-            const {itemData,functions,vrId} = this.props
-            const {addGroup,updateGroup,hideModal} = functions
-            if(itemData){
-                updateGroup({id: itemData.id,title,vrId:itemData.vrId})
+            const { itemData, functions, vrId } = this.props
+            const { addGroup, updateGroup, hideModal } = functions
+            if (itemData) {
+                updateGroup({ id: itemData.id, title, vrId: itemData.vrId })
             } else {
                 let groupId = `group_${new Hashid().encode()}`
-                addGroup(title,vrId,groupId);
+                addGroup(title, vrId, groupId);
             }
             hideModal()
         } else {
@@ -39,7 +39,7 @@ export default class CreateFolderModal extends Component {
     }
 
     render() {
-        const {itemData}= this.props
+        const { itemData } = this.props
         console.log(this.props)
         return (
             <Dialog
@@ -54,7 +54,7 @@ export default class CreateFolderModal extends Component {
                         label="请输入名称"
                         placeholder="请输入名称"
                         margin="normal"
-                        inputRef={(input) => {this.titleRef = input}}
+                        inputRef={(input) => { this.titleRef = input }}
                         defaultValue={itemData ? itemData.title : ''}
                     />
                 </DialogContent>

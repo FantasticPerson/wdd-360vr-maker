@@ -6,9 +6,6 @@ import { createHashHistory } from 'history'
 import FlatButton from '@material-ui/core/Button';
 
 import { getSelector } from '../../../store/getStore'
-import generateVrFolder from '../../../native/generateVrFolder'
-import copyImageToScene from '../../../native/copyImageToScene'
-import getScenePath from '../../../native/getScenePath'
 
 import * as vrActions from '../../../actions/vr'
 import * as sceneActions from '../../../actions/scene'
@@ -34,9 +31,9 @@ class VrContainer extends Component {
     }
 
     renderContent() {
-        const { vrListToShow } = this.props
-        if (vrListToShow.length > 0) {
-            let vrItems = vrListToShow.map((item, index) => {
+        const { vrList } = this.props
+        if (vrList.length > 0) {
+            let vrItems = vrList.map((item, index) => {
                 return <VrItem key={index} onContextMenu={this.onVrItemContext.bind(this)} history={this.history} data={item}></VrItem>
             })
             for (var i = 0; i < 20; i++) {
@@ -135,13 +132,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-let vrContainerConfig = {
-    vrList: true,
-    vrListToShow: true,
-    sceneList: true,
-    folderSelectedId: true,
-    nextVrId: true,
-    nextSceneId: true
-}
-
-export default connect(getSelector(vrContainerConfig), mapDispatchToProps)(VrContainer)
+export default connect(getSelector({vrList:true}), mapDispatchToProps)(VrContainer)

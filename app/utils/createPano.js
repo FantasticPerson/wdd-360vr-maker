@@ -33,7 +33,7 @@ export default function createPano(src){
                         isDone = true
                     }
                 } catch(e){
-                    reject(e)
+                    reject('err')
                 }
             })
             cmd.stderr.on('data', () => {
@@ -47,7 +47,7 @@ export default function createPano(src){
                 }
             })
         } catch (error) {
-            reject(error)
+            reject('err')
         }
     })
 }

@@ -10,29 +10,9 @@ export const dDeleteHotpot = createAction('delete_hotpot')
 export const dUpdateAllHotpot = createAction('update_all_hotpot')
 export const dUpdateHotpotSelect = createAction('update_hotpot_select')
 
-export function updateAllHotpot(arr) {
-    return (dispatch) => {
-        arr.sort((item1, item2) => {
-            return item1.timestamp > item2.timestamp
-        })
-        dispatch(dUpdateAllHotpot(arr))
-    }
-}
-
-export function updateAllHotpot2() {
+export function updateAllHotspot(sId = null) {
     return (dispatch, getState) => {
-        let selectSceneId = getState().scene.sceneSelected
-        Modals.Hotpot.findBySceneId(selectSceneId)
-            .then(list => {
-                dispatch(updateAllHotpot(list))
-            })
-
-    }
-}
-
-export function updateAllHotspot() {
-    return (dispatch, getState) => {
-        let selectSceneId = getState().scene.sceneSelected
+        let selectSceneId = sId == null ? getState().scene.sceneSelected : sId
         Modals.Hotpot.findBySceneId(selectSceneId)
             .then(list => {
                 arr.sort((item1, item2) => {
@@ -54,16 +34,6 @@ export function updateHotspotSelect(id) {
     }
 }
 
-export function updateAllHotpotFromLocal() {
-    return (dispatch) => {
-        Modals.Hotpot.findAll()
-            .then((list) => {
-                dispatch(updateAllHotspot(list))
-            })
-    }
-}
-
-
 export function updateHotspotPosition(obj) {
     return (dispath, getState) => {
         Modals.Hotpot.update(obj)
@@ -72,57 +42,19 @@ export function updateHotspotPosition(obj) {
             })
     }
 }
-export function updateHotpotPos(obj) {
-    return (dispatch) => {
-        Modals.Hotpot.update(obj)
-            .then(() => {
-                return Modals.Hotpot.findAll()
-            })
-            .then((list) => {
-                dispatch(updateAllHotpot(list))
-            })
-    }
-}
 
-export function addHotspots() {
+export function addHotspots(sId = null) {
     return (dispatch, getState) => {
         let krpano = getState().krpano.obj
-        let hotSpots = getState().hotpot.list
-        if (krpano && hotSpots.length) {
-            let sceneSelected = getState().scene.sceneSelected
-            let hSpots = hotSpots.filter((item) => {
-                return item.sceneId == sceneSelected
-            })
-            hSpots.map(item => {
-                var data = hSpots[i]
-                data._id = data.id
-                let icon = getHotspotPath(data.icon)
-                addHotspotToKrpano(krpano, { ...data, icon: icon }, false)
-            })
-        }
-    }
-}
-
-export function addHotpots() {
-    return (dispatch, getState) => {
-        let krpano = getState().krpano.obj
-        let hotSpots = getState().hotpot.list
-        if (krpano && hotSpots.length) {
-            let sceneSelected = getState().scene.sceneSelected
-            let hSpots = []
-            for (let i = 0; i < hotSpots.length; i++) {
-                if (hotSpots[i].sceneId == sceneSelected) {
-                    hSpots.push(hotSpots[i])
-                }
-            }
-            if (hSpots.length) {
-                for (let i = 0; i < hSpots.length; i++) {
-                    var data = hSpots[i]
-                    data._id = data.id
-                    let icon = getHotspotPath(data.icon)
-                    addHotspotToKrpano(krpano, { ...data, icon: icon }, false)
-                }
-            }
+        if (krpano) {
+            let sceneSelected = sId == null ? getState().scene.sceneSelected : sId
+            Modals.Hotpot.findBySceneId(sceneSelected)
+                .then((list) => {
+                    list.map(item => {
+                        let icon = getHotspotPath(item.icon)
+                        addHotspotToKrpano(krpano, { ...item, _id: item.id, icon: icon }, false)
+                    })
+                })
         }
     }
 }
@@ -132,13 +64,10 @@ export function addHotspot(actionData, icon) {
         var krpano = getState().krpano.obj
         var selectSceneId = getState().scene.sceneSelected
         if (krpano && selectSceneId != -10) {
-            const _id = `hs${new Hashid().encode()}`
-            const ath = krpano.get('view.hlookat')
-            const atv = krpano.get('view.vlookat')
             let data = {
-                _id,
-                ath,
-                atv,
+                _id: `hs${new Hashid().encode()}`,
+                ath: krpano.get('view.hlookat'),
+                atv: krpano.get('view.vlookat'),
                 icon: icon,
                 animated: true,
                 type: undefined,
@@ -148,45 +77,8 @@ export function addHotspot(actionData, icon) {
 
             Modals.Hotpot.add({ ...data, sceneId: selectSceneId, id: data._id })
                 .then(() => {
-                    return Modals.Hotpot.findBySceneId(selectSceneId)
-                })
-                .then((list) => {
                     let icon = getHotspotPath(data.icon)
-                    dispatch(updateAllHotpot(list))
-
-                    addHotspotToKrpano(krpano, { ...data, icon: icon }, false)
-                    updateHotspotSelect(data.id)
-                })
-        }
-    }
-}
-
-export function addHotpot(actionData, icon) {
-    return (dispatch, getState) => {
-        var krpano = getState().krpano.obj
-        var selectSceneId = getState().scene.sceneSelected
-        if (krpano && selectSceneId != -10) {
-            const _id = `hs${new Hashid().encode()}`
-            const ath = krpano.get('view.hlookat')
-            const atv = krpano.get('view.vlookat')
-            let data = {
-                _id,
-                ath,
-                atv,
-                icon: icon,
-                animated: true,
-                type: undefined,
-                typeProps: '',
-                action: actionData
-            }
-
-            Modals.Hotpot.add({ ...data, sceneId: selectSceneId, id: data._id })
-                .then(() => {
-                    return Modals.Hotpot.findBySceneId(selectSceneId)
-                })
-                .then((list) => {
-                    let icon = getHotspotPath(data.icon)
-                    dispatch(updateAllHotpot(list))
+                    dispatch(updateAllHotspot())
 
                     addHotspotToKrpano(krpano, { ...data, icon: icon }, false)
                     updateHotspotSelect(data.id)
@@ -202,29 +94,7 @@ export function delHotspot(id) {
         if (krpano) {
             Modals.Hotpot.delete(id)
                 .then(() => {
-                    return Modals.Hotpot.findBySceneId(selectSceneId)
-                })
-                .then((list) => {
-                    dispatch(updateAllHotpot(list))
-
-                    removeHotspotFromKrpano(krpano, id)
-                })
-        }
-    }
-}
-
-export function delHotpot(id) {
-    return (dispatch, getState) => {
-        var krpano = getState().krpano.obj
-        var selectSceneId = getState().scene.sceneSelected
-        if (krpano) {
-            Modals.Hotpot.delete(id)
-                .then(() => {
-                    return Modals.Hotpot.findBySceneId(selectSceneId)
-                })
-                .then((list) => {
-                    dispatch(updateAllHotpot(list))
-
+                    dispatch(updateAllHotspot())
                     removeHotspotFromKrpano(krpano, id)
                 })
         }
@@ -242,26 +112,7 @@ export function modifyHotspot(obj, updateIcon) {
                 })
                 .then((list) => {
                     let icon = getHotspotPath(obj.icon)
-                    dispatch(updateAllHotpot(list))
-
-                    updateHotspotIcon(krpano, obj.id, icon, true)
-                })
-        }
-    }
-}
-
-export function modifyHotpot(obj, updateIcon) {
-    return (dispatch, getState) => {
-        var krpano = getState().krpano.obj
-        var selectSceneId = getState().scene.sceneSelected
-        if (krpano) {
-            Modals.Hotpot.update(obj)
-                .then(() => {
-                    return Modals.Hotpot.findBySceneId(selectSceneId)
-                })
-                .then((list) => {
-                    let icon = getHotspotPath(obj.icon)
-                    dispatch(updateAllHotpot(list))
+                    dispatch(updateAllHotspot())
 
                     updateHotspotIcon(krpano, obj.id, icon, true)
                 })

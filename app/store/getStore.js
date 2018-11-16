@@ -26,17 +26,6 @@ export const panoConfig = {
     sceneSelectedItem: true
 }
 
-export const editSceneConfig = {
-    sceneList: true,
-    allSceneList: true,
-    vrList: true,
-    sceneSelected: true,
-    vrId: true,
-    groupList: true,
-    groupSelectId: true,
-    groupSelectItem: true
-}
-
 export const editMusicConfig = {
     groupSelectId: true,
     groupList: true,

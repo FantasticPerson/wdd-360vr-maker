@@ -50,7 +50,7 @@ class EditHotSpot extends Component {
             showPicList: false,
             picList: [],
             picTextList: [],
-            hotpotIndex: 1
+            hotspotIndex: 1
         }
 
         this.editEle = React.createRef()
@@ -61,7 +61,7 @@ class EditHotSpot extends Component {
         let cHotSpotItem = cProp.hotpotSelected
 
         if ((nHotSpotItem && !cHotSpotItem) || (nHotSpotItem && cHotSpotItem && nHotSpotItem.id != cHotSpotItem.id)) {
-            this.setState({ hotpotIndex: nHotSpotItem.icon })
+            this.setState({ hotspotIndex: nHotSpotItem.icon })
         }
     }
 
@@ -69,11 +69,11 @@ class EditHotSpot extends Component {
         this.setState({ hotSpotType: 1, isAdd: false })
     }
 
-    onAddHotpotClick() {
+    onAddHotspotClick() {
         this.setState({ isAdd: true })
     }
 
-    selectHotSpot(id) {
+    selectHotspot(id) {
         const { updateHotspotSelect } = this.props
         updateHotspotSelect(id)
     }
@@ -94,19 +94,19 @@ class EditHotSpot extends Component {
             return
         }
         const { sceneSelected } = this.props
-        const { hotpotIndex } = this.state
+        const { hotspotIndex } = this.state
         if (this.state.isAdd) {
             if (sceneSelected != null) {
-                const { addHotpot } = this.props;
-                addHotpot(result, hotpotIndex)
+                const { addHotspot } = this.props;
+                addHotspot(result, hotspotIndex)
             }
         } else {
-            const { hotpotSelected, modifyHotpot } = this.props
+            const { hotpotSelected, modifyHotspot } = this.props
             if (hotpotSelected) {
-                if (hotpotSelected.icon != hotpotIndex) {
-                    modifyHotpot({ ...hotpotSelected, action: result, icon: hotpotIndex }, true)
+                if (hotpotSelected.icon != hotspotIndex) {
+                    modifyHotspot({ ...hotpotSelected, action: result, icon: hotspotIndex }, true)
                 } else {
-                    modifyHotpot({ ...hotpotSelected, action: result, icon: hotpotIndex }, false)
+                    modifyHotspot({ ...hotpotSelected, action: result, icon: hotspotIndex }, false)
                 }
             }
         }
@@ -114,21 +114,21 @@ class EditHotSpot extends Component {
     }
 
     onEditDeleteClick() {
-        const { delHotpot, hotpotSelected, updateHotspotSelect } = this.props
-        delHotpot(hotpotSelected)
+        const { delHotspot, hotpotSelected, updateHotspotSelect } = this.props
+        delHotspot(hotpotSelected)
         this.handleCloseEditHotspot()
     }
 
     render() {
         return (
             <div style={{ padding: '5px' }}>
-                {this.renderHotpotList()}
-                {this.renderEditHotPot()}
+                {this.renderHotspotList()}
+                {this.renderEditHotspot()}
             </div>
         )
     }
 
-    renderHotpotList() {
+    renderHotspotList() {
         const { isAdd } = this.state
         const { hotpotSelected, sceneSelected } = this.props
         if (hotpotSelected == null && !isAdd) {
@@ -142,7 +142,7 @@ class EditHotSpot extends Component {
                 let type = JSON.parse(item.action).type
                 var typeText = typeObj[type]
                 return (
-                    <div className={styles['hotPot-item']} key={item.id} onClick={() => { this.selectHotSpot(item.id) }}>
+                    <div className={styles['hotPot-item']} key={item.id} onClick={() => { this.selectHotspot(item.id) }}>
                         {`${typeText} ${item.id}`}
                     </div>
                 )
@@ -155,42 +155,38 @@ class EditHotSpot extends Component {
                         <span style={{
                             marginLeft: '5px'
                         }}>热点编辑</span>
-                        <FlatButton color="primary" onClick={this.onAddHotpotClick.bind(this)}>添加热点</FlatButton>
+                        <FlatButton color="primary" onClick={this.onAddHotspotClick.bind(this)}>添加热点</FlatButton>
                     </span>
-                    <div>
-                        {`当前场景共有热点${hList.length}个`}
-                    </div>
-                    <div>
-                        {hotpotArr}
-                    </div>
+                    <div>{`当前场景共有热点${hList.length}个`}</div>
+                    <div>{hotpotArr}</div>
                 </div>
             )
         }
     }
 
-    onHotSpotIconClick(index) {
-        if (index != this.state.hotpotIndex) {
-            this.setState({ hotpotIndex: index })
+    onHotspotIconClick(index) {
+        if (index != this.state.hotspotIndex) {
+            this.setState({ hotspotIndex: index })
         }
     }
 
-    renderHotpotIcon() {
+    renderHotspotIcon() {
         let iconArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-        const { hotpotIndex } = this.state
+        const { hotspotIndex } = this.state
 
         return iconArr.map((item) => {
-            let className = styles['hotspot-icon'] + ' ' + (hotpotIndex == item ? styles['hotspot-icon-selected'] : '')
+            let className = styles['hotspot-icon'] + ' ' + (hotspotIndex == item ? styles['hotspot-icon-selected'] : '')
             let id = String(item).length == 1 ? 0 + '' + item : String(item)
 
             return (
-                <div key={item} onClick={() => { this.onHotSpotIconClick(item) }} className={className}>
+                <div key={item} onClick={() => { this.onHotspotIconClick(item) }} className={className}>
                     <img style={{ width: '30px', height: '30px' }} src={getHotspotIconPath(id)} />
                 </div>
             )
         })
     }
 
-    renderEditHotPot() {
+    renderEditHotspot() {
         const { isAdd } = this.state
         const { hotpotSelected } = this.props
         const menuList = ['切换', '相册', '文本', '图文', '链接', '音频', '视频']
@@ -206,7 +202,7 @@ class EditHotSpot extends Component {
                     </div>
                     <div>
                         <span>选择图标</span>
-                        <div className={styles['icon-container']}>{this.renderHotpotIcon()}</div>
+                        <div className={styles['icon-container']}>{this.renderHotspotIcon()}</div>
                     </div>
                     <div>
                         <SelectField

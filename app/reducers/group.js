@@ -7,8 +7,8 @@ const defaultState = {
 }
 
 const folder = createReducer({
-    [actions.updateAllGroup]: (state, list) => ({ ...state, 'list': list }),
-    [actions.updateSelectedGroup]: (state, id) => ({ ...state, 'selectId': id })
+    [actions.dUpdateAllGroup]: (state, list) => ({ ...state, 'list': list }),
+    [actions.dUpdateSelectedGroup]: (state, id) => ({ ...state, 'selectId': id })
 }, defaultState)
 
 export default folder

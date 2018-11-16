@@ -3,84 +3,71 @@ import { createAction } from 'redux-act'
 import Modals from '../modals';
 import Hashid from '../utils/generateHashId'
 
+export const dUpdateAllGroup = createAction('update_all_group')
+export const dUpdateSelectedGroup = createAction('update_selected_group')
 
-export const updateAllGroup = createAction('update_all_group')
-export const updateSelectedGroup = createAction('update_selected_group')
-
-export function updateSelected(id){
+export function updateGroupSelected(id) {
     return (dispatch) => {
-        dispatch(updateSelectedGroup(id))
+        dispatch(dUpdateSelectedGroup(id))
     }
 }
 
-export function dUpdateAllGroup(list){
-    return (dispatch)=>{
-        list.sort((item1,item2)=>{
-            return item1.timestamp > item2.timestamp
-        })
-        dispatch(updateAllGroup(list));
+export function updateGroupByVrid(vrId = null) {
+    return (dispatch, getState) => {
+        let selectedVrId = vrId == null ? getState().router.location.pathname.split('/')[2] : vrId
+        if (selectedVrId) {
+            Modals.Group.findByVrid(selectedVrId)
+                .then((list) => {
+                    dispatch(dUpdateAllGroup(list));
+                })
+        }
     }
 }
 
-export function updateGroupFromLocal() {
+export function addGroup(title, vrId, groupId) {
     return (dispatch) => {
-        Modals.Group.findAll()
-        .then((list) => {
-            dispatch(dUpdateAllGroup(list));
-        });
-    };
-}
-
-export function addGroup(title,vrId,groupId) {
-    return (dispatch) => {
-        Modals.Group.add({title:title,id:groupId,vrId:vrId})
-        .then(() => Modals.Group.findAll())
-        .then((list) => {
-            dispatch(dUpdateAllGroup(list));
-        });
+        Modals.Group.add({ title: title, id: groupId, vrId: vrId })
+            .then(() => {
+                dispatch(updateGroupByVrid())
+            })
     };
 }
 
 export function deleteGroup(obj) {
-    return (dispatch,getState) => {
-        let selectId = getState().folder.selectId
+    return (dispatch, getState) => {
         Modals.Group.delete(obj.id)
-        .then(() => Modals.Group.findAll())
-        .then((list) => {
-            dispatch(dUpdateAllGroup(list));
-        });
+            .then(() => {
+                dispatch(updateGroupByVrid())
+            })
     };
 }
 
-export function updateAllGroupMusic(arr,music1,music2){
-    let objArr = arr.map(item=>{
-        return {...item,music1,music2}
+export function updateAllGroupMusic(arr, music1, music2) {
+    let objArr = arr.map(item => {
+        return { ...item, music1, music2 }
     })
-    return (dispatch)=>{
+    return (dispatch) => {
         Modals.Group.updateAllGroup(objArr)
-        .then(() => Modals.Group.findAll())
-        .then((list) => {
-            dispatch(dUpdateAllGroup(list));
-        });
+            .then(() => {
+                dispatch(updateGroupByVrid())
+            })
     }
 }
 
-export function updateGroupMusic(obj,music1,music2){
-    return (dispatch)=>{
-        Modals.Group.update({...obj,music1,music2})
-        .then(() => Modals.Group.findAll())
-        .then((list) => {
-            dispatch(dUpdateAllGroup(list));
-        });
+export function updateGroupMusic(obj, music1, music2) {
+    return (dispatch) => {
+        Modals.Group.update({ ...obj, music1, music2 })
+            .then(() => {
+                dispatch(updateGroupByVrid())
+            })
     }
 }
 
 export function updateGroup(obj) {
     return (dispatch) => {
         Modals.Group.update(obj)
-        .then(() => Modals.Group.findAll())
-        .then((list) => {
-            dispatch(dUpdateAllGroup(list));
-        });
+            .then(() => {
+                dispatch(updateGroupByVrid())
+            })
     };
 }

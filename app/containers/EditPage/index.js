@@ -34,13 +34,12 @@ class EditPage extends Component {
 
     componentDidMount() {
         this.props.updateAppTitle('编辑全景')
-        this.props.updateFolderFromLocal();
         this.props.updateAllSceneFromLocal();
-        this.props.updatePictureFromLocal()
-        this.props.updateAllHotpotFromLocal();
-        this.props.updateAudioFromLocal()
+        this.props.updatePictureFromLocal();
+        this.props.updateAllHotspot()
+        this.props.updateAudioFromLocal();
         this.props.updateAppShowBack(true);
-        this.props.updateGroupFromLocal()
+        this.props.updateGroupByVrid();
     }
 
     showHotspotEdit() {
@@ -54,17 +53,15 @@ class EditPage extends Component {
         }
     }
 
-    renderEditViewPort() {
-        if (this.state.editType == 0) {
-            return <EditViewPort onfinish={this.showHotspotEdit.bind(this)}></EditViewPort>
+    renderEditHotPot() {
+        if (this.state.editType == 1) {
+            return <EditHotSpot></EditHotSpot>
         }
     }
 
-    renderEditHotPot() {
-        if (this.state.editType == 1) {
-            return (
-                <EditHotSpot></EditHotSpot>
-            )
+    renderEditViewPort() {
+        if (this.state.editType == 0) {
+            return <EditViewPort onfinish={this.showHotspotEdit.bind(this)}></EditViewPort>
         }
     }
 
@@ -104,12 +101,8 @@ class EditPage extends Component {
     }
 
     render() {
-        const { previewSceneId } = this.state
         const { vrList, vrId } = this.props
-        let vrItem = vrList.find((item) => {
-            return item.id == vrId
-        })
-        vrItem = vrItem || {}
+        let vrItem = vrList.find((item) => (item.id == vrId)) || {}
         return (
             <div className={styles.container}>
                 {this.renderLeftBtns()}
@@ -147,13 +140,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-let editIndexConfig = {
-    vrList: true,
-    sceneList: true,
-    hotpotList: true,
-    vrId: true,
-    folderId: true,
-    sceneSelected: true
-}
-
-export default connect(getSelector(editIndexConfig), mapDispatchToProps)(EditPage)
+export default connect(getSelector({ vrList: true, vrId: true }), mapDispatchToProps)(EditPage)

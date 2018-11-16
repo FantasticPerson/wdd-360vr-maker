@@ -81,7 +81,13 @@ export default class CreateVrModal extends Component {
         const { tmpImgStatus, imgName } = this.state
         const { data } = this.props
         if (!tmpImgStatus && (!data || !data.headImg)) {
-            return <div className={styles.imgContainer}><br /><br /><span>{'上传封面'}</span><br /><span>{'大小:512*512'}</span></div>
+            return (
+                <div className={styles.imgContainer}>
+                    <br /><br />
+                    <span>{'上传封面'}</span><br />
+                    <span>{'大小:512*512'}</span>
+                </div>
+            )
         } else {
             let imgPath = imgName ? getTmpImagePath(imgName) : (data.headImg ? getImagePath(data.headImg) : '')
             return (
