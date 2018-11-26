@@ -9,12 +9,6 @@ export const vrContainerConfig = {
     nextSceneId: true
 }
 
-export const editViewPortConfig = {
-    krpano: true,
-    sceneSelected: true,
-    sceneSelectedItem: true
-}
-
 export const editEffectConfig = {
     sceneSelectedItem: true,
     sceneSelected: true

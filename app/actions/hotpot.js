@@ -15,10 +15,11 @@ export function updateAllHotspot(sId = null) {
         let selectSceneId = sId == null ? getState().scene.sceneSelected : sId
         Modals.Hotpot.findBySceneId(selectSceneId)
             .then(list => {
-                arr.sort((item1, item2) => {
+                list.sort((item1, item2) => {
                     return item1.timestamp > item2.timestamp
                 })
-                dispatch(dUpdateAllHotpot(arr))
+
+                dispatch(dUpdateAllHotpot(list))
             })
 
     }
@@ -55,6 +56,7 @@ export function addHotspots(sId = null) {
                         addHotspotToKrpano(krpano, { ...item, _id: item.id, icon: icon }, false)
                     })
                 })
+            dispatch(updateAllHotspot(sceneSelected))
         }
     }
 }

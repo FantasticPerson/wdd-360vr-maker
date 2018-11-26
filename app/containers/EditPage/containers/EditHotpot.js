@@ -60,8 +60,16 @@ class EditHotSpot extends Component {
         let nHotSpotItem = nProp.hotpotSelected
         let cHotSpotItem = cProp.hotpotSelected
 
-        if ((nHotSpotItem && !cHotSpotItem) || (nHotSpotItem && cHotSpotItem && nHotSpotItem.id != cHotSpotItem.id)) {
-            this.setState({ hotspotIndex: nHotSpotItem.icon })
+        if (nHotSpotItem) {
+            let nId = nHotSpotItem.id
+            let cId = cHotSpotItem ? cHotSpotItem.id : null
+            if (nId != cId) {
+                let res = nHotSpotItem.action ? JSON.parse(nHotSpotItem.action) : null
+                let keys = Object.keys(typeObj)
+                let hosSpotType = res ? keys.indexOf(res.type)+1 : 1
+                console.log(hosSpotType)
+                this.setState({ hotspotIndex: nHotSpotItem.icon,hotSpotType:hosSpotType })
+            }
         }
     }
 
@@ -197,7 +205,7 @@ class EditHotSpot extends Component {
                         <span>
                             <i className='fa fa-dot-circle-o'></i>
                             <span style={{ marginLeft: '5px' }}>编辑</span>
-                            <FlatButton color="primary" onClick={() => { this.handleCloseEditHotspot() }} >关闭</FlatButton>
+                            <FlatButton color="primary" onClick={this.handleCloseEditHotspot.bind(this)} >关闭</FlatButton>
                         </span>
                     </div>
                     <div>
@@ -210,16 +218,16 @@ class EditHotSpot extends Component {
                             onChange={this.handleTypeChange.bind(this)}
                             className={styles['select-container']}
                         >
-                            {menuList.map((item, index) => <MenuItem value={1 + index}>{item}</MenuItem>)}
+                            {menuList.map((item, index) => <MenuItem key={1+index} value={1 + index}>{item}</MenuItem>)}
                         </SelectField>
                         <div className={styles['edit-type-container']}>
                             {this.renderEditByType()}
                         </div>
                     </div>
                     <div style={{ position: 'fixed', bottom: 0 }}>
-                        <FlatButton color="primary" onClick={() => this.onEditConfirmClick()}>{'确定'}</FlatButton>
+                        <FlatButton color="primary"  variant="contained" onClick={this.onEditConfirmClick.bind(this)}>{'确定'}</FlatButton>
                         {isAdd ? null :
-                            <FlatButton color="secondary" onClick={() => this.onEditDeleteClick()}>{'删除'}</FlatButton>}
+                            <FlatButton color="secondary" style={{marginLeft:20}} variant="contained" onClick={this.onEditDeleteClick.bind(this)}>{'删除'}</FlatButton>}
                     </div>
                 </div>
             )

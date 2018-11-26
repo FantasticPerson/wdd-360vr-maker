@@ -15,16 +15,18 @@ export default class EditVideo extends Component{
         this.state={check:false,openInNewWindow:true}
     }
 
-    componentDidMount(){
+    componentWillMount(){
         const {action} = this.props
         if(action.length > 0){
             let obj = JSON.parse(action)
             if(obj.type == 'video'){
-                this.titleRef.value = obj.title
-                this.summaryRef.value = obj.url
-                this.moreInfo.value = obj.moreInfo
-
-                this.setState({check:obj.check,openInNewWindow:obj.openInNewWindow})
+                this.setState({
+                    check:obj.check,
+                    openInNewWindow:obj.openInNewWindow,
+                    defaultTitle:obj.title,
+                    defaultSummary:obj.url,
+                    defaultMoreInfo:obj.moreInfo
+                })
             }
         }
     }
@@ -57,6 +59,8 @@ export default class EditVideo extends Component{
     }
 
     render(){
+        const {defaultTitle,defaultSummary,defaultMoreInfo} = this.state
+
         return (
             <div>
                 <FormControlLabel
@@ -76,6 +80,7 @@ export default class EditVideo extends Component{
                     label="请输入标题"
                     placeholder="标题"
                     margin="normal"
+                    defaultValue={defaultTitle}
                     inputRef={(input) => this.titleRef = input}
                 />
 
@@ -84,6 +89,7 @@ export default class EditVideo extends Component{
                     id="with-placeholder"
                     label="请输入视频地址"
                     placeholder="视频地址"
+                    defaultValue={defaultSummary}
                     margin="normal"
                     inputRef={(input) => this.summaryRef = input}
                 />
@@ -102,9 +108,10 @@ export default class EditVideo extends Component{
 
                 <TextField 
                     id="with-placeholder"
-                    label="填写网站地址 展示更多内容"
+                    label="填写网址 展示更多内容"
                     placeholder="更多内容"
                     margin="normal"
+                    defaultValue={defaultMoreInfo}
                     inputRef={(input) => this.moreInfo = input}
                 />
             </div>

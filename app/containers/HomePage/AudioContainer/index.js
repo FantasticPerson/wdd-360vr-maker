@@ -18,7 +18,7 @@ export default class AudioContainer extends Component {
         }))
 
         return (
-            <div className={styles.container} style={containerStyle}>{audioItems}</div>
+            <div className={styles.container}>{audioItems}</div>
         )
     }
 }

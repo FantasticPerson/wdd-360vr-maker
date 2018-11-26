@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { createSelector } from 'reselect'
+import Timer from '../../utils/timer'
 
 import { getSelector } from '../../store/getStore'
 
@@ -30,16 +31,26 @@ class EditPage extends Component {
     constructor() {
         super()
         this.state = { editType: 0 }
+        this._mounted = false
     }
 
     componentDidMount() {
-        this.props.updateAppTitle('编辑全景')
-        this.props.updateAllSceneFromLocal();
-        this.props.updatePictureFromLocal();
-        this.props.updateAllHotspot()
-        this.props.updateAudioFromLocal();
-        this.props.updateAppShowBack(true);
-        this.props.updateGroupByVrid();
+        this._mounted = true
+
+        Timer(100).then(() => {
+            if (this._mounted) {
+                this.props.updateAppTitle('编辑全景')
+                this.props.updateAllSceneFromLocal();
+                this.props.updatePictureFromLocal();
+                this.props.updateAudioFromLocal();
+                this.props.updateAppShowBack(true);
+                this.props.updateGroupByVrid();
+            }
+        })
+    }
+
+    componentWillUnmount(){
+        this._mounted = false
     }
 
     showHotspotEdit() {

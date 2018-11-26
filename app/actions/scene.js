@@ -35,7 +35,7 @@ export function updateSceneSelected(id){
                 krpano.call(`load_pano_by_multils(${xml})`)
             }
             dispatch(dUpdateSceneSelected(id))
-            dispatch(addHotspots())
+            dispatch(addHotspots(id))
         }
     }
 }

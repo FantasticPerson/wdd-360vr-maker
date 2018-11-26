@@ -70,7 +70,8 @@ export default [
             audio:[
                 'id',
                 'extension',
-                'timestamp'
+                'timestamp',
+                'showName'
             ],
             video:[
                 'id',
@@ -80,7 +81,8 @@ export default [
             picture:[
                 'id',
                 'extension',
-                'timestamp'
+                'timestamp',
+                'showName'
             ]
         },
         upgrade: null

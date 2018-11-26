@@ -10,8 +10,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import FlatButton from '@material-ui/core/Button';
 
-// import FlatButton from 'material-ui/FlatButton';
-// import RaisedButton from 'material-ui/RaisedButton';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect'
 import { bindActionCreators } from 'redux';
@@ -19,53 +17,67 @@ import getPathOfAudio from '../../../native/getPathOfAudio'
 import ReactAudioPlayer from 'react-audio-player';
 
 
-class PicListModal extends Component{
-    constructor(){
+class AudioListModal extends Component {
+    constructor() {
         super()
-        this.state = {audioSelect:null}
+        this.state = { audioSelect: null,showName:'' }
     }
-    onPicClick(item){
-        const {pictures} = this.state
+    onPicClick(item) {
+        const { pictures } = this.state
         let name = `${item.id}.${item.extension}`
-        this.setState({audioSelect:name})
+        this.setState({ audioSelect: name,showName:item.showName })
     }
 
-    onCancelClick(){
-        const {onCancel} = this.props
+    onCancelClick() {
+        const { onCancel } = this.props
         onCancel()
     }
 
-    onConfirmClick(){
-        const {audioSelect} = this.state
-        const {onConfirm} = this.props
-        onConfirm(audioSelect)
+    onConfirmClick() {
+        const { audioSelect,showName } = this.state
+        const { onConfirm } = this.props
+        onConfirm(audioSelect,showName)
     }
 
-    render(){
-        const {audioList} = this.props
-        const {audioSelect} = this.state
+    render() {
+        const { audioList } = this.props
+        const { audioSelect } = this.state
 
-        const list = audioList.map((item)=>{
-            let style = {cursor:'pointer',width: '80px',height: '80px',overflow: 'hidden',border: '1px solid #EEE',borderRadius: '5px',float: 'left'}
-            if(audioSelect == `${item.id}.${item.extension}`){
+        let divStyle = {
+            width: '42px',
+            overflow: 'hidden',
+            marginLeft: '14px'
+        }
+
+        const list = audioList.map((item) => {
+            let style = { cursor: 'pointer', width: '80px', height: '80px', overflow: 'hidden', border: '1px solid #EEE', borderRadius: '5px' }
+            if (audioSelect == `${item.id}.${item.extension}`) {
                 style.border = "3px solid blanchedalmond"
             }
+            let titleStyle = {
+                width: 80,
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                height: '25px',
+                lineHeight: '25px'
+            }
             return (
-                <div onClick={()=>{this.onPicClick(item)}} key={item.id} style={style}>
-                    <ReactAudioPlayer
-                        src={getPathOfAudio(false,`${item.id}.${item.extension}`)}
-                        controls
-                        style={{width:'100px',marginTop:'21px',marginLeft:'10px'}}
-                    />
+                <div style={{margin:5,display:'inline-block'}}>
+                    <div onClick={() => { this.onPicClick(item) }} key={item.id} style={style}>
+                        <div style={divStyle}>
+                            <ReactAudioPlayer
+                                src={getPathOfAudio(false, `${item.id}.${item.extension}`)}
+                                controls
+                                style={{ width: '100px', marginTop: '21px', marginLeft: '10px' }}
+                            />
+                        </div>
+                    </div>
+                    <div title={item.showName} style={titleStyle}>{item.showName}</div>
                 </div>
             )
         })
 
-        // const actions = [
-        //     <FlatButton label="取消" onClick={this.onCancelClick.bind(this)} color='primary' />,
-        //     <FlatButton label="确认" onClick={this.onConfirmClick.bind(this)} primary />
-        // ];
-        
         return (
             <Dialog
                 open
@@ -74,36 +86,28 @@ class PicListModal extends Component{
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">选择音频</DialogTitle>
-                <DialogContent style={{width:'500px'}}>
-                    <div style={{height:'300px',overflowY:'auto'}}>
+                <DialogContent style={{ width: '500px' }}>
+                    <div style={{ height: '300px', overflowY: 'auto' }}>
                         {list}
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <FlatButton onClick={this.onCancelClick.bind(this)}>取消</FlatButton>,
+                    <FlatButton onClick={this.onCancelClick.bind(this)}>取消</FlatButton>
                     <FlatButton onClick={this.onConfirmClick.bind(this)}>确认</FlatButton>
                 </DialogActions>
             </Dialog>
         )
-
-        // return (
-        //     <Dialog title="选择音频" open actions={actions}>
-        //         <div style={{height:'300px',overflowY:'auto'}}>
-        //             {list}
-        //         </div>
-        //     </Dialog>
-        // )
     }
 }
 
 const selector = createSelector(
     state => state.audio.list,
 
-    (list)=>{
+    (list) => {
         return {
-            audioList : list
+            audioList: list
         }
     }
 )
 
-export default connect(selector,{})(PicListModal)
+export default connect(selector, {})(AudioListModal)

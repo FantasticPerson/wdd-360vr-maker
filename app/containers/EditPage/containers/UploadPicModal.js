@@ -16,7 +16,8 @@ import getPathOfImage from '../../../native/getPathOfImage'
 class UploadPicModal extends Component{
     constructor(){
         super()
-        this.state = {tmpImgReady:false,previewImg:null,imageName:null}
+        this.state = {tmpImgReady:false,previewImg:null,imageName:null,showName:''}
+        this.nameRef = React.createRef()
     }
     renderUploadPic(){
         const {imageName} = this.state
@@ -54,10 +55,16 @@ class UploadPicModal extends Component{
     onConfirmClick(){
         const {imageName} = this.state
         const {onConfirm,onCancel} = this.props;
+        let showName = this.nameRef.value.trim()
+        if(!showName){
+            alert('请输入名称')
+            return
+        }
         if(!imageName){
-            onCancel()
+            alert('请上传图片')
+            return
         } else {
-            onConfirm(imageName)
+            onConfirm(imageName,showName)
         }
     }
 
@@ -75,6 +82,18 @@ class UploadPicModal extends Component{
                     <div style={{display:'inline-block',width:'100%',height:'260px',verticalAlign:'top'}}>
                         <Button  style={{marginLeft:'47px'}} color="primary" onClick={this.onUploadClick.bind(this)}>添加图片</Button>
                         {this.renderUploadPic()}
+                        <TextField
+                            id="with-placeholder"
+                            label="请输入音乐名称"
+                            placeholder="名称"
+                            margin="normal"
+                            inputRef={(input) => this.nameRef = input}
+                            style={{
+                                position: 'absolute',
+                                left: 280,
+                                top: 258
+                            }}
+                        />
                     </div>
                 </DialogContent>
                 <DialogActions>

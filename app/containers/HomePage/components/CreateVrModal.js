@@ -69,6 +69,7 @@ export default class CreateVrModal extends Component {
     async addPoster() {
         let res = await openFolder(['openFile'], [{ name: 'Images', extensions: ['jpg', 'png', 'gif'] }])
         if (!res || !res[0]) {
+            if(res == undefined) return
             alert('上传失败！')
             return
         }
@@ -132,7 +133,7 @@ export default class CreateVrModal extends Component {
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.onCancelClick.bind(this)}>取消</Button>,
+                    <Button onClick={this.onCancelClick.bind(this)}>取消</Button>
                     <Button onClick={this.onConfirmClick.bind(this)}>确认</Button>
                 </DialogActions>
             </Dialog>

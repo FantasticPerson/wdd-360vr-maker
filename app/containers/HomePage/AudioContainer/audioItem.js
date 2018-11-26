@@ -15,11 +15,11 @@ export default class AudioItem extends Component {
         let source = getAudioPath(data.id + '.' + data.extension)
         return (
             <div style={{ margin: '5px' }}>
-                <div style={styles['audio-item']}>
+                <div className={styles['audio-item']}>
                     {this.renderIcon()}
                     <audio style={{ visibility: 'hidden' }} ref={(audio) => { this.audioObj = audio }} src={source} loop></audio>
                 </div>
-                <div style={{ width: '150px', textOverflow: 'ellipsis', overflow: 'hidden' }}>{data.id + '.' + data.extension}</div>
+                <div title={data.showName} style={{ width: '150px', textOverflow: 'ellipsis', overflow: 'hidden',height:'25px',lineHeight:'25px' }}>{data.showName}</div>
             </div>
         )
     }

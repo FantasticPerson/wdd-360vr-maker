@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
-// import Dialog from 'material-ui/Dialog';
 
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-
 import FlatButton from '@material-ui/core/Button';
-
-// import FlatButton from 'material-ui/FlatButton';
-// import RaisedButton from 'material-ui/RaisedButton';
 
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect'
@@ -24,11 +19,14 @@ class PicListModal extends Component{
     onPicClick(item){
         const {pictures} = this.state
         let name = `${item.id}.${item.extension}`
-        if(pictures.indexOf(name) >= 0){
-            let index = pictures.indexOf(name)
+        let sameImg = pictures.find(item=>item.name == name)
+        if(sameImg){
+            let index = pictures.indexOf(sameImg)
             pictures.splice(index,1)
         } else {
-            pictures.push(name)
+            pictures.push({
+                name:name,showName:item.showName
+            })
         }
         this.setState({pictures:pictures})
     }
@@ -48,23 +46,30 @@ class PicListModal extends Component{
         const {picList} = this.props
         const {pictures} = this.state
 
+        console.log(picList)
         const list = picList.map((item)=>{
-            let style = {cursor:'pointer',width: '80px',height: '80px',overflow: 'hidden',border: '1px solid #EEE',borderRadius: '5px',float: 'left'}
-            if(pictures.indexOf(`${item.id}.${item.extension}`) >= 0){
+            let style = {cursor:'pointer',width: '80px',height: '80px',overflow: 'hidden',border: '1px solid #EEE',borderRadius: '5px'}
+            let titleStyle={
+                height:25,
+                lineHeight:'25px',
+                overflow:'hidden',
+                textOverflow:'ellipse',
+                whiteSpace:'nowrap'
+            }
+            let sameImg = pictures.find(item2=>item2.name == `${item.id}.${item.extension}`)
+            if(sameImg){
                 style.border = "3px solid blanchedalmond"
             }
             return (
-                <div onClick={()=>{this.onPicClick(item)}} key={item.id} style={style}>
-                    <img style={{width:'100%'}} src={getPathOfImage(false,`${item.id}.${item.extension}`)}/>
+                <div style={{display:'inline-block',margin:5}}>
+                    <div onClick={()=>{this.onPicClick(item)}} key={item.id} style={style}>
+                        <img style={{width:'100%'}} src={getPathOfImage(false,`${item.id}.${item.extension}`)}/>
+                    </div>
+                    <div title={item.showName} style={titleStyle}>{item.showName}</div>
                 </div>
             )
         })
 
-        // const actions = [
-        //     <FlatButton label="取消" onClick={this.onCancelClick.bind(this)} primary />,
-        //     <FlatButton label="确认" onClick={this.onConfirmClick.bind(this)} primary />
-        // ];
-        
         return (
             <Dialog
                 open
@@ -84,21 +89,11 @@ class PicListModal extends Component{
                 </DialogActions>
             </Dialog>
         )
-
-        // return (
-
-        //     <Dialog title="选择图片" open actions={actions}>
-        //         <div style={{height:'300px',overflowY:'auto'}}>
-        //             {list}
-        //         </div>
-        //     </Dialog>
-        // )
     }
 }
 
 const selector = createSelector(
     state => state.picture.list,
-
     (list)=>{
         return {
             picList : list

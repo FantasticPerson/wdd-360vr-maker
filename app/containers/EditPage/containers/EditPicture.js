@@ -18,14 +18,18 @@ export default class EditPicture extends Component {
         this.moreInfo = React.createRef()
     }
 
-    componentDidMount() {
+    componentWillMount(){
         const { action } = this.props
         if (action.length > 0) {
             let obj = JSON.parse(action)
             if (obj.type == 'pictures') {
-                this.titleRef.value = obj.title
-                this.moreInfo.value = obj.moreInfo
-                this.setState({ list: obj.pics, check: obj.check, openInNewWindow: obj.openInNewWindow })
+                this.setState({ 
+                    list: obj.pics, 
+                    check: obj.check, 
+                    openInNewWindow: obj.openInNewWindow,
+                    defaultTile:obj.title,
+                    defaultMoreInfo:obj.moreInfo
+                })
             }
         }
     }
@@ -63,20 +67,32 @@ export default class EditPicture extends Component {
     }
 
     render() {
-        const { list } = this.state
+        const { list,defaultTile,defaultMoreInfo } = this.state
         let sceneItemStyle = {
-            margin: '5px',
-            height: '80px',
-            width: '80px',
+            height: '75px',
+            width: '75px',
             display: 'inline-block',
             overflow: 'hidden',
-            position: 'relative'
+            position: 'relative',
+            border: '1px solid #ccc',
+            borderRadius: '5px'
+        }
+        let titleStyle = {
+            width: 75,
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            height: '25px',
+            lineHeight: '25px'
         }
         let picArr = list.map((item) => {
             return (
-                <div style={sceneItemStyle} key={item}>
-                    <i onClick={() => this.onRemoveClick(item)} className="fa fa-times pictureCloseBtn" aria-hidden="true"></i>
-                    <img style={{ width: '100%' }} src={getPathOfImage(false, item)} />
+                <div style={{display:'inline-block',margin:'5px'}}>
+                    <div style={sceneItemStyle} key={item}>
+                        <i onClick={() => this.onRemoveClick(item)} className="fa fa-times pictureCloseBtn" aria-hidden="true"></i>
+                        <img style={{ width: '100%' }} src={getPathOfImage(false, item.name)} />
+                    </div>
+                    <div title={item.showName} style={titleStyle}>{item.showName}</div>
                 </div>
             )
         })
@@ -99,19 +115,27 @@ export default class EditPicture extends Component {
                     label="请输入标题"
                     placeholder="标题"
                     margin="normal"
+                    defaultValue={defaultTile}
                     inputRef={(input) => this.titleRef = input}
                 />
 
                 <br />
 
-                <FlatButton color="secondary" style={{ float: 'right' }} onClick={() => this.setState({ showPicListModal: true })}>{'从图片库添加'}</FlatButton>
+                <FlatButton color="primary" variant="contained" style={{ display: 'inline-block' }} onClick={() => this.setState({ showPicListModal: true })}>{'图片库添加'}</FlatButton>
 
-                <FlatButton color="secondary" style={{ float: 'right' }} onClick={() => this.setState({ showUploadModal: true })}>{'添加图片'}</FlatButton>
+                <FlatButton color="primary" variant="contained" style={{ display: 'inline-block', float: 'right' }} onClick={() => this.setState({ showUploadModal: true })}>{'添加图片'}</FlatButton>
 
-                <div style={{ width: '180px', margin: '0 auto' }}>
+                <div style={{ width: '180px', margin: '0 auto', marginTop: 15 }}>
                     {picArr}
                 </div>
-
+                <TextField
+                    id="with-placeholder"
+                    label="填写网址，展示更多内容"
+                    placeholder="更多内容"
+                    margin="normal"
+                    defaultValue={defaultMoreInfo}
+                    inputRef={(input) => this.moreInfo = input}
+                />
                 <FormControlLabel
                     control={
                         <Checkbox
@@ -124,14 +148,6 @@ export default class EditPicture extends Component {
                     label="在新窗口中打开"
                 />
 
-                <TextField
-                    id="with-placeholder"
-                    label="填写网站地址，展示更多内容"
-                    placeholder="更多内容"
-                    margin="normal"
-                    inputRef={(input) => this.moreInfo = input}
-                />
-
                 {this.renderUploadModal()}
                 {this.renderPicListModal()}
             </div>
@@ -142,21 +158,23 @@ export default class EditPicture extends Component {
         this.setState({ showUploadModal: false })
     }
 
-    onUploadConfirm(path) {
+    onUploadConfirm(path, showName) {
         CopyImageTmpToImage(path)
             .then(() => {
                 const { addPicture } = this.props
                 let arr = path.split('.')
                 let picItem = {
                     id: arr[0],
-                    extension: arr[1]
+                    extension: arr[1],
+                    showName: showName
                 }
                 addPicture(picItem)
                 setTimeout(() => {
                     const { list } = this.state
                     var name = `${arr[0]}.${arr[1]}`
-                    if (list.indexOf(name) < 0) {
-                        list.push(name)
+                    let sameImg = list.find(item => item.name == name)
+                    if (!sameImg) {
+                        list.push({ name: name, showName: showName })
                         this.setState({ list: list })
                     }
                 }, 300)
@@ -181,13 +199,12 @@ export default class EditPicture extends Component {
         let list = this.state.list
         if (arr.length > 0) {
             for (let i = 0; i < arr.length; i++) {
-                if (list.indexOf(arr[i]) < 0) {
+                if (!list.find(item => item.name == arr[i].name)) {
                     list.push(arr[i])
                 }
             }
             this.setState({ list: list })
         }
-
         this.onLocalPicListCancel()
     }
 
