@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
+import {SelectField,MenuItem,Checkbox,FormControlLabel} from '@material-ui/core'
 
-import SelectField from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { getHeadImgUrl } from '../../../native/pathUtils'
 
 export default class EditSelectScene extends Component {

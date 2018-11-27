@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-
-import TextField from '@material-ui/core/TextField';
-import Checkbox from '@material-ui/core/Checkbox';
-import FlatButton from '@material-ui/core/Button';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import {TextField,Checkbox,FlatButton,FormControlLabel} from '@material-ui/core'
 
 import UploadPicModal from './UploadPicModal'
 import CopyImageTmpToImage from '../../../native/copyImageTmpToImage'

@@ -2,12 +2,7 @@ import React,{Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {createSelector} from 'reselect';
-
-import FlatButton from '@material-ui/core/Button';
-import RadioButton from '@material-ui/core/Radio';
-import RadioButtonGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
+import {FlatButton,RadioButton,RadioButtonGroup,FormControlLabel,FormControl} from '@material-ui/core'
 
 import {editEffectConfig,getSelector} from '../../../store/getStore'
 

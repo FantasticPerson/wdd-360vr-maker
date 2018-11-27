@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-
-import TextField from '@material-ui/core/TextField';
-import FlatButton from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import {TextField,FlatButton,Checkbox,FormControlLabel} from '@material-ui/core'
 
 import UploadPicModal from './UploadPicModal'
 import CopyImageTmpToImage from '../../../native/copyImageTmpToImage'
@@ -82,8 +78,6 @@ export default class EditPicAndText extends Component {
             item2.text = this.summaryRef.value.trim()
             this.setState({ list: list })
         }
-        console.log(item.text || "")
-        // this.setState({defaultSummary:(item.text || "")})
         this.summaryRef.value = (item.text || "")
         this.setState({ pickedPic: item.pic })
     }

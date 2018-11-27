@@ -1,14 +1,5 @@
 import React, { Component } from 'react';
-
-// import Dialog from 'material-ui/Dialog';
-
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-
-import TextField from '@material-ui/core/TextField';
-import FlatButton from '@material-ui/core/Button';
+import {Dialog,DialogTitle,DialogContent,DialogActions,TextField,FlatButton} from '@material-ui/core'
 
 import styles from '../../../styles/createSceneModal.css'
 import openAudio from '../../../native/openAudio'

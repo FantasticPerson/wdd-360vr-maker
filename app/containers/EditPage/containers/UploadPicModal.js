@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import {Dialog,DialogTitle,DialogContent,DialogActions,TextField,Button} from '@material-ui/core'
 
 import styles from '../../../styles/createSceneModal.css'
 import openImage from '../../../native/openImage'
@@ -71,12 +64,7 @@ class UploadPicModal extends Component{
     render(){
         const {onConfirm,onCancel} = this.props;
         return (
-            <Dialog
-                open
-                onClose={()=>{onCancel()}}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
+            <Dialog open onClose={()=>{onCancel()}}>
                 <DialogTitle id="alert-dialog-title">{'添加图片'}</DialogTitle>
                 <DialogContent style={{width:'500px'}}>
                     <div style={{display:'inline-block',width:'100%',height:'260px',verticalAlign:'top'}}>
@@ -84,7 +72,7 @@ class UploadPicModal extends Component{
                         {this.renderUploadPic()}
                         <TextField
                             id="with-placeholder"
-                            label="请输入音乐名称"
+                            label="请输入图片名称"
                             placeholder="名称"
                             margin="normal"
                             inputRef={(input) => this.nameRef = input}
@@ -97,7 +85,7 @@ class UploadPicModal extends Component{
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={()=>{onCancel()}}>取消</Button>,
+                    <Button onClick={()=>{onCancel()}}>取消</Button>
                     <Button onClick={this.onConfirmClick.bind(this)}>确认</Button>
                 </DialogActions>
             </Dialog>

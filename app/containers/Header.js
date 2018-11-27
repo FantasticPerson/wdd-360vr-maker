@@ -3,16 +3,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { createSelector } from 'reselect'
 import { createHashHistory } from 'history'
-
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import { NavigateBefore } from '@material-ui/icons';
+import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem } from '@material-ui/core'
+import { Menu as MenuIcon, NavigateBefore } from '@material-ui/icons'
 
 import { getProductionXml } from '../utils/xmlBuilder2'
 import { GenerateOutput } from '../utils/generateOutput'

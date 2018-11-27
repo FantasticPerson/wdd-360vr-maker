@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect'
 import { bindActionCreators } from 'redux';
-
-import SelectField from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
-import FlatButton from '@material-ui/core/Button';
+import {SelectField,MenuItem,TextField,FlatButton} from '@material-ui/core'
 
 import * as hotpotActions from '../../../actions/hotpot'
 import * as PicActions from '../../../actions/picture'

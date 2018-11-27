@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import {List,ListItem,ListItemIcon,ListItemText} from '@material-ui/core'
 
 import * as vrActions from '../../actions/vr';
 import * as folderActions from '../../actions/folder';
