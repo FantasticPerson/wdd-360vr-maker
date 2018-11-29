@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect'
 import { bindActionCreators } from 'redux';
-import {SelectField,MenuItem,TextField,FlatButton} from '@material-ui/core'
+import { Select as SelectField, MenuItem, TextField, Button as FlatButton } from '@material-ui/core'
 
 import * as hotpotActions from '../../../actions/hotpot'
 import * as PicActions from '../../../actions/picture'
@@ -62,9 +62,9 @@ class EditHotSpot extends Component {
             if (nId != cId) {
                 let res = nHotSpotItem.action ? JSON.parse(nHotSpotItem.action) : null
                 let keys = Object.keys(typeObj)
-                let hosSpotType = res ? keys.indexOf(res.type)+1 : 1
+                let hosSpotType = res ? keys.indexOf(res.type) + 1 : 1
                 console.log(hosSpotType)
-                this.setState({ hotspotIndex: nHotSpotItem.icon,hotSpotType:hosSpotType })
+                this.setState({ hotspotIndex: nHotSpotItem.icon, hotSpotType: hosSpotType })
             }
         }
     }
@@ -154,13 +154,11 @@ class EditHotSpot extends Component {
 
             return (
                 <div style={{ borderBottom: '1px solid #eee' }}>
-                    <span>
+                    <div>
                         <i className='fa fa-dot-circle-o'></i>
-                        <span style={{
-                            marginLeft: '5px'
-                        }}>热点编辑</span>
+                        <span style={{marginLeft: '5px'}}>热点编辑</span>
                         <FlatButton color="primary" onClick={this.onAddHotspotClick.bind(this)}>添加热点</FlatButton>
-                    </span>
+                    </div>
                     <div>{`当前场景共有热点${hList.length}个`}</div>
                     <div>{hotpotArr}</div>
                 </div>
@@ -214,16 +212,16 @@ class EditHotSpot extends Component {
                             onChange={this.handleTypeChange.bind(this)}
                             className={styles['select-container']}
                         >
-                            {menuList.map((item, index) => <MenuItem key={1+index} value={1 + index}>{item}</MenuItem>)}
+                            {menuList.map((item, index) => <MenuItem key={1 + index} value={1 + index}>{item}</MenuItem>)}
                         </SelectField>
                         <div className={styles['edit-type-container']}>
                             {this.renderEditByType()}
                         </div>
                     </div>
                     <div style={{ position: 'fixed', bottom: 0 }}>
-                        <FlatButton color="primary"  variant="contained" onClick={this.onEditConfirmClick.bind(this)}>{'确定'}</FlatButton>
+                        <FlatButton color="primary" variant="contained" onClick={this.onEditConfirmClick.bind(this)}>{'确定'}</FlatButton>
                         {isAdd ? null :
-                            <FlatButton color="secondary" style={{marginLeft:20}} variant="contained" onClick={this.onEditDeleteClick.bind(this)}>{'删除'}</FlatButton>}
+                            <FlatButton color="secondary" style={{ marginLeft: 20 }} variant="contained" onClick={this.onEditDeleteClick.bind(this)}>{'删除'}</FlatButton>}
                     </div>
                 </div>
             )

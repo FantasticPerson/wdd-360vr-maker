@@ -8,7 +8,7 @@ import { getHeadImgUrl, getScenePath } from '../../../native/pathUtils'
 class Sceneitemspe extends Component {
     constructor() {
         super()
-        this.state = {over:false}
+        this.state = {over:false,hover:false}
     }
 
     onDrag(event) {
@@ -25,6 +25,7 @@ class Sceneitemspe extends Component {
             msg = {}
         }
         if(msg && msg.id != this.props.item.id){
+            this.setState({hover:true})
             event.preventDefault()
         }
     }
@@ -56,12 +57,17 @@ class Sceneitemspe extends Component {
         }
     }
 
+    onDragLeave(){
+        this.setState({hover:false})
+    }
+
     render() {
+        const {hover} = this.state
         const { item, sceneSelected, onSceneContext, sceneClickHandler } = this.props;
         let className = `${styles.scene} ${item.id == sceneSelected ? styles.selected : ''}`
 
         return (
-            <div id={`scene-to-drag-${item.id}`} draggable onDrop={this.onDrop.bind(this)} onDragOver={this.onDragOver.bind(this)} onDragStart={this.onDrag.bind(this)} className={styles.sceneContainer} key={item.id} onContextMenu={(e) => onSceneContext(e, item)} onClick={() => sceneClickHandler(item.id)}>
+            <div id={`scene-to-drag-${item.id}`} style={{opacity:hover? 0.5 : 1}} draggable onDrop={this.onDrop.bind(this)} onDragLeave={this.onDragLeave.bind(this)} onDragOver={this.onDragOver.bind(this)} onDragStart={this.onDrag.bind(this)} className={styles.sceneContainer} key={item.id} onContextMenu={(e) => onSceneContext(e, item)} onClick={() => sceneClickHandler(item.id)}>
                 <div className={className}>
                     <img style={{ height: '100%' }} src={getHeadImgUrl(item.id)}></img>
                 </div>
