@@ -87,7 +87,7 @@ export default class EditPicture extends Component {
         }
         let picArr = list.map((item) => {
             return (
-                <div style={{display:'inline-block',margin:'5px'}}>
+                <div style={{display:'inline-block',margin:'5px'}} key={item}>
                     <div style={sceneItemStyle} key={item}>
                         <i onClick={() => this.onRemoveClick(item)} className="fa fa-times pictureCloseBtn" aria-hidden="true"></i>
                         <img style={{ width: '100%' }} src={getPathOfImage(false, item.name)} />

@@ -197,6 +197,30 @@ class EditSceneContainer extends Component {
         )
     }
 
+    onSceneMove(beforeId,afterId){
+        const {sceneList,sortSceneItems} = this.props
+        let item = sceneList.find(item=>item.id === beforeId)
+        let item2 = sceneList.find(item=>item.id === afterId)
+        if(item,item2){
+            let beforeIndex = sceneList.indexOf(item)
+            let afterIndex = sceneList.indexOf(item2)
+            if(beforeIndex > afterIndex){
+                let tempIndex = item2.index
+                for(let i = afterIndex;i<beforeIndex;i++){
+                    sceneList[i].index = sceneList[i+1].index
+                }
+                item.index = tempIndex
+            } else {
+                let tempIndex = item2.index
+                for(let i = afterIndex;i>beforeIndex;i--){
+                    sceneList[i].index = sceneList[i-1].index
+                }
+                item.index = tempIndex
+            }
+            sortSceneItems(sceneList)
+        }
+    }
+
     renderSceneList() {
         const { sceneList, sceneSelected } = this.props
         const cWidth = sceneList.length * 105 + 90 + 'px'
@@ -208,6 +232,7 @@ class EditSceneContainer extends Component {
                 sceneSelected={sceneSelected}
                 item={item}
                 key={item.id}
+                onSceneMove={this.onSceneMove.bind(this)}
             />)
         )
 

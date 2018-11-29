@@ -14,12 +14,16 @@ import {AddSunlight,RemoveSunlight} from './krpano'
 export const updateAllScene = createAction('update_all_scene')
 export const dUpdateSceneSelected = createAction('update_scene_selected')
 
-export function updateDAllScene(list){
-    return (dispatch)=>{
-        list.sort((item1,item2)=>{
-            return item1.timestamp > item2.timestamp
+export function updateDAllScene(id){
+    return (dispatch,getState)=>{
+        let vrId = id ? id : getState().router.location.pathname.split('/')[2]
+        Modals.Scene.findAllSceneById(vrId)
+        .then((list)=>{
+            list.sort((item1,item2)=>{
+                return item1.index > item2.index
+            })
+            dispatch(updateAllScene(list))
         })
-        dispatch(updateAllScene(list))
     }
 }
 
@@ -55,12 +59,19 @@ export function updateInitViewPort(sceneId){
 
             Modals.Scene.update(sceneItem)
             .then(()=>{
-                return Modals.Scene.findAll()
-            })
-            .then((list)=>{
-                dispatch(updateDAllScene(list))
+                dispatch(updateDAllScene())
             })
         }
+    }
+}
+
+export function sortSceneItems(items){
+    return (dispatch,getState)=>{
+        console.log(items)
+        Modals.Scene.updateAllScene(items)
+        .then(()=>{
+            dispatch(updateDAllScene())
+        })
     }
 }
 
@@ -78,10 +89,7 @@ export function updateViewRange(id,fov,fovmax,fovmin,vlookatmin,vlookatmax){
 
             Modals.Scene.update(sceneItem)
             .then(()=>{
-                return Modals.Scene.findAll()
-            })
-            .then((list)=>{
-                dispatch(updateDAllScene(list))
+                dispatch(updateDAllScene())
             })
         }
     }
@@ -98,10 +106,7 @@ export function updateEffect(id,type,level){
 
             Modals.Scene.update(sceneItem)
             .then(()=>{
-                return Modals.Scene.findAll()
-            })
-            .then((list)=>{
-                dispatch(updateDAllScene(list))
+                dispatch(updateDAllScene())
             })
         }
     }
@@ -124,10 +129,7 @@ export function addSunlight(id){
 
             Modals.Scene.add(newItem)
             .then(()=>{
-                return Modals.Scene.findAll()
-            })
-            .then((list)=>{
-                dispatch(updateDAllScene(list))
+                dispatch(updateDAllScene())
             })
         }
     }
@@ -145,10 +147,7 @@ export function updateSunlight(id,ath,atv){
 
             Modals.Scene.update(newItem)
             .then(()=>{
-                return Modals.Scene.findAll()
-            })
-            .then((list)=>{
-                dispatch(updateDAllScene(list))
+                dispatch(updateDAllScene())
             })
         }
     }
@@ -166,10 +165,7 @@ export function removeSunlight(id){
             dispatch(RemoveSunlight())
             Modals.Scene.update(newItem)
             .then(()=>{
-                return Modals.Scene.findAll()
-            })
-            .then((list)=>{
-                dispatch(updateDAllScene(list))
+                dispatch(updateDAllScene())
             })
         }
     }
@@ -177,10 +173,7 @@ export function removeSunlight(id){
 
 export function updateAllSceneFromLocal(){
     return (dispatch)=>{
-        Modals.Scene.findAll()
-        .then((list)=>{
-            dispatch(updateDAllScene(list))
-        })
+        dispatch(updateDAllScene())
     }
 }
 
@@ -191,10 +184,7 @@ export function addScene(obj) {
     return (dispatch) => {
         Modals.Scene.add(sceneObj)
         .then(()=>{
-            return Modals.Scene.findAll()
-        })
-        .then((list)=>{
-            dispatch(updateDAllScene(list))
+            dispatch(updateDAllScene())
         })
     }
 }
@@ -203,10 +193,7 @@ export function delScene(obj) {
     return (dispatch)=>{
         Modals.Scene.delete(obj.id)
         .then(()=>{
-            return Modals.Scene.findAll()
-        })
-        .then((list)=>{
-            dispatch(updateDAllScene(list))
+            dispatch(updateDAllScene())
         })
     }
 }
@@ -215,10 +202,7 @@ export function modifyScene(obj) {
     return (dispatch)=>{
         Modals.Scene.update(obj)
         .then(()=>{
-            return Modals.Scene.findAll()
-        })
-        .then((list)=>{
-            dispatch(updateDAllScene(list))
+            dispatch(updateDAllScene())
         })
     }
 }
@@ -230,10 +214,7 @@ export function updateAllMusic(arr,music1,music2){
     return (dispatch)=>{
         Modals.Scene.updateAllScene(objArr)
         .then(()=>{
-            return Modals.Scene.findAll()
-        })
-        .then((list)=>{
-            dispatch(updateDAllScene(list))
+            dispatch(updateDAllScene())
         })
     }
 }
@@ -242,10 +223,7 @@ export function updateSceneMusic(obj,music1,music2){
     return (dispatch)=>{
         Modals.Scene.update({...obj,music1,music2})
         .then(()=>{
-            return Modals.Scene.findAll()
-        })
-        .then((list)=>{
-            dispatch(updateDAllScene(list))
+            dispatch(updateDAllScene())
         })
     }
 }

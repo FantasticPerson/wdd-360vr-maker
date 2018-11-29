@@ -99,7 +99,6 @@ export default class EditPicAndText extends Component {
     render() {
         const { list,defaultTitle,defaultMoreInfo,defaultSummary } = this.state
         const { pickedPic } = this.state
-        console.log(defaultSummary)
         let sceneItemStyle = { height: '75px', width: '75px', overflow: 'hidden', position: 'relative', cursor: 'pointer',border:'1px solid #ccc',borderRadius:'5px' }
         let titleStyle = {
             height:25,
@@ -116,7 +115,7 @@ export default class EditPicAndText extends Component {
             }
 
             return (
-                <div style={{display:'inline-block',margin:5}}>
+                <div style={{display:'inline-block',margin:5}} key={item.pic.name}>
                     <div onClick={() => { this.onPicClick(item) }} style={styleObj} key={item.pic.name}>
                         <i onClick={() => this.onRemoveClick(item)} className="fa fa-times pictureCloseBtn" aria-hidden="true"></i>
                         <img style={{ width: '100%' }} src={getPathOfImage(false, item.pic.name)} />

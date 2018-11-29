@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { findDOMNode } from 'react-dom'
 import { DragSource, DropTarget } from 'react-dnd'
 import { DragDropContextProvider, DragDropContext } from 'react-dnd'
 import styles from '../../../styles/editSceneContainer.css'
@@ -7,6 +8,52 @@ import { getHeadImgUrl, getScenePath } from '../../../native/pathUtils'
 class Sceneitemspe extends Component {
     constructor() {
         super()
+        this.state = {over:false}
+    }
+
+    onDrag(event) {
+        console.log(this.props.item.id)
+        let msg =  JSON.stringify({posX : event.pageX,id:this.props.item.id})
+        event.dataTransfer.setData('Text', msg)
+    }
+
+    onDragOver(event) {
+        let msg = {}
+        try{
+            msg = JSON.parse(event.dataTransfer.getData('Text'))
+        }catch(e){
+            msg = {}
+        }
+        if(msg && msg.id != this.props.item.id){
+            event.preventDefault()
+        }
+    }
+
+    onDrop(event) {
+        let msg = null
+        try{
+            msg = JSON.parse(event.dataTransfer.getData('Text'))
+        }catch(e){
+            msg = null
+        }
+        
+        if (msg.id && msg.id != this.props.item.id) {
+            const {onSceneMove} = this.props
+            let thisDom = findDOMNode(this)
+            let thisPos=thisDom.getBoundingClientRect()
+            
+            let thatDom = document.getElementById(`scene-to-drag-${msg.id}`)
+            let thatPos = thatDom.getBoundingClientRect()
+        
+            let originPosX = msg.posX
+            let cPosX = event.pageX
+
+            if(cPosX - originPosX + thatPos.left > thisPos.left){
+                onSceneMove(this.props.item.id,msg.id)
+            } else {
+                onSceneMove(msg.id,this.props.item.id)
+            }
+        }
     }
 
     render() {
@@ -14,7 +61,7 @@ class Sceneitemspe extends Component {
         let className = `${styles.scene} ${item.id == sceneSelected ? styles.selected : ''}`
 
         return (
-            <div className={styles.sceneContainer} key={item.id} onContextMenu={(e) => onSceneContext(e, item)} onClick={() => sceneClickHandler(item.id)}>
+            <div id={`scene-to-drag-${item.id}`} draggable onDrop={this.onDrop.bind(this)} onDragOver={this.onDragOver.bind(this)} onDragStart={this.onDrag.bind(this)} className={styles.sceneContainer} key={item.id} onContextMenu={(e) => onSceneContext(e, item)} onClick={() => sceneClickHandler(item.id)}>
                 <div className={className}>
                     <img style={{ height: '100%' }} src={getHeadImgUrl(item.id)}></img>
                 </div>
