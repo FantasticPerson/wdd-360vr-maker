@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
+import {Button,Snackbar,Typography} from '@material-ui/core'
 import Slider from '@material-ui/lab/Slider';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Snackbar from '@material-ui/core/Snackbar';
 
 import * as sceneActions from '../../../actions/scene'
 import { getSelector } from '../../../store/getStore'

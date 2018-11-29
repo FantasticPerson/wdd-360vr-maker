@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-// import TextField from 'material-ui/TextField';
-
-import Checkbox from '@material-ui/core/Checkbox';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import {Checkbox,TextField,FormControlLabel} from '@material-ui/core'
 
 export default class EditVideo extends Component{
     constructor(){

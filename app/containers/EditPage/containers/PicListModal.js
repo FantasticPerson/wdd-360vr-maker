@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
-
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import FlatButton from '@material-ui/core/Button';
-
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect'
 import { bindActionCreators } from 'redux';
+import {Dialog,DialogTitle,DialogContent,DialogActions,FlatButton} from '@material-ui/core'
+
 import getPathOfImage from '../../../native/getPathOfImage'
 
 class PicListModal extends Component{

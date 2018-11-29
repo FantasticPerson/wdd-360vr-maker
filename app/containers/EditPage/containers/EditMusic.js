@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
 import FlatButton from '@material-ui/core/Button';
 
 import UploadAudioModal from './UploadAudioModal'
