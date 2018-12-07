@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {TextField,Checkbox,FlatButton,FormControlLabel} from '@material-ui/core'
+import {TextField,Checkbox,Button as FlatButton,FormControlLabel} from '@material-ui/core'
 
 import UploadAudioModal from './UploadAudioModal'
 import CopyAudioTmpToAudio from '../../../native/copyAudioTmpToAudio'

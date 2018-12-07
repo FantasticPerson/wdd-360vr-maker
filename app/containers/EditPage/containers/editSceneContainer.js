@@ -39,9 +39,11 @@ class EditSceneContainer extends Component {
             showGroupContext: false,
             moveGroupList: [],
             showSceneMove: false,
-            sceneToMove: null
+            sceneToMove: null,
+            isDragging : false
         }
         this.sceneListC = null
+        this.showUpdate = false
     }
 
     componentDidMount() {
@@ -68,14 +70,19 @@ class EditSceneContainer extends Component {
     }
 
     componentWillReceiveProps(props) {
-        if (props.groupSelectId != this.props.groupSelectId) {
 
-            const { updateSceneSelected } = props
-            if (props.sceneList.length > 0) {
-                updateSceneSelected(props.sceneList[0].id)
-            } else {
-                updateSceneSelected(null)
+        if (props.groupSelectId != this.props.groupSelectId) {
+            this.showUpdate = true
+        } else {
+            if(this.showUpdate){
+                const { updateSceneSelected } = props
+                if (props.sceneList.length > 0) {
+                    updateSceneSelected(props.sceneList[0].id)
+                } else {
+                    updateSceneSelected(null)
+                }
             }
+            this.showUpdate = false
         }
     }
 
@@ -197,25 +204,51 @@ class EditSceneContainer extends Component {
         )
     }
 
-    onSceneMove(beforeId,afterId){
+    onDragEnd(){
+        this.setState({isDragging:false})
+    }
+
+    onDrag(){
+        this.setState({isDragging:true})
+    }
+
+    onSceneMove(beforeId,afterId,dargId){
         const {sceneList,sortSceneItems} = this.props
+        for(let i=0;i<sceneList.length;i++){
+            sceneList[i].index = i
+        }
         let item = sceneList.find(item=>item.id === beforeId)
         let item2 = sceneList.find(item=>item.id === afterId)
+        let dragItem = sceneList.find(item=>item.id === dargId)
+
         if(item,item2){
             let beforeIndex = sceneList.indexOf(item)
             let afterIndex = sceneList.indexOf(item2)
-            if(beforeIndex > afterIndex){
-                let tempIndex = item2.index
-                for(let i = afterIndex;i<beforeIndex;i++){
-                    sceneList[i].index = sceneList[i+1].index
+
+            if(beforeIndex < afterIndex){
+                if(beforeId == dargId){
+                    for(let i=beforeIndex+1;i<afterIndex;i++){
+                        sceneList[i].index = i-1
+                    }
+                    item.index = afterIndex-1
+                } else {
+                    for(let i=beforeIndex+1;i<afterIndex;i++){
+                        sceneList[i].index = i+1
+                    }
+                    item2.index = beforeIndex+1
                 }
-                item.index = tempIndex
             } else {
-                let tempIndex = item2.index
-                for(let i = afterIndex;i>beforeIndex;i--){
-                    sceneList[i].index = sceneList[i-1].index
+                if(beforeId == dargId){
+                    for(let i = afterIndex;i<beforeIndex;i++){
+                        sceneList[i].index = i+1
+                    }
+                    item.index = afterIndex
+                } else {
+                    for(let i = afterIndex+1;i<=beforeIndex;i++){
+                        sceneList[i].index = i-1
+                    }
+                    item2.index = beforeIndex
                 }
-                item.index = tempIndex
             }
             sortSceneItems(sceneList)
         }
@@ -233,6 +266,9 @@ class EditSceneContainer extends Component {
                 item={item}
                 key={item.id}
                 onSceneMove={this.onSceneMove.bind(this)}
+                onDragEnd={this.onDragEnd.bind(this)}
+                onDrag={this.onDrag.bind(this)}
+                isDragging={this.state.isDragging}
             />)
         )
 

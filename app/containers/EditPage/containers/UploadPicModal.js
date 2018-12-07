@@ -35,7 +35,6 @@ class UploadPicModal extends Component{
             }
         })
         .then((name)=>{
-            console.log(name)
             setTimeout(()=>{
                 this.setState({imageName:name})
             },300)

@@ -99,7 +99,6 @@ export function GenerateOutput(vrItem,sceneList,hotpotList,groupList,allSceneLis
         let srcPath = path.resolve(electron_app_audio_path,`./${audioArr[i]}`)
         let destPath = path.resolve(audioPath,`./${audioArr[i]}`)
         fse.copySync(srcPath,destPath)
-        console.log(destPath)
     }
 
     const template = swig.compileFile(path.resolve(electron_app_root_path, window.NODE_ENV == 'prod' ? './app.asar/html/pano.html' : '../html/pano.html'))

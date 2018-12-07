@@ -4,8 +4,9 @@ Scene.store = null;
 
 Scene.findAll = () => Scene.store.toArray()
 Scene.findAllSceneById = (id) => Scene.store.where('vrid').equals(id).toArray()
-Scene.add = (obj) => Scene.findAllSceneById(obj.vrid).then((list) => {
-    let index = list.length + 1
+Scene.findAllSceneByGroupId = (id) => Scene.store.where('groupId').equals(id).toArray()
+Scene.add = (obj) => Scene.findAllSceneByGroupId(obj.groupId).then((list) => {
+    let index = list.length
     return Scene.store.put({
         index:index,
         ...obj,

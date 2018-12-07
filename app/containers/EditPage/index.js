@@ -40,11 +40,13 @@ class EditPage extends Component {
         Timer(100).then(() => {
             if (this._mounted) {
                 this.props.updateAppTitle('编辑全景')
-                this.props.updateAllSceneFromLocal();
                 this.props.updatePictureFromLocal();
                 this.props.updateAudioFromLocal();
                 this.props.updateAppShowBack(true);
                 this.props.updateGroupByVrid();
+                setTimeout(()=>{
+                    this.props.updateAllSceneFromLocal();
+                },10)
             }
         })
     }

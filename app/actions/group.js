@@ -1,4 +1,5 @@
 import { createAction } from 'redux-act'
+import {updateDAllScene} from './scene'
 
 import Modals from '../modals';
 import Hashid from '../utils/generateHashId'
@@ -9,6 +10,7 @@ export const dUpdateSelectedGroup = createAction('update_selected_group')
 export function updateGroupSelected(id) {
     return (dispatch) => {
         dispatch(dUpdateSelectedGroup(id))
+        dispatch(updateDAllScene(id))
     }
 }
 

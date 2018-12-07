@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Dialog,DialogTitle,DialogContent,DialogActions,TextField,FlatButton} from '@material-ui/core'
+import {Dialog,DialogTitle,DialogContent,DialogActions,TextField,Button as FlatButton} from '@material-ui/core'
 
 import styles from '../../../styles/createSceneModal.css'
 import openAudio from '../../../native/openAudio'

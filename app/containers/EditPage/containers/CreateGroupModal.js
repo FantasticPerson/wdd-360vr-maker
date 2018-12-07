@@ -34,7 +34,6 @@ export default class CreateFolderModal extends Component {
 
     render() {
         const { itemData } = this.props
-        console.log(this.props)
         return (
             <Dialog
                 open={true}

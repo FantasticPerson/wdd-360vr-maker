@@ -63,7 +63,6 @@ class EditHotSpot extends Component {
                 let res = nHotSpotItem.action ? JSON.parse(nHotSpotItem.action) : null
                 let keys = Object.keys(typeObj)
                 let hosSpotType = res ? keys.indexOf(res.type) + 1 : 1
-                console.log(hosSpotType)
                 this.setState({ hotspotIndex: nHotSpotItem.icon, hotSpotType: hosSpotType })
             }
         }

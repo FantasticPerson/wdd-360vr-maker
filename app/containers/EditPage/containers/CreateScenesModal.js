@@ -43,6 +43,7 @@ export default class CreateScenes extends Component {
                     await addScene({ id: sceneId, vrid: vrId, name: '默认', groupId })
                     let selectIds = groupItem.sceneListIds || []
                     selectIds.push(sceneId)
+                    debugger
                     let newGroupItem = { ...groupItem, sceneListIds: selectIds }
                     updateGroup(newGroupItem)
                 } else {

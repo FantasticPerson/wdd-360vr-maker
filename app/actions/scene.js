@@ -16,8 +16,8 @@ export const dUpdateSceneSelected = createAction('update_scene_selected')
 
 export function updateDAllScene(id){
     return (dispatch,getState)=>{
-        let vrId = id ? id : getState().router.location.pathname.split('/')[2]
-        Modals.Scene.findAllSceneById(vrId)
+        let gId = id ? id : getState().group.selectId
+        Modals.Scene.findAllSceneByGroupId(gId)
         .then((list)=>{
             list.sort((item1,item2)=>{
                 return item1.index > item2.index
@@ -67,7 +67,6 @@ export function updateInitViewPort(sceneId){
 
 export function sortSceneItems(items){
     return (dispatch,getState)=>{
-        console.log(items)
         Modals.Scene.updateAllScene(items)
         .then(()=>{
             dispatch(updateDAllScene())

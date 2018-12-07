@@ -49,14 +49,17 @@ export function addHotspots(sId = null) {
         let krpano = getState().krpano.obj
         if (krpano) {
             let sceneSelected = sId == null ? getState().scene.sceneSelected : sId
-            Modals.Hotpot.findBySceneId(sceneSelected)
-                .then((list) => {
-                    list.map(item => {
-                        let icon = getHotspotPath(item.icon)
-                        addHotspotToKrpano(krpano, { ...item, _id: item.id, icon: icon }, false)
+            if (sceneSelected) {
+                Modals.Hotpot.findBySceneId(sceneSelected)
+                    .then((list) => {
+                        list.map(item => {
+                            let icon = getHotspotPath(item.icon)
+                            addHotspotToKrpano(krpano, { ...item, _id: item.id, icon: icon }, false)
+                        })
                     })
-                })
-            dispatch(updateAllHotspot(sceneSelected))
+                dispatch(updateAllHotspot(sceneSelected))
+            }
+
         }
     }
 }

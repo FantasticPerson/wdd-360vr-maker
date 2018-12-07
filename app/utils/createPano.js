@@ -15,7 +15,6 @@ export default function createPano(src){
 
     let dest = path.resolve(cPTmep,'./origin.jpg')
     fs.createReadStream(src).pipe(fs.createWriteStream(dest));
-    console.log(dest,cPTmep)
 
     return new Promise((resolve,reject)=>{
         try {

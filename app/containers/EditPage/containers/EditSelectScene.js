@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {SelectField,MenuItem,Checkbox,FormControlLabel} from '@material-ui/core'
+import {Select as SelectField,MenuItem,Checkbox,FormControlLabel} from '@material-ui/core'
 
 import { getHeadImgUrl } from '../../../native/pathUtils'
 

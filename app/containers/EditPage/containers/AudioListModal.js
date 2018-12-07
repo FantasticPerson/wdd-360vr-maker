@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect'
 import { bindActionCreators } from 'redux';
-import {Dialog,DialogTitle,DialogContent,DialogActions,TextField,FlatButton} from '@material-ui/core'
+import {Dialog,DialogTitle,DialogContent,DialogActions,TextField,Button as FlatButton} from '@material-ui/core'
 
 import getPathOfAudio from '../../../native/getPathOfAudio'
 import ReactAudioPlayer from 'react-audio-player';

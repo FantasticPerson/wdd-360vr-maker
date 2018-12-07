@@ -3,7 +3,9 @@ export default class Hotpot { }
 Hotpot.store = null;
 
 Hotpot.findAll = () => Hotpot.store.toArray();
-Hotpot.findBySceneId = (id)=>Hotpot.store.where('sceneId').equals(id).toArray()
+Hotpot.findBySceneId = (id)=>{
+    return Hotpot.store.where('sceneId').equals(id).toArray()
+}
 Hotpot.add = (obj) => Hotpot.store.put({...obj,timestamp:(new Date().valueOf())});
 Hotpot.delete = (id) => Hotpot.store.delete(id); 
 Hotpot.update = (obj) => {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect'
 import { bindActionCreators } from 'redux';
-import {Dialog,DialogTitle,DialogContent,DialogActions,FlatButton} from '@material-ui/core'
+import {Dialog,DialogTitle,DialogContent,DialogActions,Button as FlatButton} from '@material-ui/core'
 
 import getPathOfImage from '../../../native/getPathOfImage'
 
@@ -41,7 +41,6 @@ class PicListModal extends Component{
         const {picList} = this.props
         const {pictures} = this.state
 
-        console.log(picList)
         const list = picList.map((item)=>{
             let style = {cursor:'pointer',width: '80px',height: '80px',overflow: 'hidden',border: '1px solid #EEE',borderRadius: '5px'}
             let titleStyle={
