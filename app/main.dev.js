@@ -64,6 +64,9 @@ const initConfig = async () => {
 };
 
 const initDir = async () => {  
+    if(!fs.existsSync(global.electron_app_root_path)){
+        fs.mkdirSync(global.electron_app_root_path)
+    }
     if (!fs.existsSync(global.electron_app_assets_path)) {
         fs.mkdirSync(global.electron_app_assets_path);
     }
