@@ -1,29 +1,28 @@
-import React,{Component} from 'react'
-
+import React, { Component } from 'react'
 import ContextModal from '../../../components/ContextModal'
 import styles from '../../../styles/VrContextMenu.css'
-                                    
-export default class FolderContextMenu extends Component{
 
-    onDeleteClick(){
-        const {data} = this.props
-        const {delVr,onHide} = this.props.functions
+export default class FolderContextMenu extends Component {
+
+    onDeleteClick() {
+        const { data } = this.props
+        const { delVr, onHide } = this.props.functions
 
         delVr(data)
         onHide()
     }
 
-    onModifyClick(){
-        const {data} = this.props
-        const {onModify,onHide} = this.props.functions
+    onModifyClick() {
+        const { data } = this.props
+        const { onModify, onHide } = this.props.functions
 
         onModify(data)
         onHide()
     }
 
-    render(){
-        const {posData} = this.props
-        const {onHide} = this.props.functions
+    render() {
+        const { posData } = this.props
+        const { onHide } = this.props.functions
 
         return (
             <ContextModal bgClick={onHide} data={posData}>

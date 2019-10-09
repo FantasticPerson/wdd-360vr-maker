@@ -1,10 +1,15 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
+import  * as stores  from './store/configureStore';
 import Root from './containers/Root';
-import { configureStore, history } from './store/configureStore';
-import './app.global.css';
 import dbConfig from './db';
+import './app.global.css';
+
+console.log(stores)
+// const {config,default} = store
+
+const {configureStore,history} = stores.default
 
 const store = configureStore();
 

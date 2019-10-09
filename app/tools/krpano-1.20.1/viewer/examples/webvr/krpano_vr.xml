@@ -1,0 +1,322 @@
+﻿<krpano debugmode="true">
+
+	<include url="%VIEWER%/plugins/webvr.xml" />
+
+	<!-- force enabled positional tracking -->
+	<plugin name="webvr" postracking="true"/>
+
+	<!-- change the enter vr button position and 'auto-start' the pano-video when pressing it -->
+	<layer name="webvr_enterbutton"
+	       align="bottom" y="10%"
+	       ondown="video_touch_auto_start();"
+	       />
+
+
+	<!-- the intro pano image -->
+	<view fovtype="VFOV" fov="80" fovmin="40" fovmax="150" />
+	<preview url="panos/intro/preview.jpg" />
+	<image>
+		<cube url="panos/intro/pano_%s.jpg" />
+		<depthmap url="depthmap.depth" enabled="true" rendermode="3dmodel" background="pano" />
+	</image>
+
+
+	<!--
+		SPECIAL CASE FOR THE VIDEO PANO ON MOBILE DEVICES
+		- on mobile devices its only possible to start a video by as reaction to
+		  a touch-input of the user (a given limitation by the browsers)
+		- but this will be problemtic when using a VR-navigation without any touching,
+		  taking off the headset and touching to start the video would be bad...
+		- as workaround load the video already on startup and use the first
+		  touch on the screen (e.g. the touch to the 'Enter VR' button) to
+		  start playing the video
+		- the video itself will be directly paused after having started and
+		  not shown on the screen (visible=false)
+		- additionally there the new setting 'use_as_videopano' that prepares
+		  the video for a later (=in an other scene) usage as video pano
+	-->
+	<plugin name="video" keep="true"
+	        url="%VIEWER%/plugins/videoplayer.js"
+	        videourl="video/video-1920x960.mp4|video/video-1920x960.webm"
+	        loop="true"
+	        pausedonstart="true"
+	        visible="false"
+	        panovideo="true"
+	        />
+
+	<plugin name="video" keep="true" if="browser.domain == 'krpano.com'"
+	        videourl="https://krpano.com/krpanocloud/video/airpano/video-2048x1024a-fs.mp4|https://krpano.com/krpanocloud/video/airpano/video-2048x1024a.webm"
+	        />
+
+	<events name="video_events" keep="true"
+	        onmousedown="video_touch_auto_start();"
+	        onremovepano="if(xml.scene != video_scene, plugin[video].seek(0); plugin[video].pause(); );"
+	        />
+
+	<action name="video_touch_auto_start">
+		if(video_touch_auto_start_called !== true,
+			if(plugin[video].ispaused,
+				plugin[video].play();
+				delayedcall(0.1, plugin[video].pause() );
+				set(events[video_events].onmousedown, null);
+				set(video_touch_auto_start_called, true);
+			  );
+		  );
+	</action>
+
+	<scene name="video_scene" onstart="plugin[video].play();">
+		<image>
+			<sphere url="plugin:video" />
+		</image>
+	</scene>
+	<!-- SPECIAL CASE END -->
+
+
+	<!-- the VR menu - home button, prev/next scene buttons -->
+	<style name="vr_menu_style" depth="140" scale="0.035" distorted="true" ath="0" atv="45" alpha="0.25" torigin="view" visible="false" />
+
+	<hotspot name="vr_menu_bg"   style="vr_menu_style" keep="true" zorder="5" type="text" bgcolor="0x000000" bgalpha="0.5" width="600" height="120" handcursor="false" onover="vr_menu_over();" onout="vr_menu_out();" />
+	<hotspot name="vr_menu_home" style="vr_menu_style" keep="true" zorder="6" url="icons.png" crop="0|0|280|100" onover="vr_menu_over(); delayedcall(0,tween(alpha,0.75,0.1));" onout="vr_menu_out();" startupxml="" onloaded="copy(startupxml, xml.url);" vr_timeout="1000" onclick="vr_menu_loadhome();" />
+	<hotspot name="vr_menu_l"    style="vr_menu_style" keep="true" zorder="6" url="icons.png" crop="302|0|100|100" ox="-8" onover="vr_menu_over(); delayedcall(0,tween(alpha,0.75,0.1));" onout="vr_menu_out();" vr_timeout="700" onclick="vr_menu_nextscene(-1);" />
+	<hotspot name="vr_menu_r"    style="vr_menu_style" keep="true" zorder="6" url="icons.png" crop="392|0|100|100" ox="+8" onover="vr_menu_over(); delayedcall(0,tween(alpha,0.75,0.1));" onout="vr_menu_out();" vr_timeout="700" onclick="vr_menu_nextscene(+1);" />
+
+	<action name="vr_menu_over">
+		callwith(hotspot[vr_menu_bg],   tween(alpha|depth,1.0|135); );
+		callwith(hotspot[vr_menu_home], tween(alpha|depth,0.5|135); );
+		callwith(hotspot[vr_menu_l],    tween(alpha|depth,0.5|135); );
+		callwith(hotspot[vr_menu_r],    tween(alpha|depth,0.5|135); );
+	</action>
+
+	<action name="vr_menu_out">
+		if(hotspot[vr_menu].hovering == false,
+			callwith(hotspot[vr_menu_bg],   tween(alpha|depth,0.25|140); );
+			callwith(hotspot[vr_menu_home], tween(alpha|depth,0.25|140); );
+			callwith(hotspot[vr_menu_l],    tween(alpha|depth,0.25|140); );
+			callwith(hotspot[vr_menu_r],    tween(alpha|depth,0.25|140); );
+		  );
+	</action>
+
+	<action name="vr_menu_loadhome">
+		loadpano(get(startupxml), null, MERGE|KEEPMOVING, BLEND(1));
+		vr_menu_setvisibility(false);
+		add_examples();
+		showthumbs();
+	</action>
+
+	<action name="vr_menu_setvisibility">
+		set(hotspot[vr_menu_bg].visible,   %1);
+		set(hotspot[vr_menu_home].visible, %1);
+		if(scene.count GT 1,
+			set(hotspot[vr_menu_bg].width, 600);
+			set(hotspot[vr_menu_l].visible, %1);
+			set(hotspot[vr_menu_r].visible, %1);
+		  ,
+			set(hotspot[vr_menu_bg].width, 320);
+			set(hotspot[vr_menu_l].visible, false);
+			set(hotspot[vr_menu_r].visible, false);
+		  );
+	</action>
+
+	<action name="vr_menu_nextscene">
+		if(xml.scene != null AND scene.count GT 1,
+			add(newsceneindex, scene[get(xml.scene)].index, %1);
+			sub(lastsceneindex, scene.count, 1);
+			if(newsceneindex LT 0, copy(newsceneindex,lastsceneindex));
+			if(newsceneindex GT lastsceneindex, set(newsceneindex,0));
+			loadscene(get(scene[get(newsceneindex)].name), null, NOPREVIEW|MERGE|KEEPVIEW|KEEPMOVING, BLEND(1));
+		  );
+	</action>
+
+	<events name="vr_menu_events" keep="true" onviewchange="vr_menu_following();"  />
+
+	<action name="vr_menu_following" type="Javascript"><![CDATA[
+
+		var hs1 = krpano.get("hotspot[vr_menu_bg]");
+		var hs2 = krpano.get("hotspot[vr_menu_home]");
+		var hs3 = krpano.get("hotspot[vr_menu_l]");
+		var hs4 = krpano.get("hotspot[vr_menu_r]");
+
+		if(!hs1.hovering && !hs2.hovering && !hs3.hovering && !hs4.hovering)
+		{
+			var f = 0.01;	// follow speed factor
+
+			var h = krpano.view.hlookat;
+			var v = krpano.view.vlookat;
+			var hsh = hs1.ath;
+			var hsv = hs1.atv;
+
+			// map to -180 to +180
+			h   = (h  -(h|0))   + (((h|0)  +360180)%360) - 180.0;
+			hsh = (hsh-(hsh|0)) + (((hsh|0)+360180)%360) - 180.0;
+
+			// get the shortest horizontal distance
+			dh = h - hsh;
+			dh += (dh>180) ? -360 : (dh<-180) ? 360 : 0
+
+			// follow slowing horizontally
+			hsh += dh*f;
+
+			// fade out when farther away
+			var a = Math.abs(v - hs1.atv) / 90.0;
+			a = 0.5 * Math.max(1.0 - 2.0*Math.sqrt(a), 0);
+
+			// move up the more looking down
+			v = v + 55.0 - v*1.5;
+			hsv = hsv*(1-f) + v*f;
+
+			// set everything
+			hs2.alpha = hs1.alpha = a;
+			if(!hs3.hovering) hs3.alpha = a;
+			if(!hs4.hovering) hs4.alpha = a;
+			hs4.ath = hs3.ath = hs2.ath = hs1.ath = hsh;
+			hs4.atv = hs3.atv = hs2.atv = hs1.atv = hsv;
+		}
+	]]></action>
+
+
+	<!-- the intro scene 3d hotspots -->
+
+	<!-- krpano VR logo -->
+	<hotspot name="krpanologo" distorted="true" enabled="false"
+	         type="text"
+	         html="krpano VR"
+	         css="font-size:84px; font-weight:bold; font-style:italic; color:#FFFFFF;"
+	         padding="4" ox="-8" oy="-7"
+	         bgalpha="0.004"
+	         ath="0" atv="0"
+	         depth="2000"
+	         ty="-1000"
+	         />
+
+	<!-- the floor platform -->
+	<hotspot name="floor" zorder="4" distorted="true" enabled="false"
+	         type="text" bgcolor="0x000000" bgalpha="1.0"
+	         width="250" height="250" alpha="0.5"
+	         depth="0" rx="-90" ty="160" scale="0.32"
+	         />
+
+	<!-- start button -->
+	<hotspot name="start" distorted="true"
+	         type="text"
+	         html="Click here to start"
+	         css="font-size:76px; font-weight:bold; color:#FFFFFF;"
+	         bgcolor="0x000000"
+	         bgalpha="0.5"
+	         bgroundedge="20"
+	         padding="4 20"
+	         ath="0" atv="0"
+	         depth="0"
+	         tz="1000"
+	         scale="0.25"
+	         vr_timeout="2000"
+	         zorder="1"
+	         onover="tween(scale,0.26,0.2);"
+	         onout="tween(scale,0.25,0.2);"
+	         onclick="start_button_onclick();"
+	         alpha="0.0"
+	         onloaded="if(vr_start_done === true, removehotspot(start); start_vr(); , tween(alpha,1); );"
+	         />
+
+	<action name="start_button_onclick">
+		set(enabled,false);
+		tween(ty|alpha, 8000|0.0, 2.5, easeInQuint, removehotspot(start));
+		delayedcall(0.5, start_vr() );
+	</action>
+
+
+	<!-- start animation -->
+	<action name="start_vr">
+		set(vr_start_done, true);
+		showthumbs();
+	</action>
+
+
+	<action name="add_example_thumb" scope="local" args="title, ath, yoffset, thumburl, clickaction">
+		addhotspot(auto,bg);
+		addhotspot(auto,thumb);
+		addhotspot(auto,text);
+
+		set(bg,    distorted=true, zorder=1, enabled=false, type=text, bgcolor=0x000000, bgalpha=0.5, bgroundedge=0, width=220, height=160, ath=get(ath), oy=calc((yoffset+20)*0.15*0.5), depth=150, scale=0.15);
+		set(thumb, distorted=true, zorder=2, capture=false, url=get(thumburl), width=200, height=120, ath=get(ath), oy=calc(yoffset*0.15*0.5), depth=149, scale=0.15, onover=tween(depth,147), onout=tween(depth,149), clickaction=get(clickaction), onclick='set(enabled,false); clickaction();');
+		set(text,  distorted=true, zorder=3, enabled=false, type=text, html=get(title), css='text-align:center;color:#FFFFFF;font-size:15px;font-weight:bold;', oversampling=3, mipmapping=true, bgcolor=0xFFFFFF, bgalpha=0.004, width=200, height=20, ath=get(ath), oy=calc((yoffset+145)*0.15*0.5), depth=149, scale=0.15);
+
+		set(bg,    ty=10000, autoalpha=true, alpha=0);
+		set(thumb, ty=10000, autoalpha=true, alpha=0);
+		set(text,  ty=10000, autoalpha=true, alpha=0);
+
+		<!-- store the current local scope to have later access to its local variables -->
+		set(global.thumbs[get(global.thumbs.length)],get(local));
+	</action>
+
+
+	<action name="showthumbs" scope="local">
+		for(set(i,0), i LT global.thumbs.length, inc(i),
+			scope(get(global.thumbs[get(i)]),
+				callwith(bg,    tween(ty|alpha, 0|1, 3.0, easeOutQuint|easeOutQuad); );
+				callwith(thumb, tween(ty|alpha, 0|1, 3.0, easeOutQuint|easeOutQuad); );
+				callwith(text,  tween(ty|alpha, 0|1, 3.0, easeOutQuint|easeOutQuad); );
+			);
+		);
+	</action>
+
+	<action name="hidethumbs" scope="local">
+		callwith(hotspot[krpanologo], tween(alpha, 0, 0.5); );
+		callwith(hotspot[floor], tween(alpha, 0, 0.5); );
+		for(set(i,0), i LT global.thumbs.length, inc(i),
+			scope(get(global.thumbs[get(i)]),
+				callwith(bg,    tween(alpha, 0, 0.5); );
+				callwith(thumb, tween(alpha, 0, 0.5); );
+				callwith(text,  tween(alpha, 0, 0.5); );
+			);
+		);
+	</action>
+
+
+	<action name="add_examples" scope="local" autorun="onstart">
+		def(global.thumbs, array);
+		add_example_thumb('Monoscopic 2D Panos',   -27, -60, '%CURRENTXML%/thumb_corfu.jpg',     load_example('corfu.xml'); );
+		add_example_thumb('Stereoscopic 3D Panos',   0, -60, '%CURRENTXML%/thumb_pano3d.jpg',    load_example('bluebonnet/tour.xml'); );
+		add_example_thumb('Stereoscopic 3D Panos', +27, -60, '%CURRENTXML%/thumb_tour3d.jpg',    load_example('stereoscopic.xml'); );
+		add_example_thumb('Stereoscopic 3D Panos', -27,+290, '%CURRENTXML%/thumb_temple3d.jpg',  load_indiantemple_example(); );
+		add_example_thumb('Depthmap 3D Tour',        0,+290, '%CURRENTXML%/thumb_depthmap.jpg',  load_depthmap_example(); );
+		add_example_thumb('Panoramic Video',       +27,+290, '%CURRENTXML%/thumb_panovideo.jpg', load_videopano_example(); );
+	</action>
+
+
+	<action name="load_example">
+		hidethumbs();
+		delayedcall(0.75,
+			loadpano(%CURRENTXML%/panos/%1,null,MERGE|KEEPPLUGINS|KEEPMOVING,BLEND(1));
+			vr_menu_setvisibility(true);
+		);
+	</action>
+
+	<action name="load_indiantemple_example">
+		hidethumbs();
+		delayedcall(0.75,
+			if(browser.domain == 'krpano.com',
+				loadpano(https://krpano.com/tours/indiantemple3d/tour.xml,null,MERGE|KEEPPLUGINS|KEEPMOVING,BLEND(1));
+			  ,
+				loadpano(%CURRENTXML%/panos/temple/pano.xml,null,MERGE|KEEPPLUGINS|KEEPMOVING,BLEND(1));
+			);
+			vr_menu_setvisibility(true);
+		);
+	</action>
+
+	<action name="load_depthmap_example">
+		hidethumbs();
+		delayedcall(0.75,
+			set(global.skipintro,true);
+			loadpano('%CURRENTXML%/../depthmap/abu-simbel-tempel-tour/tour.xml', null, KEEPMOVING, BLEND(1));
+		);
+	</action>
+
+	<action name="load_videopano_example">
+		hidethumbs();
+		delayedcall(0.75,
+			loadscene(video_scene, null, MERGE|KEEPMOVING, BLEND(1));
+			vr_menu_setvisibility(true);
+		);
+	</action>
+
+</krpano>

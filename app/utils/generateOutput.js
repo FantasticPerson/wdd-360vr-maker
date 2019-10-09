@@ -9,7 +9,6 @@ const {
 } = window
 
 import {getScenePath} from '../native/pathUtils'
-
 import {IMG_NAME_ARR} from '../constants.js'
 import {getProductionXml} from './xmlBuilder'
 
@@ -78,7 +77,12 @@ export function GenerateOutput(vrItem,sceneList,hotpotList,groupList,allSceneLis
             fs.mkdirSync(destPath)
         }
         for(let j=0;j<IMG_NAME_ARR.length;j++){
-            fse.copySync(path.resolve(srcPath,`./${IMG_NAME_ARR[j]}`),path.resolve(destPath,`./${IMG_NAME_ARR[j]}`))
+            if(IMG_NAME_ARR[j] == 'origin_preview.jpg'){
+                fse.copySync(path.resolve(srcPath,`./thumb.jpg`),path.resolve(destPath,`./thumb.jpg`))
+            } else {
+                fse.copySync(path.resolve(srcPath,`./${IMG_NAME_ARR[j]}`),path.resolve(destPath,`./${IMG_NAME_ARR[j]}`))
+            }
+            // fse.moveSync()
         }
     }
 
@@ -100,7 +104,6 @@ export function GenerateOutput(vrItem,sceneList,hotpotList,groupList,allSceneLis
         let srcPath = path.resolve(electron_app_audio_path,`./${audioArr[i]}`)
         let destPath = path.resolve(audioPath,`./${audioArr[i]}`)
         fse.copySync(srcPath,destPath)
-        console.log(destPath)
     }
 
     const template = swig.compileFile(path.resolve(electron_app_root_path, window.NODE_ENV == 'prod' ? './app.asar/html/pano.html' : '../html/pano.html'))
@@ -111,9 +114,9 @@ export function GenerateOutput(vrItem,sceneList,hotpotList,groupList,allSceneLis
 
     fs.writeFileSync(path.resolve(vrPath, './data.xml'), getProductionXml(vrItem,sceneList,hotpotList,groupList,allSceneList))
 
-    fs.createReadStream(path.resolve(electron_app_root_path,window.NODE_ENV == 'prod' ? './app.asar/dist/js/offline.js' : './js/offline.js')).pipe(fs.createWriteStream(path.resolve(vrPath, './offline.js')));
+    fs.createReadStream(path.resolve(electron_app_root_path,window.NODE_ENV == 'prod' ? './app.asar/krp/offline.js' : '../krp/offline.js')).pipe(fs.createWriteStream(path.resolve(vrPath, './offline.js')));
 
-    fs.createReadStream(path.resolve(electron_app_root_path,window.NODE_ENV == 'prod' ? './app.asar/dist/js/viewer.js' :  './js/viewer.js')).pipe(fs.createWriteStream(path.resolve(vrPath, './viewer.js')));
+    fs.createReadStream(path.resolve(electron_app_root_path,window.NODE_ENV == 'prod' ? './app.asar/krp/viewer.js' :  '../krp/viewer.js')).pipe(fs.createWriteStream(path.resolve(vrPath, './viewer.js')));
 
     fs.createReadStream(path.resolve(electron_app_root_path, window.NODE_ENV == 'prod' ? './app.asar/krpano/krpano.js' : '../krpano/krpano.js')).pipe(fs.createWriteStream(path.resolve(vrPath, './krpano.js')));
     

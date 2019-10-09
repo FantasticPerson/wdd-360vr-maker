@@ -1,0 +1,1571 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+	<meta name="format-detection" content="telephone=no" />
+	<link rel="stylesheet" type="text/css" href="../design.css"/>
+	<title>krpano Documentation</title>
+	<script>
+		function toggle_mobile_nav(){var t=document,n=t.getElementById("krpano_contentnav"),m=t.getElementById("krpano_mobile_menu_bg");t=n.state!=2;n.state=t?2:1;n.style.height=t?"auto":"24px";m.style.display=t?"block":"none";t=t?"add":"remove";n.classList[t]("krpano_contentnav_opened");t+="EventListener";n[t]("click",toggle_mobile_nav,false);m[t]("mousedown",toggle_mobile_nav,false);}
+	</script>
+</head>
+<body>
+	<div id="krpano_root">
+		<div id="krpano_headerwrapper">
+			<div id="krpano_header">
+				<div id="krpano_mainmenu">
+					krpano 1.20.1 <span class="smallcomment">(build 2019-10-02)</span>
+				</div>
+			</div>
+			<div id="krpano_imagebar"></div>
+			
+			<div id="krpano_logo_container">
+				<a id="krpano_logo" href="https://krpano.com"><span>krpano.com</span></a>
+			</div>
+			
+			<div id="krpano_imagebar_links">
+				Documentation
+			</div>
+		</div>
+		
+		<div id="krpano_contentwrapper">
+			<div id="krpano_mobile_menuicon" onclick="toggle_mobile_nav();"><span class="burgermenu"></span></div>
+			<div id="krpano_mobile_menu_bg"></div>
+			<div id="krpano_content">
+				<div id="krpano_contentnav">
+					<h2><a href="#top" class="selflink">Documentation</a></h2>
+					<ul>
+						<li><a href="../embedpano.html#top">Embedding</a></li>
+						<li><a href="../xml.html#top">XML Reference</a></li>
+						<li><a href="../actions.html#top">Actions / Scripting</a></li>
+						<li><a href="../plugin_api.html#top">Plugin&nbsp;Interface</a></li>
+						<li><a href="../js_api.html#top">Javascript Interface</a></li>
+						<li><a href="../localusage.html#top">Local / Offline Usage</a></li>
+						<li><a href="../releasenotes.html#top">Release Notes</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Plugins</a></h2>
+					<ul>
+						<li><a href="bingmaps.html#top">Bing Maps</a></li>
+						<li><a href="combobox.html#top">Combobox</a></li>
+						<li><a href="googlemaps.html#top">Google Maps</a></li>
+						<li><a href="gyro2.html#top">Gyro2</a></li>
+						<li><a href="postprocessing.html#top">Postprocessing</a></li>
+						<li><a href="radar.html#top">Radar</a></li>
+						<li><a href="scrollarea.html#top">ScrollArea</a></li>
+						<li><a href="showtext.html#top">Showtext</a></li>
+						<li><a href="snow.html#top">Snow / Rain</a></li>
+						<li><a href="soundinterface.html#top">Soundinterface</a></li>
+						<li><a href="../textfield.html#top">Textfield</a></li>
+						<li><a href="videoplayer.html#top">Videoplayer</a></li>
+						<li><a href="webvr.html#top">WebVR</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Tools</a></h2>
+					<ul>
+						
+						<li><a href="../tools/config.html#top">Config File Reference</a></li>
+						<li><a href="../tools/testingserver.html#top">krpano Testing Server</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Examples</a></h2>
+					<ul>
+						<li><a href="../examples.html#top">All Examples</a></li>
+						<li><a href="../examples.html?depthmap#top">Depthmap</a></li>
+						<li><a href="../examples.html?js#top">Javascript</a></li>
+						<li><a href="../examples.html?multires#top">Multiresolution</a></li>
+						<li><a href="../examples.html?panovideo#top">Panoramic Video</a></li>
+						<li><a href="../examples.html?vtour#top">Virtual Tours</a></li>
+						<li><a href="../examples.html?webvr#top">WebVR</a></li>
+					</ul>
+				</div>
+				<a name="top" class="toplink">&nbsp;</a>
+				<div id="krpano_contenttext">
+
+					<noscript>
+						<table style="width:100%; height:400px; position:fixed; left:95px; top:220px;"><tr valign="middle"><td><center><h1>
+							<span style="color:#FFFFFF; background:#FF0000; padding:15px;">
+								Javascript must be activated for this page!
+							</span>
+						</h1></center></td></tr></table>
+					</noscript>
+
+					
+
+	<h1>Soundinterface Plugin
+		<span class="pluginfilename">soundinterface.js / soundinterface.swf</span>
+		
+	</h1>
+
+	<div class="paragraph">
+		<ul>
+			<li>The Soundinterface Plugin extends krpano with functionality for playing sounds.</li>
+			<li>It can be used for simple things like <u>Background&nbsp;Music</u> or <u>Sound&nbsp;Effects</u>, 
+				but also for <u>3D&nbsp;Positional&nbsp;Audio</u>, e.g. for environmental effects or WebVR usage.
+			</li>
+			<li>It supports <a href="#soundsprites">Sound Sprites</a>.</li>
+			<li>Automatic caching and reusing of sound files.</li>
+			<li>There are <a href="#soundobject">Sound Objects</a> for detailed control via krpano actions or Javascript.</li>
+			<li>The plugin handles the browser/mobile <a href="#autoplay">autoplay restrictions</a> automatically, e.g. when playback is currently
+				not allowed it will automatically wait for the next user-interaction (touch/click) and use that to start playing the sound.
+			</li>
+			<li>Internally the plugin uses the <a href="https://github.com/goldfire/howler.js" target="_blank">Howler.js</a> library
+				for dealing with the browsers Audio APIs.
+			</li>
+		</ul>
+	</div>
+	
+	<div class="paragraph">
+			<h2><a name="examples" href="#examples" class="selflink">Examples</a></h2>
+			<table style="width:100%;">
+			<tr>
+			<td style="width:25%;"><div class="hlbox" style="padding:5px;margin-bottom:0;">
+				<a href="../examples.html#backgroundsound" class="prop504x310"><img src="../images/backgroundsound.jpg" class="outlineimage prop_inner" /></a>
+				Background Sound
+			</div></td>
+			<td style="width:25%;"><div class="hlbox" style="padding:5px;margin-bottom:0;">
+				<a href="../examples.html#depthmap-tour" class="prop504x310"><img src="../images/depthmap-abu-simbel.jpg" class="outlineimage prop_inner" /></a>
+				Depthmap Demotour
+			</div></td>
+			<td style="width:25%;"><div class="hlbox" style="padding:5px;margin-bottom:0;">
+				<a href="../examples.html#directional3dsound" class="prop504x310"><img src="../images/directional3dsound.jpg" class="outlineimage prop_inner" /></a>
+				Directional 3D Sound
+			</div></td>
+			<td style="width:25%;"><div class="hlbox" style="padding:5px;margin-bottom:0;">
+				<a href="../examples.html#droneattack" class="prop504x310"><img src="../images/webvr-drone-attack.jpg" class="outlineimage prop_inner" /></a>
+				WebVR Drone Attack
+			</div></td>
+			</tr>
+			</table>
+		</div>
+	
+	<div class="paragraph" style="margin-bottom:0;">
+		<h2><a name="syntax" href="#syntax" class="selflink">Syntax</a></h2>
+		<pre class="xmlpre">&lt;<a href="../xml.html#plugin">plugin</a> <a href="../xml.html#plugin.name">name</a>="soundinterface"
+        <a href="../xml.html#plugin.url">url</a><a href="../xml.html#devicechecksforattributes">.html5</a>="soundinterface.js"
+        <a href="../xml.html#plugin.url">url</a><a href="../xml.html#devicechecksforattributes">.flash</a>="soundinterface.swf"
+        <a href="../xml.html#plugin.preload">preload</a>="true"
+        <a href="#rootpath" class="pluginattrib">rootpath</a>=""
+        <a href="#volume" class="pluginattrib">volume</a>="1.0"
+        <a href="#mute" class="pluginattrib">mute</a>="false"
+        <a href="#panningmodel" class="pluginattrib">panningmodel</a>="simple"
+        <a href="#worldscale" class="pluginattrib">worldscale</a>="1.0"
+        <a href="#autopause" class="pluginattrib">autopause</a>="true"
+        <a href="#autounlock" class="pluginattrib">autounlock</a>="true"
+        /&gt;</pre>
+	</div>
+	
+	<div class="moreinfo">
+		Note - the additional actions of the Soundinterface Plugin are not available until the plugin is loaded!<br>
+		Therefore either use the <a href="../xml.html#plugin.preload">preload="true"</a> setting 
+		or alternatively the <a href="../xml.html#plugin.onloaded">onloaded</a> event 
+		to make sure that the plugin is loaded and ready before using any of the Soundinterface Plugin APIs.
+	</div>
+	
+	<br>
+	
+	<div class="paragraph">
+		After loading the plugin will be additionally also available as global <span class="pre">soundinterface</span> variable.
+	</div>
+	
+	<div class="paragraph">
+		<h2><a name="attributes" href="#attributes" class="selflink">Plugin Attributes</a></h2>
+		
+		<div style="padding-left:1px;padding-top:0;">
+		<table class="xmlattrdoc" style="table-layout:fixed;">
+			
+			<tr class="xmlattrdocdes1">
+				<td style="width:22%;"><a name="rootpath"></a>Attribute name</td>
+				<td style="width:50%;">Full variable name</td>
+				<td style="width:14%;">Type</td>
+				<td style="width:14%;">Default value</td>
+			</tr>
+			<tr>
+				<th><a href="#rootpath" class="selflink">rootpath</a></th>
+				<th><a href="#rootpath" class="selflink">soundinterface.rootpath</a></th>
+				<th>String</th>
+				<th>""</th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Root path for the sound files.</li>
+						<li>By default the sound file urls are relative to html file.</li>
+						<li>It also possible to use <a href="../xml.html#urlplaceholders">url-placeholders</a> e.g. like <span class="pre">%VIEWER%</span> here.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="volume"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#volume" class="selflink">volume</a></th>
+				<th><a href="#volume" class="selflink">soundinterface.volume</a></th>
+				<th>Number</th>
+				<th>1.0</th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>The global volume for all sounds.</li>
+						<li>Value range: 0.0 - 1.0, default=1.0.</li>
+						<li>Can be dynamically changed anytime.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="mute"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#mute" class="selflink">mute</a></th>
+				<th><a href="#mute" class="selflink">soundinterface.mute</a></th>
+				<th>Boolean</th>
+				<th>false</th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>A global muting for all sounds.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="panningmodel"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#panningmodel" class="selflink">panningmodel</a></th>
+				<th><a href="#panningmodel" class="selflink">soundinterface.panningmodel</a></th>
+				<th>String</th>
+				<th>"simple"</th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>The default spatialisation algorithm to use to locate the sound in 3D space.</li>
+						<li>Available settings:
+							<ul>
+								<li><span class="pre">simple</span> (the default) - uses a more simple model for calculating the stereo-panning and volume of a 3D sound.
+									The calculation will be done by the plugin itself and therefore produces the same results in all browsers.
+									The default and recommended to use.
+								</li>
+								<li><span class="pre">equalpower</span> - also a simple model but calculated by the Browser itself.
+								</li>
+								<li><span class="pre">HRTF</span> - a more complex model for calculating the 3D sound results.
+									It involves different frequency responses for each ear depending on the sound location
+									and even calculates Doppler Effects for moving sounds sources.
+								</li>
+							</ul>
+						</li>
+						<li>Browser Support Notes: 
+							<ul>
+								<li>iOS and Safari don't support stereo-panning, there always the HRTF mode is used.</li>
+								<li>Chrome has a broken support of the equalpower/HRTF modes, regardless where the sound is located the the left/right panning is always the same.
+									Therefore the simple mode should be used there.
+								</li>
+								<li>Firefox and Edge works fine with all modes.</li>
+								<li>IE11 doesn't have WebAudio support, there only 2D sounds will be played.</li>
+							</ul>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="worldscale"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#worldscale" class="selflink">worldscale</a></th>
+				<th><a href="#worldscale" class="selflink">soundinterface.worldscale</a></th>
+				<th>Number</th>
+				<th>1.0</th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>A global scale for all sound 3D positions.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="autopause"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#autopause" class="selflink">autopause</a></th>
+				<th><a href="#autopause" class="selflink">soundinterface.autopause</a></th>
+				<th>Boolean</th>
+				<th>true</th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>When enabled automatically pause all sounds when hiding (minimizing) the browser or changing the browser-tab.</li>
+						<li>And automatically resume all paused sounds when showing the browser or the browser-tab again.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="autounlock"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#autounlock" class="selflink">autounlock</a></th>
+				<th><a href="#autounlock" class="selflink">soundinterface.autounlock</a></th>
+				<th>Boolean</th>
+				<th>true</th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Should the plugin try to automatically unlock the browsers sound playback on start using the first touch or click events.</li>
+						<li>The plugin might play a silent audio stream until the actual sound files begin to play.</li>
+						<li>See also here for more: <a href="#autoplay">Autoplay Restrictions</a>.</li>
+					</ul>
+				</td>
+			</tr>
+			
+		</table>
+		</div>
+		
+	</div>
+	
+	<br>
+
+	<div class="paragraph">
+		<h2><a name="actions" href="#actions" class="selflink">Plugin Actions</a></h2>
+		
+		<div class="subparagraph2">
+			The Soundinterface plugin add its actions directly to krpano. 
+			That means the soundinterface actions can be called like any other krpano actions.
+		</div>
+		
+		<div class="subparagraph2">
+			<h3>Actions / Functions Reference:</h3>
+			<ul>
+				<li><a href="#preloadsound">preloadsound()</a></li>
+				<li><a href="#playsound">playsound()</a></li>
+				<li><a href="#streamsound">streamsound()</a></li>
+				<li><a href="#createsound">createsound()</a></li>
+				<li><a href="#playsound_at_hv">playsound_at_hv()</a></li>
+				<li><a href="#playsound_at_xyz">playsound_at_xyz()</a></li>
+				<li><a href="#playsound_at_hotspot">playsound_at_hotspot()</a></li>
+				<li><a href="#setup3dsound">setup3dsound()</a></li>
+				<li><a href="#pausesound">pausesound()</a></li>
+				<li><a href="#resumesound">resumesound()</a></li>
+				<li><a href="#togglesound">togglesound()</a></li>
+				<li><a href="#stopsound">stopsound()</a></li>
+				<li><a href="#destroysound">destroysound()</a></li>
+				<li><a href="#seeksound">seeksound()</a></li>
+				<li><a href="#mutesound">mutesound()</a></li>
+				<li><a href="#stopallsounds">stopallsounds()</a></li>
+				<li><a href="#pauseallsounds">pauseallsounds()</a></li>
+				<li><a href="#resumeallsounds">resumeallsounds()</a></li>
+				<li>sound[name].<a href="#sound.play">play()</a></li>
+				<li>sound[name].<a href="#sound.pause">pause()</a></li>
+				<li>sound[name].<a href="#sound.toggle">toggle()</a></li>
+				<li>sound[name].<a href="#sound.stop">stop()</a></li>
+				<li>sound[name].<a href="#sound.destroy">destroy()</a></li>
+				<li>sound[name].<a href="#sound.sethv">sethv()</a></li>
+				<li>sound[name].<a href="#sound.setxyz">setxyz()</a></li>
+				<li>sound[name].<a href="#sound.setup3d">setup3d()</a></li>
+			</ul>
+		</div>
+		
+		<br>
+		
+		<div class="xmlnodedesc">
+			<a name="preloadsound" class="docu_anchor"></a>
+			<pre><a href="#preloadsound" class="selflink">preloadsound(url)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Preload a sound file.</li>
+					<li>This can be used to reduce the latency when playing a sound later.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">url</span>
+						<ul>
+							<li>The path and filename of a sound file.</li>
+							<li>See also here for information about <a href="#soundformats">multiple Sound formats</a> and <a href="#soundsprites">Sound Sprites</a>.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="xmlnodedesc">
+			<a name="playsound" class="docu_anchor"></a>
+			<pre><a href="#playsound" class="selflink">playsound(name)</a></pre>
+			<pre><a href="#playsound" class="selflink">playsound(name, url)</a></pre>
+			<pre><a href="#playsound" class="selflink">playsound(name, url, loop)</a></pre>
+			<pre><a href="#playsound" class="selflink">playsound(name, url, loop, oncomplete)</a></pre>
+			<pre><a href="#playsound" class="selflink">playsound(name, url, loop, volume)</a></pre>
+			<pre><a href="#playsound" class="selflink">playsound(name, url, loop, volume, oncomplete)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Play a sound.</li>
+					<li>Note - the sound file need to get fully downloaded before the playing can start! 
+						That's a limitation of the <a href="https://developer.mozilla.org/en/docs/Web/API/Web_Audio_API" target="_blank">WebAudio API</a> that
+						will be used for playing the sounds.<br>
+						When using larger sound files and wanting quicker starts of the sound,
+						consider using the <a href="#streamsound">streamsound()</a> action instead.
+					</li>
+					<li>Playing a sound also creates a <a href="#soundobject">Sound Object</a> for further dynamic usage.</li>
+					<li>When called from Javascript these actions will return the <a href="#soundobject">Sound Object</a> as return value.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of the sound.</li>
+							<li>Will be used to refer / address that sound.</li>
+							<li>When there exists already a sound with that given name and calling with a new url,
+								the old sound will be stopped.
+							</li>
+							<li>When using <a href="#soundobject">'auto'</a> as name, an automatic unique name will be generated.</li>
+						</ul>
+					</li>
+					<li><span class="pre">url</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The path and filename of a sound file.</li>
+							<li>See also here for information about <a href="#soundformats">multiple Sound formats</a> and <a href="#soundsprites">Sound Sprites</a>.</li>
+							<li>When calling without url parameter and there is an existing sound with that name, that sound will be resumed if it is paused.</li>
+						</ul>
+					</li>
+					<li><span class="pre">loop</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>A boolean (true/false) if that sound should be looped or not.</li>
+							<li>When not set, the default is false (no looping).</li>
+						</ul>
+					</li>
+					<li><span class="pre">volume</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The volume for that sound.</li>
+							<li>Value range: 0.0 - 1.0, default=1.0.</li>
+						</ul>
+					</li>
+					<li><span class="pre">oncomplete</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The code to call when the sound has fully played. Can be krpano actions code or Javascript functions.</li>
+							<li>When looping is enabled, this event will not be called.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="streamsound" class="docu_anchor"></a>
+			<pre><a href="#streamsound" class="selflink">streamsound(name, url, loop*, volume*, oncomplete*)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Stream a sound - that means play it while loading.</li>
+					<li>The <a href="#streamsound">streamsound</a> action uses internally the <a href="https://developer.mozilla.org/en/docs/Web/API/HTMLAudioElement" target="_blank">HTML5 Audio API</a>.
+						Sounds played using that API can't use these features: 3D Positional Audio, Stereo Panning, Sound Sprites!
+						On iOS using a custom volume-level will be not possible! And it might be necessary to touch/click the screen
+						before the playback can be started!
+					</li>
+					<li>Creates a <a href="#soundobject">Sound Object</a> for further dynamic usage.</li>
+					<li>When called from Javascript this action will return the <a href="#soundobject">Sound Object</a> as return value.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of the sound.</li>
+							<li>Will be used to refer / address that sound.</li>
+							<li>When there exists already a sound with that given name and calling with a new url,
+								the old sound will be stopped.
+							</li>
+							<li>When using <a href="#soundobject">'auto'</a> as name, an automatic unique name will be generated.</li>
+						</ul>
+					</li>
+					<li><span class="pre">url</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The path and filename of a sound file.</li>
+							<li>See also here for information about <a href="#soundformats">multiple Sound formats</a>.</li>
+						</ul>
+					</li>
+					<li><span class="pre">loop</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>A boolean (true/false) if that sound should be looped or not.</li>
+							<li>When not set, the default is false (no looping).</li>
+						</ul>
+					</li>
+					<li><span class="pre">volume</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The volume for that sound.</li>
+							<li>Value range: 0.0 - 1.0, default=1.0.</li>
+						</ul>
+					</li>
+					<li><span class="pre">oncomplete</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The code to call when the sound has fully played. Can be krpano actions code or Javascript functions.</li>
+							<li>When looping is enabled, this event will not be called.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="createsound" class="docu_anchor"></a>
+			<pre><a href="#createsound" class="selflink">createsound(name, url, streaming*)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Creates and loads a new sound, but doesn't starts playing it yet.</li>
+					<li>Creates a <a href="#soundobject">Sound Object</a> for further dynamic usage.</li>
+					<li>The properties of the sound (e.g. volume, looping, 3D position, ...) can be changed after creation with that <a href="#soundobject">Sound Object</a>.</li>
+					<li>When called from Javascript this action will return the <a href="#soundobject">Sound Object</a> as return value.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of the sound.</li>
+							<li>Will be used to refer / address that sound.</li>
+							<li>When there exists already a sound with that given name and calling with a new url,
+								the old sound will be stopped.
+							</li>
+							<li>When using <a href="#soundobject">'auto'</a> as name, an automatic unique name will be generated.</li>
+						</ul>
+					</li>
+					<li><span class="pre">url</span></span>
+						<ul>
+							<li>The path and filename of a sound file.</li>
+							<li>See also here for information about <a href="#soundformats">multiple Sound formats</a> and <a href="#soundsprites">Sound Sprites</a>.</li>
+						</ul>
+					</li>
+					<li><span class="pre">streaming</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>A boolean (true/false) - should that sound be streamed (true) or preloaded (false).</li>
+							<li>When not set, the default is false, that means the sound will be preloaded.</li>
+							<li>For more details please have also a look at the <a href="#playsound">playsound()</a> and <a href="#streamsound">streamsound()</a> actions.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="playsound_at_hv" class="docu_anchor"></a>
+			<pre><a href="#playsound_at_hv" class="selflink">playsound_at_hv(<span style="letter-spacing: -0.5px;">name, url, h, v, depth, loop, volume, oncomplete</span>)</a></pre>
+			<pre><a href="#playsound_at_hv" class="selflink">playsound_at_hv(<span style="letter-spacing: -0.5px;">name, url, h, v, depth, loop, volume, range, oncomplete</span>)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Plays a <u>3D&nbsp;Positional&nbsp;Audio</u> sound at spherical position.</li>
+					<li>For customizing the 3D audio spatialisation use the <a href="#setup3dsound">setup3dsound()</a> or sound[name].<a href="#sound.setup3d">setup3d()</a> actions.</li>
+					<li>Creates a <a href="#soundobject">Sound Object</a> for further dynamic usage.</li>
+					<li>When called from Javascript this action will return the <a href="#soundobject">Sound Object</a> as return value.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of the sound.</li>
+							<li>Will be used to refer / address that sound.</li>
+							<li>When there exists already a sound with that given name and calling with a new url,
+								the old sound will be stopped.
+							</li>
+							<li>When using <a href="#soundobject">'auto'</a> as name, an automatic unique name will be generated.</li>
+						</ul>
+					</li>
+					<li><span class="pre">url</span>
+						<ul>
+							<li>The path and filename of a sound file.</li>
+							<li>See also here for information about <a href="#soundformats">multiple Sound formats</a> and <a href="#soundsprites">Sound Sprites</a>.</li>
+						</ul>
+					</li>
+					<li><span class="pre">h</span> and <span class="pre">v</span>
+						<ul>
+							<li>The spherical position in degrees.</li>
+							<li>From -180 to +180 horizontally and -90 to +90 vertically (values out of this range will automatically wrap around).</li>
+							<li>When <span class="pre">v</span> will be not set, the default value 0 will be used.</li>
+						</ul>
+					</li>
+					<li><span class="pre">depth</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The depth / distance of the spherical position.</li>
+							<li>When not set, the default value 1000 will be used.</li>
+						</ul>
+					</li>
+					<li><span class="pre">loop</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>A boolean (true/false) if that sound should be looped or not.</li>
+							<li>When not set, the default is false (no looping).</li>
+						</ul>
+					</li>
+					<li><span class="pre">volume</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The volume for that sound.</li>
+							<li>Value range: 0.0 - 1.0, default=1.0.</li>
+						</ul>
+					</li>
+					<li><span class="pre">range</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The 'lookto-range' for 3D sounds.</li>
+							<li>The range value defines after how many degrees of looking away the volume should be reduced to silence.</li>
+							<li>Default=360.0.</li>
+						</ul>
+					</li>
+					<li><span class="pre">oncomplete</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The code to call when the sound has fully played. Can be krpano actions code or Javascript functions.</li>
+							<li>When looping is enabled, this event will not be called.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="playsound_at_xyz" class="docu_anchor"></a>
+			<pre><a href="#playsound_at_xyz" class="selflink">playsound_at_xyz(<span style="letter-spacing: -0.5px;">name, url, x,y,z, loop, volume, oncomplete</span>)</a></pre>
+			<pre><a href="#playsound_at_xyz" class="selflink">playsound_at_xyz(<span style="letter-spacing: -0.5px;">name, url, x,y,z, loop, volume, range, oncomplete</span>)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Plays a <u>3D&nbsp;Positional&nbsp;Audio</u> sound at 3D XYZ position.</li>
+					<li>For customizing the 3D audio spatialisation use the <a href="#setup3dsound">setup3dsound()</a> or sound[name].<a href="#sound.setup3d">setup3d()</a> actions.</li>
+					<li>Creates a <a href="#soundobject">Sound Object</a> for further dynamic usage.</li>
+					<li>When called from Javascript this action will return the <a href="#soundobject">Sound Object</a> as return value.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of the sound.</li>
+							<li>Will be used to refer / address that sound.</li>
+							<li>When there exists already a sound with that given name and calling with a new url,
+								the old sound will be stopped.
+							</li>
+							<li>When using <a href="#soundobject">'auto'</a> as name, an automatic unique name will be generated.</li>
+						</ul>
+					</li>
+					<li><span class="pre">url</span>
+						<ul>
+							<li>The path and filename of a sound file.</li>
+							<li>See also here for information about <a href="#soundformats">multiple Sound formats</a> and <a href="#soundsprites">Sound Sprites</a>.</li>
+						</ul>
+					</li>
+					<li><span class="pre">x</span>, <span class="pre">y</span>, <span class="pre">z</span>
+						<ul>
+							<li>The 3D XYZ position.</li>
+						</ul>
+					</li>
+					<li><span class="pre">loop</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>A boolean (true/false) if that sound should be looped or not.</li>
+							<li>When not set, the default is false (no looping).</li>
+						</ul>
+					</li>
+					<li><span class="pre">volume</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The volume for that sound.</li>
+							<li>Value range: 0.0 - 1.0, default=1.0.</li>
+						</ul>
+					</li>
+					<li><span class="pre">range</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The 'lookto-range' for 3D sounds.</li>
+							<li>The range value defines after how many degrees of looking away the volume should be reduced to silence.</li>
+							<li>Default=360.0.</li>
+						</ul>
+					</li>
+					<li><span class="pre">oncomplete</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The code to call when the sound has fully played. Can be krpano actions code or Javascript functions.</li>
+							<li>When looping is enabled, this event will not be called.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="playsound_at_hotspot" class="docu_anchor"></a>
+			<pre><a href="#playsound_at_hotspot" class="selflink">playsound_at_hotspot(<span style="letter-spacing: -0.5px;">name, url, hotspot, loop, volume, oncomplete</span>)</a></pre>
+			<pre><a href="#playsound_at_hotspot" class="selflink">playsound_at_hotspot(<span style="letter-spacing: -0.5px;">name, url, hotspot, loop, volume, range, oncomplete</span>)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Plays a <u>3D&nbsp;Positional&nbsp;Audio</u> sound at <a href="../xml.html?#hotspot">hotspot</a> position.</li>
+					<li>For customizing the 3D audio spatialisation use the <a href="#setup3dsound">setup3dsound()</a> or sound[name].<a href="#sound.setup3d">setup3d()</a> actions.</li>
+					<li>Creates a <a href="#soundobject">Sound Object</a> for further dynamic usage.</li>
+					<li>When called from Javascript this action will return the <a href="#soundobject">Sound Object</a> as return value.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of the sound.</li>
+							<li>Will be used to refer / address that sound.</li>
+							<li>When there exists already a sound with that given name and calling with a new url,
+								the old sound will be stopped.
+							</li>
+							<li>When using <a href="#soundobject">'auto'</a> as name, an automatic unique name will be generated.</li>
+						</ul>
+					</li>
+					<li><span class="pre">url</span>
+						<ul>
+							<li>The path and filename of a sound file.</li>
+							<li>See also here for information about <a href="#soundformats">multiple Sound formats</a> and <a href="#soundsprites">Sound Sprites</a>.</li>
+						</ul>
+					</li>
+					<li><span class="pre">hotspot</span>
+						<ul>
+							<li>Either the name of a hotspot or directly a hotspot object itself.</li>
+						</ul>
+					</li>
+					<li><span class="pre">loop</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>A boolean (true/false) if that sound should be looped or not.</li>
+							<li>When not set, the default is false (no looping).</li>
+						</ul>
+					</li>
+					<li><span class="pre">volume</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The volume for that sound.</li>
+							<li>Value range: 0.0 - 1.0, default=1.0.</li>
+						</ul>
+					</li>
+					<li><span class="pre">range</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The 'lookto-range' for 3D sounds.</li>
+							<li>The range value defines after how many degrees of looking away the volume should be reduced to silence.</li>
+							<li>Default=360.0.</li>
+						</ul>
+					</li>
+					<li><span class="pre">oncomplete</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The code to call when the sound has fully played. Can be krpano actions code or Javascript functions.</li>
+							<li>When looping is enabled, this event will not be called.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="setup3dsound" class="docu_anchor"></a>
+			
+			<pre><a href="#setup3dsound" class="selflink">setup3dsound(<span style="letter-spacing: -0.5px;">name, refDistance, rolloffFactor, distanceModel, panningModel</span>)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Customize a <u>3D&nbsp;Positional&nbsp;Audio</u> sound.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of the sound to customize.</li>
+							<li>There need to be a sound with that name.</li>
+						</ul>
+					</li>
+					<li><span class="pre">refDistance</span>
+						<ul>
+							<li>The reference distance for reducing the volume when the sound is farther away.</li>
+							<li>The default is 1.0.</li>
+						</ul>
+					</li>
+					<li><span class="pre">rolloffFactor</span>
+						<ul>
+							<li>Defines how quick the volume is reduced when the sound moves away.</li>
+							<li>The default is 1.0.</li>
+						</ul>
+					</li>
+					<li><span class="pre">distanceModel</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>Define which algorithm to use to reduce the volume of the sound as it moves away.</li>
+							<li>Available settings: <span class="pre">linear</span>, <span class="pre">exponential</span> or <span class="pre">inverse</span> (the default).</li>
+						</ul>
+					</li>
+					<li><span class="pre">panningModel</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The spatialisation algorithm to use to locate the sound in 3D space.</li>
+							<li>Available settings: <span class="pre">simple</span>, <span class="pre">equalpower</span> or <span class="pre">HRTF</span>.</li>
+							<li>The default setting depends on the <a href="#panningmodel">panningmodel</a> setting.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="pausesound" class="docu_anchor"></a>
+			<pre><a href="#pausesound" class="selflink">pausesound(name)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Pauses a sound.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of a sound.</li>
+							<li>There need to be a sound with that name.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="resumesound" class="docu_anchor"></a>
+			<pre><a href="#resumesound" class="selflink">resumesound(name)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Resumes a paused a sound.</li>
+					<li>When the sound is already playing, nothing will happen.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of a sound.</li>
+							<li>There need to be a sound with that name.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="togglesound" class="docu_anchor"></a>
+			<pre><a href="#togglesound" class="selflink">togglesound(name)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Either pause or resume a sound.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of a sound.</li>
+							<li>There need to be a sound with that name.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="stopsound" class="docu_anchor"></a>
+			<pre><a href="#stopsound" class="selflink">stopsound(name)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Stop a sound.</li>
+					<li>That means pausing the sound and seeking it back to its beginning.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of a sound.</li>
+							<li>There need to be a sound with that name.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="destroysound" class="docu_anchor"></a>
+			<pre><a href="#destroysound" class="selflink">destroysound(name)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Stops a sound and destroys it.</li>
+					<li>After that the sound will be removed, resuming it will be not possible.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of a sound.</li>
+							<li>There need to be a sound with that name.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="seeksound" class="docu_anchor"></a>
+			<pre><a href="#seeksound" class="selflink">seeksound(name, position)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Seeks a sound to the given playback position.</li>
+					<li>When the seeking is done, the sound[name].<a href="#sound.onseekd">onseeked</a> event will be called.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of a sound.</li>
+							<li>There need to be a sound with that name.</li>
+						</ul>
+					</li>
+					<li><span class="pre">position</span>
+						<ul>
+							<li>The new playback position in seconds.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="mutesound" class="docu_anchor"></a>
+			<pre><a href="#mutesound" class="selflink">mutesound(name, muted)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Mute or unmute a sound.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of a sound.</li>
+							<li>There need to be a sound with that name.</li>
+						</ul>
+					</li>
+					<li><span class="pre">muted</span>
+						<ul>
+							<li>The new muted state (true or false).</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="stopallsounds" class="docu_anchor"></a>
+			<pre><a href="#stopallsounds" class="selflink">stopallsounds()</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Stop and destroy all current sounds.</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="pauseallsounds" class="docu_anchor"></a>
+			<pre><a href="#pauseallsounds" class="selflink">pauseallsounds()</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Pause all current playing sounds.</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="xmlnodedesc">
+			<a name="resumeallsounds" class="docu_anchor"></a>
+			<pre><a href="#resumeallsounds" class="selflink">resumeallsounds()</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Resume all sounds that were paused by <a href="#pauseallsounds">pauseallsounds()</a>.</li>
+				</ul>
+			</div>
+		</div>
+		
+		
+	</div>
+	
+	<br>
+
+	<div class="paragraph">
+		<h2><a name="soundobject" href="#soundobject" class="selflink">Sound Objects</a></h2>
+		
+		<div class="subparagraph2">
+			<ul>
+				<li>Everytime when a sound will be <a href="#createsound">created</a> or played a <span class="presyntax_inline">sound[name]</span> object will be created.</li>
+				<li>When having used 'auto' as name for a new sound, then there will be also a global variable named <span class="presyntax_inline">autosound</span> that refers to that last created sound object.</li>
+				<li>The attributes of that sound object can be dynamically modified at runtime using krpano actions or Javascript code.</li>
+				<li>The object offers also several functions and events for more control.</li>
+				<li>Some functionality is only available by changing settings of the sound object!</li>
+				<li>The sound object will get automatically removed when that sound has fully played (after the <a href="#sound.oncomplete">oncomplete</a> event).</li>
+			</ul>
+			<br>
+			Example: for changing the volume of a sound, just <a href="../actions.html#tween">tween</a> its volume:
+			<pre class="xmlpre">tween(sound[sound1].volume, 0.5)</pre
+		</div>
+		
+		<br>
+		All available Sound Object Attributes / Events / Actions:
+		
+		<pre class="xmlpre">
+<span class="prenote">Attributes:</span>
+sound[name].<a href="#sound.volume">volume</a>
+sound[name].<a href="#sound.muted">muted</a>
+sound[name].<a href="#sound.loop">loop</a>
+sound[name].<a href="#sound.speed">speed</a>
+sound[name].<a href="#sound.paused">paused</a>
+sound[name].<a href="#sound.duration">duration</a>
+sound[name].<a href="#sound.position">position</a>
+sound[name].<a href="#sound.pan">pan</a>
+sound[name].<a href="#sound.ath">ath</a>
+sound[name].<a href="#sound.atv">atv</a>
+sound[name].<a href="#sound.depth">depth</a>
+sound[name].<a href="#sound.range">range</a>
+sound[name].<a href="#sound.tx">tx</a>
+sound[name].<a href="#sound.ty">ty</a>
+sound[name].<a href="#sound.tz">tz</a>
+<span class="prenote">Events:</span>
+sound[name].<a href="#sound.onloaderror">onloaderror</a>
+sound[name].<a href="#sound.onplay">onplay</a>
+sound[name].<a href="#sound.onpause">onpause</a>
+sound[name].<a href="#sound.onstop">onstop</a>
+sound[name].<a href="#sound.onseeked">onseeked</a>
+sound[name].<a href="#sound.oncomplete">oncomplete</a>
+<span class="prenote">Actions:</span>
+sound[name].<a href="#sound.play">play()</a>
+sound[name].<a href="#sound.pause">pause()</a>
+sound[name].<a href="#sound.toggle">toggle()</a>
+sound[name].<a href="#sound.stop">stop()</a>
+sound[name].<a href="#sound.destroy">destroy()</a>
+sound[name].<a href="#sound.seek">seek()</a>
+sound[name].<a href="#sound.sethv">sethv()</a>
+sound[name].<a href="#sound.setxyz">setxyz()</a>
+sound[name].<a href="#sound.setup3d">setup3d()</a>
+</pre>
+		</div>
+	</div>
+	
+	<div class="paragraph">
+		<h2><a name="soundobject.attributes" href="#soundobject.attributes" class="selflink">Sound Object Attributes</a></h2>
+		
+		<div style="padding-left:1px;padding-top:0;">
+		<table class="xmlattrdoc" style="table-layout:fixed;">
+			
+			<tr class="xmlattrdocdes1">
+				<td style="width:22%;"><a name="sound.volume"></a>Attribute name</td>
+				<td style="width:50%;">Full variable name</td>
+				<td style="width:14%;">Type</td>
+				<td style="width:14%;">Default value</td>
+			</tr>
+			<tr>
+				<th><a href="#sound.volume" class="selflink">volume</a></th>
+				<th>sound[name].<a href="#sound.volume" class="selflink">volume</a></th>
+				<th>Number</th>
+				<th>1.0</th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>The volume of the sounds.</li>
+						<li>Value range: 0.0 - 1.0, default=1.0.</li>
+						<li>Can be dynamically changed anytime.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.muted"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.muted" class="selflink">muted</a></th>
+				<th>sound[name].<a href="#sound.muted" class="selflink">muted</a></th>
+				<th>Boolean</th>
+				<th>false</th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Mute or unmute the sound.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.loop"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.loop" class="selflink">loop</a></th>
+				<th>sound[name].<a href="#sound.loop" class="selflink">loop</a></th>
+				<th>Boolean</th>
+				<th>false</th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Should the sound be looped or not.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.speed"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.speed" class="selflink">speed</a></th>
+				<th>sound[name].<a href="#sound.speed" class="selflink">speed</a></th>
+				<th>Number</th>
+				<th>1.0</th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>The playback speed: 0.5 - 4.0.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.paused"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.paused" class="selflink">paused</a></th>
+				<th>sound[name].<a href="#sound.paused" class="selflink">paused</a></th>
+				<th>Boolean</th>
+				<th></th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Is the sound currently paused?</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.duration"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.duration" class="selflink">duration</a></th>
+				<th>sound[name].<a href="#sound.duration" class="selflink">duration</a></th>
+				<th>Number</th>
+				<th></th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>The duration / playback-length of the sound.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.position"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.position" class="selflink">position</a></th>
+				<th>sound[name].<a href="#sound.position" class="selflink">position</a></th>
+				<th>Number</th>
+				<th></th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>The current playback position.</li>
+						<li>Can be also set for seeking (same as a <a href="#sound.seek">seek()</a> call).</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.pan"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.pan" class="selflink">pan</a></th>
+				<th>sound[name].<a href="#sound.pan" class="selflink">pan</a></th>
+				<th>Number</th>
+				<th>0.0</th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Set the stereo panning: from -1.0 (left) +1.0 (right).</li>
+						<li>Can not be used together with 3D sounds!</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.ath"></a><a name="sound.atv"></a><a name="sound.depth"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.ath" class="selflink">ath</a><br>
+					<a href="#sound.atv" class="selflink">atv</a><br>
+					<a href="#sound.depth" class="selflink">depth</a><br>
+				</th>
+				<th>sound[name].<a href="#sound.ath" class="selflink">ath</a><br>
+					sound[name].<a href="#sound.atv" class="selflink">atv</a><br>
+					sound[name].<a href="#sound.depth" class="selflink">depth</a><br>
+				</th>
+				<th>Number<br>Number<br>Number<br></th>
+				<th>0.0<br>0.0<br>0.0<br></th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Set the spherical position for a <u>3D&nbsp;Positional&nbsp;Audio</u> sound.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.range"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.range" class="selflink">range</a></th>
+				<th>sound[name].<a href="#sound.range" class="selflink">range</a></th>
+				<th>Number</th>
+				<th>360.0</th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>The 'lookto-range' for 3D sounds.</li>
+						<li>The range value defines after how many degrees of looking away from the sound source the volume should be reduced to silence.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.tx"></a><a name="sound.ty"></a><a name="sound.tz"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.tx" class="selflink">tx</a><br>
+					<a href="#sound.ty" class="selflink">ty</a><br>
+					<a href="#sound.tz" class="selflink">tz</a><br>
+				</th>
+				<th>sound[name].<a href="#sound.tx" class="selflink">tx</a><br>
+					sound[name].<a href="#sound.ty" class="selflink">ty</a><br>
+					sound[name].<a href="#sound.tz" class="selflink">tz</a><br>
+				</th>
+				<th>Number<br>Number<br>Number<br></th>
+				<th>0.0<br>0.0<br>0.0<br></th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Set the 3D XYZ position for a <u>3D&nbsp;Positional&nbsp;Audio</u> sound.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.onloaderror"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.onloaderror" class="selflink">onloaderror</a></th>
+				<th>sound[name].<a href="#sound.onloaderror" class="selflink">onloaderror</a></th>
+				<th>Event</th>
+				<th></th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>This event will be called when there is a loading error.</li>
+						<li>The <a href="../actions.html#lasterror">lasterror</a> variable will contain the error message.</li>
+						<li>When this event is not set, the error will be processed by the krpano <a href="../xml.html#events.onloaderror">onloaderror</a> event.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.onplay"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.onplay" class="selflink">onplay</a></th>
+				<th>sound[name].<a href="#sound.onplay" class="selflink">onplay</a></th>
+				<th>Event</th>
+				<th></th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>This event will be called when the sounds starts to play.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.onpause"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.onpause" class="selflink">onpause</a></th>
+				<th>sound[name].<a href="#sound.onpause" class="selflink">onpause</a></th>
+				<th>Event</th>
+				<th></th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>This event will be called when the sounds gets paused.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.onstop"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.onstop" class="selflink">onstop</a></th>
+				<th>sound[name].<a href="#sound.onstop" class="selflink">onstop</a></th>
+				<th>Event</th>
+				<th></th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>This event will be called when the sounds gets stopped.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.onseeked"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.onseeked" class="selflink">onseeked</a></th>
+				<th>sound[name].<a href="#sound.onseeked" class="selflink">onseeked</a></th>
+				<th>Event</th>
+				<th></th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>This event will be called after finished seeking the sound.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="sound.oncomplete"></a>Attribute name</td><td>Full variable name</td><td>Type</td><td>Default value</td></tr>
+			<tr>
+				<th><a href="#sound.oncomplete" class="selflink">oncomplete</a></th>
+				<th>sound[name].<a href="#sound.oncomplete" class="selflink">oncomplete</a></th>
+				<th>Event</th>
+				<th></th>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>This event will be called when the sound was completely played.</li>
+						<li>When the sound is looping, this event will be not called.</li>
+					</ul>
+				</td>
+			</tr>
+		
+			
+		</table>
+		</div>
+		
+	</div>
+	
+	<div class="paragraph">
+		<h2><a name="sound.actions" href="#sound.actions" class="selflink">Sound Object Actions</a></h2>
+		
+		<div class="xmlnodedesc">
+			<a name="sound.play" class="docu_anchor"></a>
+			<pre>sound[name].<a href="#sound.play" class="selflink">play()</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Play or resumes the sound.</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="xmlnodedesc">
+			<a name="sound.pause" class="docu_anchor"></a>
+			<pre>sound[name].<a href="#sound.pause" class="selflink">pause()</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Pauses the sound.</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="xmlnodedesc">
+			<a name="sound.toggle" class="docu_anchor"></a>
+			<pre>sound[name].<a href="#sound.toggle" class="selflink">toggle()</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Either pause or resume the sound.</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="xmlnodedesc">
+			<a name="sound.stop" class="docu_anchor"></a>
+			<pre>sound[name].<a href="#sound.stop" class="selflink">stop()</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Stop the sound.</li>
+					<li>That means pausing the sound and seeking it back to its beginning.</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="xmlnodedesc">
+			<a name="sound.destroy" class="docu_anchor"></a>
+			<pre>sound[name].<a href="#sound.destroy" class="selflink">destroy()</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Stops a sound and destroys it.</li>
+					<li>After that the sound will be removed, resuming it will be not possible.</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="xmlnodedesc">
+			<a name="sound.seek" class="docu_anchor"></a>
+			<pre>sound[name].<a href="#sound.seek" class="selflink">seek(position)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Seeks the sound to the given playback position.</li>
+					<li>When the seeking is done, the sound[name].<a href="#sound.onseekd">onseeked</a> event will be called.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">position</span>
+						<ul>
+							<li>The new playback position in seconds.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="xmlnodedesc">
+			<a name="sound.sethv" class="docu_anchor"></a>
+			<pre>sound[name].<a href="#sound.sethv" class="selflink">sethv(h, v*, depth*)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Set the spherical position for a <u>3D&nbsp;Positional&nbsp;Audio</u> sound.</li>
+					<li>Alternatively it would be also possible to change the <a href="#sound.ath">ath</a>, <a href="#sound.atv">atv</a> and <a href="#sound.depth">depth</a> attributes individually.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">h</span> and <span class="pre">v</span>
+						<ul>
+							<li>The spherical position in degrees.</li>
+							<li>From -180 to +180 horizontally and -90 to +90 vertically (values out of this range will automatically wrap around).</li>
+							<li>When <span class="pre">v</span> will be not set, the default value 0 will be used.</li>
+						</ul>
+					</li>
+					<li><span class="pre">depth</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The depth / distance of the spherical position.</li>
+							<li>When not set, the default value 1000 will be used.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="xmlnodedesc">
+			<a name="sound.setxyz" class="docu_anchor"></a>
+			<pre>sound[name].<a href="#sound.setxyz" class="selflink">setxyz(x, y, z)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Set the 3D XYZ position for a <u>3D&nbsp;Positional&nbsp;Audio</u> sound.</li>
+					<li>Alternatively it would be also possible to change the <a href="#sound.tx">tx</a>, <a href="#sound.ty">ty</a> and <a href="#sound.tz">tz</a> attributes individually.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">x</span>, <span class="pre">y</span>, <span class="pre">z</span>
+						<ul>
+							<li>The 3D XYZ position.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="xmlnodedesc">
+			<a name="sound.setup3d" class="docu_anchor"></a>
+			<pre style="letter-spacing: -0.5px;">sound[name].<a href="#sound.setup3d" class="selflink">setup3d(refDistance, rolloffFactor, distanceModel, panningModel)</a></pre>
+			<div class="xmlnodetext">
+				<ul>
+					<li>Customize the <u>3D&nbsp;Positional&nbsp;Audio</u> sound settings.</li>
+				</ul>
+				<br>
+				Parameters:
+				<ul>
+					<li><span class="pre">name</span>
+						<ul>
+							<li>The name / id of the sound to customize.</li>
+							<li>There need to be a sound with that name.</li>
+						</ul>
+					</li>
+					<li><span class="pre">refDistance</span>
+						<ul>
+							<li>The reference distance for reducing the volume when the sound is farther away.</li>
+							<li>The default is 1.0.</li>
+						</ul>
+					</li>
+					<li><span class="pre">rolloffFactor</span>
+						<ul>
+							<li>Defines how quick the volume is reduced when the sound moves away.</li>
+							<li>The default is 1.0.</li>
+						</ul>
+					</li>
+					<li><span class="pre">distanceModel</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>Define which algorithm to use to reduce the volume of the sound as it moves away.</li>
+							<li>Available settings: <span class="pre">linear</span>, <span class="pre">exponential</span> or <span class="pre">inverse</span> (the default).</li>
+						</ul>
+					</li>
+					<li><span class="pre">panningModel</span> <span class="smallcomment">(optionally)</span>
+						<ul>
+							<li>The spatialisation algorithm to use to locate the sound in 3D space.</li>
+							<li>Available settings: <span class="pre">simple</span>, <span class="pre">equalpower</span> or <span class="pre">HRTF</span>.</li>
+							<li>The default setting depends on the <a href="#panningmodel">panningmodel</a> setting.</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+	</div>
+	
+	<div class="paragraph">
+		<h2><a name="soundformats" href="#soundformats" class="selflink">Sound Formats</a></h2>
+		
+		The Soundinterface Plugin supports all sound formats / codecs that the actual browser itself is supporting.
+		And because browsers might not have support for the same formats, it is possible to provide several sound files with different formats.<br>
+		<br>
+		The different files would need be separated them by <span class="pre">|</span> characters. The plugin will try to load the 
+		files from left to right - when one file can't be loaded or isn't supported, then automatically the next one will be tried.<br>
+		<br>
+		Example:
+		<pre>url="music.mp3|music.webm"</pre>
+	</div>
+	
+	<div class="paragraph">
+		<h2><a name="soundsprites" href="#soundsprites" class="selflink">Sound Sprites</a></h2>
+		
+		Sound Sprites (or Audio Sprites) are a way to store several sounds in one file (or alternatively
+		a way to crop a sound / to use only a part of it).<br>
+		<br>
+		The syntax to use Sound Sprites:
+		<pre>url="sounds.mp3[start,length]"</pre>
+		<ul>
+			<li><span class="pre">start</span> - The start-position of the sound in seconds.</li>
+			<li><span class="pre">length</span> -The length of the sound in seconds.</li>
+		</ul>
+		<br>
+		When there are several sounds using the same sound file, that sound file will be loaded only once.
+	</div>
+	
+	<div class="paragraph">
+		<h2><a name="autoplay" href="#autoplay" class="selflink">Autoplay Restrictions</a></h2>
+		
+		In mobile browsers and also new in many newer desktop browsers the automatic playback
+		for media files like video or sound is restricted or blocked.<br>
+		<br>
+		They allow playing only after an user-interaction like a touch or a click.<br>
+		<br>
+		So when trying to play a sound and the playback is not allowed by the browser, the soundinterface plugin automatically
+		waits for the first the touch or click anywhere on the page and uses that to starts the playback.
+	</div>
+		
+	<br>
+	
+	
+	
+
+
+				</div>
+			</div>
+		</div>
+		<div id="krpano_footerwrapper">
+			<div id="krpano_footer">
+				<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td align="right">Copyright &copy; krpano.com</td></tr></tbody></table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

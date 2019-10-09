@@ -1,0 +1,60 @@
+<krpano>
+
+	<!--
+		Postprocessing Example: 
+		- Adjust the sharpening-range dynamically.
+
+		Here the trick to make this relativly easy:
+		- By using the 'maxpixelzoom' setting the 'fovmin' will be calculated
+		  dynamically based on the pano-image-size and the window-size.
+		- That can be used to calculate the current display-zoom-factor by:
+		    zoom=maxpixelzoom*tan(0.5*fovmin)/tan(0.5*fov)
+		- Then the desired range would be only multiplied by that zoom to get
+		  a range that would match the real image pixels.
+	-->
+	
+	<include url="%VIEWER%/plugins/iphone_fullscreen_swipe.xml" />
+
+	<view hlookat="0" vlookat="0" fov="90" maxpixelzoom="10" />
+
+	<preview url="garden_preview.jpg" />
+	<image>
+		<cube url="garden_%s.jpg" />
+	</image>
+
+	<!-- for HiDPI/Retina screens a larger radius is used to make the sharpening better visible -->
+	<plugin name="pp_sharpen" keep="true"
+		url="%VIEWER%/plugins/pp_sharpen.js"
+		enabled="true"
+		strength="3.0"
+		sharpenradius="calc:device.pixelratio * 1.1"
+		luminanceonly="true"
+		order="1"
+		phase="1"
+		/>
+	
+	<events name="zoom_based_sharpen" keep="true"
+		onviewchange="calc(plugin[pp_sharpen].range, plugin[pp_sharpen].sharpenradius*view.maxpixelzoom*tan(0.5*view.fovmin*Math.PI/180)/tan(0.5*view.fov*Math.PI/180)  );  trace(plugin[pp_sharpen].range);"
+		/>
+
+	<style name="pp_button"
+		type="text"
+		padding="4 8"
+		mergedalpha="false"
+		bgborder="0 0xFFFFFF 1"
+		bgroundedge="1"
+		bgshadow="0 1 4 0x000000 1.0"
+		ondown.addevent="set(bgcolor,0xDDDDDD);"
+		onup.addevent="if(!hovering,set(bgcolor,0xFFFFFF),set(bgcolor,0xEEEEEE));"
+		onover.addevent="if(!pressed,set(bgcolor,0xEEEEEE));"
+		onout.addevent="if(!pressed,set(bgcolor,0xFFFFFF));"
+		/>
+
+	<layer name="test"
+		style="pp_button"
+		align="bottom" y="30"
+		onclick="switch(plugin[pp_sharpen].enabled); onloaded();"
+		onloaded="calc(html, plugin[pp_sharpen].enabled ? 'Disable Sharpening' : 'Enable Sharpening');"
+		/>
+
+</krpano>

@@ -1,13 +1,5 @@
 import React, { Component } from 'react';
-
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import SelectField from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import {Dialog,DialogTitle,DialogContent,DialogActions,TextField,Button,Select as SelectField,MenuItem} from '@material-ui/core'
 
 import Hashid from '../../../utils/generateHashId'
 
@@ -20,7 +12,6 @@ export default class SceneMoveModal extends Component {
     componentDidMount(){
         const {groupList} = this.props
 
-        console.log(groupList)
         if(groupList.length > 0){
             this.setState({group:groupList[0].id})
         }

@@ -1,0 +1,113 @@
+﻿<krpano>
+	
+	<!-- webvr support -->
+	<include url="%VIEWER%/plugins/webvr.xml" />
+	
+	<!-- force enabled positional tracking -->
+	<plugin name="webvr" postracking="true" />
+	
+	<!-- some controls for depthmap navigation -->
+	<include url="%VIEWER%/plugins/depthmap_navigation.xml" />
+	
+	<!-- use depthbuffer for hotspots rendering -->
+	<display depthbuffer="true" />
+	
+	<!-- a background grid -->
+	<preview type="grid" />
+		
+	
+	<!-- some hotspots for hit-testing -->
+	
+	<style name="hittesttextfield"
+		type="text" html="Hit-testing..."
+		bgcolor="0x7777DD" bgalpha="0.8" bgborder="1 0x000000 1.0" oversampling="1"
+		zorder="1" depthbuffer="true"
+		onover.addevent.desktop="set(bgcolor,0x77FF77); asyncloop(hovering, calc(html,'hit='+roundval(hitx,2)+' / '+roundval(hity,2)+' distance='+roundval(hitd,2)); , set(html,''); set(bgcolor,0x7777DD); );"
+		onover.addevent.no-desktop="set(bgcolor,0x77FF77);"
+		onout.addevent.no-desktop="set(bgcolor,0x7777DD);"
+		/>
+	
+	<hotspot name="hittest1" style="hittesttextfield|vrhittesting" width="400" height="400" distorted="true" depth="0" tz="+500" capture="false" />
+	<hotspot name="hittest2" style="hittesttextfield|vrhittesting" width="250" height="250" distorted="true" ath="90" depth="500"  tx="0.001" capture="false" onloaded="renderloop( inc(rotate,0.1) );" />
+	<hotspot name="hittest3" style="hittesttextfield|vrhittesting" width="400" height="400" distorted="true" depth="0" tx="-400" ry="-90" capture="false" />
+	
+	<hotspot name="floor" style="vrhittesting"
+		url="checkerboard.png" alpha="0.7" depthbuffer="true" capture="false"
+		width="1000" height="1000" scale="0.5" distorted="true" depth="0"
+		zorder="2"
+		rotationorder="xyz" rx="-90"
+		torigin="world" tx="0" ty="160" tz="0"
+		/>
+		
+	
+	<!-- hit-testing visulation -->
+	
+	<style name="vrhittesting" onover.addevent="vrhittesting_onover();" />
+		
+	<action name="vrhittesting_onover" scope="localonly">
+		addhotspot(auto,hp);
+		hp.loadstyle('hitpoint');
+		asyncloop(caller.hovering,
+			set(hp, 
+				ath=get(caller.ath),
+				atv=get(caller.atv),
+				rotate=get(caller.rotate),
+				depth=get(caller.depth),
+				rotationorder=get(caller.rotationorder),
+				rx=get(caller.rx),
+				ry=get(caller.ry),
+				rz=get(caller.rz),
+				torigin=get(caller.torigin),
+				tx=get(caller.tx),
+				ty=get(caller.ty),
+				tz=get(caller.tz),
+				ox=calc((caller.hitx-0.5)*caller.pixelwidth), 
+				oy=calc((caller.hity-0.5)*caller.pixelheight)
+			);
+		  ,
+			removehotspot(get(hp.name));
+		);
+	</action>
+
+	<style name="hitpoint" type="text" html="" enabled="false"
+		edge="center" width="13" height="13" scale="0.5" bgroundedge="6" bgcolor="0xFF0000" bgborder="0.25 0xFF0000 0.0" alpha="0.7"
+		distorted="true" oref="1" zorder="999"
+		oversampling="3" mipmapping="true"
+		/>
+
+
+
+	<!-- buttons for changing the vr-controllers -->
+	
+	<style name="vrbutton" type="text" distorted="true" oversampling="3" scale="0.5" zorder="4" width="100" depthbuffer="true"
+		css="text-align:center;" padding="4 8" mergedalpha="false" bgborder="0 0xFFFFFF 1" bgroundedge="1" bgshadow="0 1 4 0x000000 1.0" 
+		onover="set(bgcolor, 0xDDDDDD); tween(depth,298);"
+		onout="set(bgcolor, 0xFFFFFF); tween(depth,300);"
+		/>
+
+	<hotspot name="bg" style="vrbutton" 
+		ath="50" depth="302" width="120" height="175" ty="-54" bgcolor="0x777777" bgalpha="0.7"
+		zorder="3" handcursor="false" onover="" onout=""
+		css="color:#FFFFFF;font-size:8px;text-align:center;" padding="4"
+		html="Select VR controller style"
+		/>
+	
+	<hotspot name="vr_cursor_1" style="vrbutton"
+		ath="50" depth="300" ty="-100"
+		html="Handcursor + Target&#160;point"
+		onclick="webvr_load_vr_controller_hs('vrcontroller_handcursor_and_point');"
+		/>
+		
+	<hotspot name="vr_cursor_2" style="vrbutton"
+		ath="50" depth="300" ty="-50"
+		html="Light + Target&#160;point"
+		onclick="webvr_load_vr_controller_hs('vrcontroller_light_and_point');"
+		/>
+		
+	<hotspot name="vr_cursor_3" style="vrbutton"
+		ath="50" depth="300" ty="-0.001"
+		html="Long Distance Laser"
+		onclick="webvr_load_vr_controller_hs('vrcontroller_laser');"
+		/>
+	
+</krpano>

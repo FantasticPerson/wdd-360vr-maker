@@ -1,143 +1,126 @@
 import { createAction } from 'redux-act'
 
 import Modals from '../modals';
-import {addHotspotToKrpano,selectHotspotInKrpano,removeHotspotFromKrpano,updateHotspotIcon} from '../utils/krpanoFunctions'
-import getPathOfHotSpotIconPath from '../native/getHotspotIconPath'
+import { addHotspotToKrpano, selectHotspotInKrpano, removeHotspotFromKrpano, updateHotspotIcon } from '../utils/krpanoFunctions'
+import { getHotspotPath } from '../native/pathUtils'
 import Hashid from '../utils/generateHashId'
 
 export const dAddHotpot = createAction('add_hotpot')
-export const dDeleteHotpot = createAction('delete_hotpot') 
+export const dDeleteHotpot = createAction('delete_hotpot')
 export const dUpdateAllHotpot = createAction('update_all_hotpot')
 export const dUpdateHotpotSelect = createAction('update_hotpot_select')
 
-export function updateAllHotpot(arr) {
-    return (dispatch)=>{
-        arr.sort((item1,item2)=>{
-            return item1.timestamp > item2.timestamp
-        })
-        dispatch(dUpdateAllHotpot(arr))
+export function updateAllHotspot(sId = null) {
+    return (dispatch, getState) => {
+        let selectSceneId = sId == null ? getState().scene.sceneSelected : sId
+        Modals.Hotpot.findBySceneId(selectSceneId)
+            .then(list => {
+                list.sort((item1, item2) => {
+                    return item1.timestamp > item2.timestamp
+                })
+
+                dispatch(dUpdateAllHotpot(list))
+            })
+
     }
 }
 
-export function updateHotspotSelect(id){
-    return (dispatch,getState)=>{
+export function updateHotspotSelect(id) {
+    return (dispatch, getState) => {
         var krpano = getState().krpano.obj
-        if(krpano){
-            selectHotspotInKrpano(krpano,id)
+        if (krpano) {
+            selectHotspotInKrpano(krpano, id)
             dispatch(dUpdateHotpotSelect(id))
         }
     }
 }
 
-export function updateAllHotpotFromLocal(){
-    return (dispatch)=>{
-        Modals.Hotpot.findAll()
-        .then((list)=>{
-            dispatch(updateAllHotpot(list))
-        })
-    }
-}
-
-export function updateHotpotPos(obj){
-    return (dispatch)=>{
+export function updateHotspotPosition(obj) {
+    return (dispath, getState) => {
         Modals.Hotpot.update(obj)
-        .then(()=>{
-            return Modals.Hotpot.findAll()
-        })
-        .then((list)=>{
-            dispatch(updateAllHotpot(list))
-        })
+            .then(() => {
+                dispath(updateAllHotspot())
+            })
     }
 }
 
-export function addHotpots(){
-    return (dispatch,getState)=>{
-        var krpano = getState().krpano.obj
-        var hotSpots = getState().hotpot.list
-        if(krpano && hotSpots.length){
-            var sceneSelected = getState().scene.sceneSelected
-            var hSpots = []
-            for(let i=0;i<hotSpots.length;i++){
-                if(hotSpots[i].sceneId == sceneSelected){
-                    hSpots.push(hotSpots[i])
-                }
+export function addHotspots(sId = null) {
+    return (dispatch, getState) => {
+        let krpano = getState().krpano.obj
+        if (krpano) {
+            let sceneSelected = sId == null ? getState().scene.sceneSelected : sId
+            if (sceneSelected) {
+                Modals.Hotpot.findBySceneId(sceneSelected)
+                    .then((list) => {
+                        list.map(item => {
+                            let icon = getHotspotPath(item.icon)
+                            addHotspotToKrpano(krpano, { ...item, _id: item.id, icon: icon }, false)
+                        })
+                    })
+                dispatch(updateAllHotspot(sceneSelected))
             }
-            if(hSpots.length){
-                for(let i = 0;i<hSpots.length;i++){
-                    var data = hSpots[i]
-                    data._id = data.id
-                    let icon = getPathOfHotSpotIconPath(data.icon)
-                    addHotspotToKrpano(krpano,{...data,icon:icon},false)
-                }
-            }
+
         }
     }
 }
 
-export function addHotpot(actionData,icon) {
-    return (dispatch,getState) => {
+export function addHotspot(actionData, icon) {
+    return (dispatch, getState) => {
         var krpano = getState().krpano.obj
         var selectSceneId = getState().scene.sceneSelected
-        if(krpano && selectSceneId != -10){
-            const _id = `hs${new Hashid().encode()}`
-            const ath = krpano.get('view.hlookat')
-            const atv = krpano.get('view.vlookat')
-            // const icon = getPathOfHotSpotIconPath()
+        if (krpano && selectSceneId != -10) {
             let data = {
-                _id,
-                ath,
-                atv,
-                icon:icon,
+                _id: `hs${new Hashid().encode()}`,
+                ath: krpano.get('view.hlookat'),
+                atv: krpano.get('view.vlookat'),
+                icon: icon,
                 animated: true,
                 type: undefined,
                 typeProps: '',
-                action:actionData
+                action: actionData
             }
-            
-            Modals.Hotpot.add({...data,sceneId:selectSceneId,id:data._id})
-            .then(()=>{
-                return Modals.Hotpot.findAll()
-            })
-            .then((list)=>{
-                let icon = getPathOfHotSpotIconPath(data.icon)
-                addHotspotToKrpano(krpano,{...data,icon:icon},false)
-                dispatch(updateAllHotpot(list))
-                updateHotspotSelect(data.id)
-            })
+
+            Modals.Hotpot.add({ ...data, sceneId: selectSceneId, id: data._id })
+                .then(() => {
+                    let icon = getHotspotPath(data.icon)
+                    dispatch(updateAllHotspot())
+
+                    addHotspotToKrpano(krpano, { ...data, icon: icon }, false)
+                    updateHotspotSelect(data.id)
+                })
         }
     }
 }
 
-export function delHotpot(id) {
-    return (dispatch,getState)=>{
+export function delHotspot(id) {
+    return (dispatch, getState) => {
         var krpano = getState().krpano.obj
-            if(krpano){
+        var selectSceneId = getState().scene.sceneSelected
+        if (krpano) {
             Modals.Hotpot.delete(id)
-            .then(()=>{
-                return Modals.Hotpot.findAll()
-            })
-            .then((list)=>{
-                dispatch(updateAllHotpot(list))
-                removeHotspotFromKrpano(krpano,id)
-            })
+                .then(() => {
+                    dispatch(updateAllHotspot())
+                    removeHotspotFromKrpano(krpano, id)
+                })
         }
     }
 }
 
-export function modifyHotpot(obj,updateIcon) {
-    return (dispatch,getState)=>{
+export function modifyHotspot(obj, updateIcon) {
+    return (dispatch, getState) => {
         var krpano = getState().krpano.obj
-        if(krpano){
+        var selectSceneId = getState().scene.sceneSelected
+        if (krpano) {
             Modals.Hotpot.update(obj)
-            .then(()=>{
-                return Modals.Hotpot.findAll()
-            })
-            .then((list)=>{
-                let icon = getPathOfHotSpotIconPath(obj.icon)
-                // addHotspotToKrpano(krpano,{...data,icon:icon},false)
-                updateHotspotIcon(krpano,obj.id,icon,true)
-                dispatch(updateAllHotpot (list))
-            })
+                .then(() => {
+                    return Modals.Hotpot.findBySceneId(selectSceneId)
+                })
+                .then((list) => {
+                    let icon = getHotspotPath(obj.icon)
+                    dispatch(updateAllHotspot())
+
+                    updateHotspotIcon(krpano, obj.id, icon, true)
+                })
         }
     }
 }

@@ -1,0 +1,34 @@
+<krpano>
+	
+	<layer name="tool_info"
+		type="text" css="color:#FFFFFF;text-align:center;" bg="false" txtshadow="0 1 4 0x000000 1.0" enabled="false"
+		align="top" y="20%"
+		html="A small helper tool for finding the[br]correct
+			[a href='https://krpano.com/docu/xml/#depthmap.offset' style='color:#FFFFFF;']offset[/a] and
+			[a href='https://krpano.com/docu/xml/#depthmap.scale' style='color:#FFFFFF;']scale[/a]
+			settings[br]for a depthmap image."
+		/>
+	
+	<include url="%VIEWER%/plugins/iphone_fullscreen_swipe.xml" />
+	<include url="%VIEWER%/plugins/webvr.xml" />
+	<include url="%VIEWER%/plugins/depthmap_navigation.xml" />
+	<include url="depthmap_helpertool.xml" />
+	
+	<!-- overwrite/redesign the default Enter VR button -->
+	<layer name="webvr_enterbutton" keep="true"
+		url="icon_vr.png" scale="0.5" alpha="1.0" align="leftbottom" x="18" y="18"
+		onclick.addevent="set(display.anaglyph,false);"
+		/>
+	
+	<layer name="toggle_anaglyph_mode" keep="true"
+		url="icon_anaglyph.png" scale="0.5" align="leftbottom" x="18" y="53"
+		onclick="switch(display.anaglyph);"
+		/>
+		
+
+	<image prealign="0|45|0">
+		<sphere   url="habitacio_01.jpg" />
+		<depthmap url="habitacio_01_depthmap.jpg" enabled="true" scale="0.5" offset="0.293" />
+	</image>
+	
+</krpano>

@@ -1,0 +1,25 @@
+<krpano debugmode="true">
+
+	<include url="%VIEWER%/plugins/contextmenu.xml" />
+	<include url="%VIEWER%/plugins/iphone_fullscreen_swipe.xml" />
+	
+	<include url="partialpano_helpertool.xml" />
+
+	<preview url="tiles/preview.jpg" />
+
+	<image hfov="156.00" vfov="47.058530" voffset="8.97">
+		<sphere if="browser.domain == 'krpano.com'"
+			url="https://krpano.com/panos/rom/partialpano/tiles/l%l/%0v/l%l_%0v_%0h.jpg"
+			multires="512,3072x928,6144x1854,12288x3708,24576x7414"
+			/>
+		<sphere if="browser.domain != 'krpano.com'"
+			url="tiles/l%l/%0v/l%l_%0v_%0h.jpg"
+			multires="512,3072x928,6144x1854"
+			/>
+	</image>
+	
+	<view fovtype="VFOV" fov="30" maxpixelzoom="2.0" />
+	
+	<control zoomtocursor="true" />
+
+</krpano>

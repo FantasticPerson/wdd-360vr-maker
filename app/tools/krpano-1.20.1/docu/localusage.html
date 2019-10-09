@@ -1,0 +1,296 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+	<meta name="format-detection" content="telephone=no" />
+	<link rel="stylesheet" type="text/css" href="design.css"/>
+	<title>krpano Documentation</title>
+	<script>
+		function toggle_mobile_nav(){var t=document,n=t.getElementById("krpano_contentnav"),m=t.getElementById("krpano_mobile_menu_bg");t=n.state!=2;n.state=t?2:1;n.style.height=t?"auto":"24px";m.style.display=t?"block":"none";t=t?"add":"remove";n.classList[t]("krpano_contentnav_opened");t+="EventListener";n[t]("click",toggle_mobile_nav,false);m[t]("mousedown",toggle_mobile_nav,false);}
+	</script>
+</head>
+<body>
+	<div id="krpano_root">
+		<div id="krpano_headerwrapper">
+			<div id="krpano_header">
+				<div id="krpano_mainmenu">
+					krpano 1.20.1 <span class="smallcomment">(build 2019-10-02)</span>
+				</div>
+			</div>
+			<div id="krpano_imagebar"></div>
+			
+			<div id="krpano_logo_container">
+				<a id="krpano_logo" href="https://krpano.com"><span>krpano.com</span></a>
+			</div>
+			
+			<div id="krpano_imagebar_links">
+				Documentation
+			</div>
+		</div>
+		
+		<div id="krpano_contentwrapper">
+			<div id="krpano_mobile_menuicon" onclick="toggle_mobile_nav();"><span class="burgermenu"></span></div>
+			<div id="krpano_mobile_menu_bg"></div>
+			<div id="krpano_content">
+				<div id="krpano_contentnav">
+					<h2><a href="#top" class="selflink">Documentation</a></h2>
+					<ul>
+						<li><a href="embedpano.html#top">Embedding</a></li>
+						<li><a href="xml.html#top">XML Reference</a></li>
+						<li><a href="actions.html#top">Actions / Scripting</a></li>
+						<li><a href="plugin_api.html#top">Plugin&nbsp;Interface</a></li>
+						<li><a href="js_api.html#top">Javascript Interface</a></li>
+						<li><a href="localusage.html#top">Local / Offline Usage</a></li>
+						<li><a href="releasenotes.html#top">Release Notes</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Plugins</a></h2>
+					<ul>
+						<li><a href="plugins/bingmaps.html#top">Bing Maps</a></li>
+						<li><a href="plugins/combobox.html#top">Combobox</a></li>
+						<li><a href="plugins/googlemaps.html#top">Google Maps</a></li>
+						<li><a href="plugins/gyro2.html#top">Gyro2</a></li>
+						<li><a href="plugins/postprocessing.html#top">Postprocessing</a></li>
+						<li><a href="plugins/radar.html#top">Radar</a></li>
+						<li><a href="plugins/scrollarea.html#top">ScrollArea</a></li>
+						<li><a href="plugins/showtext.html#top">Showtext</a></li>
+						<li><a href="plugins/snow.html#top">Snow / Rain</a></li>
+						<li><a href="plugins/soundinterface.html#top">Soundinterface</a></li>
+						<li><a href="textfield.html#top">Textfield</a></li>
+						<li><a href="plugins/videoplayer.html#top">Videoplayer</a></li>
+						<li><a href="plugins/webvr.html#top">WebVR</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Tools</a></h2>
+					<ul>
+						
+						<li><a href="tools/config.html#top">Config File Reference</a></li>
+						<li><a href="tools/testingserver.html#top">krpano Testing Server</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Examples</a></h2>
+					<ul>
+						<li><a href="examples.html#top">All Examples</a></li>
+						<li><a href="examples.html?depthmap#top">Depthmap</a></li>
+						<li><a href="examples.html?js#top">Javascript</a></li>
+						<li><a href="examples.html?multires#top">Multiresolution</a></li>
+						<li><a href="examples.html?panovideo#top">Panoramic Video</a></li>
+						<li><a href="examples.html?vtour#top">Virtual Tours</a></li>
+						<li><a href="examples.html?webvr#top">WebVR</a></li>
+					</ul>
+				</div>
+				<a name="top" class="toplink">&nbsp;</a>
+				<div id="krpano_contenttext">
+
+					<noscript>
+						<table style="width:100%; height:400px; position:fixed; left:95px; top:220px;"><tr valign="middle"><td><center><h1>
+							<span style="color:#FFFFFF; background:#FF0000; padding:15px;">
+								Javascript must be activated for this page!
+							</span>
+						</h1></center></td></tr></table>
+					</noscript>
+
+					
+
+<h1>Local / Offline Usage
+	
+</h1>
+
+<div class="paragraph">
+	Today many web-browsers have several restrictions when running interactive content locally.
+	'Locally' means when opening a html file directly from the local file-system in the browser.
+	In the browsers address bar local files can be identified by their <span class="pre">file://</span> url.<br>
+	<br>
+	When trying to run a local html file, the browser might restrict scripted access to other local files.
+	And because of this dynamically loading xml, js or image files might be not possible.
+</div>
+
+<h2 style="padding-bottom:0;"><a href="#solutions" name="solutions" class="selflink">Solutions</a></h2>
+<div>
+	<ul>
+		<li><a href="#localhostserver">Using a localhost server</a> <span class="smallcomment">(recommended)</span></li>
+		<li><a href="#changebrowsersettings">Changing the browser settings</a> <span class="smallcomment">(not recommended)</span></li>
+		<li><a href="#standalonedesktopapp">Building a standalone Desktop App</a> <span class="smallcomment">(for end-user deployment)</span></li>
+		<li><a href="#embeddingallfiles">Embedding all files into the html file</a> <span class="smallcomment">(only a special case for very small projects)</span></li>
+	</ul>
+</div>
+
+<br>
+<br>
+
+<h1><a href="#localhostserver" name="localhostserver" class="selflink">Using a localhost server</a></h1>
+<div class="paragraph">
+	<a href="tools/testingserver.html"><img src="./images/testingserver.png" width="96" height="96" align="right" /></a>
+	A localhost server is an application that runs a web-server locally on the system and
+	provides access to the local files by <span class="pre">http://</span> or <span class="pre">https://</span> addresses.
+	This way the file access is the same as when running online on an web-server.<br>
+	<br>
+	This has also the advantage that other systems and devices in the same local networks (e.g. mobile devices in the same wifi)
+	could also access the files by using the localhost server address.<br>
+	<br>
+	krpano includes two special and easy-to-use localhost server applications.
+	One GUI application and one command-line application. More information here:
+	<a href="tools/testingserver.html">krpano Testing Server</a>
+</div>
+
+<br>
+
+<h1><a href="#changebrowsersettings" name="changebrowsersettings" class="selflink">Changing the browser settings</a></h1>
+It would be possible to change the browsers settings to allow local file access, but as this would affect the whole browser
+and all pages, this is not generally recommended and should be only used for testing.
+<div class="paragraph">
+	<ul>
+		<li class="uldd"><h2>Firefox</h2>
+			Before Firefox 68:
+			<ul>
+				<li>Notthing todo in this case, that browser is allowing access to the local files in the same folder as the origin html file by default.</li>
+			</ul>
+			For Firefox 68 and newer:
+			<ol>
+				<li>Enter <span class="pre">about:config</span> in the browsers address bar.</li>
+				<li>Then enter <span class="pre"><a href="http://kb.mozillazine.org/Security.fileuri.strict_origin_policy" target="_blank" class="selflink2">security.fileuri.strict_origin_policy</a></span> in search bar on that config page
+					to filter the available settings.
+				</li>
+				<li>Change that setting to <span class="pre">false</span>.</li>
+				<li>After that access to local files should be possible, restarting the browser should be not necessary.</li>
+			</ol>
+		</li>
+		
+		<li class="uldd"><h2>Chrome</h2>
+			Chrome would need to be started with <span class="pre">--allow-file-access-from-files</span> as argument.
+			To do this:
+			<br>
+			<br>
+			On Windows:
+			<ol>
+				<li>Make a new shortcut/link icon to Chrome somewhere (e.g. by right-clicking it).</li>
+				<li>Edit the proprieties of that new link (also by right-clicking it).</li>
+				<li>Add <span class="pre">--allow-file-access-from-files</span> into the file path after Chrome.exe (make sure there is a blank between).</li>
+				<li>Restart Chrome using that new icon (but make sure to close all currently opened Chrome windows before doing that).</li>
+			</ol>
+			On Mac:
+			<ol>
+				<li>Close all currently opened Chrome windows.</li>
+				<li>Open the Terminal.</li>
+				<li>Enter this line:
+					<pre>open /Applications/Google\ Chrome.app --args --allow-file-access-from-files</pre>
+				</li>
+			</ol>
+		</li>
+		
+		<li class="uldd"><h2>Safari <span class="smallcomment">(Mac)</span></h2>
+			<ol>
+				<li>In the Safari Settings enable the Developer Menu in the Advanced tab.</li>
+				<li>Then there will be a new Develop Menu in the Menubar.</li>
+				<li>There enable the 'Disable Local File Restrictions' option.</li>
+			</ol>
+		</li>
+		
+	</ul>
+</div>
+
+<br>
+
+<h1><a href="#standalonedesktopapp" name="standalonedesktopapp" class="selflink">Building a standalone Desktop App</a></h1>
+<div class="paragraph">
+	There are tools like <a href="http://docs.nwjs.io/en/latest/For%20Users/Getting%20Started/" target="_blank">NW.js</a>
+	or <a href="https://electronjs.org/" target="_blank">Electron</a> available that allow building standalone Desktop applications
+	that run webcontent. Especially NW.js is easy to setup, so here example instructions for it:<br>
+	<br>
+	For Windows:
+	<ol>
+		<li>Download NW.js from here: <a href="https://nwjs.io/" target="_blank">https://nwjs.io/</a>.</li>
+		<li>Extract it anywhere.</li>
+		<li>As example: build a tour using the MAKE VTOUR droplet and copy the <span class="pre">vtour</span> folder into the extracted nwjs folder.</li>
+		<li>Create a file named <span class="pre">package.json</span> inside the nwjs folder (any texteditor will do) with the following content:
+			<pre>{"name":"My tour", "main":"vtour/tour.html"}</pre>
+			This file tells NW.js which file to load when starting it.
+		</li>
+		<li>Then just click the nw.exe to start the tour.</li>
+		<li>The nw.exe file could be also renamed to any other name.</li>
+	</ol>
+	For Mac:
+	<ol>
+		<li>Download NW.js from here: <a href="https://nwjs.io/" target="_blank">https://nwjs.io/</a>.</li>
+		<li>Right-click the nwjs application to show its package content.</li>
+		<li>Go there first into the <span class="pre">Contents</span> and then into <span class="pre">Resources</span> folder.</li>
+		<li>Make there a new folder named <span class="pre">app.nw</span>.</li>
+		<li>As example: build a tour using the MAKE VTOUR droplet and copy the <span class="pre">vtour</span> folder into that app.nw folder.</li>
+		<li>Create a file named <span class="pre">package.json</span> also inside the app.nw folder (any texteditor will do) with the following content:
+			<pre>{"name":"My tour", "main":"vtour/tour.html"}</pre>
+			This file tells NW.js which file to load when starting it.
+		</li>
+		<li>Then just click the nwjs to start the tour.</li>
+		<li>The nwjs file could be also renamed to any other name.</li>
+	</ol>
+	<br>
+	More information here in the <a href="https://krpano.com/forum/wbb/index.php?page=Thread&threadID=16084">krpano Forum</a>.
+</div>
+
+<br>
+
+<h1><a href="#embeddingallfiles" name="embeddingallfiles" class="selflink">Embedding all files into the html file</a></h1>
+<div class="paragraph">
+	Another and very special way to bypass the local-file-access restrictions from the browsers would be embedding / inlining ALL
+	files directly into the html file itself. That means the xml files, plugin js files and the images, all inside one (and probably large) html file.
+	This make only sense for very small projects of course - no multi-resolution or big tours.<br>
+	<br>
+	Technically this is possible by using <a href="https://en.wikipedia.org/wiki/Data_URI_scheme">DATA-Urls</a> and base64-encoded files to inline the files.
+	The core krpano.js file can be keep an external file (but inlining would be possible too)
+	and the main xml file itself can be added directly without base64-encoding as script tag into the html file.<br>
+	<br>
+	Here a full example html file (without the actual base64-encoded images, that would be too large):
+<pre>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;krpano&lt;/title&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover" /&gt;
+  &lt;meta http-equiv="Content-Type" content="text/html;charset=utf-8" /&gt;
+  &lt;style&gt;
+    html { height:100%; }
+    body { height:100%; overflow:hidden; margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFFFFF; background-color:#000000; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;script src="<span style="color:red;">krpano.js</span>"&gt;&lt;/script&gt;
+
+&lt;script id="<span style="color:red;">krpanoxmlcode</span>" type="text/xmldata"&gt;
+&lt;krpano&gt;
+  &lt;image&gt;
+    &lt;sphere url="data:image/jpeg;base64,<span style="color:red;">...here a base64-encoded image...</span>" /&gt;
+  &lt;/image&gt;
+  &lt;layer name="logo" url="data:image/jpeg;base64,<span style="color:red;">...here a base64-encoded image...</span>" align="rightbottom" x="10" y="10" enabled="false" /&gt;
+&lt;/krpano&gt;
+&lt;/script&gt;
+
+&lt;div id="pano" style="width:100%;height:100%;"&gt;
+  &lt;noscript&gt;&lt;table style="width:100%;height:100%;"&gt;&lt;tr style="vertical-align:middle;text-align:center;"&gt;&lt;td&gt;ERROR:&lt;br&gt;&lt;br&gt;Javascript not activated&lt;br&gt;&lt;br&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/noscript&gt;
+  &lt;script&gt;
+    embedpano({xml:null, target:"pano", html5:"webgl+only",onready:function(krpanoJSinterface)
+    {
+      var krpano = krpanoJSinterface.get("global");
+      var xmlstring = document.getElementById("<span style="color:red;">krpanoxmlcode</span>").innerHTML;
+      krpano.actions.loadxml(xmlstring);
+    }});
+  &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
+
+
+
+				</div>
+			</div>
+		</div>
+		<div id="krpano_footerwrapper">
+			<div id="krpano_footer">
+				<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td align="right">Copyright &copy; krpano.com</td></tr></tbody></table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

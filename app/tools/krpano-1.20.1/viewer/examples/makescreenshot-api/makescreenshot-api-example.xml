@@ -1,0 +1,173 @@
+﻿<krpano>
+
+	<!-- include the corfu tour -->
+	<include url="../demotour-corfu/tour.xml" />
+
+
+	<style name="button" type="text"
+	       css="text-align:center;"
+	       padding="4 8"
+	       mergedalpha="false"
+	       bgborder="4 0xFFFFFF 1"
+	       bgroundedge="1"
+	       bgshadow="0 1 4 0x000000 1.0"
+	       onover="set(bgcolor, 0xC7E4FC);"
+	       onout="calc(bgcolor, pressed ? 0x90CAF9 : 0xFFFFFF);"
+	       ondown="set(bgcolor, 0x90CAF9);"
+	       onup="calc(bgcolor, hovering ? 0xC7E4FC : 0xFFFFFF);"
+	       />
+
+
+	<layer name="makescreenshot" keep="true" style="button" align="top" x="0" y="40" width="160"
+	       html="Make Screenshot"
+	       onclick="makescreenshot();"
+	       />
+	       
+	<layer name="makescreenshot_hires" keep="true" style="button" align="top" x="0" y="80" width="160"
+	       html="Make Hi-Res Screenshot"
+	       onclick="makescreenshot_hires(4000,2250);"
+	       />
+
+
+	<action name="makescreenshot_init" type="Javascript" autorun="onstart"><![CDATA[
+
+		// Load the FileSaver.js script for saving files locally cross browser.
+		// Source: https://github.com/eligrey/FileSaver.js/
+		krpano.loadFile("%CURRENTXML%/FileSaver.js", function(file)
+		{
+			// remove the 'export ' part from the code to be able to 'eval' it
+			eval(file.data.replace("export ",""));
+			
+			// store the 'saveAs' function from the 'FileSaver.js' in krpano
+			krpano.screenshotSaveAs = saveAs;
+		});
+
+
+		// count the screenshots (for the filenames)
+		krpano.makescreenshot_count = 1;
+		
+		
+		// create an empty Object as makeScreenshot cache
+		var makeScreenshotCache = {};
+
+
+		// add a 'makescreenshot' action to krpano
+		krpano.makescreenshot = function(screenshotwidth,screenshotheight)
+		{
+			// if there is already a screenshot layer, remove it now
+			krpano.call("removelayer(screenshot,true)");
+
+			// make a screenshot as canvas
+			var sizeinfo = {w:0, h:0};
+			var screenshotcanvas = krpano.webGL.makeScreenshot(screenshotwidth, screenshotheight, true, "canvas", 0, null, sizeinfo, makeScreenshotCache);
+
+			if (screenshotcanvas)
+			{
+				// example - draw something on the canvas, set to 1 to enable
+				if (0)
+				{
+					var ctx = screenshotcanvas.getContext("2d");
+					ctx.font = "25px Times";
+					ctx.fillStyle = "#FFFFFF";
+					ctx.fillText("krpano makeScreenshot() API Test", 50, screenshotcanvas.height-50);
+				}
+
+				// add some krpano layers that show the screenshot and allow saving it
+				var container = krpano.addlayer("screenshot");
+				container.type = "container";
+				container.align="center";
+				container.registercontentsize(sizeinfo.w+20, sizeinfo.h+20);
+				container.width  = sizeinfo.w > sizeinfo.h ? "70%" : "prop";
+				container.height = sizeinfo.w > sizeinfo.h ? "prop" : "70%";
+				container.bgcolor = 0xFFFFFF;
+				container.bgalpha = 1.0;
+				container.bgshadow = "0 5 40 0x000000 1.0";
+				container.bgroundedge = 3;
+				container.bgcapture = true;
+				container.zorder = 99;
+				container.onclick = "set(enabled,false); tween(alpha,0,0.2,default,removelayer(get(name),true));";
+				container.onover = "tween(layer[screenshotsaveasbutton].alpha,1,0.2)";
+				container.onout = "tween(layer[screenshotsaveasbutton].alpha,0,0.2)";
+
+				var image = krpano.addlayer("screenshotimage");
+				image.url = screenshotcanvas.toDataURL();		// convert the screenshot-canvas to a base64 data-url for showing it
+				image.parent = "screenshot";
+				image.align = "center";
+				image.width = -20;
+				image.height = -20;
+				image.zorder = 1;
+				image.enabled = false;
+
+				// saving screenshots will be only possible when Blob and canvas.toBlob is supported by the browser (for more browser support add polyfills)
+				if (screenshotcanvas.toBlob)
+				{
+					var saveasbutton = krpano.addlayer("screenshotsaveasbutton");
+					saveasbutton.loadstyle("button");
+					saveasbutton.parent = "screenshot";
+					saveasbutton.align = "bottom";
+					saveasbutton.y = 25;
+					saveasbutton.zorder = 2;
+					saveasbutton.autoalpha = true;
+					saveasbutton.alpha = 0;
+					saveasbutton.html = "Save Image";
+					saveasbutton.onclick = function()
+					{
+						// save as JPEG with 95% quality
+						screenshotcanvas.toBlob(function(blob){ krpano.screenshotSaveAs(blob,"screenshot" + (krpano.makescreenshot_count++) + ".jpg"); }, "image/jpeg", 0.95);
+					};
+				}
+			}
+		}
+
+	]]></action>
+
+	<action name="makescreenshot_hires" scope="localonly" args="screenshotwidth, screenshotheight">
+		trace('makescreenshot_hires: start loading');
+		
+		<!-- backup the current setting -->
+		copy(usercontrol_backup, global.control.usercontrol);
+		copy(maxmem_backup, global.memory.maxmem);
+		
+		<!-- disable the user control while loading -->
+		set(global.control.usercontrol, off);
+		
+		<!-- force to load the highest multires level (TODO: calc best level depending on screenshot size) -->
+		set(global.lockmultireslevel, calc(global.image.level.count-1));
+		
+		<!-- set a high memory limit - should be enough for all tiles for the requested view -->
+		set(global.memory.maxmem, 1500);
+		
+		<!-- info: show/outline the tiles -->
+		set(global.display.showpolys,true);
+		
+		<!-- add an info text -->
+		addlayer(auto,l);
+		set(l, type=text, align=center, html='loading...', css='color:#FFFFFF;text-align:center;', bg=false, txtshadow='0 1 4 0x000000 1.0', enabled=false);
+
+		<!-- reset the internal loadstate -->
+		set(global.image.loadstate, -1);
+		
+		<!-- and wait until it is changed to state 3 which means 'view fully loaded' -->
+		callwhen(global.image.loadstate GE 3,
+		
+			<!-- remove the info text -->
+			removelayer(get(l.name));
+			
+			<!-- hide the tile outlines -->
+			set(global.display.showpolys,false);
+			
+			<!-- make the actual screenshot -->
+			global.makescreenshot(get(screenshotwidth), get(screenshotheight));
+			
+			<!-- restore all changed settings -->
+			set(global.lockmultireslevel, -1);
+			copy(global.memory.maxmem, maxmem_backup);
+			copy(global.control.usercontrol, usercontrol_backup);
+		);
+		
+		<!-- request a redraw -->
+		updatescreen();
+		
+	</action>
+
+</krpano>

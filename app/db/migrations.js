@@ -17,7 +17,8 @@ export default [
                 'tabs',
                 'music1',
                 'music2',
-                'timestamp'
+                'timestamp',
+                'state' // 0 => 未保存 1 => 已保存
             ],
             scene: [
                 'id',
@@ -37,7 +38,8 @@ export default [
                 'timestamp',
                 'sunlight',
                 'music1',
-                'music2'
+                'music2',
+                'index'
             ],
             folder: [
                 'id',
@@ -50,7 +52,8 @@ export default [
                 'vrId',
                 'timestamp',
                 'music1',
-                'music2'
+                'music2',
+                'sceneListIds'
             ],
             hotpot:[
                 'id',
@@ -67,7 +70,8 @@ export default [
             audio:[
                 'id',
                 'extension',
-                'timestamp'
+                'timestamp',
+                'showName'
             ],
             video:[
                 'id',
@@ -77,7 +81,8 @@ export default [
             picture:[
                 'id',
                 'extension',
-                'timestamp'
+                'timestamp',
+                'showName'
             ]
         },
         upgrade: null

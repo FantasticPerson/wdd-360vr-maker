@@ -1,0 +1,310 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+	<meta name="format-detection" content="telephone=no" />
+	<link rel="stylesheet" type="text/css" href="../design.css"/>
+	<title>krpano Documentation</title>
+	<script>
+		function toggle_mobile_nav(){var t=document,n=t.getElementById("krpano_contentnav"),m=t.getElementById("krpano_mobile_menu_bg");t=n.state!=2;n.state=t?2:1;n.style.height=t?"auto":"24px";m.style.display=t?"block":"none";t=t?"add":"remove";n.classList[t]("krpano_contentnav_opened");t+="EventListener";n[t]("click",toggle_mobile_nav,false);m[t]("mousedown",toggle_mobile_nav,false);}
+	</script>
+</head>
+<body>
+	<div id="krpano_root">
+		<div id="krpano_headerwrapper">
+			<div id="krpano_header">
+				<div id="krpano_mainmenu">
+					krpano 1.20.1 <span class="smallcomment">(build 2019-10-02)</span>
+				</div>
+			</div>
+			<div id="krpano_imagebar"></div>
+			
+			<div id="krpano_logo_container">
+				<a id="krpano_logo" href="https://krpano.com"><span>krpano.com</span></a>
+			</div>
+			
+			<div id="krpano_imagebar_links">
+				Documentation
+			</div>
+		</div>
+		
+		<div id="krpano_contentwrapper">
+			<div id="krpano_mobile_menuicon" onclick="toggle_mobile_nav();"><span class="burgermenu"></span></div>
+			<div id="krpano_mobile_menu_bg"></div>
+			<div id="krpano_content">
+				<div id="krpano_contentnav">
+					<h2><a href="#top" class="selflink">Documentation</a></h2>
+					<ul>
+						<li><a href="../embedpano.html#top">Embedding</a></li>
+						<li><a href="../xml.html#top">XML Reference</a></li>
+						<li><a href="../actions.html#top">Actions / Scripting</a></li>
+						<li><a href="../plugin_api.html#top">Plugin&nbsp;Interface</a></li>
+						<li><a href="../js_api.html#top">Javascript Interface</a></li>
+						<li><a href="../localusage.html#top">Local / Offline Usage</a></li>
+						<li><a href="../releasenotes.html#top">Release Notes</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Plugins</a></h2>
+					<ul>
+						<li><a href="../plugins/bingmaps.html#top">Bing Maps</a></li>
+						<li><a href="../plugins/combobox.html#top">Combobox</a></li>
+						<li><a href="../plugins/googlemaps.html#top">Google Maps</a></li>
+						<li><a href="../plugins/gyro2.html#top">Gyro2</a></li>
+						<li><a href="../plugins/postprocessing.html#top">Postprocessing</a></li>
+						<li><a href="../plugins/radar.html#top">Radar</a></li>
+						<li><a href="../plugins/scrollarea.html#top">ScrollArea</a></li>
+						<li><a href="../plugins/showtext.html#top">Showtext</a></li>
+						<li><a href="../plugins/snow.html#top">Snow / Rain</a></li>
+						<li><a href="../plugins/soundinterface.html#top">Soundinterface</a></li>
+						<li><a href="../textfield.html#top">Textfield</a></li>
+						<li><a href="../plugins/videoplayer.html#top">Videoplayer</a></li>
+						<li><a href="../plugins/webvr.html#top">WebVR</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Tools</a></h2>
+					<ul>
+						
+						<li><a href="config.html#top">Config File Reference</a></li>
+						<li><a href="testingserver.html#top">krpano Testing Server</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Examples</a></h2>
+					<ul>
+						<li><a href="../examples.html#top">All Examples</a></li>
+						<li><a href="../examples.html?depthmap#top">Depthmap</a></li>
+						<li><a href="../examples.html?js#top">Javascript</a></li>
+						<li><a href="../examples.html?multires#top">Multiresolution</a></li>
+						<li><a href="../examples.html?panovideo#top">Panoramic Video</a></li>
+						<li><a href="../examples.html?vtour#top">Virtual Tours</a></li>
+						<li><a href="../examples.html?webvr#top">WebVR</a></li>
+					</ul>
+				</div>
+				<a name="top" class="toplink">&nbsp;</a>
+				<div id="krpano_contenttext">
+
+					<noscript>
+						<table style="width:100%; height:400px; position:fixed; left:95px; top:220px;"><tr valign="middle"><td><center><h1>
+							<span style="color:#FFFFFF; background:#FF0000; padding:15px;">
+								Javascript must be activated for this page!
+							</span>
+						</h1></center></td></tr></table>
+					</noscript>
+
+					
+	
+	<h1>krpano Testing Server
+		
+	</h1>
+	
+	
+	<a href="https://krpano.com/tools/testingserver/#top"><img src="../images/testingserver.png" width="96" height="96" align="right" /></a>
+	
+	<div class="paragraph">
+		The krpano Testing Server is a small and easy-to-use static-file localhost web-server.
+		No install or setup required.
+		It allows testing on the local system and the local network without any file-access-restrictions 
+		from the browser and without the need for uploading the content.
+		Other computers and devices in the local network are be able to view the files just by entering
+		the IP-address in the browser.
+		Additionally the krpano Testing Server provides a cache-control to allow quick editing without 
+		the need to clear the browser-cache on every change of a file.
+	</div>
+	
+	<div class="paragraph">
+		There are two types of krpano Testing Server applications available:
+		<ul>
+			<li>A GUI version: <img src="../images/testingserver.png" width="16" height="16" style="vertical-align:text-top;" /> <a href="#gui">krpano Testing Server</a>,</li>
+			<li>and a Command-Line version: <a href="#cmd">tour_testingserver.exe</a> / <a href="#cmd">tour_testingserver_macos</a></li>
+		</ul>
+	</div>
+	
+	
+	<div class="paragraph">
+		<h2><a name="gui" href="#gui" class="selflink">krpano Testing Server</a> <span class="">(GUI version)</span></h2>
+		
+		<div class="propimg" style="position:relative;padding-top:48.0%;">
+			<img id="img_ui_os" src="" class="prop_inner" />
+			<div id="wintab1" style="position:absolute;left:1.04%;top:14.13%;width:14.34%;height:8.70%;cursor:pointer;" onclick="setbg(0,0);"></div>
+			<div id="wintab2" style="position:absolute;left:14.99%;top:14.13%;width:11.86%;height:8.70%;cursor:pointer;" onclick="setbg(1,0);"></div>
+			<div id="wintab3" style="position:absolute;left:26.47%;top:14.13%;width:9.39%;height:8.70%;cursor:pointer;" onclick="setbg(2,0);"></div>
+			<div id="mactab1" style="position:absolute;left:29.41%;top:14.99%;width:16.27%;height:7.76%;cursor:pointer;" onclick="setbg(0,1);"></div>
+			<div id="mactab2" style="position:absolute;left:45.25%;top:14.99%;width:13.81%;height:7.76%;cursor:pointer;" onclick="setbg(1,1);"></div>
+			<div id="mactab3" style="position:absolute;left:58.39%;top:14.99%;width:12.46%;height:7.76%;cursor:pointer;" onclick="setbg(2,1);"></div>
+		</div>
+		<div>
+			Click the tabs in the screenshots to see their content...
+			<span style="float:right;">Screenshots: <a href="#" onclick="setbg(curtab,0);return false;">Windows</a>, <a href="#" onclick="setbg(curtab,1);return false;">Mac OSX</a></span>
+		</div>
+	</div>
+	
+	<div class="paragraph">
+		<h2><a name="cmd" href="#cmd" class="selflink">krpano Testing Server</a> <span class="">(Command-Line version)</span></h2>
+		
+		<div class="propimg" style="position:relative;padding-top:34.2%;">
+			<img id="img_cmd_os" src="" class="prop_inner" />
+		</div>
+		<div>
+			<span style="float:right;">Screenshots: <a href="#" onclick="setbg(curtab,0);return false;">Windows</a>, <a href="#" onclick="setbg(curtab,1);return false;">Mac OSX</a></span>
+		</div>
+		<div class="subparagraph">
+			The Command-Line version provides the same functionality as the GUI version, 
+			but is much smaller, without a direct branding and better suitable for deployment.<br>
+			<br>	
+			For customizing the behavior of the Command-Line version (e.g. to use a different root folder, setting the port,
+			enabling HTTPS-support, quiet mode, ...) run it with 
+			<span class="pre">-?</span> or <span class="pre">-help</span> as parameter 
+			to see all available parameters and their settings.
+		</div>
+	</div>
+	
+	
+	<div class="paragraph">
+		<h2><a name="dirlist" href="#dirlist" class="selflink">Directory Listing</a></h2>
+		
+		<div class="propimg" style="position:relative;padding-top:49.1%;">
+			<img id="img_cmd_os" src="../images/testingserver_dirlisting.png" class="prop_inner" />
+		</div>
+		<div class="subparagraph">
+			The krpano Testing Server provides a CSS styled directory listing for easy browsing through the files and folders.
+			For customizing the directory listing provide a <span class="pre">krpanotestingserver.css</span> named file in the servers root folder.
+		</div>
+	</div>
+	
+	<div class="paragraph">
+		<h2><a href="#download" name="download" class="selflink">Download</a></h2>
+		
+		<div style="line-height:160%;">
+			The krpano Testing Servers are included in the krpano <a href="https://krpano.com/download/#top">download</a> packages.
+			The GUI version is available as <span class="pre">krpano Testing Server</span> named application directly the root folder
+			and the Command-Line version is available in the <span class="pre">html/templates/</span> folder as 
+			<span class="pre">tour_testingserver.exe</span> file for Windows and as <span class="pre">tour_testingserver_macos file</span> for Mac OSX.<br>
+			<br>
+			The krpano Testing Servers are standalone applications without any dependencies and can be also renamed
+			to any other filenames, e.g. for providing them together with a tour to end-users.
+		</div>
+	</div>
+
+	
+	<div class="paragraph">
+		<h2><a href="#https" name="https" class="selflink"><u>HTTPS</u> Support</a></h2>
+		
+		<div class="subparagraph">
+			The latest browser developments are forcing the need for HTTPS for more and more features,
+			e.g. today already for gyroscope and VR-usage and in future supposedly also for fullscreen-support.
+		</div>
+		
+		<div class="subparagraph">
+			Providing HTTPS support for local IP-addresses is possible, but requires some manual steps for setup once.
+			One note - that setup is only thought for developers and content-creators and internal usage, for 
+			not for casual end-user-usage.
+		</div>
+		
+		<div class="subparagraph">
+			<h2>Here a step-by-step tutorial:</h2>
+			
+			<ol>
+				<li>
+					As first step consider using a fixed IP-address for the computer where the testing server is running.
+					Because it will be necessary to generate a certificate for that IP-address and so when the IP-address
+					changes a new certificate would need to be generated. 
+				</li>
+				<li>
+					A great and easy-to-use tool for generating and managing the required certificates is 
+					the <a href="https://github.com/FiloSottile/mkcert" target="_blank">mkcert</a> tool.
+					It can be either installed manually as shown <a href="https://github.com/FiloSottile/mkcert#installation" target="_blank">here</a>
+					or otherwise pre-built binaries can be downloaded <a href="https://github.com/FiloSottile/mkcert/releases" target="_blank">here</a>.
+				</li>
+				<li>
+					After <a href="https://github.com/FiloSottile/mkcert" target="_blank">mkcert</a> is installed, run once this command:
+					<pre>mkcert -install</pre>
+					This will install a 'certificate authority' certificate on your system for authenticating the 
+					certificate that will be later used in the browser.
+				</li>
+				<li>
+					Then use this call to generate a certificate for your current IP-address, e.g. like this:
+					<pre>mkcert 192.168.0.100</pre>
+					After this call there will be e.g. <span class="pre">192.168.0.100.pem</span> and
+					<span class="pre">192.168.0.100-key.pem</span> files in your current working directory.
+				</li>
+				<li>
+					The next steps for iOS devices:
+					<ol>
+						<li>Copy the <span class="pre">192.168.0.100.pem</span> file into the root folder of your testing server
+							(still running with HTTP).
+						</li>
+						<li>Open the testing-server URL in the iOS Safari browser and open the 
+							<span class="pre">192.168.0.100.pem</span> file.
+							The browser will ask you for loading the certificate, confirm that.
+						</li>
+						<li>
+							After loading the certificate it needs to get manually installed, therefore go the iOS Settings app.
+							There the new added certificate should be already listed. Select the certificate
+							and then install it (confirm a several times). 
+						</li>
+					</ol>
+				</li>
+				<li>
+					Then open the Settings tab of the krpano Testing Server and select there
+					one of the both <span class="pre">.pem</span> files by the SSL Certificate Browse button.
+					The krpano Testing Server will automatically look for the other .pem file and load that too.<br>
+					<br>
+					When using the Command-Line version call it with:<br>
+					<span class="pre">-cert=path-and-filename-of-one-of-the-two-pem-files</span><br>
+					to load the certificate files and run the server as HTTPS server.
+				</li>
+				<li>
+					Almost done, now open the testing-server URL in your browser, but now with <span class="pre">https://</span>
+					instead of <span class="pre">http://</span>.<br>
+					Note - there is no http to https redirection! The correct URL would need to be entered!
+				</li>
+				<li>
+					At the first opening many browsers will show a warning. That's because the 'certificate authority' 
+					(your computer in this case) is not a global known and trusted authority. <br>
+					But the browser should offer a possibility to view the site anyway - either directly or slightly 
+					hidden behind a 'more information' or 'advanced' button.
+					After confirming these warnings (should be necessary only once) the URL should work with HTTPS now.
+				</li>
+			</ol>
+		</div>
+	</div>
+	
+	<br>
+	
+	<script>
+		
+		var curtab = 0;
+		
+		function setbg(tab,mac)
+		{
+			curtab = tab;
+			
+			var img_ui_os  = document.getElementById("img_ui_os");
+			var img_cmd_os  = document.getElementById("img_cmd_os");
+			
+			img_ui_os.src = "../images/testingserver_ui_" + (mac ? "osx" : "win") + (1+curtab) + ".png";
+			img_cmd_os.src = "../images/testingserver_cmd_" + (mac ? "osx" : "win") + ".png";
+			
+			document.getElementById("wintab1").style.display = mac ? "none" : "";
+			document.getElementById("wintab2").style.display = mac ? "none" : "";
+			document.getElementById("wintab3").style.display = mac ? "none" : "";
+			document.getElementById("mactab1").style.display = mac ? "" : "none";
+			document.getElementById("mactab2").style.display = mac ? "" : "none";
+			document.getElementById("mactab3").style.display = mac ? "" : "none";
+		}
+		
+		setbg(0, navigator.platform.toLowerCase().indexOf("mac") >= 0 );
+		
+	</script>
+
+
+
+
+				</div>
+			</div>
+		</div>
+		<div id="krpano_footerwrapper">
+			<div id="krpano_footer">
+				<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td align="right">Copyright &copy; krpano.com</td></tr></tbody></table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

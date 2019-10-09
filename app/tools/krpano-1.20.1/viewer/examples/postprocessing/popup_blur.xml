@@ -1,0 +1,225 @@
+<krpano>
+
+	<include url="%VIEWER%/plugins/iphone_fullscreen_swipe.xml" />
+
+
+	<view hlookat="0" vlookat="0" fov="90" fovtype="MFOV" />
+
+	<preview url="../custom-contextmenu/preview.jpg" />
+	<image>
+		<cube url="../custom-contextmenu/mobile_%s.jpg" />
+	</image>
+
+
+	<plugin name="pp_blur" keep="true"
+		url="%VIEWER%/plugins/pp_blur.js"
+		enabled="true"
+		range="0.0"
+		linearrgb="false"
+		order="1"
+		phase="2"
+		/>
+
+
+	<style name="infospot"
+		type="text"
+		css="color:#FFFFFF; font-size:16px; font-weight:bold; text-align:center;"
+		width="80" height="80"
+		bgroundedge="42"
+		bgalpha="0.75"
+		bgcolor="0x555555"
+		bgborder="1 0xFFFFFF 1"
+		bgshadow="0 0 16 0x0 0.5"
+		txtshadow="0 0 3 0x0 1.0"
+		mergedalpha="false"
+		vcenter="true"
+		oversampling="2"
+		mipmapping="true"
+		zoom="true"
+		/>
+
+
+	<action name="circlepos" scope="localonly" args="pos, total">
+		calc(caller.ox, -100 * cos((pos-1)/total * Math.PI * 2.0) );
+		calc(caller.oy, -100 * sin((pos-1)/total * Math.PI * 2.0) );
+	</action>
+
+
+	<hotspot name="spot1" style="infospot"
+		html="HTML"
+		ath="0" atv="0"
+		onloaded="circlepos(1,6);"
+		onclick="popup('html', get(data[data_html_example].content), 600, 300, true);"
+		/>
+
+	<hotspot name="spot2" style="infospot"
+		html="Web"
+		ath="0" atv="0"
+		onloaded="circlepos(2,6);"
+		onclick="popup('iframe', 'https://krpano.com/forum/', 800, 600, true);"
+		/>
+
+	<hotspot name="spot3" style="infospot"
+		html="VTour"
+		ath="0" atv="0"
+		onloaded="circlepos(3,6);"
+		onclick="popup('iframe', 'examples/demotour-corfu/index.html', 800, 600, false);"
+		/>
+
+	<hotspot name="spot4" style="infospot"
+		html="Youtube"
+		ath="0" atv="0"
+		onloaded="circlepos(4,6);"
+		onclick="popup('iframe', 'https://www.youtube.com/embed/uPtbSTrZYDU?rel=0&amp;hd=1&amp;vq=hd1080&amp;showinfo=0&amp;autoplay=1', 900, 506, false);"
+		/>
+
+	<hotspot name="spot5" style="infospot"
+		html="Image 2"
+		ath="0" atv="0"
+		onloaded="circlepos(5,6);"
+		onclick="popup('image', '%CURRENTXML%/garden_f.jpg');"
+		/>
+
+	<hotspot name="spot6" style="infospot"
+		html="Image 1"
+		ath="0" atv="0"
+		onloaded="circlepos(6,6);"
+		onclick="popup('image', '%CURRENTXML%/garden_l.jpg');"
+		/>
+
+
+
+	<action name="popup" scope="private:POPUP" args="type, content, width, height, scrollbars"><![CDATA[
+		if(popup, break(); );
+		addlayer('popup', popup);
+		set(popup,
+			type=container,
+			width=calc(min(width,global.stagewidth*0.9)),
+			height=calc(min(height,global.stageheight*0.8)),
+			align=center,
+			bgborder='1 0x555555 1',
+			bgcolor=0x555555,
+			bgalpha=0.7,
+			bgshadow='0 10 20 0x000000 0.5',
+			bgcapture=true,
+			maskchildren=true,
+			capture=true,
+			handcursor=false,
+			alpha=0
+		);
+
+		if(type == 'html',
+			copy(popup.datacontent, content);
+			calc(popup.onloaded, 'add_html_code(get(datacontent),'+scrollbars+');');
+
+		  ,type == 'iframe',
+			calc(popup.datacontent, '<iframe style="position:absolute;width:100%;height:100%;top:0px;left:0px;" src="'+content+'" frameborder="0" allowfullscreen></iframe>');
+			calc(popup.onloaded, 'add_html_code(get(datacontent),'+scrollbars+');');
+
+		  ,type == 'image',
+		 	set(popup,
+		 		bgcolor=0xFFFFFF,
+		 		bgalpha=1,
+		 	);
+			addlayer("popup_image", img);
+			set(img,
+				url=get(content),
+				align=center,
+				width=-20, height=-20,
+				parent=get(popup.name),
+				onloaded='popup_imageloaded()'
+			);
+		);
+
+		tween(global.plugin[pp_blur].range, 40.0);
+		delayedcall(0.2, tween(global.layer[popup].alpha, 1.0); );
+
+		set(global.events[popup].onclick,
+			set(global.events[popup].name, null);
+			tween(global.plugin[pp_blur].range, 0.0);
+			tween(global.layer[popup].alpha, 0.0, 0.25, default,
+				removelayer('popup', true);
+				scope(private:POPUP, delete(popup); );
+			);
+		);
+	]]></action>
+
+
+	<action name="popup_imageloaded" scope="private:POPUP">
+		calc(imgw, caller.imagewidth + 20);
+		calc(imgh, caller.imageheight + 20);
+		calc(maxw, global.stagewidth*0.9);
+		calc(maxh, global.stageheight*0.8);
+		if(imgw GT maxw,
+			calc(imgh, round(imgh * maxw / imgw));
+			copy(imgw, maxw);
+		);
+		if(imgh GT maxh,
+			calc(imgw, round(imgw * maxh / imgh));
+			copy(imgh, maxh);
+		);
+
+		set(global.layer[get(caller.parent)], width=get(imgw), height=get(imgh) );
+	</action>
+
+
+
+	<!-- arguments: 1=htmlcode, 2=scrollbars -->
+	<action name="add_html_code" type="Javascript"><![CDATA[
+		var div = document.createElement("div");
+
+		// basic styles to fit into the layer size and allow scrolling:
+		div.style.width = "100%";
+		div.style.height = "100%";
+		div.style.boxSizing = "border-box";
+		div.style.overflow = args[2] == "true" ? "auto" : "hidden";
+
+		// allow text selection (optional):
+		div.style.webkitUserSelect =
+		div.style.MozUserSelect =
+		div.style.msUserSelect =
+		div.style.userSelect = "text";
+
+		function stopPropagation(e){ e.stopPropagation(); }
+		function preventDefault(e){ e.preventDefault(); }
+
+		// enable browsed-based mouse-wheel and touch-scrolling support:
+		div.addEventListener("wheel", stopPropagation, true);
+		div.addEventListener("mousewheel", stopPropagation, true);
+		div.addEventListener("DOMMouseScroll", stopPropagation, true);
+		div.addEventListener("touchstart", function(event){ if(krpano.device.ios && window.innerHeight == krpano.display.htmltarget.offsetHeight){ /* avoid the iOS 'overscrolling' for fullpage viewers */ var bs = document.body.parentNode.style; bs.position="fixed"; bs.top=0; bs.left=0; bs.right=0; bs.bottom=0; } krpano.control.preventTouchEvents = false; event.stopPropagation(); }, true);
+		div.addEventListener("touchend", function(event){ krpano.control.preventTouchEvents = true; event.stopPropagation(); }, true);
+		div.addEventListener("gesturestart", preventDefault, true);
+
+		// add the html code:
+		div.innerHTML = args[1];
+
+		// add the div to the layer element:
+		caller.sprite.appendChild(div);
+	]]></action>
+
+
+	<data name="data_html_example"><![CDATA[
+
+		<div style="padding:10px;">
+
+			<h2>This is a html div inside krpano...</h2>
+			<hr style="border:0;border-top:1px solid white;">
+			<ul>
+				<li>With support for browser-based-scrolling by mouse-wheel, scroll-bars and touch-controls.</li>
+				<li>Fully integrated into krpano as &lt;layer&gt; container element.</li>
+			</ul>
+			Here a normal <a href="https://krpano.com" target="_blank" style="color:#FFFFFF;">link</a> for testing browser events.<br>
+			Here a <span style="text-decoration:underline;cursor:pointer;" onclick="document.getElementById('krpanoSWFObject').call('tween(layer[popup].x,calc(layer[popup].x LT 200 ? 200 : 0));');" style="color:#FFFFFF;">link</span> for testing the krpano JS API.<br>
+			<br>
+			And here some text to scroll:<br>
+			Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.<br>
+			<br>
+			Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.<br>
+			<br>
+
+		</div>
+
+	]]></data>
+
+</krpano>

@@ -1,0 +1,52 @@
+<krpano>
+
+	<!--
+		A helper tool for finding a good image.stereooffset setting for
+		stereoscopic images.
+
+		Usage:
+		- include this file
+		- enable anaglyph, stereo or vr mode
+		- use the D or F keyboard keys to adjust the stereooffset
+		- image content very far away should overlap congruently
+	-->
+
+	<layer name="stereooffsetinfo" keep="true"
+		type="text" align="leftbottom" zorder="999"
+		html="data:stereooffsetinfo"
+		/>
+
+	<data name="stereooffsetinfo"><![CDATA[
+		Stereo-Offset Helper<br>
+		Keyboard keys:<br>
+		&bull; D or F for adjusting<br>
+		&bull; SPACE for toggling<br>
+		&bull; A for anglyph-mode<br>
+		&bull; S for stereo-mode<br>
+	]]></data>
+
+	<hotspot name="stereooffset" keep="true"
+		type="text"
+		css="font-size:15px;"
+		flying="1.0"
+		padding="2 4"
+		oy="-100"
+		/>
+
+	<action name="updatestereooffset">
+		calc(hotspot[stereooffset].html, 'stereooffset=' + roundval(image.stereooffset,2) + (xml.scene != null ? ('[br]scene=' + xml.scene) : ''));
+		updatescreen();
+	</action>
+
+	<events name="stereooffset" keep="true"
+		onxmlcomplete="updatestereooffset();"
+		onkeydown="
+			if(keycode==32, if((1*image.stereooffset) == 0, copy(image.stereooffset,stereooffetbackup), copy(stereooffetbackup,image.stereooffset); set(image.stereooffset,0); ); txtadd(hotspot[stereooffset].html,'Stereooffset:',calc(roundval(image.stereooffset,2))); updatescreen(); );
+			if(keycode==65, switch(display.anaglyph) );
+			if(keycode==83, switch(display.stereo) );
+			if(keycode==68, add(image.stereooffset,-0.05); updatestereooffset(); );
+			if(keycode==70, add(image.stereooffset,+0.05); updatestereooffset(); );
+			"
+		/>
+
+</krpano>

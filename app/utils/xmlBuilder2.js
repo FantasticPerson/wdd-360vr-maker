@@ -284,7 +284,6 @@ function panosXmlData(productData,config){
                         break
                 } 
             })
-            debugger
             if (pano.scene.music1) {
                 const sound = panoElement.ele('sound')
                 sound.att('url', `./audio/${pano.music1}`)

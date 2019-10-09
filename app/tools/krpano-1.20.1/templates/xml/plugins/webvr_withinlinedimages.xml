@@ -1,0 +1,923 @@
+<krpano>
+	<!--
+		webvr.xml
+		- krpano 1.20.1
+		
+		https://krpano.com/plugins/webvr/
+	-->
+
+	<!-- load the WebVR plugin and assign it to a global 'webvr' variable -->
+	<plugin name="webvr" devices="html5" keep="true"
+	        url="webvr.js"
+	        mobilevr_support="true"
+	        mobilevr_touch_support="true"
+	        mobilevr_fake_support="true"
+	        mobilevr_profile.normal="90|60|42|0|0|0"
+	        mobilevr_profile.mobile="80|60|42|35|0.441|0.156"
+	        mobilevr_wakelock="true"
+	        fullscreen_mirroring="false"
+	        mouse_pointerlock="true"
+	        vr_cursor_onover="if(handcursor, tween(hotspot[vr_cursor].scale,0.4,0.1); vr_auto_click(get(vr_timeout)); );"
+	        vr_cursor_onout="tween(hotspot[vr_cursor].scale,0.3,0.1);"
+	        onavailable="webvr_onavailable();"
+	        onunavailable=""
+	        onunknowndevice="webvr_onunknowndevice();"
+	        onvrcontrollers="webvr_onvrcontrollers();"
+	        onentervr="webvr_onentervr();"
+	        onexitvr="webvr_onexitvr();"
+	        />
+
+
+
+	<!-- the VR cursor hotspot -->
+	<style name="vr_cursor_style" 
+		url="data:image/png;base64,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"
+		visible="false"
+		enabled="false"
+		distorted="true"
+		crop="0|0|80|80"
+		scale="0.3"
+		depth="120"
+		/>
+	
+	<action name="webvr_load_vr_cursor_hs" scope="local">
+		addhotspot('vr_cursor', hs);
+		hs.loadstyle(vr_cursor_style);
+		set(hs.keep, true);
+		set(webvr.vr_cursor, 'hotspot[vr_cursor]');
+	</action>
+	
+	<action name="webvr_load_vr_controller_hs" scope="private:VRCONTROLLERS" args="controllerstyle">
+		removehotspot('vr_controller_l');
+		removehotspot('vr_controller_r');
+		addhotspot('vr_controller_l', vr_ctrl_l);
+		addhotspot('vr_controller_r', vr_ctrl_r);
+		set(vr_ctrl_l.keep, true);
+		set(vr_ctrl_r.keep, true);
+		vr_ctrl_l.loadstyle(calc(controllerstyle ? controllerstyle : 'vrcontroller_light_and_point'));
+		vr_ctrl_r.loadstyle(calc(controllerstyle ? controllerstyle : 'vrcontroller_light_and_point'));
+
+		<!-- optional: vibrate the controllers on hovering:
+		vr_ctrl_l.addevent('onover', pulse(1.0, 0.25) );
+		vr_ctrl_r.addevent('onover', pulse(1.0, 0.25) ); -->
+		vr_ctrl_l.addevent('onvrcontrollerbutton', 'if(vrbuttonindex == 3 AND vrbuttonstate == "up", vrsetup_open(); );' );
+		vr_ctrl_r.addevent('onvrcontrollerbutton', 'if(vrbuttonindex == 3 AND vrbuttonstate == "up", vrsetup_open(); );' );
+		
+		set(global.webvr.vr_controller, 'vr_controller_l,vr_controller_r');
+		set(global.have_vr_controllers, true);
+		
+		if(global.webvr.isvrbrowser AND global.webvr.vrcontrollers[0].buttons.length LE 2,
+			<!-- when there are only two buttons on the VR controller (e.g. Oculus Go) use an extra hotspot for the VR-setup -->
+			addhotspot('webvr_vrsetup', vr_setup_hs);
+			vr_setup_hs.loadstyle('webvr_button_style');
+			set(vr_setup_hs, keep=true, ath=0, atv=90, depth=160, zorder=999, torigin=view, html='VR SETUP', oversampling=3, scale=0.2, onclick='vrsetup_open();', onloaded='renderloop( copy(ath,view.hlookat); );');
+		);
+	</action>
+	
+	<action name="webvr_onvrcontrollers" scope="private:VRCONTROLLERS">
+		if(!global.have_vr_controllers, webvr_load_vr_controller_hs(); );
+	</action>
+		
+	<style name="vrcontroller_laser" 
+			url="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAEACAYAAADSoXR2AAAACXBIWXMAAC4jAAAuIwF4pT92AAAACXRFWHRDb21tZW50AACJKo0GAAABZklEQVR4nO3Sy07CQBSAYV4DXszLo4ICvo2CAivuWMfkNHHhpU1mpE2+xb+bOefLtIOqqgbRMHWTGqeeU9vULlPbmDmOHcN67+ALYJS6TU1SL3Fxn6ldzJzEjtF3gPoFSgO6+wIAw38E+Ad8gm6+wNUBPsHVXwAAAAAAAAAAAAAAAACgc4Bcy+saAx5SiwKARcwGAAAAAAAAAAAAAAAA+BPwmFoWACxjdivAIVMAAAAAAAAAAAAAAACtANOCgGnnAXdx6DUuHTO1j5nT2NEPwCEj4AAAAAAAAAAAAAAAANA7wFtcPGXqGDMBAAAAAAAAAAAAAAAAGgNWBQCr3gE+L54zdeoVYFYQMAMAAAAAAAAAAAAAAGgLuGSqMeA+NY/D54yAc8ycxw4AAAAAAAAAAAAAAACAXwFPcTjX8rpVzAZoBFgXAKwBAAAAAAAAAAAAAADaADYFAJteAt4zBQAAAAAAAPAj4APHOHMQhGm2+QAAAABJRU5ErkJgggAA"
+			distorted="true"
+			enabled="false"
+			visible="false"
+			width="0.5" height="1000" edge="bottom" oref="1" oy="0"
+			torigin="world" tx="0" ty="0" tz="0" depth="0"
+			zorder="99999"
+			depthbuffer="true"
+			onloaded="asyncloop(loaded, 
+				calc(height, (target AND target.hitd GT 0 ? target.hitd : 1000) / display.hotspotworldscale); 
+				);"
+			/>
+			
+	<style name="vrcontroller_light_and_point" 
+			url="data:image/png;base64,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"
+			distorted="true"
+			enabled="false"
+			visible="false"
+			width="0.5" height="18" edge="bottom" oref="1" oy="0"
+			torigin="world" tx="0" ty="0" tz="0" depth="0"
+			zorder="99999"
+			depthbuffer="true"
+			onloaded="vrcontroller_target_point();"
+			/>
+	
+	<style name="vrcontroller_handcursor_and_point" 
+			url="data:image/png;base64,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"
+			distorted="true"
+			enabled="false"
+			visible="false"
+			width="10" height="10" edge="center" oref="1" oy="-1"
+			torigin="world" tx="0" ty="0" tz="0" depth="0"
+			zorder="99999"
+			depthbuffer="true"
+			onloaded="vrcontroller_target_point();"
+			/>
+	
+	<action name="vrcontroller_target_point" scope="localonly">
+		addhotspot(auto, hs);
+		set(hs, keep=true, type=text, bgcolor=0xFFFFFF, bgalpha=1.0, width=10, height=10, bgroundedge=5, bgborder='1 0x000000 1.0', oversampling=2,
+			scale=0.4, torigin=world, depth=0, distorted=false, zoom=true, zorder=99998, enabled=false
+		  );
+		renderloop(
+			if(!caller.loaded,
+				removehotspot(get(hs.name));
+				stoprenderloop();
+			  ,
+				if(global.display.havedepthmap,
+					<!-- use the laser for depthmap panos -->
+					removehotspot(get(hs.name));
+					stoprenderloop();
+					webvr_load_vr_controller_hs('vrcontroller_laser');
+				  ,
+					calc(hs.bgcolor, caller.pressed ? 0x049AFF : (caller.hovering ? 0x00FF00 : 0xFFFFFF));
+					calc(distance, (caller.target AND caller.target.hitd GT 0 ? caller.target.hitd : 1000));
+					calc(hs.scale, 0.4 * (distance GT 1000 ? distance / 1000 : (distance LT 200 ? 0.25 : (0.25 + (distance - 200)/800 * 0.75))));
+					calc(hs.tx, caller.tx + caller.dx * distance);
+					calc(hs.ty, caller.ty + caller.dy * distance);
+					calc(hs.tz, caller.tz + caller.dz * distance);
+				);
+			);
+		);
+	</action>
+	
+
+
+
+	<!-- vr_auto_click() - call this action in the onover event of a
+	     hotspot to trigger automatically a click after some time.  -->
+	<action name="vr_auto_click" scope="local" args="vr_aclk_timeout">
+		if(webvr.isenabled,
+			if(vr_aclk_timeout == null, set(vr_aclk_timeout, 2000));
+			copy(vr_aclk_t1, timertick);
+			set(vr_aclk_waiting, true);
+			copy(webvr.vr_aclk_hotspot, caller.name);
+			set(hotspot[vr_cursor].crop,'0|0|80|80');
+
+			asyncloop(vr_aclk_waiting AND webvr.vr_aclk_hotspot == caller.name,
+				sub(dt, timertick, vr_aclk_t1);
+
+				if(!caller.hovering,
+					set(vr_aclk_waiting, false);
+					set(hotspot[vr_cursor].crop,'0|0|80|80');
+				  ,
+					div(f, dt, vr_aclk_timeout);
+					mul(f, 16);
+					roundval(f);
+					Math.min(f, 16);
+					mul(f, 80);
+
+					txtadd(hotspot[vr_cursor].crop,get(f),'|0|80|80');
+
+					<!-- wait another 100ms delay after finishing the animation before doing the click -->
+					sub(dt, 100);
+					if(dt GT vr_aclk_timeout,
+						set(vr_aclk_waiting,false);
+						set(hotspot[vr_cursor].crop,'0|0|80|80');
+						<!-- call onclick -->
+						callwith(caller, scope(global, ondown();onup();onclick(); ); );
+					);
+				);
+			);
+		);
+	</action>
+
+
+	<!-- by pressing SPACE the headset could be re-centered -->
+	<events name="webvr_events" devices="html5" keep="true"
+	        onmousedown="if(webvr AND webvr.isenabled, webvr_showbuttons() );"
+	        />
+
+
+
+	<!-- when WebVR support is available show an EnterVR button -->
+	<action name="webvr_onavailable">
+		webvr.loadsettings();
+		if(layer[webvr_enterbutton], delayedcall(0.5, tween(layer[webvr_enterbutton].alpha,1.0); ); );
+	</action>
+	
+	
+	<action name="webvr_onunknowndevice">
+		if(webvr.isfake AND device.desktop AND webvr.havesettings == false,
+			<!-- set the 'no distortion' headset for fake desktop usage -->
+			set(webvr.mobilevr_lens_overlap, 1.0);
+			set(webvr.mobilevr_lens_fov, 96.0);
+			set(webvr.mobilevr_lens_dist, 0.0);
+			set(webvr.mobilevr_lens_dist2, '1|0|0|0');
+			set(webvr.mobilevr_lens_ca, 0.0);
+			set(webvr.mobilevr_lens_vign, 100);
+		  );
+	</action>
+
+
+	<action name="webvr_onentervr">
+		if(layer[webvr_enterbutton], tween(layer[webvr_enterbutton].alpha,0,0); );
+
+		webvr_showbuttons();
+		webvr_hide_all_non_vr_layers();
+
+		if(webvr.isfake, webvr_show_fakemode_info(true); );
+		
+		webvr_load_vr_cursor_hs();
+	</action>
+
+
+	<action name="webvr_onexitvr">
+		removehotspot('vr_cursor');
+		removehotspot('vr_controller_l');
+		removehotspot('vr_controller_r');
+		set(have_vr_controllers, false);
+		
+		stopdelayedcall(vr_button_fadeout);
+
+		if(layer[webvr_enterbutton], tween(layer[webvr_enterbutton].alpha,1); );
+		tween(layer[webvr_exitbutton].alpha,0);
+		tween(layer[webvr_setupbutton].alpha,0);
+		
+		webvr_show_fakemode_info(false);
+
+		webvr_restore_layers();
+	</action>
+
+
+	<action name="webvr_hide_all_non_vr_layers" scope="local">
+		for(set(i,0), i LT layer.count, inc(i),
+			copy(lr, layer[get(i)]);
+			if(lr.vr !== true,
+				copy(lr.vr_backup_visible, lr.visible);
+				set(lr.visible, false);
+			);
+		);
+	</action>
+
+	<action name="webvr_restore_layers" scope="local">
+		for(set(i,0), i LT layer.count, inc(i),
+			copy(lr, layer[get(i)]);
+			if(lr.vr_backup_visible,
+				copy(lr.visible, lr.vr_backup_visible);
+				delete(lr.vr_backup_visible);
+			);
+		);
+	</action>
+	
+	<action name="webvr_show_fakemode_info" scope="local" args="show">
+		if(show == true,
+			addlayer(webvr_fakemode_info);
+			set(layer[webvr_fakemode_info],
+				type='text',
+				keep=true,
+				align='bottom',
+				y=80,
+				bg=false,
+				css='color:#FFFFFF;text-align:center;',
+				html='[i][u]Simulated WebVR Mode![/u][br]For real WebVR with headset tracking use a [a href="http://webvr.info" target="_blank" style="color:#FFFFFF;"]WebVR-capable[/a] browser or a mobile device and a VR headset.[/i]'
+			);
+		  ,
+			removelayer(webvr_fakemode_info);
+		);
+	</action>
+	
+	
+	<!-- ensure the same scaling on mobiles (regardless if mobilescale is 0.5 or 1.0) -->
+	<krpano webvr_setup_scale="calc:(1.0 + 1.0*(device.mobile AND stagescale LT 1.0)) / (1.0 + 1.0*device.mobile)"
+	        webvr_button_scale.normal="1.0"
+	        webvr_button_scale.mobile="1.6"
+	        />
+
+	
+	<!-- the EnterVR/ExitVR and SetupVR buttons -->
+	<style name="webvr_button_style"
+	       type="text"
+	       bgcolor="0x000000"
+	       bgalpha="0.5"
+	       bgroundedge="0"
+	       css="calc:'color:#FFFFFF;font-size:' + 20*webvr_setup_scale*webvr_button_scale + 'px;'"
+	       padding="calc:6*webvr_setup_scale*webvr_button_scale + ' ' + 10*webvr_setup_scale*webvr_button_scale"
+	       />
+	
+	<layer name="webvr_enterbutton" keep="true" vr="true"
+	       style="webvr_button_style"
+	       html="Enter VR"
+	       align="top" y="24"
+	       autoalpha="true" alpha="0.0"
+	       onclick="webvr.enterVR();"
+	       />
+
+	<layer name="webvr_exitbutton" keep="true" vr="true"
+	       style="webvr_button_style"
+	       html="Exit VR"
+	       align="top" y="24"
+	       autoalpha="true" alpha="0.0"
+	       onclick="webvr.exitVR();"
+	       />
+
+	<layer name="webvr_setupbutton" keep="true" vr="true"
+	       style="webvr_button_style"
+	       html="VR Setup"
+	       align="bottom" y="24"
+	       autoalpha="true" alpha="0.0"
+	       onclick="vrsetup_open();"
+	       />
+
+
+	<action name="webvr_showbuttons">
+		stopdelayedcall(vr_button_fadeout);
+		tween(layer[webvr_exitbutton].alpha|layer[webvr_setupbutton].alpha, 1.0|1.0, 0.25);
+		delayedcall(vr_button_fadeout, 3.0, tween(layer[webvr_exitbutton].alpha|layer[webvr_setupbutton].alpha, 0.0|0.0, 1.0); );
+	</action>
+
+	
+		
+	<!-- VR SETUP -->
+	
+	
+	<mobilevr_presets>
+		<headset name="cbv1" caption="Cardboard V1"  profile="80|60|42|35|0.441|0.156" />
+		<headset name="cbv2" caption="Cardboard V2"  profile="120|64|39|35|0.34|0.55" />
+		<headset name="dydm" caption="Daydream"      profile="104|60|41|35|0.42|0.51" />
+		<headset name="nodt" caption="No Distortion" profile="90|60|42|0|0|0" />
+	</mobilevr_presets>
+
+	<action name="vrsetup_open">
+		if(!vrsetup_open_js, vrsetup_init(); );
+		vrsetup_open_js();
+	</action>
+		
+
+	<action name="vrsetup_init" type="Javascript"><![CDATA[
+		
+		var webvr = krpano.webvr;
+		var padding = 20;
+		
+		function vrsetup_dlg_create(type)
+		{
+			var dlg = {type:type, bg:null, y:0, scale:1, elements:[]};
+		
+			if (type == 'layer')
+			{
+				dlg.bg = krpano.addlayer();
+				dlg.bg.keep = true;
+				dlg.bg.type = 'container';
+				dlg.bg.align = 'center';
+			}
+			else	// 'hotspot'
+			{
+				dlg.scale = 0.15;
+				dlg.bg = krpano.addhotspot();
+				dlg.bg.keep = true;
+				dlg.bg.type = 'text';
+				dlg.bg.distorted = true;
+				dlg.bg.ath = krpano.view.hlookat;
+				dlg.bg.atv = 0;
+				dlg.bg.depth = 150;
+				dlg.bg.torigin = 'world';
+				dlg.bg.tx = krpano.view.tx;
+				dlg.bg.ty = krpano.view.ty;
+				dlg.bg.tz = krpano.view.tz;
+			}
+			
+			dlg.bg.bgcolor = 0x000000;
+			dlg.bg.bgalpha = 0.5;
+			dlg.bg.bgcapture = true;
+			dlg.bg.handcursor = false;
+			dlg.bg.capture = false;
+			dlg.bg.zorder = 100;
+			dlg.bg.visible = false;
+			
+			dlg.y = 0;
+			
+			return dlg;
+		}
+		
+		function vrsetup_dlg_addline(dlg, linetext, customcss, onclick)
+		{
+			var txt;
+			
+			if (dlg.type == 'layer')
+			{
+				txt = krpano.addlayer();
+				txt.keep = true;
+				txt.type = 'text';
+				txt.align = 'center';
+				txt.zorder = 101;
+			}
+			else	// 'hotspot'
+			{
+				txt = krpano.addhotspot();
+				txt.keep = true;
+				txt.type = 'text';
+				txt.distorted = true;
+				txt.zorder = 101;
+				txt.ath = dlg.bg.ath;
+				txt.atv = dlg.bg.atv;
+				txt.depth = dlg.bg.depth - 1;
+				txt.oversampling = 2;
+				txt.scale = dlg.scale;
+				txt.torigin = dlg.bg.torigin;
+				txt.tx = dlg.bg.tx;
+				txt.ty = dlg.bg.ty;
+				txt.tz = dlg.bg.tz;
+			}
+			
+			txt.onautosized = function()
+			{
+				txt.havesize = true;
+			}
+			
+			txt.edge = 'top';
+			txt.visible = false;
+			txt.bg = false;
+			txt.html = "" + linetext;
+			txt.css = 'font-size:32px;font-weight:bold;color:#FFFFFF; line-height:90%;' + (customcss || '');
+			
+			if (onclick)
+			{
+				txt.onclick = onclick;
+			}
+			else
+			{
+				txt.enabled = false;
+			}
+			
+			dlg.elements.push( txt );
+			
+			return txt;
+		}
+		
+		function vrsetup_dlg_addctrl(dlg, changedelay, callback)
+		{
+			var txt = vrsetup_dlg_addline(dlg, callback(0) );
+			
+			var inc;
+			var dec;
+			
+			if(dlg.type == 'layer')
+			{
+				inc = krpano.addlayer();
+				inc.keep = true;
+				inc.type = 'text';
+				inc.align = 'center';
+				inc.zorder = 101;
+				
+				dec = krpano.addlayer();
+				dec.keep = true;
+				dec.type = 'text';
+				dec.align = 'center';
+				dec.zorder = 101;
+			}
+			else	// 'hotspot'
+			{
+				inc = krpano.addhotspot();
+				inc.keep = true;
+				inc.type = 'text';
+				inc.distorted = true;
+				inc.zorder = 101;
+				inc.ath = dlg.bg.ath;
+				inc.atv = dlg.bg.atv;
+				inc.depth = dlg.bg.depth - 1;
+				inc.oversampling = 2;
+				inc.scale = dlg.scale;
+				inc.torigin = dlg.bg.torigin;
+				inc.tx = dlg.bg.tx;
+				inc.ty = dlg.bg.ty;
+				inc.tz = dlg.bg.tz;
+				
+				dec = krpano.addhotspot();
+				dec.keep = true;
+				dec.type = 'text';
+				dec.distorted = true;
+				dec.zorder = 101;
+				dec.ath = dlg.bg.ath;
+				dec.atv = dlg.bg.atv;
+				dec.depth = dlg.bg.depth - 1;
+				dec.oversampling = 2;
+				dec.scale = dlg.scale;
+				dec.torigin = dlg.bg.torigin;
+				dec.tx = dlg.bg.tx;
+				dec.ty = dlg.bg.ty;
+				dec.tz = dlg.bg.tz;
+			}
+			
+			inc.edge = 'top';
+			inc.visible = false;
+			inc.bg = false;
+			inc.html = '&#62;';
+			inc.css = 'font-size:32px;font-weight:bold;color:#FFFFFF; line-height:90%;';
+			inc.padding = '0 10';
+					
+			dec.edge = 'top';
+			dec.visible = false;
+			dec.bg = false;
+			dec.html = '&#60;';
+			dec.css = 'font-size:32px;font-weight:bold;color:#FFFFFF; line-height:90%;';
+			dec.padding = '0 10';
+			
+			inc.vr_timeout = changedelay * 1000;
+			dec.vr_timeout = changedelay * 1000;
+			inc.ondown = function(){ txt.html = ""+callback(+1); inc.enabled = false; setTimeout(function(){ inc.enabled = true; },0); };
+			dec.ondown = function(){ txt.html = ""+callback(-1); dec.enabled = false; setTimeout(function(){ dec.enabled = true; },0); };
+			
+			txt.ctrlchilds = [inc,dec];
+			
+			txt.updateControl = function()
+			{
+				txt.html = callback(0);
+			}
+			
+			return txt;
+		}
+		
+		function vrsetup_dlg_addspace(dlg, customspace)
+		{
+			dlg.elements.push(customspace|| padding);
+		}
+		
+		function vrsetup_dlg_finish(dlg)
+		{
+			var i, w=0, h=0;
+			var waitforsizes=false;
+			
+			for (i=0; i < dlg.elements.length; i++)
+			{
+				var e = dlg.elements[i];
+				if ( isNaN(e) )
+				{
+					if ( e.havesize )
+					{
+						w = Math.max( w, e.width * 1);
+						h += e.height * 1;
+					}
+					else
+					{
+						waitforsizes = true;
+						break;
+					}
+				}
+				else
+				{
+					h += e;
+				}
+			}
+			
+			if (waitforsizes)
+			{
+				setTimeout( function(){ vrsetup_dlg_finish(dlg); }, 16 ); 
+			}
+			else
+			{
+				var y = 0;
+				
+				dlg.bg.width = Math.ceil((w + padding*2)*dlg.scale);
+				dlg.bg.height = Math.ceil((h + padding*2)*dlg.scale);
+					
+				for (i=0; i < dlg.elements.length; i++)
+				{
+					var e = dlg.elements[i];
+					if ( isNaN(e) )
+					{
+						e.oy = Math.round((-h/2 + y) * dlg.scale);
+						e.visible = true;
+						
+						y += e.height * 1;
+						
+						if (e.ctrlchilds )
+						{
+							for (var j=0; j < e.ctrlchilds.length; j++)
+							{
+								var sube = e.ctrlchilds[j];
+								sube.ox = Math.round(((j&1)-0.5) * (-w) * dlg.scale);
+								sube.oy = e.oy;
+								sube.visible = true;
+							}
+						}
+					}
+					else
+					{
+						y += e;
+					}
+				}
+				
+				dlg.bg.visible = true;
+			}
+		}
+		
+		function vrsetup_dlg_remove(dlg)
+		{
+			var removefu = dlg.type == 'layer' ? krpano.removelayer : krpano.removehotspot;
+			
+			var i,j;
+			for (i=0; i < dlg.elements.length; i++)
+			{
+				var e = dlg.elements[i];
+				if ( isNaN(e) )
+				{
+					if (e.ctrlchilds )
+					{
+						for (j=0; j < e.ctrlchilds.length; j++)
+						{
+							var sube = e.ctrlchilds[j];
+							removefu(sube.name);
+						}
+					}
+					
+					removefu(e.name);
+				}
+			}
+			
+			removefu(dlg.bg.name);
+		}
+		
+		
+		function vrsetup_webvr_dialog()
+		{
+			// WebVR API rendering
+			var dlg = vrsetup_dlg_create('hotspot');
+			vrsetup_dlg_addline(dlg, 'WebVR Setup');
+			vrsetup_dlg_addspace(dlg);
+			
+			vrsetup_dlg_addline(dlg, 'Oversampling:', 'font-size:16px;')
+			var ctrl_ss = vrsetup_dlg_addctrl(dlg, 1.0, function(change)
+			{
+				var p = webvr.oversampling;
+				
+				if (change < 0) { p = Math.max(0.2, Number(p) - 0.1); webvr.oversampling = p;  } else 
+				if (change > 0) { p = Math.min(4.0, Number(p) + 0.1); webvr.oversampling = p;  }
+				
+				krpano.actions.delayedcall(0, function()
+				{
+					var gl = krpano.webGL.context;
+					var gl_width  = gl.drawingBufferWidth  | 0;
+					var gl_height = gl.drawingBufferHeight | 0;
+					
+					renderres.html = gl_width + "x" + gl_height;
+				});
+				
+				return p.toFixed(1);
+			});
+			vrsetup_dlg_addspace(dlg,8);
+			vrsetup_dlg_addline(dlg, 'Rendering Resolution:', 'font-size:16px;');
+			var renderres = vrsetup_dlg_addline(dlg, '');
+			vrsetup_dlg_addspace(dlg);
+			vrsetup_dlg_addline(dlg, 'CLOSE', '', vrsetup_close);
+			vrsetup_dlg_finish(dlg);
+			
+			return dlg;
+		}
+		
+		function vrsetup_mobilevr_dialog()
+		{
+			// MobileVR / Cardboard rendering
+			var dlg = vrsetup_dlg_create(0 ? 'hotspot' : 'layer');
+			vrsetup_dlg_addline(dlg, 'MobileVR SETUP');
+			vrsetup_dlg_addspace(dlg);
+			vrsetup_dlg_addline(dlg, 'Screensize (inch):', 'font-size:16px;')
+			vrsetup_dlg_addctrl(dlg, 1.0, function(change){ var ss = Number(webvr.mobilevr_screensize); if (isNaN(ss)) ss = 5.0; if (change < 0) { ss = Math.max(4.0, ss - 0.1); webvr.mobilevr_screensize = ss; } else if (change > 0) { ss = Math.min(10.0, ss + 0.1); webvr.mobilevr_screensize = ss; } return ss.toFixed(1); });
+			vrsetup_dlg_addspace(dlg);
+			vrsetup_dlg_addline(dlg, 'VR Headset Preset:', 'font-size:16px;')
+			var ctrl_ps = vrsetup_dlg_addctrl(dlg, 1.0, function(change)
+			{
+				var preset_index = -1;
+				var i;
+				
+				var profile = webvr.mobilevr_profile;
+				var presets = krpano.get("mobilevr_presets.headset");
+				if (presets)
+				{
+					presets = presets.getArray();
+					
+					for (i=0; i < presets.length; i++)
+					{
+						if ( profile == presets[i].profile )
+						{
+							preset_index = i;
+							break;
+						}
+					}
+					
+					if (change < 0)
+					{
+						preset_index--;
+						if (preset_index < 0)
+							preset_index = presets.length - 1;
+								
+						webvr.mobilevr_profile = presets[preset_index].profile;
+					}
+					else if (change > 0)
+					{
+						preset_index++;
+						if (preset_index >= presets.length)
+							preset_index = 0;
+						
+						webvr.mobilevr_profile = presets[preset_index].profile;
+					}
+				}
+					
+				if (preset_index >= 0)
+				{
+					return presets[preset_index].caption;
+				}
+				
+				return 'Custom';
+			});
+			vrsetup_dlg_addspace(dlg);
+			vrsetup_dlg_addline(dlg, 'Customize Headset', 'font-size:25px;', function()
+			{
+				vrsetup_dlg_remove(dlg); 
+				dlg=null; 
+				
+				vrsetup_dialog = vrsetup_mobilevr_interactive_dialog();
+				
+			});
+			vrsetup_dlg_addline(dlg, '(Interactive Adjustment in VR)', 'font-size:12px;');
+			vrsetup_dlg_addspace(dlg);
+			vrsetup_dlg_addline(dlg, 'CLOSE', '', vrsetup_close);
+			vrsetup_dlg_finish(dlg);
+			
+			return dlg;
+		}
+		
+		function vrsetup_mobilevr_interactive_dialog()
+		{
+			// MobileVR / Cardboard rendering
+			var ctrl_preset, ctrl_fov, ctrl_ild, ctrl_stl, ctrl_ttl, ctrl_k1, ctrl_k2, ctrl_os;
+			
+			var dlg = vrsetup_dlg_create('hotspot');
+			vrsetup_dlg_addline(dlg, 'MobileVR SETUP');
+			vrsetup_dlg_addspace(dlg);
+			vrsetup_dlg_addline(dlg, 'Preset:', 'font-size:16px;')
+			
+			ctrl_preset = vrsetup_dlg_addctrl(dlg, 1.0, function(change)
+			{
+				var preset_index = -1;
+				var i;
+				
+				var profile = webvr.mobilevr_profile;
+				var presets = krpano.get("mobilevr_presets.headset");
+				if (presets)
+				{
+					presets = presets.getArray();
+					
+					for (i=0; i < presets.length; i++)
+					{
+						if ( profile == presets[i].profile )
+						{
+							preset_index = i;
+							break;
+						}
+					}
+					
+					if (change < 0)
+					{
+						preset_index--;
+						if (preset_index < 0)
+							preset_index = presets.length - 1;
+								
+						webvr.mobilevr_profile = presets[preset_index].profile;
+					}
+					else if (change > 0)
+					{
+						preset_index++;
+						if (preset_index >= presets.length)
+							preset_index = 0;
+						
+						webvr.mobilevr_profile = presets[preset_index].profile;
+					}
+					
+					if (change != 0)
+					{
+						ctrl_fov.updateControl();
+						ctrl_ild.updateControl();
+						ctrl_stl.updateControl();
+						if (ctrl_ttl) ctrl_ttl.updateControl();
+						ctrl_k1.updateControl();
+						ctrl_k2.updateControl();
+					}
+				}
+			
+				if (preset_index >= 0)
+				{
+					return presets[preset_index].caption;
+				}
+				
+				return 'Custom';
+			});
+			
+			vrsetup_dlg_addspace(dlg);
+			vrsetup_dlg_addline(dlg, 'Lens-Field-of-View:', 'font-size:16px;');
+			ctrl_fov = vrsetup_dlg_addctrl(dlg, 0.25, function(change){ var p = webvr.mobilevr_profile.split("|"); if (change < 0) { p[0] = Number(p[0]) - 1.0; webvr.mobilevr_profile = p.join("|"); } else if (change > 0) { p[0] = Number(p[0]) + 1.0; webvr.mobilevr_profile = p.join("|"); } if (change != 0) ctrl_preset.updateControl(); return Number(p[0]).toFixed(0); });
+			vrsetup_dlg_addspace(dlg, 8);
+			vrsetup_dlg_addline(dlg, 'Inter-Lens-Distance (mm):', 'font-size:16px;');
+			ctrl_ild = vrsetup_dlg_addctrl(dlg, 0.25, function(change){ var p = webvr.mobilevr_profile.split("|"); if (change < 0) { p[1] = Number(p[1]) - 1.0; webvr.mobilevr_profile = p.join("|"); } else if (change > 0) { p[1] = Number(p[1]) + 1.0; webvr.mobilevr_profile = p.join("|"); } if (change != 0) ctrl_preset.updateControl(); return Number(p[1]).toFixed(0); });
+			vrsetup_dlg_addspace(dlg, 8);
+			vrsetup_dlg_addline(dlg, 'Screen-to-Lens-Distance (mm):', 'font-size:16px;');
+			ctrl_stl = vrsetup_dlg_addctrl(dlg, 0.25, function(change){ var p = webvr.mobilevr_profile.split("|"); if (change < 0) { p[2] = Number(p[2]) - 1.0; webvr.mobilevr_profile = p.join("|"); } else if (change > 0) { p[2] = Number(p[2]) + 1.0; webvr.mobilevr_profile = p.join("|"); } if (change != 0) ctrl_preset.updateControl(); return Number(p[2]).toFixed(0); });
+			vrsetup_dlg_addspace(dlg, 8);
+			if (!webvr.isfake)
+			{
+				vrsetup_dlg_addline(dlg, 'Tray-to-Lens-Center-Distance: (mm):', 'font-size:16px;');
+				ctrl_ttl = vrsetup_dlg_addctrl(dlg, 0.25, function(change){ var p = webvr.mobilevr_profile.split("|"); if (change < 0) { p[3] = Number(p[3]) - 1.0; webvr.mobilevr_profile = p.join("|"); } else if (change > 0) { p[3] = Number(p[3]) + 1.0; webvr.mobilevr_profile = p.join("|"); } if (change != 0) ctrl_preset.updateControl(); return Number(p[3]).toFixed(0); });
+				vrsetup_dlg_addspace(dlg, 8);
+			}
+			vrsetup_dlg_addline(dlg, 'Lens-Distortion Coefficients:', 'font-size:16px;');
+			ctrl_k1 = vrsetup_dlg_addctrl(dlg, 0.1, function(change){ var p = webvr.mobilevr_profile.split("|"); if (change < 0) { p[4] = Number(p[4]) - 0.01; webvr.mobilevr_profile = p.join("|"); } else if (change > 0) { p[4] = Number(p[4]) + 0.01; webvr.mobilevr_profile = p.join("|"); } if (change != 0) ctrl_preset.updateControl(); return Number(p[4]).toFixed(3); });
+			ctrl_k2 = vrsetup_dlg_addctrl(dlg, 0.1, function(change){ var p = webvr.mobilevr_profile.split("|"); if (change < 0) { p[5] = Number(p[5]) - 0.01; webvr.mobilevr_profile = p.join("|"); } else if (change > 0) { p[5] = Number(p[5]) + 0.01; webvr.mobilevr_profile = p.join("|"); } if (change != 0) ctrl_preset.updateControl(); return Number(p[5]).toFixed(3); });
+			vrsetup_dlg_addspace(dlg);
+			vrsetup_dlg_addline(dlg, 'Oversampling:', 'font-size:16px;');
+			ctrl_os = vrsetup_dlg_addctrl(dlg, 0.25, function(change){ var p = webvr.oversampling; if (change < 0) { p = Math.max(0.2, Number(p) - 0.1); webvr.oversampling = p;  } else if (change > 0) { p = Math.min(4.0, Number(p) + 0.1); webvr.oversampling = p;  } return p.toFixed(1); });
+			vrsetup_dlg_addspace(dlg);
+			vrsetup_dlg_addline(dlg, 'CLOSE', '', vrsetup_close);
+			vrsetup_dlg_finish(dlg);
+			
+			return dlg;
+		}
+		
+		var vrsetup_dialog = null;
+		var vrsetup_events = null;
+		
+		function vrsetup_close()
+		{
+			if (vrsetup_dialog)
+			{
+				webvr.savesettings();
+			
+				vrsetup_dlg_remove(vrsetup_dialog); 
+				vrsetup_dialog = null;
+			}
+		
+			if (vrsetup_events)
+			{
+				krpano.events.removeItem(vrsetup_events.name);
+				vrsetup_events = null;
+			}
+		}
+		
+		krpano.vrsetup_close = function()
+		{
+			vrsetup_close();
+		}
+		
+		krpano.vrsetup_open_js = function()
+		{
+			if (vrsetup_dialog != null)
+			{
+				// already open...
+				return;
+			}
+				
+			if (webvr.iswebvr)
+			{
+				vrsetup_dialog = vrsetup_webvr_dialog();
+			}
+			else
+			{
+				vrsetup_dialog = vrsetup_mobilevr_dialog();
+			}
+			
+			vrsetup_events = krpano.events.createItem("auto");
+			vrsetup_events.keep = true;
+			
+			vrsetup_events.webvr_onexitvr = function()
+			{
+				vrsetup_close();
+			}
+		}
+		
+	]]></action>
+	
+
+	<!-- A list of devices and their screensize -->
+	<mobilevr_device_database>
+		<device name="iPhone 5/5S/SE" screen="320x568x2" size="4.0" bevel="3" />
+		<device name="iPhone 6/6S/7/8" screen="375x667x2" size="4.7" />
+		<device name="iPhone 6/6S/7/8 Plus" screen="414x736" size="5.5" />
+		<device name="iPhone 6/6S/7/8 Plus (zoomed)" screen="375x667x3" size="5.5" />
+		<device name="iPhone X/XS/11Pro" screen="375x812x3" size="5.85|5.33" />
+		<device name="iPhone XS/11Pro Max" screen="414x896x3" size="6.46|5.95" />
+		<device name="iPhone XR/11" screen="414x896x2" size="6.06|5.58" />
+		<device name="Samsung S6" ua="sm-g930" size="5.1" />
+		<device name="Samsung S6 Edge" ua="sm-g925" size="5.1" />
+		<device name="Samsung S6 Edge Plus" ua="sm-g928" size="5.7" />
+		<device name="Samsung S7" ua="sm-g930" size="5.1" />
+		<device name="Samsung S7 Edge" ua="sm-g935" size="5.5" />
+		<device name="Samsung S8" ua="sm-g950" size="5.8" />
+		<device name="Samsung S8+" ua="sm-g955" size="6.2" />
+		<device name="Samsung S9" ua="sm-g960" size="5.8" />
+		<device name="Samsung S9+" ua="sm-g965" size="6.2" />
+		<device name="Samsung S10e" ua="sm-g970" size="5.8" />
+		<device name="Samsung S10" ua="sm-g973" size="6.1" />
+		<device name="Samsung S10+" ua="sm-g975" size="6.4" />
+		<device name="Samsung S10 5G" ua="sm-g977" size="6.7" />
+		<device name="Samsung Note 7" ua="sm-n930" size="5.7" />
+		<device name="Samsung Note 8" ua="sm-n950" size="6.3" />
+		<device name="Samsung Note 9" ua="sm-n960" size="6.4" />
+		<device name="Samsung Note 10" ua="sm-n970" size="6.3" />
+		<device name="Samsung Note 10 5G" ua="sm-n971" size="6.3" />
+		<device name="Samsung Note 10+" ua="sm-n975" size="6.8" />
+		<device name="Samsung Note 10+ 5G" ua="sm-n976" size="6.8" />
+		<device name="Huawei P10 Lite" ua="HUAWEIWAS-TL10" size="5.2" />
+		<device name="Huawei P20 Lite" ua="HUAWEIANE-LX1" size="5.84" />
+	</mobilevr_device_database>
+
+</krpano>

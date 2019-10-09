@@ -13,8 +13,11 @@ export default function copyImageToScene(dest){
     return new Promise((resolve,reject)=>{
         try{
             for(var i=0;i<IMG_NAME_ARR.length;i++){
-                let srcPath = path.resolve(cPTmep,`./pano.tiles/${IMG_NAME_ARR[i]}`)
+                let srcPath = path.resolve(cPTmep,`./${IMG_NAME_ARR[i]}`)
                 let destPath = path.resolve(dest,`./${IMG_NAME_ARR[i]}`)
+                if(IMG_NAME_ARR[i] == 'origin_preview.jpg'){
+                    destPath = path.resolve(dest,`./thumb.jpg`)
+                }
                 fs.createReadStream(srcPath).pipe(fs.createWriteStream(destPath));
             }
             resolve()

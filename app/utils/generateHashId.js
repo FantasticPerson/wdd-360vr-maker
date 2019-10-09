@@ -1,5 +1,5 @@
-const Hashids = require('hashids')
-const moment = require('moment')
+import Hashids from 'hashids'
+import moment from 'moment'
 
 const defaultProps = {
   salt: '360vr makert client',
@@ -8,11 +8,13 @@ const defaultProps = {
 }
 
 export default class Hashid {
-  constructor(props={}) {
+  constructor(props = {}) {
     this.props = {
-        ...defaultProps,
-        ...props
+      ...defaultProps,
+      ...props
     }
+
+    this.tH = Hashids
 
     this.ids = new Hashids(this.props.salt, this.props.length, this.props.alphabet)
   }

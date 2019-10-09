@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
-
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import {Dialog,DialogTitle,DialogContent,DialogActions,TextField,Button} from '@material-ui/core'
 
 export default class CreateFolderModal extends Component {
     constructor() {
@@ -23,10 +17,10 @@ export default class CreateFolderModal extends Component {
         const title = this.titleRef.value.trim();
 
         if (title.length > 0) {
-            const {data,functions} = this.props
-            const {addFolder,updateFolder,hideCreateFolderModal} = functions
-            if(data){
-                updateFolder({id: data.id,title})
+            const { data, functions } = this.props
+            const { addFolder, updateFolder, hideCreateFolderModal } = functions
+            if (data) {
+                updateFolder({ id: data.id, title })
             } else {
                 addFolder(title);
             }
@@ -37,7 +31,7 @@ export default class CreateFolderModal extends Component {
     }
 
     render() {
-        const {data}= this.props
+        const { data } = this.props
 
         return (
             <Dialog
@@ -52,7 +46,7 @@ export default class CreateFolderModal extends Component {
                         label="请输入文件夹名称"
                         placeholder="请输入文件夹名称"
                         margin="normal"
-                        inputRef={(input) => {this.titleRef = input}}
+                        inputRef={(input) => { this.titleRef = input }}
                         defaultValue={data ? data.title : ''}
                     />
                 </DialogContent>

@@ -20,7 +20,7 @@ class PanoContainer extends Component{
     componentWillUpdate(prop,state){
         setTimeout(()=>{
             if(this._mounted && state.updateObj){
-                this.props.updateHotpotPos(state.updateObj)
+                this.props.updateHotspotPosition(state.updateObj)
                 this.setState({updateObj:null})
             }
 
@@ -43,7 +43,7 @@ class PanoContainer extends Component{
     }
 
     updateHotSpot(hotspotId, ath, atv){
-        const {updateHotpotPos} = this.props
+        const {updateHotspotPosition} = this.props
         const {hotpotList} = this.props
         let item = hotpotList.find(item=>item.id == hotspotId)
         if(item){

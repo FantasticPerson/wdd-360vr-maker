@@ -1,0 +1,1267 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+	<meta name="format-detection" content="telephone=no" />
+	<link rel="stylesheet" type="text/css" href="design.css"/>
+	<title>krpano Documentation</title>
+	<script>
+		function toggle_mobile_nav(){var t=document,n=t.getElementById("krpano_contentnav"),m=t.getElementById("krpano_mobile_menu_bg");t=n.state!=2;n.state=t?2:1;n.style.height=t?"auto":"24px";m.style.display=t?"block":"none";t=t?"add":"remove";n.classList[t]("krpano_contentnav_opened");t+="EventListener";n[t]("click",toggle_mobile_nav,false);m[t]("mousedown",toggle_mobile_nav,false);}
+	</script>
+</head>
+<body>
+	<div id="krpano_root">
+		<div id="krpano_headerwrapper">
+			<div id="krpano_header">
+				<div id="krpano_mainmenu">
+					krpano 1.20.1 <span class="smallcomment">(build 2019-10-02)</span>
+				</div>
+			</div>
+			<div id="krpano_imagebar"></div>
+			
+			<div id="krpano_logo_container">
+				<a id="krpano_logo" href="https://krpano.com"><span>krpano.com</span></a>
+			</div>
+			
+			<div id="krpano_imagebar_links">
+				Documentation
+			</div>
+		</div>
+		
+		<div id="krpano_contentwrapper">
+			<div id="krpano_mobile_menuicon" onclick="toggle_mobile_nav();"><span class="burgermenu"></span></div>
+			<div id="krpano_mobile_menu_bg"></div>
+			<div id="krpano_content">
+				<div id="krpano_contentnav">
+					<h2><a href="#top" class="selflink">Documentation</a></h2>
+					<ul>
+						<li><a href="embedpano.html#top">Embedding</a></li>
+						<li><a href="xml.html#top">XML Reference</a></li>
+						<li><a href="actions.html#top">Actions / Scripting</a></li>
+						<li><a href="plugin_api.html#top">Plugin&nbsp;Interface</a></li>
+						<li><a href="js_api.html#top">Javascript Interface</a></li>
+						<li><a href="localusage.html#top">Local / Offline Usage</a></li>
+						<li><a href="releasenotes.html#top">Release Notes</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Plugins</a></h2>
+					<ul>
+						<li><a href="plugins/bingmaps.html#top">Bing Maps</a></li>
+						<li><a href="plugins/combobox.html#top">Combobox</a></li>
+						<li><a href="plugins/googlemaps.html#top">Google Maps</a></li>
+						<li><a href="plugins/gyro2.html#top">Gyro2</a></li>
+						<li><a href="plugins/postprocessing.html#top">Postprocessing</a></li>
+						<li><a href="plugins/radar.html#top">Radar</a></li>
+						<li><a href="plugins/scrollarea.html#top">ScrollArea</a></li>
+						<li><a href="plugins/showtext.html#top">Showtext</a></li>
+						<li><a href="plugins/snow.html#top">Snow / Rain</a></li>
+						<li><a href="plugins/soundinterface.html#top">Soundinterface</a></li>
+						<li><a href="textfield.html#top">Textfield</a></li>
+						<li><a href="plugins/videoplayer.html#top">Videoplayer</a></li>
+						<li><a href="plugins/webvr.html#top">WebVR</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Tools</a></h2>
+					<ul>
+						
+						<li><a href="tools/config.html#top">Config File Reference</a></li>
+						<li><a href="tools/testingserver.html#top">krpano Testing Server</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Examples</a></h2>
+					<ul>
+						<li><a href="examples.html#top">All Examples</a></li>
+						<li><a href="examples.html?depthmap#top">Depthmap</a></li>
+						<li><a href="examples.html?js#top">Javascript</a></li>
+						<li><a href="examples.html?multires#top">Multiresolution</a></li>
+						<li><a href="examples.html?panovideo#top">Panoramic Video</a></li>
+						<li><a href="examples.html?vtour#top">Virtual Tours</a></li>
+						<li><a href="examples.html?webvr#top">WebVR</a></li>
+					</ul>
+				</div>
+				<a name="top" class="toplink">&nbsp;</a>
+				<div id="krpano_contenttext">
+
+					<noscript>
+						<table style="width:100%; height:400px; position:fixed; left:95px; top:220px;"><tr valign="middle"><td><center><h1>
+							<span style="color:#FFFFFF; background:#FF0000; padding:15px;">
+								Javascript must be activated for this page!
+							</span>
+						</h1></center></td></tr></table>
+					</noscript>
+
+					
+
+	
+		
+	<h1><span id="title">Examples</span>
+		
+	</h1>
+	
+	<div class="paragraph">
+		
+		<div class="example customize snippet">
+			<a name="animated-hotspots" class="preinfolink"></a>
+			<pre><a class="selflink" href="#animated-hotspots">Animated Hotspots</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/animated-hotspots/index.html" class="prop504x310"><img src="images/animated-hotspots.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/animated-hotspots/anihotspots.xml">anihotspots.xml</a>
+				<div class="smallp">
+					Image-based animated hotspots.
+				</div>
+				<div class="smallp">
+					This example shows how to use image-strips / sprite-sheets
+					as animated hotspot images.
+					The images will be animated by dynamically changing the <a href="xml.html#layer.crop">crop</a> setting
+					(which 'cuts-out' a certain region of the image) by xml action scripting.<br>
+				</div>
+				<div class="smallp">
+					The <a href="../viewer/examples/animated-hotspots/anihotspots.xml" class="selflink2 presyntax_inline">do_crop_animation</a> &lt;action&gt;
+					in this example has no dependencies and can be easily reused in own examples. 
+					It supports vertical, horizontal and tiled image-strips and loops the images from left-top to right-bottom.
+					As parameters the pixel-size of one frame and the favored frame-rate need to be set.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="backgroundsound" class="preinfolink"></a>
+			<pre><a class="selflink" href="#backgroundsound">Background Sound</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/backgroundsound/index.html" class="prop504x310"><img src="images/backgroundsound.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/backgroundsound/backgroundsound.xml">backgroundsound.xml</a>
+				<div class="smallp">
+					Play a sound as background music.
+				</div>
+				<div class="smallp">
+					In this example the <a href="plugins/soundinterface.html#top">soundinterface</a> plugin will be used 
+					to extend krpano with support for sounds.
+				</div>
+				<div class="smallp">
+					To automatically start and stop the background sound only for the current pano (e.g. when using several scenes)
+					the playback will be controlled by pano-local <a href="xml.html#events">events</a>.
+				</div>
+				<div class="smallp">
+					Additionally a small button is included to pause and resume the sound.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="blending-demo" class="preinfolink"></a>
+			<pre><a class="selflink" href="#blending-demo">Blending Demo</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/blending-demo/index.html" class="prop504x310"><img src="images/blending-demo.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/blending-demo/blending-demo.xml">blending-demo.xml</a>
+				<div class="smallp">
+					WebGL-Blending-Modes Demo
+				</div>
+				<div class="smallp">
+					This is an example to demonstrate the possibilities of the new WebGL-based blending modes.
+					The different blending-modes are custom settings for the <a href="actions.html#loadpano.blend">blend</a>
+					parameter of the loadpano() / loadscene() actions.
+				</div>
+				<div class="smallp">
+					Beside of this the examples shows how to use custom xml structures (the &lt;blendmodes&gt; element is a custom one)
+					and how to drag layers and to use the <a href="plugins/scrollarea.html#top">scrollarea</a> plugin.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="combobox" class="preinfolink"></a>
+			<pre><a class="selflink" href="#combobox">Combobox / Dropdown</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/combobox/index.html" class="prop504x310"><img src="images/combobox.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/combobox/combobox-examples.xml">combobox-examples.xml</a> &bull;
+				<a href="../viewer/plugins/combobox.xml">combobox.xml</a>
+				<div class="smallp">
+					Combobox Plugin Demo
+				</div>
+				<div class="smallp">
+					Several example usages of the new <a href="plugins/combobox.html#top">combobox.xml</a> plugin.
+					The examples show how to define the combobox elements statically and dynamically and how to customize the design.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="compass" class="preinfolink"></a>
+			<pre><a class="selflink" href="#compass">Compass</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/compass/index.html" class="prop504x310"><img src="images/compass.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/compass/compass.xml">compass.xml</a>
+				<div class="smallp">
+					Compass - show the viewing direction.
+				</div>
+				<div class="smallp">
+					This example rotates images accordingly to the current viewing direction.
+					The compass elements are build-out of several layers and images - and one of these images
+					will be rotated when the viewing changes.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="custom-contextmenu" class="preinfolink"></a>
+			<pre><a class="selflink" href="#custom-contextmenu">Custom Contextmenu</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/custom-contextmenu/index.html" class="prop504x310"><img src="images/custom-contextmenu.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/custom-contextmenu/contextmenu.xml">contextmenu.xml</a>
+				<div class="smallp">
+					Define a custom right-click / long-press-touch context-menu.
+				</div>
+				<div class="smallp">
+					This exampels shows how to define a custom context-menu items - in this case with options to 
+					change the control mode and to change the viewing projection.
+				</div>
+				<div class="smallp">
+					The example also shows how to include html content (like an image) inside a context menu item.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet maps js">
+			<a name="custom-tile-urls" class="preinfolink"></a>
+			<pre><a class="selflink" href="#custom-tile-urls">Custom Tile-URLs</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/custom-tile-urls/index.html" class="prop504x310"><img src="images/custom-tile-urls.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/custom-tile-urls/maps.xml">maps.xml</a>
+				<div class="smallp">
+					Custom Tile-URLs
+				</div>
+				<div class="smallp">
+					A small tech-demo that shows how to use custom tile-image-urls by
+					using the <a href="plugin_api.html#customParseTilePath">customParseTilePath</a> API.
+					As example public maps-tiles will be loaded here.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="cylinder-grid-hotspots" class="preinfolink"></a>
+			<pre><a class="selflink" href="#cylinder-grid-hotspots">Cylinder-Grid-Hotspots</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/cylinder-grid-hotspots/index.html" class="prop504x310"><img src="images/cylinder-grid-hotspots.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/cylinder-grid-hotspots/cylinder-grid-hotspots.xml">cylinder-grid-hotspots.xml</a>
+				<div class="smallp">
+					This example shows how to generate and place textfield hotspots on a 
+					cylinder surface by using fixed pixel-sizes as offsets (calc_spherical_offset).
+				</div>
+			</div>
+		</div>
+		
+		<div class="example tour">
+			<a name="demotour-apartment" class="preinfolink"></a>
+			<pre><a class="selflink" href="#demotour-apartment">Demotour Apartment</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/demotour-apartment/index.html" class="prop504x310"><img src="images/demotour-apartment.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/demotour-apartment/tour.xml">tour.xml</a> &bull;
+				<a href="../viewer/examples/demotour-apartment/skin/vtourskin.xml">vtourskin.xml</a> &bull;
+				<a href="../viewer/plugins/webvr.xml">webvr.xml</a>
+				<div class="smallp">
+					Demotour: Empty Blue Apartment
+				</div>
+				<div class="smallp">
+					This tour was first build using the MAKE VTOUR droplet and then modified manually.
+				</div>
+				<div class="smallp">
+					For navigating between the rooms hidden polygonal hotspots are used.
+				</div>
+				<div class="smallp">
+					All panos were aligned into the same direction during stitching so that the 
+					<a href="actions.html#loadpano.flags">KEEPVIEW</a> flag can be used
+					to keep the same looking direction when moving through the panos.
+				</div>
+			</div>
+		</div>
+
+		<div class="example tour">
+			<a name="demotour-corfu" class="preinfolink"></a>
+			<pre><a class="selflink" href="#demotour-corfu">Demotour Corfu</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/demotour-corfu/index.html" class="prop504x310"><img src="images/demotour-corfu.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/demotour-corfu/tour.xml">tour.xml</a> &bull;
+				<a href="../viewer/examples/demotour-corfu/skin/vtourskin.xml">vtourskin.xml</a> &bull;
+				<a href="../viewer/plugins/webvr.xml">webvr.xml</a>
+				<div class="smallp">
+					Demotour: Corfu Holiday Trip
+				</div>
+				<div class="smallp">
+					A default tour automatically build using MAKE VTOUR (MULTIRES) droplet and then manually
+					extended with a custom navigation-map build by a scrollarea and an image.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="demotour-corfu-skinselect" class="preinfolink"></a>
+			<pre><a class="selflink" href="#demotour-corfu-skinselect">Demotour Corfu - with Skin selection</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/demotour-corfu-skinselect/index.html" class="prop504x310"><img src="images/demotour-corfu-skinselect.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/demotour-corfu-skinselect/skinselect.xml">skinselect.xml</a> &bull;
+				<a href="../viewer/examples/demotour-corfu/skin/vtourskin_design_flat_light.xml">vtourskin_design_flat_light.xml</a> &bull;
+				<a href="../viewer/examples/demotour-corfu/skin/vtourskin_design_ultra_light.xml">vtourskin_design_ultra_light.xml</a> &bull;
+				<a href="../viewer/examples/demotour-corfu/skin/vtourskin_design_glass.xml">vtourskin_design_glass.xml</a> &bull;
+				<a href="../viewer/examples/demotour-corfu/skin/vtourskin_design_117.xml">vtourskin_design_117.xml</a> &bull;
+				<a href="../viewer/examples/demotour-corfu/skin/vtourskin_design_117round.xml">vtourskin_design_117round.xml</a> &bull;
+				<a href="../viewer/examples/demotour-corfu/skin/vtourskin_design_117round.xml">vtourskin_design_black.xml</a>
+				
+				<div class="smallp">
+					Different skins designs
+				</div>
+				<div class="smallp">
+					This is an example of the corfu tour with the other included skin designs.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize tour">
+			<a name="demotour-winecellar" class="preinfolink"></a>
+			<pre><a class="selflink" href="#demotour-winecellar">Demotour Winecellar</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/demotour-winecellar/index.html" class="prop504x310"><img src="images/demotour-winecellar.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/demotour-winecellar/tour.xml">tour.xml</a>
+				<div class="smallp">
+					Demotour: Winecellar
+				</div>
+				<div class="smallp">
+					This is a fully manual built tour without a given skin. 
+					As navigation a small map with spots and radar cone,and animated hotspots are used.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet webvr">
+			<a name="demotour-stereoscopic" class="preinfolink"></a>
+			<pre><a class="selflink" href="#demotour-stereoscopic">Demotour Stereoscopic 3D</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/demotour-stereoscopic/index.html" class="prop504x310"><img src="images/demotour-stereoscopic.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/demotour-stereoscopic/tour.xml">tour.xml</a> &bull;
+				<a href="../viewer/examples/demotour-stereoscopic/stereooffset_helper.xml">stereooffset_helper.xml</a>
+				<a href="../viewer/plugins/webvr.xml">webvr.xml</a>
+				<div class="smallp">
+					Demotour: Stereoscopic 3D Panorama Images
+				</div>
+				<div class="smallp">
+					This is a demonstration of several display possiblities for viewing stereoscopic 3D images:<br>
+					<ul style="padding-top:0;padding-bottom:0;margin-top:0;margin-bottom:0;padding-left:14px;">
+						<li><b>Anaglyph</b> - For viewing using Red/Cyan glasses.</li>
+						<li><b>3D TV</b> - A Half-Side-by-Side rendering for 3D-Smart-TVs.</li>
+						<li><b>Side-by-Side</b> - Simple Side-by-Side rendering.</li>
+						<li><b>WebVR</b> - For viewing using VR headsets.</li>
+						<li><b>Toggle L/R</b> - Toggle constantly between the left/right images.</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize tour webvr">
+			<a name="indiantemple3d" class="preinfolink"></a>
+			<pre><a class="selflink" href="#indiantemple3d">Demotour Indian Temple Stereoscopic 3D</a></pre>
+			<div class="preinfo">
+				<a href="https://krpano.com/tours/indiantemple3d/" class="prop504x310"><img src="images/indiantemple3d.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="https://krpano.com/viewsource.html?tours/indiantemple3d/tour.xml">tour.xml</a> &bull;
+				<a href="https://krpano.com/viewsource.html?tours/indiantemple3d/stereooffset_helper.xml">stereooffset_helper.xml</a>
+				<div class="smallp">
+					A virtual tour of the Indian Meenakshi-Sundareswara Temple with Stereoscopic 3D images.<br>
+					Tour-navigation by polygonal hotspots.
+				</div>
+				<div class="smallp">
+					The images are provided by Aboorvasamy Sureshbabu / <a href="http://view360.in" target="_blank">view360.in</a>.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize tour webvr depthmap">
+			<a name="depthmap-tour" class="preinfolink"></a>
+			<pre><a class="selflink" href="#depthmap-tour">Depthmap Demotour: Little Temple of Abu Simbel</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/depthmap/abu-simbel-tempel-tour/index.html" class="prop504x310"><img src="images/depthmap-abu-simbel.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/depthmap/abu-simbel-tempel-tour/tour.xml">tour.xml</a> &bull;
+				<a href="../viewer/plugins/depthmap_navigation.xml">depthmap_navigation.xml</a> &bull;
+				<a href="../viewer/examples/depthmap/abu-simbel-tempel-tour/tour_edithelper.xml">tour_edithelper.xml</a>
+				<div class="smallp">
+					Depthmap-Tour of the 'Little Temple of Abu Simbel'
+				</div>
+				<div class="smallp">
+					A full-featured demo tour using <a href="xml.html?#depthmap">depthmaps</a>.
+					It demonstrates how to view a pano dynamically from new perspectives, 
+					e.g. to show wall friezes undistorted.
+					Additionally the depthmaps allow nice 3D-transitions.
+					The tour offers automatic- and manually-generated hotspots for navigation.
+					The depthmaps were generated by the <a href="https://everpano.com" target="_blank">everpano&nbsp;3D</a> tool,
+					the tour itself manually designed and coded. 
+					A little helper tool for finding 3D viewpoint and hotspot positions is also included.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize tour webvr depthmap">
+			<a name="depthmap-tour-everpano" class="preinfolink"></a>
+			<pre><a class="selflink" href="#depthmap-tour-everpano">Depthmap Demotour: Gravina Apartment</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/depthmap/gravina-apartment-tour/index.html" class="prop504x310"><img src="images/depthmap-gravina-apartment.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/depthmap/gravina-apartment-tour/main.xml">main.xml</a> &bull;
+				<a href="../viewer/examples/depthmap/gravina-apartment-tour/main2.xml">main2.xml</a> &bull;
+				<a href="../viewer/examples/depthmap/gravina-apartment-tour/project3d.xml">project3d.xml</a>
+				<div class="smallp">
+					Depthmap-Tour of the 'Gravina Apartment'
+				</div>
+				<div class="smallp">
+					The whole tour was fully generated by the <a href="https://everpano.com" target="_blank">everpano&nbsp;3D</a> tool.
+					For navigation in the tour the everpano <a href="https://everpano.com/navigator" target="_blank">Navigator</a> plugin is used.
+					That plugin allows easy navigating by automatically finding the pano next to the point where the used had clicked - 
+					and when there is no pano near, a nice 3D-zooming-animation indicates that.<br>
+					<br>
+					Here for more <a href="xml.html?#depthmap">depthmap-testing</a> the same tour also with fully free 3D-movement and pano-navigation
+					by automatic-generated hotspots:
+					<a href="../viewer/examples/depthmap/gravina-apartment-tour/index2.html">Gravina Apartment - Example 2</a>
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize webvr depthmap">
+			<a name="depthmap-images" class="preinfolink"></a>
+			<pre><a class="selflink" href="#depthmap-images">Depthmap-Images</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/depthmap/depthmap-images/index.html" class="prop504x310"><img src="images/depthmap-images.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/depthmap/depthmap-images/depthmap-images.xml">depthmap-images.xml</a> &bull;
+				<a href="../viewer/plugins/depthmap_navigation.xml">depthmap_navigation.xml</a>
+				<div class="smallp">
+					Example panos with <a href="xml.html?#depthmap">Depthmap-Images</a>
+				</div>
+				<div class="smallp">
+					The depthmaps in these examples were created either by the camera itself,
+					by rendering software together with the (also rendered) pano-image
+					or using some stereo-to-depth software from stereo-panos.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet webvr depthmap">
+			<a name="depthmap-helper" class="preinfolink"></a>
+			<pre><a class="selflink" href="#depthmap-helper">Depthmap-Image Helper Tool</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/depthmap/depthmap-helper-tool/index.html" class="prop504x310"><img src="images/depthmap-helper-tool.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/depthmap/depthmap-helper-tool/depthmap_helpertool_example.xml">depthmap_helpertool_example.xml</a> &bull;
+				<a href="../viewer/examples/depthmap/depthmap-helper-tool/depthmap_helpertool.xml">depthmap_helpertool.xml</a> &bull;
+				<a href="../viewer/plugins/depthmap_navigation.xml">depthmap_navigation.xml</a>
+				<div class="smallp">
+					Depthmap-Image Helper Tool
+				</div>
+				<div class="smallp">
+					A small helper tool for finding the correct <a href="xml.html#depthmap.offset">offset</a> and <a href="xml.html#depthmap.scale">scale</a>
+					settings for <a href="xml.html?#depthmap">depthmap-images</a>.
+					The values for these settings depends how the depthmap-image was created and mapped.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet webvr">
+			<a name="directional3dsound" class="preinfolink"></a>
+			<pre><a class="selflink" href="#directional3dsound">Directional 3D Sound</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/directional3dsound/index.html" class="prop504x310"><img src="images/directional3dsound.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/directional3dsound/directional3dsound.xml">directional3dsound.xml</a>
+				<div class="smallp">
+					Directional 3D Sound
+				</div>
+				<div class="smallp">
+					An example of using the <a href="plugins/soundinterface.html#top">Soundinterface Plugin</a> 
+					for placing sounds at 3D locations.
+					Look or move around to hear the sounds from different directions.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="dragable-hotspots" class="preinfolink"></a>
+			<pre><a class="selflink" href="#dragable-hotspots">Dragable Hotspots</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/dragable-hotspots/index.html" class="prop504x310"><img src="images/dragable-hotspots.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/dragable-hotspots/dragable-hotspots.xml">dragable-hotspots.xml</a>
+				<div class="smallp">
+					Dragable Hotspots
+				</div>
+				<div class="smallp">
+					This example shows a possibility for how to drag the hotspot position. 
+					Additional the position of the hotspot will be formatted as xml code and shown via the
+					<a href="textfield.html#top">textfield</a> plugin.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="dragable-layers" class="preinfolink"></a>
+			<pre><a class="selflink" href="#dragable-layers">Dragable Layers</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/dragable-layers/index.html" class="prop504x310"><img src="images/dragable-layers.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/dragable-layers/dragable-layers.xml">dragable-layers.xml</a>
+				<div class="smallp">
+					Dragable Layers
+				</div>
+				<div class="smallp">
+					This example shows how to drag &lt;layer&gt; elements and the difference between 
+					<a href="xml.html#layer.maskchildren">maskchildren=true</a>
+					(clip children elements) and <a href="xml.html#layer.maskchildren">maskchildren=false</a> (no clipping).
+				</div>
+			</div>
+		</div>
+		
+		<div class="example snippet">
+			<a name="fisheye-image" class="preinfolink"></a>
+			<pre><a class="selflink" href="#fisheye-image">Fisheye Image</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/fisheye-image/index.html" class="prop504x310"><img src="images/fisheye-image.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/fisheye-image/fisheye.xml">fisheye.xml</a><br>
+				image: <a href="../viewer/examples/fisheye-image/fisheye.jpg">fisheye.jpg</a>
+				<div class="smallp">
+					Example for the direct usage of fisheye images (without stitching or dewarping).
+				</div>
+				<div class="smallp">
+					The fisheye image parameters could be determined using PTGUI.
+					See <a href="xml.html#image.fisheye.fov">here</a> for more.
+					This could be used with video files or mjpeg live streams (e.g. for dome webcams) as well.
+				</div>
+			</div>
+		</div>
+
+		<div class="example customize snippet">
+			<a name="flyout-hotspots" class="preinfolink"></a>
+			<pre><a class="selflink" href="#flyout-hotspots">Flyout Hotspots</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/flyout-hotspots/index.html" class="prop504x310"><img src="images/flyout-hotspots.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/flyout-hotspots/flyout-hotspots.xml">flyout-hotspots.xml</a>
+				<div class="smallp">
+					Flyout Hotspots
+				</div>
+				<div class="smallp">
+					This is an example about the hotspot <a href="xml.html#hotspot.flying">flying</a> setting.
+					By <a href="actions.html#tween">tweening</a> it from 0.0 to 1.0 a hotspot can move from it's
+					normal position inside the pano to a fixed position on the screen.
+				</div>
+				<div class="smallp">
+					The example manages the state of several hotspots. When one hotspot is flying out, the others will 
+					automatically fly back in.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="followmouse" class="preinfolink"></a>
+			<pre><a class="selflink" href="#followmouse">Follow-Mouse</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/followmouse/index.html" class="prop504x310"><img src="images/followmouse.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/followmouse/example.xml">example.xml</a> &bull;
+				<a href="../viewer/examples/followmouse/followmouse.xml">followmouse.xml</a>
+				<div class="smallp">
+					Follow-Mouse
+				</div>
+				<div class="smallp">
+					An example for letting the view automatically slightly follow the users mouse-cursor.
+					E.g. as indicator that this is an interactive image.
+					As soon the user starts interacting the following will pause and automatically resume later.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="fovtype" class="preinfolink"></a>
+			<pre><a class="selflink" href="#fovtype">Fov-Types</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/fovtype/index.html" class="prop504x310"><img src="images/fovtype.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/fovtype/fovtype.xml">fovtype.xml</a> &bull;
+				<a href="../viewer/plugins/combobox.xml">combobox.xml</a>
+				<div class="smallp">
+					Field-of-view type comparison and fixed screen-size aspects.
+				</div>
+				<div class="smallp">
+					The <a href="xml.html#view.fovtype">view.fovtype</a> setting defines
+					how the <a href="xml.html#view.fov">view.fov</a> field-of-view setting
+					relates to the window-size.
+					Here a comparison of the different settings and how they work on different screen-size aspects.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example maps">
+			<a name="googlemaps" class="preinfolink"></a>
+			<pre><a class="selflink" href="#googlemaps">Google Maps</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/googlemaps/index.html" class="prop504x310"><img src="images/googlemaps.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/googlemaps/googlemaps.xml">googlemaps.xml</a>
+				<div class="smallp">
+					Google Maps
+				</div>
+				<div class="smallp">
+					This is a simple example for how to include the 
+					<a href="plugins/googlemaps.html#top">googlemaps</a> plugin and set a spot on it.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="gyro" class="preinfolink"></a>
+			<pre><a class="selflink" href="#gyro">Gyroscope</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/gyro/index.html" class="prop504x310"><img src="images/gyro.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/gyro/gyro.xml">gyro.xml</a>
+				<div class="smallp">
+					Gyroscope
+				</div>
+				<div class="smallp">
+					This example shows how to include and to use the
+					<a href="plugins/gyro2.html#top">gyro2</a> plugin.
+					This allows controlling the pano view by gyroscope of the device.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="hotspot-extract" class="preinfolink"></a>
+			<pre><a class="selflink" href="#hotspot-extract">Hotspot Extraction</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/hotspot-extract/index.html" class="prop504x310"><img src="images/hotspot-extract.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/hotspot-extract/pool.xml">pool.xml</a>
+				<div class="smallp">
+					Example for the tutorial <a href="https://krpano.com/forum/wbb/index.php?page=Thread&postID=38120#post38120">Extract a Distorted Hotspot from any kind of Pano Image (with perfect pixel alignment)</a>.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="image-gallery" class="preinfolink"></a>
+			<pre><a class="selflink" href="#image-gallery">Image Gallery</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/image-gallery/index.html" class="prop504x310"><img src="images/image-gallery.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/image-gallery/imagegallery.xml">imagegallery.xml</a> &bull;
+				<a href="../viewer/examples/image-gallery/thumbbar.xml">thumbbar.xml</a>
+				<div class="smallp">
+					A simple Image Gallery
+				</div>
+				<div class="smallp">
+					An example for a thumbnail-gallery-bar xml-script with flying-out / zooming images.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet video">
+			<a name="inline-video-players" class="preinfolink"></a>
+			<pre><a class="selflink" href="#inline-video-players">Inline Video Players</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/inline-video-players/index.html" class="prop504x310"><img src="images/inline-video-players.jpg" class="outlineimage prop_inner" /></a>
+				xml: 
+				<a href="../viewer/examples/inline-video-players/inline-video-players-example.xml">inline-video-players-example.xml</a> &bull;
+				<a href="../viewer/examples/inline-video-players/video-player.xml">video-player.xml</a> &bull;
+				<a href="../viewer/examples/inline-video-players/youtube-player.xml">youtube-player.xml</a>
+				
+				<div class="smallp">
+					Inline-Video-Players
+				</div>
+				<div class="smallp">
+					This example shows two videoplayer xml scripts - one plays a normal videofile - and the other plays a Youtube video.
+					During the video playback a darken background layer will cover the pano and the other user interface elements. 
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="interactive-area" class="preinfolink"></a>
+			<pre><a class="selflink" href="#interactive-area">Interactive Area</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/interactive-area/index.html" class="prop504x310"><img src="images/interactive-area.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/interactive-area/interactive-area.xml">interactive-area.xml</a>
+				<div class="smallp">
+					Interactive-Area
+				</div>
+				<div class="smallp">
+					In this example a distorted hotspot image that shows a different pano content will be used.
+					That hotspot will be faded-in when hovering an invisible polygonal hotspot, which acts as 'hit-area' for the 
+					image hotspot.
+				</div>
+				<div class="smallp">
+					Tutorials for making such distorted hotspots:
+					<ul style="padding-bottom:0;margin-bottom:0;">
+						<li class="lisd"><a href="http://krpano.com/forum/wbb/index.php?page=Thread&threadID=7272">Forum: Example/Tutorial - Extract a Distorted Hotspot from any kind of Pano Image</a></li>
+						<li class="lisd"><a href="http://krpano.com/forum/wbb/index.php?page=Thread&threadID=1223">Forum: Example/Tutorial - interactive area in the pano</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet js">
+			<a name="js-add-remove-panos" class="preinfolink"></a>
+			<pre><a class="selflink" href="#js-add-remove-panos">Javascript: Add and Remove Panos</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/javascript-interface/js-add-remove-panos/index.html" class="prop504x310"><img src="images/js-add-remove-panos.jpg" class="outlineimage prop_inner" /></a>
+				<div class="smallp">
+					Add and remove panos via Javascript
+				</div>
+				<div class="smallp">
+					An example for dynamically adding either Flash or HTML5 viewer elements and removing them from the webpage.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet js">
+			<a name="js-api-examples" class="preinfolink"></a>
+			<pre><a class="selflink" href="#js-api-examples">Javascript API Examples</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/javascript-interface/js-api-examples/index.html" class="prop504x310"><img src="images/js-api-examples.jpg" class="outlineimage prop_inner" /></a>
+				<div class="smallp">
+					Javascript API Examples
+				</div>
+				<div class="smallp">
+					Several examples for using the Javascript API of the krpano viewer.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="littleplanetintro" class="preinfolink"></a>
+			<pre><a class="selflink" href="#littleplanetintro">Little Planet Intro</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/krpano.html?xml=examples/demotour-corfu/tour.xml&skin_settings.littleplanetintro=true" class="prop504x310"><img src="images/littleplanetintro.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/demotour-corfu/tour.xml">tour.xml</a> &bull;
+				<a href="../viewer/examples/demotour-corfu/skin/vtourskin.xml">vtourskin.xml</a>
+				<div class="smallp">
+					The Corfu tour starting with a Little Planet Intro
+				</div>
+				<div class="smallp">
+					The 'Little Planet' view itself is basically only a Stereographic Projection plus looking down.
+					In krpano a stereographic projection distortion can be enabled by setting the 
+					<a href="xml.html#view.distortion">view.distortion</a> setting to 1.0.
+					And by animation (tweening) this setting and the viewing direction a nice Little Planet
+					transition animation can be created.
+				</div>
+				<div class="smallp">
+					The default <a href="../viewer/examples/demotour-corfu/skin/vtourskin.xml">vtourskin.xml</a>
+					skin already provides a predefined Little Planet Intro script. To enable it only change the
+					<span class="pre">littleplanetintro</span> setting in the <span class="pre">tour.xml</span> to <span class="pre">true</span>.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="loading-progress" class="preinfolink"></a>
+			<pre><a class="selflink" href="#loading-progress">Loading Progress</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/loading-progress/index.html" class="prop504x310"><img src="images/loading-progress.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/loading-progress/loading-progress-example.xml">loading-progress-example.xml</a> &bull;
+				<a href="../viewer/examples/loading-progress/loadinganimation.xml">loadinganimation.xml</a> &bull;
+				<a href="../viewer/examples/loading-progress/loadingbar.xml">loadingbar.xml</a> &bull;
+				<a href="../viewer/examples/loading-progress/loadingpercenttext.xml">loadingpercenttext.xml</a>
+				<div class="smallp">
+					Visualize the loading progress.
+				</div>
+				<div class="smallp">
+					This example shows three possibility to visualize the pano image loading progress - 
+					as image-based loop animation (an image-strip with a crop animation),
+					as loading bar (by changing the size of a layer element)
+					and as percent text.
+				</div>
+				<div class="smallp">
+					It would be possible just to include one of the example xml files to add that kind of loading progress animation
+					to an own pano or tour.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet js">
+			<a name="makescreenshot-api" class="preinfolink"></a>
+			<pre><a class="selflink" href="#makescreenshot-api">Make-Screenshot API</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/makescreenshot-api/index.html" class="prop504x310"><img src="images/makescreenshot-api.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/makescreenshot-api/makescreenshot-api-example.xml">makescreenshot-api-example.xml</a>
+				<div class="smallp">
+					Make screenshots directly with krpano.
+				</div>
+				<div class="smallp">
+					An example usage of the <a href="plugin_api.html#krpano.webGL.makeScreenshot">makeScreenshot()</a> API.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example multires">
+			<a name="tokyo45gp" class="preinfolink"></a>
+			<pre><a class="selflink" href="#tokyo45gp">Multires: Tokyo - 45 Gigapixel</a></pre>
+			<div class="preinfo">
+				<a href="https://krpano.com/panos/tokyo45gp/" class="prop504x310"><img src="images/tokyo45gp.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="https://krpano.com/viewsource.html?panos/tokyo45gp/tokyo.xml">tokyo.xml</a> &bull;
+				<a href="https://krpano.com/viewsource.html?panos/tokyo45gp/skin/skin.xml">skin.xml</a>
+				<div class="smallp">
+					An extremely large pano as example for loading-performance and image-quality.
+				</div>
+				<div class="smallp">
+					The source image is 300.000 x 150.000 Pixel large (=45 Gigapixel).<br>
+					For display it was converted to 6 x 95.493 x 95.493 Pixel cube-faces (~55 Gigapixel).
+				</div>
+				<div class="smallp">
+					Shot from the Roppongi Hills Mori Tower. Provided by Jeffrey Martin / 360cities.net.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example multires">
+			<a name="petapixel" class="preinfolink"></a>
+			<pre><a class="selflink" href="#petapixel">Multires: 1.4 Petapixel</a></pre>
+			<div class="preinfo">
+				<a href="https://krpano.com/petapixel/" class="prop504x310"><img src="images/petapixel.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="https://krpano.com/viewsource.html?petapixel/petapixel.xml">petapixel.xml</a>
+				<div class="smallp">
+					A synthetic 1.4 Petapixel-pano for demonstrating the theoretical size-possibilities.
+					One Petapixel is one million Gigapixel (or 1000 Terapixel).
+				</div>
+				<div class="smallp">
+					The pano is a cubical pano with one cube-side-size of 16.777.216 x 16.777.216 pixel.
+					That's equal to a spherical pano in the size of 52.707.178 x 26.353.589 pixel.
+				</div>
+				<div class="smallp">
+					To make that test-case as realistic as possible the tile-images are loaded from a server
+					(and there they are dynamically generated on request).
+				</div>
+				<div class="smallp">
+					Here additionally also a <a href="https://krpano.com/krpano.html?xml=petapixel/petapixel_partpano.xml">Partial-Pano</a> test-case (with adjustable hfov/vfov settings).
+				</div>
+			</div>
+		</div>
+		
+		<div class="example multires tour">
+			<a name="paris" class="preinfolink"></a>
+			<pre><a class="selflink" href="#paris">Multires: Paris Tour</a></pre>
+			<div class="preinfo">
+				<a href="https://krpano.com/tours/paris/" class="prop504x310"><img src="images/paris.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="https://krpano.com/viewsource.html?tours/paris/tour.xml">tour.xml</a>
+				<div class="smallp">
+					 A Virtual Tour in Paris with very large Multiresolution images (~750 Megapixel per pano).
+				</div>
+				<div class="smallp">
+					The images are provided by <a href="http://ecliptique.com/" target="_blank">ecliptique.com</a>.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example multires">
+			<a name="brooklynbridge" class="preinfolink"></a>
+			<pre><a class="selflink" href="#brooklynbridge">Multires: Brooklyn Bridge - 6 Gigapixel</a></pre>
+			<div class="preinfo">
+				<a href="https://krpano.com/panos/brooklynbridge/" class="prop504x310"><img src="images/brooklynbridge.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="https://krpano.com/viewsource.html?panos/brooklynbridge/brooklynbridge.xml">brooklynbridge.xml</a>
+				<div class="smallp">
+					A high-resolution (6 Gigapixel) flat pano of the Brooklyn Bridge in New York.
+				</div>
+				<div class="smallp">
+					The image is provided by Joergen Geerds / <a href="http://newyorkpanorama.com/2010/07/26/brooklyn-bridge-2/" target="_blank">newyorkpanorama.com</a>.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example multires">
+			<a name="eiffeltower" class="preinfolink"></a>
+			<pre><a class="selflink" href="#eiffeltower">Multires: Eiffel Tower - 2 Gigapixel</a></pre>
+			<div class="preinfo">
+				<a href="https://krpano.com/panos/eiffeltower/" class="prop504x310"><img src="images/eiffeltower.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="https://krpano.com/viewsource.html?panos/eiffeltower/eiffeltower.xml">eiffeltower.xml</a>
+				
+				<div class="smallp">
+					A high-resolution (2 Gigapixel) flat pano of the  Eiffel Tower in Paris. 
+				</div>
+				<div class="smallp">
+					The image is provided by <a href="http://ecliptique.com/" target="_blank">ecliptique.com</a>.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example multires partial">
+			<a name="partialpano" class="preinfolink"></a>
+			<pre><a class="selflink" href="#partialpano">Partial-Pano: Rome</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/partialpano/index.html" class="prop504x310"><img src="images/partialpano.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/partialpano/partialpano.xml">partialpano.xml</a> &bull;
+				<a href="../viewer/examples/partialpano/partialpano_helpertool.xml">partialpano_helpertool.xml</a>
+				
+				<div class="smallp">
+					A multiresolution partial-spherical-pano (with field-of-view of ~156x47 degree) in Rome.
+				</div>
+				<div class="smallp">
+					For testing the partial-pano feature a small helper-tool is included for changing
+					the fov-coverage settings of the pano. This helper-tool can be used for finding the 
+					correct hfov/vfov/voffset settings for a partial-pano when they are unknown.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example multires partial">
+			<a name="stpetersbasilica" class="preinfolink"></a>
+			<pre><a class="selflink" href="#stpetersbasilica">Partial-Pano: St. Peter's Basilica</a></pre>
+			<div class="preinfo">
+				<a href="https://krpano.com/krpano.html?pano=panos/rom/petersplatz/blickvonkuppel/petersplatzkuppel.xml" class="prop504x310"><img src="images/stpetersbasilica.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="https://krpano.com/viewsource.html?panos/rom/petersplatz/blickvonkuppel/petersplatzkuppel.xml">petersplatzkuppel.xml</a>
+				
+				<div class="smallp">
+					A multiresolution partial-spherical-pano (with field-of-view of ~54x13 degree) from the
+					roof of the St. Peter's Basilica in Rome.
+					Linked with hotspots to other panos in the near.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example multires partial">
+			<a name="colosseum" class="preinfolink"></a>
+			<pre><a class="selflink" href="#colosseum">Partial-Panos: Colosseum</a></pre>
+			<div class="preinfo">
+				<a href="https://krpano.com/krpano.html?pano=panos/rom/kolosseum/vorne/kolosseum_vorne.xml" class="prop504x310"><img src="images/colosseum.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="https://krpano.com/viewsource.html?panos/rom/kolosseum/vorne/kolosseum_vorne.xml">kolosseum_vorne.xml</a> &bull;
+				<a href="https://krpano.com/viewsource.html?panos/rom/kolosseum/seite/kolosseum_seite.xml">kolosseum_seite.xml</a> &bull;
+				<a href="https://krpano.com/viewsource.html?panos/hotspotimages/hotspotstyles.xml">hotspotstyles.xml</a>
+				
+				<div class="smallp">
+					Two multiresolution partial spherical-panos (~156x75 and ~169x54 degree fov) of the Colosseum in Rome.
+				</div>
+				<div class="smallp">
+					Here the example with the <a href="../viewer/examples/partialpano/partialpano_helpertool.xml">partialpano_helpertool.xml</a> included
+					for testing the partial-pano feature: <a href="https://krpano.com/krpano.html?pano=panos/rom/kolosseum/vorne/partialpano.xml">Colosseum with Partialpano Helper Tool</a>.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example multires partial">
+			<a name="trevifountain" class="preinfolink"></a>
+			<pre><a class="selflink" href="#trevifountain">Partial-Pano: Trevi Fountain</a></pre>
+			<div class="preinfo">
+				<a href="https://krpano.com/panos/rom/trevifountain/" class="prop504x310"><img src="images/trevifountain.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="https://krpano.com/viewsource.html?panos/rom/trevifountain/flat.xml">flat.xml</a> &bull;
+				<a href="https://krpano.com/viewsource.html?panos/rom/trevifountain/partialpano.xml">partialpano.xml</a>
+				
+				<div class="smallp">
+					A multiresolution flat-pano of the Trevi Fountain in Rome (~483 Megapixel).<br>
+					The flat-pano-projection is a good way to show the full-image-content at once.
+				</div>
+				<div class="smallp">
+					Here the same pano as partial-pano: <a href="https://krpano.com/panos/rom/trevifountain/partialpano.html">Trevi Fountain Partial Pano</a> (fov 95x66).<br>
+					Different to the flat-pano-projection this allows an undistorted view at the edges when zoomed-in and 
+					additionally also showing more content because of the different cropping-range in spherical projection. 
+				</div>
+			</div>
+		</div>	
+		
+		<div class="example customize snippet">
+			<a name="nadir-logo" class="preinfolink"></a>
+			<pre><a class="selflink" href="#nadir-logo">Nadir Logo</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/nadir-logo/index.html" class="prop504x310"><img src="images/nadir-logo.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/nadir-logo/nadir-logo.xml">nadir-logo.xml</a>
+				<div class="smallp">
+					An example for using an image as automatic rotating distorted hotspot to cover the nadir area of the pano
+					(e.g. to hide a tripod).
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="pp-demo" class="preinfolink"></a>
+			<pre><a class="selflink" href="#pp-demo">Postprocessing Plugins Demo</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/postprocessing/postprocessing_demo.html" class="prop504x310"><img src="images/pp-demo.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/postprocessing/postprocessing_demo.xml">postprocessing_demo.xml</a>
+				<div class="smallp">
+					Postprocessing Plugins Demo
+				</div>
+				<div class="smallp">
+					A demo of the these <a href="plugins/postprocessing.html#top">Postprocessing Plugins</a>:
+					<ul>
+						<li><a href="plugins/postprocessing.html#light">Light</a> - High-quality exposure and light/shadow control.</li>
+						<li><a href="plugins/postprocessing.html#blur">Blur</a> - High-performance image blurring.</li>
+						<li><a href="plugins/postprocessing.html#sharpen">Sharpen</a> - An Unsharp-Mask filter for sharpening or local contrast enhancement.</li>
+					</ul>
+					Additionally this demo shows how to implement some controls using the krpano layer and actions system.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="pp-blur" class="preinfolink"></a>
+			<pre><a class="selflink" href="#pp-blur">Postprocessing Demo: Popups with Background-Blur</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/postprocessing/popup_blur.html" class="prop504x310"><img src="images/pp-blur.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/postprocessing/popup_blur.xml">popup_blur.xml</a>
+				<div class="smallp">
+					Background-Blur and Popups Demo
+				</div>
+				<div class="smallp">
+					A demo of how to blur the background using the <a href="plugins/postprocessing.html#blur">Blur</a> Postprocessing Plugin
+					and how to open several different popups (HTML, Websites, Panos, Videos, Images).
+					
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="pp-sharpen" class="preinfolink"></a>
+			<pre><a class="selflink" href="#pp-sharpen">Postprocessing Demo: Zoom-based Sharpening</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/postprocessing/zoom_based_sharpening.html" class="prop504x310"><img src="images/pp-sharpen.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/postprocessing/zoom_based_sharpening.xml">zoom_based_sharpening.xml</a>
+				<div class="smallp">
+					Zoom-based Sharpening
+				</div>
+				<div class="smallp">
+					This examples shows how to calculate a range based on the original pano-image pixel resolution.
+					Here that will be used to adjust the sharping-radius depending on the actual zoom-level, so the sharping-effect
+					will be the same one as when sharpening the original image itself.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="slider-blend-cubes" class="preinfolink"></a>
+			<pre><a class="selflink" href="#slider-blend-cubes">Slider Blending Cubes</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/slider-blend-cubes/index.html" class="prop504x310"><img src="images/slider-blend-cubes.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/slider-blend-cubes/slider.xml">slider.xml</a>
+				<div class="smallp">
+					Blend between two panos using a slider.
+				</div>
+				<div class="smallp">
+					The two panos were included as hotspots and the blending is done
+					by adjusting their alpha-transparency settings.
+				</div>
+				<div class="smallp">
+					The slider is build out of images and some xml script code. 
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="snow" class="preinfolink"></a>
+			<pre><a class="selflink" href="#snow">Snow Plugin Demo</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/snow/index.html" class="prop504x310"><img src="images/snow.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/snow/snow.xml">snow.xml</a> &bull;
+				<a href="../viewer/plugins/combobox.xml">combobox.xml</a>
+				<div class="smallp">
+					A demo of the <a href="plugins/snow.html#top">Snow Plugin</a> with
+					several different styles / settings.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="splitscreen" class="preinfolink"></a>
+			<pre><a class="selflink" href="#splitscreen">Splitscreen</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/splitscreen/index.html" class="prop504x310"><img src="images/splitscreen.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/splitscreen/splitscreen.xml">splitscreen.xml</a>
+				<div class="smallp">
+					Splitscreen
+				</div>
+				<div class="smallp">
+					Show two panos for comparison. Either side-by-side or split into half-half.
+				</div>
+				<div class="smallp">
+					For this example the stereo-support of the krpano viewer is used.<br>
+					For loading stereo images see here:
+					<a href="xml.html#image.stereo">image.stereo</a><br>
+					and for rendering stereo images here:
+					<a href="xml.html#display.stereo">display.stereo</a>
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="textstyles" class="preinfolink"></a>
+			<pre><a class="selflink" href="#textstyles">Text-Styles</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/textstyles/index.html" class="prop504x310"><img src="images/textstyles.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/textstyles/textstyles.xml">textstyles.xml</a>
+				<div class="smallp">
+					Textstyles
+				</div>
+				<div class="smallp">
+					This example shows the usage of the <a href="plugins/showtext.html#top">showtext.xml</a> plugin
+					and several different text-styles.
+					As test-targets polygonal hotspots were used.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet">
+			<a name="tooltips" class="preinfolink"></a>
+			<pre><a class="selflink" href="#tooltips">Tooltips</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/tooltips/index.html" class="prop504x310"><img src="images/tooltips.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/tooltips/tooltips.xml">tooltips.xml</a>
+				<div class="smallp">
+					Tooltips for buttons and hotspots
+				</div>
+				<div class="smallp">
+					An example 'tooltip' implementation - by assigning the 'tooltip' style and a 'tooltip' attribute 
+					to an layer or a hotspot, it will automatically show the given tooltip text when the element will be hovered.
+				</div>
+			</div>
+		</div>
+	
+		<div class="example customize snippet video">
+			<a name="videohotspot" class="preinfolink"></a>
+			<pre><a class="selflink" href="#videohotspot">Video-Hotspot</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/videohotspot/index.html" class="prop504x310"><img src="images/videohotspot.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/videohotspot/videohotspot.xml">videohotspot.xml</a>
+				<div class="smallp">
+					Video-Hotspot
+				</div>
+				<div class="smallp">
+					A simple example for using the <a href="plugins/videoplayer.html#top">videoplayer</a> plugin
+					as distorted hotspot.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet panovideo">
+			<a name="videopano" class="preinfolink"></a>
+			<pre><a class="selflink" href="#videopano">Video-Panorama</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/videopano/index.html" class="prop504x310"><img src="images/videopano.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/videopano/videopano.xml">videopano.xml</a> &bull;
+				<a href="../viewer/examples/videopano/skin/videointerface.xml">videointerface.xml</a> &bull;
+				<a href="../viewer/plugins/webvr.xml">webvr.xml</a>
+				<div class="smallp">
+					Videopano - a fully featured panoramic-video player skin.
+				</div>
+				<div class="smallp">
+					This is an example for a panoramic video player.
+					It provides a simple xml interface for adding several video-quality files.
+					For using / adding own videos they would be only added once in the videopano.xml file.
+				</div>
+				<div class="smallp">
+					The user interfaces provides: play/pause controls, a seeking bar, volume/mute control,
+					options for changing the quality, the playback rate and the viewing projection 
+					(including a special 'flat' view), fullscreen buttons, gyroscope control and VR support.
+				</div>
+				<div class="smallp">
+					The layout and design can be easily adjusted with a few settings in the videointerface.xml.
+				</div>
+			</div>
+		</div>
+
+		<div class="example customize webvr">
+			<a name="webvr" class="preinfolink"></a>
+			<pre><a class="selflink" href="#webvr">WebVR Demo</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/webvr/index.html" class="prop504x310"><img src="images/webvr.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/webvr/krpano_vr.xml">krpano_vr.xml</a> &bull;
+				<a href="../viewer/examples/webvr/contextmenu.xml">contextmenu.xml</a> &bull;
+				<a href="../viewer/plugins/webvr.xml">webvr.xml</a> &bull;
+				<a href="../viewer/examples/webvr/panos/bluebonnet/tour.xml">tour.xml</a>
+				<div class="smallp">
+					WebVR - The first krpano VR support example.
+				</div>
+				<div class="smallp">
+					This example is a small demo for the VR support.
+					It includes an intro scene with and uses hotspots to link to other examples.
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize webvr depthmap">
+			<a name="webvr-controllers" class="preinfolink"></a>
+			<pre><a class="selflink" href="#webvr-controllers">WebVR VR-Controllers</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/webvr-controllers/index.html" class="prop504x310"><img src="images/webvr-controllers.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/webvr-controllers/vrcontrollertests.xml">vrcontrollertests.xml</a> &bull;
+				<a href="../viewer/plugins/webvr.xml">webvr.xml</a> &bull;
+				<a href="../viewer/plugins/depthmap_navigation.xml">depthmap_navigation.xml</a>
+				<div class="smallp">
+					WebVR - VR-Controllers
+				</div>
+				<div class="smallp">
+					A demo of the VR-Controller support. It shows how to use them for doing special 'hit-testing' (checking where
+					a hotspot would get hit when it got aimed by a VR-controller) and  how to style and customize the VR controllers. 
+				</div>
+			</div>
+		</div>
+		
+		<div class="example customize snippet webvr depthmap js">
+		<div>
+			<a name="droneattack" class="preinfolink"></a>
+			<pre><a class="selflink" href="#droneattack">WebVR Drone Attack (Tech-Demo-Game)</a></pre>
+			<div class="preinfo">
+				<a href="../viewer/examples/webvr-drone-attack/index.html" class="prop504x310"><img src="images/webvr-drone-attack.jpg" class="outlineimage prop_inner" /></a>
+				xml: <a href="../viewer/examples/webvr-drone-attack/drone-attack.xml">drone-attack.xml</a> &bull;
+				<a href="../viewer/examples//webvr-drone-attack/pp_hit_effect.js">pp_hit_effect.js</a> &bull;
+				<a href="../viewer/plugins/webvr.xml">webvr.xml</a>
+				<div class="smallp">
+					WebVR - Drone Attack
+				</div>
+				<div class="smallp">
+					A small and simple shooter game as tech-demo for several krpano features.<br>
+					<ul>
+						<li>It uses a pano-image as background and <a href="xml.html#hotspot">hotspots</a> as objects (drones, explosions, ...) </li>
+						<li><a href="plugins/webvr.html#top">WebVR</a> with Positional-tracking</li>
+						<li><a href="plugins/webvr.html#vr_controller">VR-Controller</a> Support (it works also without, but VR-Controllers are recommended)</li>
+						<li><a href="plugins/soundinterface.html#top">3D-Sounds</a></li>
+						<li>Custom <a href="plugin_api.html#krpanowebglapi">Post-Processing</a></li>
+						<li><a href="xml.html#action.js">Javascript Actions</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	
+	<script>
+		var i;
+		var filter = null;
+		
+		var filter = document.location.search.substring(1).split("&")[0].toLowerCase();
+		var title = "All Examples";
+		
+		switch (filter)
+		{
+			case "customize": break;
+			case "depthmap": title = "Depthmap Examples"; break;
+			case "js": title = "Javascript Examples"; break;
+			case "maps": break;
+			case "partial": title = "Partial-Pano Multiresolution Examples"; break;
+			case "multires": title = "Multiresolution Examples"; break;
+			case "panovideo": title = "Panoramic Video Examples"; break;
+			case "snippet": break;
+			case "vtours":
+			case "vtour":
+			case "tours":
+			case "tour": filter="tour"; title = "Virtual Tour Examples"; break;
+			case "video": break;
+			case "vr":
+			case "webvr": title = "WebVR Examples"; break;
+			default: filter = null;
+		}
+		
+		document.getElementById("title").innerHTML = title;
+		
+		if (filter)
+		{
+			var allexamples = document.getElementsByClassName("example");
+			for (i=0; i < allexamples.length; i++)
+			{
+				var example = allexamples[i];
+				if (example.className.indexOf(filter) < 0)
+				{
+					example.style.display = "none";
+				}
+			}
+		}
+	</script>
+	
+
+
+
+				</div>
+			</div>
+		</div>
+		<div id="krpano_footerwrapper">
+			<div id="krpano_footer">
+				<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td align="right">Copyright &copy; krpano.com</td></tr></tbody></table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

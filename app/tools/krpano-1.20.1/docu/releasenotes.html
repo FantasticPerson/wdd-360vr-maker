@@ -1,0 +1,839 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+	<meta name="format-detection" content="telephone=no" />
+	<link rel="stylesheet" type="text/css" href="design.css"/>
+	<title>krpano Documentation</title>
+	<script>
+		function toggle_mobile_nav(){var t=document,n=t.getElementById("krpano_contentnav"),m=t.getElementById("krpano_mobile_menu_bg");t=n.state!=2;n.state=t?2:1;n.style.height=t?"auto":"24px";m.style.display=t?"block":"none";t=t?"add":"remove";n.classList[t]("krpano_contentnav_opened");t+="EventListener";n[t]("click",toggle_mobile_nav,false);m[t]("mousedown",toggle_mobile_nav,false);}
+	</script>
+</head>
+<body>
+	<div id="krpano_root">
+		<div id="krpano_headerwrapper">
+			<div id="krpano_header">
+				<div id="krpano_mainmenu">
+					krpano 1.20.1 <span class="smallcomment">(build 2019-10-02)</span>
+				</div>
+			</div>
+			<div id="krpano_imagebar"></div>
+			
+			<div id="krpano_logo_container">
+				<a id="krpano_logo" href="https://krpano.com"><span>krpano.com</span></a>
+			</div>
+			
+			<div id="krpano_imagebar_links">
+				Documentation
+			</div>
+		</div>
+		
+		<div id="krpano_contentwrapper">
+			<div id="krpano_mobile_menuicon" onclick="toggle_mobile_nav();"><span class="burgermenu"></span></div>
+			<div id="krpano_mobile_menu_bg"></div>
+			<div id="krpano_content">
+				<div id="krpano_contentnav">
+					<h2><a href="#top" class="selflink">Documentation</a></h2>
+					<ul>
+						<li><a href="embedpano.html#top">Embedding</a></li>
+						<li><a href="xml.html#top">XML Reference</a></li>
+						<li><a href="actions.html#top">Actions / Scripting</a></li>
+						<li><a href="plugin_api.html#top">Plugin&nbsp;Interface</a></li>
+						<li><a href="js_api.html#top">Javascript Interface</a></li>
+						<li><a href="localusage.html#top">Local / Offline Usage</a></li>
+						<li><a href="releasenotes.html#top">Release Notes</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Plugins</a></h2>
+					<ul>
+						<li><a href="plugins/bingmaps.html#top">Bing Maps</a></li>
+						<li><a href="plugins/combobox.html#top">Combobox</a></li>
+						<li><a href="plugins/googlemaps.html#top">Google Maps</a></li>
+						<li><a href="plugins/gyro2.html#top">Gyro2</a></li>
+						<li><a href="plugins/postprocessing.html#top">Postprocessing</a></li>
+						<li><a href="plugins/radar.html#top">Radar</a></li>
+						<li><a href="plugins/scrollarea.html#top">ScrollArea</a></li>
+						<li><a href="plugins/showtext.html#top">Showtext</a></li>
+						<li><a href="plugins/snow.html#top">Snow / Rain</a></li>
+						<li><a href="plugins/soundinterface.html#top">Soundinterface</a></li>
+						<li><a href="textfield.html#top">Textfield</a></li>
+						<li><a href="plugins/videoplayer.html#top">Videoplayer</a></li>
+						<li><a href="plugins/webvr.html#top">WebVR</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Tools</a></h2>
+					<ul>
+						
+						<li><a href="tools/config.html#top">Config File Reference</a></li>
+						<li><a href="tools/testingserver.html#top">krpano Testing Server</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Examples</a></h2>
+					<ul>
+						<li><a href="examples.html#top">All Examples</a></li>
+						<li><a href="examples.html?depthmap#top">Depthmap</a></li>
+						<li><a href="examples.html?js#top">Javascript</a></li>
+						<li><a href="examples.html?multires#top">Multiresolution</a></li>
+						<li><a href="examples.html?panovideo#top">Panoramic Video</a></li>
+						<li><a href="examples.html?vtour#top">Virtual Tours</a></li>
+						<li><a href="examples.html?webvr#top">WebVR</a></li>
+					</ul>
+				</div>
+				<a name="top" class="toplink">&nbsp;</a>
+				<div id="krpano_contenttext">
+
+					<noscript>
+						<table style="width:100%; height:400px; position:fixed; left:95px; top:220px;"><tr valign="middle"><td><center><h1>
+							<span style="color:#FFFFFF; background:#FF0000; padding:15px;">
+								Javascript must be activated for this page!
+							</span>
+						</h1></center></td></tr></table>
+					</noscript>
+
+					
+
+<h1>Release Notes
+	
+</h1>
+
+<h2><a href="#general" name="general" class="selflink">krpano 1.20.1</a></h2>
+<ul>
+	<li>A Minor Bugfix- and Improvement-Release.</li>
+	<li>Update Support for <a href="https://krpano.com/panotourproupdate/">Panotour Pro</a>.</li>
+	<li>New: Improved Directional 3D Sound support:
+		<ul>
+			<li>A a new and Browser-independent mode for Directional / 3D Sounds is used now.</li>
+			<li>It fixes wrong located 3D Sounds and improves cross-browser/cross-device support.</li>
+			<li>Additionally there is a new optional <a href="plugins/soundinterface.html#playsound_at_hv">range</a> setting
+				for reducing the sound volume when looking away from a sound source.
+			</li> 
+			<li>New <a href="plugins/soundinterface.html#panningmodel">panningmodel</a> setting for selecting the 
+				 method for the 3D spatialisation algorithm.
+			</li>
+			<li>New <a href="examples.html#directional3dsound">Directional 3D Sound Example</a>.</li>
+		</ul>
+	</li>
+	<li>New: Support 'padded tiles'. That are tiles at the image-edges that were padded to the full-tilesize. Can be helpful for using tiles from other tile-providers.</li>
+	<li>New: Expose the current loading state as <a href="xml.html#image.loadstate">image.loadstate</a> variable.
+		Checking that state allows making High-resolution screenshots - <a href="examples.html#makescreenshot-api">Updated Makescreenshot Example</a>.
+		
+	</li>
+	<li>New: Add the <a href="actions.html#expressions.inlinefunctions">parsepath()</a> inline-function for parsing <a href="xml.html#url">url-placeholders</a> inside expressions.</li>
+	<li>Change: Don't send overwriteable (<a href="actions.html#trace">[OW]</a> prefix) log-messages to the browser console (for better performance when doing a lot of logging).</li>
+	<li>Fix: The sphere-to-cube conversion hangs/freezes on large images.</li>
+	<li>Fix: Support Samsung devices with varying screen-resolutions in MobileVR/Cardboard mode.
+		This is done by a new internal database that directly stores the physical screen-sizes.
+		Additionally there is a new xml-based <a href="plugins/webvr.html#mobilevr_device_database">mobilevr_device_database</a>
+		(defined in the webvr.xml). That database allows an easy custom adding or editing of devices. 
+		To control which databases should to used be there is a new <a href="plugins/webvr.html#mobilevr_database_support">mobilevr_database_support</a> setting.
+	</li>
+	<li>Fix: The url placeholders were not working in short-multires-syntax image paths.</li>
+	<li>Fix: The device.mobile/tablet/desktop settings were wrong in iOS 13 Desktop Mode.</li>
+	<li>Fix: Mark several CSS properties of the krpano log with 'important' to avoid that they might getting overwritten by global CSS styles.</li>
+	<li>Fix: There could be a Javascript-crash when calling loadpano() from JS with OPENBLEND blending very early at startup.</li>
+	<li>Fix: Support multiple <span class="pre">!</span> not operators in expressions (e.g. <span class="pre">!!var</span>).</li>
+	<li>Fix: The sounds kept playing when removing the viewer.</li>
+	<li>Fix: Custom soundinterface rootpath paths work now also again without the need for a trailing slash '/' character.</li>
+	<li>Fix: The encrypt tool was crashing on xml files that contain the xml-comments end-tag <span class="pre">--&gt;</span> without the
+		beginning-tag <span class="pre">&lt;!--</span>.
+	</li>
+	<li>Fix: The hotspot hovering wasn't working in the Edge browser when used on devices with touch-screens.</li>
+	<li>Fix: The Update Tool didn't add the new license information.</li>
+	<li>Fix: Avoid a Javascript error when unloading the viewer in the onexitvr event.</li>
+	<li>Fix: Black screen when changing the video-source of a pano-video from a power-of-two-sized video-resolution to a non-power-of-two-sized video-resolution.</li>
+</ul>
+
+<br>
+
+<h2><a href="#general" name="general" class="selflink">krpano 1.20</a></h2>
+<ul>
+	<li>New version number 1.20, no 'pre-release' / 'pr' state anymore.</li>
+	<li>The previous krpano-license and the krpano-maps-plugin-license were merged into one new single license.
+		Additionally the new license offers also new features. Upgrading is possible <a href="https://krpano.com/buy/upgrade/#top">here</a>.
+		Old licenses still fully work, but only without the new features.
+	</li>
+	<li>New support for <a href="examples.html?multires">Multi-Resolution</a> spherical and cylindrical panos
+		(with any field-of-view, 360-around or partial-panos).
+		Optimized for image-quality and rendering-performance.<br>
+		Especially very suitable for very large panos (Gigapixel and up) to avoid the need to convert to cube
+		and for partial-panos.
+	</li>
+	<li>New support for <a href="examples.html?depthmap">Depthmaps</a> for
+		adding 3D-depth to panoramic images. 
+		Allows 3D-stereo-depth without the need for stereo-images, post-perspective changes / 3D-movements,
+		3D-transitions between panos.
+		Easy to use tools for creating the depthmaps are also available.
+	</li>
+	<li>Much improved <a href="examples.html?webvr#depthmap-tour">VR-Support</a>: 6DoF positional-tracking, VR-controllers, improved devices support,
+		faster Cardboard rendering.
+		All fully customizable.
+	</li>
+	<li>Polygonal hotspots rendering via WebGL: stereo and VR-support, faster rendering.</li>
+	<li>Improved cross-browser / cross-device mouse-wheel and touch-pad support - get the same
+		zoom-amount and zoom-speed on all systems.
+	</li>
+	<li>HTTPS support for the <a href="tools/testingserver.html#https">krpano Testing Server</a>.</li>
+	<li>Many device- and browser-support updates.</li>
+	<li>New and slightly updated and restructured web design.</li>
+	<li>The download packages include now also a full offline documentation.</li>
+	<li>Only 64-bit versions for Windows by default.
+		Technically 32-bit versions would be still easily possible,
+		but normally there should be no need for them anymore.
+		But if there is a need, then on request it would be still possible to provide 32-bit versions.
+	</li>
+	<li>On Mac OSX all applications are now also available as 64-bit version.</li>
+	<li>All Windows executables are now code-signed.</li>
+</ul>
+
+
+<h2><a href="#embedpano" name="embedpano" class="selflink">embedpano</a> (<a href="embedpano.html#top">docu</a>)</h2>
+<ul>
+	<li>Change: The <a href="embedpano.html#mobilescale">mobilescale</a> setting is 1.0 by default now.</li>
+	<li>Change: The WebGL <a href="embedpano.html#webglsettings">stencil</a> and 
+		<a href="embedpano.html#webglsettings">depth</a> settings are enabled by default now.
+		They are requiered for correct depthmap- and polygonal-hotspot rendering support.
+	</li>
+	<li>Change: The WebGL <a href="embedpano.html#webglsettings">antialias</a> setting 
+		is not-set/undefined by default now. In this case the viewer tries to automatically 
+		decides which setting would be the best for the best performance on the current system. 
+	</li>
+	<li>Change: Do the local-file-access tests on the given xml file (instead of on the html file) when there is one.
+		When there is no xml file set at startup, check inside the viewer the first loaded xml file for local-file-access
+		problems and report back to the embedding script.
+	</li>
+	<li>Fix: When using <a href="embedpano.html#localfallback">localfallback=none</a> skip
+		the local-file-access test.
+	</li>
+</ul>
+
+
+<h2><a href="#krpanoviewer" name="krpanoviewer" class="selflink">krpano Viewer</a></h2>
+<ul>
+	<li>New: Support for <a href="xml.html#image">multi-resolution</a> spherical and cylindrical pano-images in HTML5 (requires WebGL support from the browser).</li>
+	<li>New: Dedicated flat-pano support (flat = rectilinear-projection pano-images).
+		By using the new <a href="xml.html#image.flat" class="selflink">&lt;flat&gt;</a> image declaration element.
+		Supports any field-of-view coverage, also larger than 1.0. For single- and multi-resolution.
+	</li>
+	<li>New: Short-xml-syntax for multi-resolution images (optional, enabled by default):
+		<ul>
+			<li>Just one <a href="xml.html#image.multires">multires</a> attribute
+				with all size information instead of several &lt;level&gt; elements.
+			</li>
+			<li>Additionally also autodetect the image type also for multires panos, no need for
+				setting the pano-type explicitly anymore.
+			</li>
+		</ul>
+	</li>
+	<li>New: <a href="xml.html#depthmap">Depthmap</a> support:
+		<ul>
+			<li>Supported formats: grayscale depthmap-images, STL and DEPTH 3D-Models.</li>
+			<li><a href="actions.html#device.depthmapsupport">device.depthmapsupport</a> for 
+				checking if using depthmaps is possible.
+			</li>
+			<li><a href="xml.html#display.depthmaprendermode">display.depthmaprendermode</a> 
+				and <a href="xml.html#depthmap.rendermode">depthmap.rendermode</a> for
+				setting the rendering-mode when using 3D-Models (render as depthmap or as 3D-Model).
+			</li>
+			<li><a href="xml.html#depthmap.background">depthmap.background</a> for
+				rendering the pano-image normally again as background behind the 3D-Model-mapped pano-image.
+			</li>
+			<li><a href="xml.html#display.havedepthmap">display.havedepthmap</a> for checking if currently having a depthmapped pano.</li>
+			<li><a href="xml.html#display.depthbuffer">display.depthbuffer</a> for
+				using the depthbuffer for hotspots also without depthmap panos (mix hotspots by their 3D position instead by their zorder).
+			</li>
+			<li><a href="xml.html#hotspot.depthbuffer">hotspot[].depthbuffer</a> - enable the 
+				depthbuffer usage for that hotspot.
+			</li>
+		</ul>
+	</li>
+	<li>New: 3D-Movement / 6DoF support:
+		<ul>
+			<li>New: <a href="xml.html#view.tx">view.tx / ty / tz</a> - free 3D translation of the view-point.</li>
+			<li>New: <a href="xml.html#image.ox">image.ox / oy / oz</a> - free 3D translation of the pano-image.</li>
+			<li>New: <a href="xml.html#view.ox">view.ox / oy / oz</a> - a screen-orientated 3D translation offset for the view-point.</li>
+		</ul>
+	</li>
+	
+	<li>New: Polygonal hotspots rendering via WebGL.
+		<ul>
+			<li>Allows stereo- and VR-support.</li>
+			<li>Allows zorder- or depth-sorting together with image hotspots.</li>
+			<li>Faster rendering performance.</li>
+			
+			<li>New <a href="xml.html#hotspot.subdiv">hotspot[].subdiv</a> setting
+				for performance control. Enabled allows distorted viewing projections,
+				disabled provides faster startup (when using many large polygons).
+			</li>
+		</ul>
+	</li>
+	
+	<li>New: iOS 13 support / Improved iOS support
+		<ul>
+			<li>Support the new iOS 13 desktop-browser-mode, detectable by <a href="actions.html#device.iosdesktop">device.iosdesktop</a>.</li>
+			<li>Support the new iOS 13 permission-dialog for gyroscope and VR usage.</li>
+			<li>Improved semi-automatic solution for the iPhone landscape fullscreen mode.
+				Control and adjustable by the 
+				<a href="xml.html#display.iphonefullscreen">display.iphonefullscreen</a>
+				and <a href="xml.html#events.oniphonefullscreen">events.oniphonefullscreen</a> settings.
+			</li>
+		</ul>
+	</li>
+	
+	<li>New: Improved Android Chrome fullscreen mode support
+		(depending on the actual Chrome version use the one or the other methods to get
+		a real fullscreen view).
+	</li>
+	
+	<li>New: Improved cross-browser / cross-device mouse-wheel support - get the same
+		zoom/scroll-amount and zoom-speed on all systems.
+	</li>
+	
+	<li>New: Support 2-finger gestures on touchpads (when the browser supports it).</li>
+	
+	<li>New: Support dynamic changes of the <a href="xml.html#image.hfov">image.hfov / vfov / voffset</a> values in HTML5
+		(needs an <a href="actions.html#updateobject">updateobject()</a> call for applying the updated values).
+	</li>
+	
+	<li>New: Multi-Frame multi-resolution support - use several frames and change the current
+		frame by the <a href="xml.html#image.frame">image.frame</a> setting.
+		Only basic support at the moment, not optimized for preloading.
+	</li>
+	
+	<li>New: <a href="xml.html#view.rx">view.rx / ry</a> settings for adding an additional viewing rotation. 
+		Can be used for a <a href="examples.html#followmouse">follow-mouse effect</a>.
+	</li>
+	
+	<li>New: <a href="xml.html#image.stereooffset">image.stereooffset</a> setting for adjusting/aligning stereo images.</li>
+	
+	<li>New: Improved debugging / logging:
+		<ul>
+			<li>Improved log console: faster, html-support, clearable, merge duplicates lines.</li>
+			<li>The <a href="xml.html#krpano.logkey">tilde-key</a> will be used now as log open/close key (instead of the 'O' key).</li>
+			<li>New debug/command input field in the log - activate by shift+tilde-key when the 
+				<a href="xml.html#krpano.debugmode">debugmode</a> is enabled and the log is open.
+				Can be used to show or change variables and to call actions.
+			</li>
+			<li>New <a href="xml.html#krpano.debugjsactions">debugjsactions</a> a
+				and <a href="xml.html#krpano.debugjsplugins">debugjsplugins</a> settings to
+				allow debugging Javascript actions and plugins in the browser (errors will be not captured by krpano).
+			</li>
+			<li>New <a href="xml.html#krpano.debugkeys">debugkeys</a> setting for enabling/disabling
+				the debugging-keys that are available when the log is opened.
+			</li>
+			<li>The <a href="actions.html#trace">trace</a> action support
+				several tags for output control: [HTML] for output html code, 
+				[OW] for making the current line overwritable by the next trace,
+				[CLEARLOG] for clearing the log,
+				[MAXLINES=nn] for setting the maximum lines to keep in the log.
+			</li>
+		</ul>
+	</li>
+	<li>New: Provide several <a href="actions.html#expressions.inlinefunctions">Inline Functions</a> inside expressions.
+		<ul>
+			<li>They can make code easier and shorter to write.</li>
+			<li>Extendable by adding own Javascript functions to the new
+				<a href="actions.html#inlinefunctions">inlinefunctions</a> object.
+			</li>
+		</ul>
+	</li>
+	
+	<li>New: Support Data-Urls everywhere - with plain-text and base64 encoding.</li>
+	
+	<li>New: Second inbetween Postprocessing shader step - allow postprocessing after the pano-rendering but before hotspot-rendering. E.g. for blurring only the pano in the background, but not the hotspots above.
+		See <a href="plugin_api.html#krpano.webGL.ppShaderArray2">krpano.webGL.ppShaderArray2</a> for more.
+	</li>
+	
+	<li>New: Several rendering performance improvements.</li>
+	
+	<li>New: Faster viewer startup, compile the internal WebGL rendering shaders only on first use
+		and cache already compiled shaders.
+	</li>
+	
+	<li>New: Improved pano loading state handing - never blend before having a full filled view.</li>
+	<li>New <a href="actions.html#loadpano.flags">PRELOAD</a> flag for loadpano/loadscene -
+		load the full resolution of the next pano before blending to it.
+	</li>
+	
+	<li>New: Provide an <a href="xml.html#addevent">.addevent</a> attribute postfix
+		and an <a href="xml.html#addevent">addevent()</a> function
+		for adding additional/mulitple events. Can be used in styles to avoid conflicts
+		when using the same events.
+	</li>
+	
+	<li>New: <a href="xml.html#typedefforattributes">Type definitions</a> for attributes in the xml.</li>
+	
+	<li>New: Can merge styles: &lt;style name="style2" ... style="style1" /&gt;</li>
+	
+	<li>New: %VIEWER% and %ROOT% <a href="xml.html#url">url-placeholders</a>, same as %SWFPATH%.</li>
+	
+	<li>New: Additional device detection:
+		<ul>
+			<li><a href="xml.html#available-devices">device.mobilevr</a> - for detecting dedicated VR browsers/devices (e.g. Oculus Go/Quest).</li>
+			<li><a href="xml.html#available-devices">device.iframe</a> - check if inside an iframe.</li>
+			<li><a href="xml.html#available-devices">device.iosdesktop</a> - detect the iOS 13 desktop mode.</li>
+			<li><a href="xml.html#available-devices">device.newedge</a> - detect the new Chrome-based Edge browser.</li>
+		</ul>
+	</li>
+	
+	<li>New: The <a href="actions.html#addlayer">addlayer / addhotspot</a> actions
+		can use 'auto' as variable-name for an automatic-generated name.
+		<ul>
+			<li>Additionally the second parameter can be used to create a variable pointing to the new created layer or hotspot.</li>
+			<li>When called from Javascript the new created layer or hotspot object will be directly returned.</li>
+		</ul>
+	</li>
+	<li>New: <a href="actions.html#renderloop">renderloop, stoprenderloop</a> actions for running code every frame.</li>
+	<li>New: <a href="actions.html#txtjoin">txtjoin</a> action for joining several variables together as text, as direct opposite/reverse to the <a href="actions.html#txtsplit">txtsplit</a> action.</li>
+	<li>New: <a href="plugin_api.html#array.createItem">array.createItem / array.createarrayitem</a> - support 'auto' for an automatic name.</li>
+	<li>New: <a href="plugin_api.html#array.insertItem">array.insertItem / array.insertarrayitem</a> - insert a new item at a given index.</li>
+	
+	<li>New: Use '$' as prefix for variables in expressions to avoid any type-conversions.</li>
+	<li>New: uint (unsigned-integer) data-type support for <a href="actions.html#def">def()</a> and multi-<a href="actions.html#set">set()</a> actions.</li>
+	<li>New: <a href="actions.html#spheretospace">spheretospace</a> and <a href="actions.html#spacetosphere">spacetosphere</a> actions for converting between spherical and 3D-positions.</li>
+	
+	
+	
+	<li>New: <a href="xml.html#scene.autoload">scene[].autoload</a> for automatically loading a scene on startup.</li>
+	
+	<li>New: <a href="xml.html#display.surfacesubdiv">display.surfacesubdiv</a> setting for adjusting rendering accuracy and performance.</li>
+	
+
+	
+	<li>New: <a href="xml.html#layer.hitx">layer[].hitx / hity</a> - the 'hitting'-position on the layer when hovering or pressing it.</li>
+	<li>New: <a href="xml.html#hotspot.hitx">hotspot.hitx / hity / hitd</a> - the 'hitting'-position on the hotspot when hovering or pressing it. With 3D-distance and VR-controller support.</li>
+	<li>New: <a href="xml.html#hotspot.oref">hotspot[].oref</a> - apply the ox/oy translation before or after the rx/ry/rz rotation.</li>
+	
+	<li>New: <a href="xml.html#hotspot.prealign">hotspot[].prealign</a> - apply <a href="xml.html#image.prealign">image.prealign</a> also to the hotspot.</li>
+	<li>New: <a href="xml.html#hotspot.rotationorder">hotspot[].rotationorder</a> - define the order of the rx / ry / rz rotations.</li>
+	<li>New: <a href="xml.html#hotspot.torigin">hotspot[].torigin</a>=view|world|image</li>
+	<li>New: <a href="xml.html#hotspot.point">hotspot[].point[].ath/atv</a>  is a getter/setter for tracking changes</li>
+	<li>New: Support <a href="xml.html#hotspot.depth">hotspot[].depth</a> also for polygonal hotspots.</li>
+	<li>New: <a href="xml.html#hotspot.borderzoom">hotspot[].borderzoom</a> - for changing the border-line-width of polygonal-hotspots on zooming.</li>
+	
+	<li>New: Support changing the <a href="xml.html#krpano.bgcolor">bgcolor</a> setting anytime (and not only on startup).</li>
+	<li>New: <a href="xml.html#control.invert">control.invert</a> setting for inverting the control panning direction.</li>
+	<li>New: <a href="xml.html#control.disablewheel">control.disablewheel</a> setting for disabling the mouse-wheel support.</li>
+	<li>New: <a href="xml.html#view.dir">view.dir</a> - the current viewing direction as 3D-vector.</li>
+	<li>New: <a href="xml.html#display.hotspotworldscale">display.hotspotworldscale</a> setting for scaling all hotspots together.</li>
+	<li>New: <a href="actions.html#linkeventscope">linkeventscope()</a> action for linking the current local scope to the scope used in the layer/hotspots events.</li>
+	<li>New: Support direct access to Javascript Array data structures.</li>
+	<li>New: <a href="actions.html#jsget">jsget / jscall()</a> - provide the 'caller' object inside the Javascript code.</li>
+	<li>New: <a href="actions.html#asyncloop">asyncloop()</a> support using Javascript functions as actions.</li>
+	<li>New: The <a href="actions.html#getlooktodistance">getlooktodistance()</a> can be directly called from Javascript when using null as result parameter.</li>
+	<li>New: <a href="plugin_api.html#customParsePath">krpano.customParsePath(path)</a> - API for custom path parsing.</li>
+	<li>New: <a href="plugin_api.html#customParseTilePath">krpano.customParseTilePath(path)</a> - API for custom tile-path parsing.</li>
+
+	<li>New: An optional name for shaders in the <a href="plugin_api.html#krpano.webGL.createPostProcessingShader">createPostProcessingShader</a>.</li>
+	<li>New: <a href="plugin_api.html#spheretospace">krpano.spheretospace</a> and <a href="plugin_api.html#spacetosphere">krpano.spacetosphere</a> functions for converting between spherical and 3D-positions.</li>
+		
+	<li>New: Allow touch-position-tracking (mouse.x/y) also for out of area (e.g. parent=STAGE) elements.</li>
+	<li>New: Support the 'inverted' mouse-wheel scrolling on Mac OSX.</li>
+	<li>New: Render the demo logo by WebGL now, provides stereo/vr support.</li>
+	<li>New: Handle WebGL context loses - unload the viewer and show a fatal error message. Can be customized by using the <a href="xml.html#events.onxmlerror">onxmlerror</a> event.</li>
+	
+	<li>Change: The previously experimental view.tx / ty / tz settings are now fully supported and working everywhere, but their signs and order had changed (to use the same coordinate system everywhere).</li>
+	<li>Change: Remove the fixed 4096px maximum texture-size limitation for non-desktop devices. Now use the maximum texture-size reported by the browser. Larger single-images are automatically downscaled.</li>
+	<li>Change: Inside the <a href="actions.html#jsget">jsget / jscall()</a> Javascript code provide the full-access 'krpano interface' object instead of the limited 'js interface 'object.</li>
+	<li>Change: The moretweentypes plugin now integerated in the viewer.</li>
+	<li>Change: The <a href="xml.html#contextmenu.item.separator">contextmenu.item[].separator</a> setting is now a string can be also 'below', 'above' or 'both' for better customizing.</li>
+	<li>Change: Don't set device.safari=true for the iOS Chrome browser, set device.chrome=true instead.</li>
+	<li>Change: Blacklist the fullscreen-mode support for iOS12+ iPads. In the new iPad fullscreen-mode no swipe-down events are not possible.</li>
+
+	<li>Fix: Automatically disable WebGL antialias for Intel GPU when using HiDPI display for better performance.</li>
+	<li>Fix: Textfields - check the bgborder, bgshadow, txtshadow settings for valid data types.</li>
+	<li>Fix: hotspot.fillcolor=0, fillalpha=0, borderwidth=0, bordercolor=0, borderalpha=0 were not working as initial values.</li>
+	<li>Fix: Workaround for a Safari WebGL alpha-blending bug (the webpage background color is visible in alpha-blended elements).</li>
+	<li>Fix: When calling loadscene(0) the xml.scene variable hasn't been updated.</li>
+	<li>Fix: Updated touch-support for the latest Chrome, Edge and Firefox browser versions.</li>
+	<li>Fix: Avoid Firefox warnings when drawing pano wireframes.</li>
+	<li>Fix: Use <a href="xml.html#display.autofullscreen">display.autofullscreen</a> only for full-page-websites.</li>
+	<li>Fix: Workaround for the display.autofullscreen fullscreen-exit bug where the browser leaves a black bar at the bottom.</li>
+	<li>Fix: When the preview-image gets loaded slower than the pano-image itself, it can wrongly overwrite the pano size information and wrongly limit the zoom this way.</li>
+	<li>Fix: Suppport touch control in Firefox mobile simulator.</li>
+	<li>Fix: Capture exit fullscreen promise errors.</li>
+	<li>Fix: Don't capture mousedown events in VR-Cursor control mode.</li>
+	<li>Fix: Add a workaround for the new iPhone 12.2 landscape-to-portrait rotation bug where the page would be wrongly scrolled after rotation.</li>
+	<li>Fix: A wrong scope in the onloaded event can happen when doing an updatepos() call in a scoped action.</li>
+	<li>Fix: Improved unloading - better free all WebGL resources.</li>
+	<li>Fix: Add several workarounds for Safari WebGL textfields bugs.</li>
+	<li>Fix: Ensure that the onnewpano event will be before onloadcomplete event.</li>
+	<li>Fix: area.mode=border wasn't working together with the iOS safe-area mode.</li>
+	<li>Fix: Ignore the iOS safe-area in makeScreenshot() calls when using a custom size.</li>
+	<li>Fix: Automatically disable the iOS safe-area support inside iframes.</li>
+	<li>Fix: Polygonal SVG hotspot were clipped inside the iOS safe-area.</li>
+	<li>Fix: The textfield autosizing wasn't working in Chrome when the viewer html element was hidden (display=none) or had zero size.</li>
+	<li>Fix: makeScreenshot() was rendering in the wrong size when using crop.</li>
+	<li>Fix: The fatalerror message box had the wrong height when using non-default stagescales.</li>
+	<li>Fix: Remove the low-res framebuffer rendering on low-fps during pano-blending (too much false-positives detections).</li>
+	<li>Fix: Avoid crashes when changing settings of destroyed textfields.</li>
+	<li>Fix: Logging - use original/unformated message (with tabs) for the browser-console.</li>
+	<li>Fix: Resolve get/calc attribtes inside styles / sub-styles after full parsing.</li>
+	<li>Fix: Remove the fullscreen-blacklisting for the old Android 4.0 browsers (because it wrongly affects the Duck-Duck-Go and many also other Android browsers).</li>
+	<li>Fix: Wrong onresize events every frame in the Oculus Go browser.</li>
+	<li>Fix: Check for delayed WebGL drawing-buffer-size changes (a workaround for a Oculus Browser bug).</li>
+	<li>Fix: Workaround for an iOS bug that causes slowdowns and even browser crashes when using videos and pano-blending.</li>
+	<li>Fix: Allow overwriting / redefining get: / calc: attributes with normal values again in the xml.</li>
+	<li>Fix: When using a get(var) in a tween or stoptween the var content was wrongly case-senstive when addressing the tween animation.</li>
+	<li>Fix: Using a Javascript function as donecall for a tween wasn't working.</li>
+	<li>Fix: The variable names in the &lt;action&gt; args parameter were not converted to lower-case.</li>
+	<li>Fix: loadscene/loadpano calls weren't working correctly in non-global scope actions.</li>
+	<li>Fix: txtsplit with 'null' for not required parameters.</li>
+	<li>Fix: changeorigin with 'null' as 'edge' parameter.</li>
+	<li>Fix: Avoid crashes when doing set(get(null), ...).</li>
+	<li>Fix: Use the mwheel and capturetouch embedding settings also when the external parameter protection is enabled.</li>
+</ul>
+
+
+<h2><a href="#krpanotoolsgui" name="krpanotoolsgui" class="selflink">krpano Tools (GUI)</a></h2>
+<ul>
+	<li>New: Use a newer NWJS framework (based on Chrome 65 now). That should fix several system and WebGL compatibility issues.</li>
+	<li>New: Is now a 64-bit application.</li>
+	<li>New: Check for the 'app translocation' on Mac and show information about the problem.
+		Additionally  offer a 'FIX INSTALL OSX.command' script (just double-click) for fixing permission problems.
+	</li>
+	<li>Change: Update tool - add the original file extension to the backup file.</li>
+</ul>
+
+
+<h2><a href="#krpanotools" name="krpanotools" class="selflink">krpano Tools (Command-Line)</a></h2>
+<ul>
+	<li><b><a href="#krpanotools" class="selflink">filename</a></b>
+		<ul>
+			<li>Changes: The filename of the tools on Windows is now just 'krpanotools.exe' instead of 'krpanotools64.exe' and 'krpanotools32.exe'.
+				So now the same filename is used on all systems.
+			</li>
+		</ul>
+	</li>
+	
+	<li><b><a href="#makepano" name="makepano" class="selflink">makepano tool</a></b>
+		<ul>
+			<li>New: Support XMP infos for the pano-type and fov detection of the input images.</li>
+			<li>Change: Use <a href="tools/config.html#profile">profile=sRGB</a> by default now.</li>
+			<li>Fix: Always embed a profile when using profile=sRGB, even when the input image is without a profile.</li>
+			<li>Fix: Skip the stereo-detection when all stereosupport settings are disabled.</li>
+			<li>Fix: Support the XMP syntax from the 'ALETA S2C' 360 camera for auto-leveling.</li>
+			<li>Fix: Don't write a prealign setting in the xml when all vales are 0.</li>
+			<li>Fix: Don't skip customimage generate when larger than the pano but therefore not tiled.</li>
+		</ul>
+	</li>
+
+	<li><b><a href="#sphere2cube" name="sphere2cube" class="selflink">sphere2cube / transform tool</a></b>
+		<ul>
+			<li>New: Support a tiled input for large images, faster processing and fewer memory need.</li>
+			<li>New: Faster for smaller panos.</li>
+			<li>Fix: The vertical scaling of cylinder-panos was slightly wrong.</li>
+		</ul>
+	</li>
+	
+	<li><b><a href="#cube2sphere" name="cube2sphere" class="selflink">cube2sphere tool</a></b>
+		<ul>
+			<li>New: Support '*' as placeholder for the cube-side (l,f,r,b,u,d).</li>
+			<li>New: The -outsize= setting supports now also WIDTHxHEIGHT as custom size.</li>
+		</ul>
+	</li>
+	
+	<li><b><a href="#encrypt" name="encrypt" class="selflink">encrypt tool</a></b>
+		<ul>
+			<li>New: Support for txt, json, depth, stl files.</li>
+			<li>Change: Add the original file extension to the backup file.</li>
+		</ul>
+	</li>
+	
+	<li><b><a href="#config" name="config" class="selflink">makepano config</a></b>
+		<ul>
+			<li>New: <a href="tools/config.html#shortmressyntax">shortmressyntax</a> setting - use the new short-multires syntax.</li>
+			<li>New: <a href="tools/config.html#converttocubemaxwidth">converttocubemaxwidth</a> setting - images above that size will be not automatically converted to cube (the default is 60000px).</li>
+			<li>New: <a href="tools/config.html#converttocubeerror">converttocubeerror</a> setting</li>
+			<li>Change: Increase the <a href="tools/config.html#converttocubelimit">converttocubelimit</a> default from 360x45 to 360x120.</li>
+		</ul>
+	</li>
+	
+</ul>
+
+
+<h2><a href="#convertdroplet" name="convertdroplet" class="selflink">Convert SPHERE CUBE Droplet (GUI)</a></h2>
+<ul>
+	<li>New: Provide settings directly inside the droplet for changing the output file-format, the image-size and the jpeg-quality.</li>
+</ul>
+
+
+<h2><a href="#testingserver" name="testingserver" class="selflink">krpano Testing Server (GUI)</a></h2>
+<ul>
+	<li>New: <a href="tools/testingserver.html#https">HTTPS support</a> (by providing a .pem certificate file).</li>
+	<li>New: Minor redesign with better system support (system-font).</li>
+	<li>New: Is now a 64-bit application.</li>
+	<li>New: OSX-Retina compatible.</li>
+	<li>New: Uses a newer wxWidgets framework, better Unicode support.</li>
+	<li>New: Automatically restart the server on port changes, no restart button.</li>
+	<li>New: Option for no-cache for text-files only.</li>
+	<li>New: Option for automatic port selection.</li>
+	<li>New: Detect when the port is already in use.</li>
+	<li>Fix: Short paths like only 'c:' were causing a wrong memory access (one char before) and wrong outputs.</li>
+</ul>
+
+
+<h2><a href="#testingservercmd" name="testingservercmd" class="selflink">krpano Testing Server (Command-Line)</a></h2>
+<ul>
+	<li>New: Use the same CSS-styled directory-listing like the GUI version.</li>
+	<li>New: Internally the GUI version and the Command-Line version are sharing the same codebase.
+	 	All features are available the same in both applications.
+	</li>
+	<li>New: More command-line parameters: custom root, custom port, cors, nocache, open, cert, q(uiet) and ?/help -adapter=list and -adapter=#.</li>
+</ul>
+
+
+<h2><a href="#plugins" name="plugins" class="selflink">Plugins</a></h2>
+<ul>
+	<li>New: iphone_fullscreen_swipe.xml
+		<ul>
+			<li>Automatically show information / instructions for the iPhone landscape fullscreen mode handling.</li>
+		</ul>
+	</li>
+	<li>New: doubleclick_style.xml
+		<ul>
+			<li>Provide a style for double-click support for layers and hotspots.</li>
+		</ul>
+	</li>
+	<li>New: contextmenu.xml
+		<ul>
+			<li>A default contextmenu with several different viewing projections.</li>
+		</ul>
+	</li>
+	<li>New: ios_iframe_fullscreen.xml
+		<ul>
+			<li>iOS doesn't support the fullscreen-API, so there is no way to switch from inside
+				a small iframe on a webpage to a full-page-view.
+			</li>
+			<li>This script helps here by automatically redirecting to the inner frame page
+				when switching to fullscreen mode.
+			</li>
+		</ul>
+	</li>
+	<li>New: depthmap_navigation.xml
+		<ul>
+			<li>Controls for navigation inside depth-mapped 3D panos.</li>
+			<li>Arrow-keys or WASD-keys navigation on desktop.</li>
+			<li>On-Screen-Touchpad for mobile devices.</li>
+			<li>VR controllers for WebVR usage.</li>
+		</ul>
+	</li>
+	<li>Remove: The moretweensplugin plugin has been removed. It is directly integrated in the viewer now.</li>
+</ul>
+
+
+<h2><a href="#webvr" name="webvr" class="selflink">WebVR Plugin</a> (<a href="plugins/webvr.html#top">docu</a>)</h2>
+<ul>
+	<li>New: Positional-tracking support:
+		<ul>
+			<li><a href="plugins/webvr.html#postracking">postracking</a> - enable/disable the positional-tracking support.</li>
+			<li><a href="plugins/webvr.html#havepostracking">havepostracking</a> - check if having positional-tracking support.</li>
+			<li><a href="plugins/webvr.html#onhavepostracking">onhavepostracking</a> - even when having positional-tracking support.</li>
+		</ul>
+	</li>
+	<li>New: VR-Controller support:
+		<ul>
+			<li><a href="plugins/webvr.html#vr_controller_support">vr_controller_support</a> - enable/disable vr-controller support.</li>
+			<li><a href="plugins/webvr.html#vr_controller">vr_controller</a> - use custom hotspots as vr-controllers.</li>
+			<li><a href="plugins/webvr.html#vr_controller_clickbuttons">vr_controller_clickbuttons</a> - vr-controller buttons for clicking.</li>
+			<li><a href="plugins/webvr.html#vrcontrollers">vrcontrollers</a> - information about the vr-controllers.</li>
+			<li><a href="plugins/webvr.html#onvrcontrollers">onvrcontrollers</a> - event when vr-controller are changed.</li>
+			<li><a href="plugins/webvr.html#onvrcontrollerbutton">onvrcontrollerbutton</a> - event when a button on a vr-controller is changed.</li>
+			<li><a href="plugins/webvr.html#vr_controller">pulse()</a> - for vibrating the vr-controller.</li>
+		</ul>
+	</li>
+	<li>New: Completely new Cardboard-like mesh-based lens-distortion.
+		<ul>
+			<li>Uses the same lens-distortion parameters as Google Cardboard.</li>
+			<li>Better compatiblity with several rendering settings.</li>
+		</ul>
+	</li>
+	<li>New: Updated internal Cardboard-device-database.</li>
+	<li>New: Automatically use higher oversampling settings for the Oculus Go and the Oculus Quest headsets for better image-quality, adjust with the <a href="plugins/webvr.html#auto_oversampling">auto_oversampling</a> setting.</li>
+	<li>New: Support the new iOS 13 permission-dialog.</li>
+	<li>New: Automatically disable the stereo rendering in portrait mode on mobile devices.</li>
+	<li>New: Automatically disable the vr-cursor when detecting vr-controllers and having them assigned in the xml.</li>
+	<li>New: Automatically calculate a fake-pos for the vr-controllers when no positional-tracking is available.</li>
+	<li>New: Supports the usage inside <a href="plugins/webvr.html#iframe">iframes</a> when the outer page forwards the sensor data.</li>
+	<li>New: <a href="plugins/webvr.html#mobilevr_desktop_support">mobilevr_desktop_support</a> setting for optionally enabling gyro VR support also on desktop devices, e.g. for using the gyro of a Laptop.</li>
+	<li>New: <a href="plugins/webvr.html#resetsettings">resetSettings()</a> - reset/clear stored MobileVR lens-settings.</li>
+	<li>New: <a href="plugins/webvr.html#mouse_pointerlock">mouse_pointerlock</a> setting for using the mouse for looking horizontally around in VR mode.</li>
+	<li>New: <a href="plugins/webvr.html#hlookatoffset">hlookatoffset</a> setting for a custom offset to the horizontal looking position.</li>
+	<li>New: <a href="plugins/webvr.html#headtracking_absolute">headtracking_absolute</a> setting for using an 'absolute' (real-world linked) head tracking when possible.</li>
+	<li>New: Support <a href="plugins/webvr.html#oversampling">oversampling</a> also for mobile-vr (not only WebVR).</li>
+	<li>New: Automatically add webvr plugin itself as global 'webvr' variable inside krpano.</li>
+	<li>Change: The isgearvr variable was renamed to <a href="plugins/webvr.html#isvrbrowser">isvrbrowser</a> (but isgearvr also still works)</li>
+	<li>Fix: Don't assume that iOS always provide gyro support (due the iOS 12.2+ changes).</li>
+	<li>Fix: WebVR API updates.</li>
+	<li>Fix: Use the ESC key for exiting VR mode also for non-fullscreen fakemode.</li>
+	<li>Fix: Avoid orientation.lock promise errors.</li>
+	<li>Fix: Share the Chrome 65 gyro warning with the gyro2.js plugin.</li>
+	<li>Fix: The pointer-lock support was partially not working correctly.</li>
+	<li>Fix: Exiting pointer-lock by user (ESC-key) also exits the VR mode.</li>
+	<li>Fix: Pointer-lock support for touch MS Edge.</li>
+	<li>Fix: Add a workaround for a Chrome pointerlock-unlock bug - the browser reports a wrong mouse position after unlocking and that can lead to an unintended pano movement.</li>
+	<li>Remove: Global MobileVR settings storage.</li>
+	<li>Remove: WebVR APIs 0.6, 0.8, support, support only WebVR API 1.0 and 1.1 now.</li>
+	<li>Remove: auto-calibration support.</li>
+</ul>
+
+
+<h2><a href="#webvrxml" name="webvrxml" class="selflink">webvr.xml</a></h2>
+<ul>
+	<li>New: VR-Controller support with some predefined vr-controller types.</li>
+	<li>New: Completely new VR-Setup, one basic on-screen-setup and a detailed setup inside VR.</li>
+	<li>Change: The <a href="plugins/webvr.html#mobilevr_fake_support">Fake Support</a> is enabled by default now.</li>
+	<li>Change: Don't ask the user on unknown screen sizes.</li>
+	<li>Change: Add and load the vr-cursor and vr-controller hotspots only on need.</li>
+</ul>
+
+
+<h2><a href="#gyro" name="gyro" class="selflink">Gyro Plugin (<a href="plugins/gyro2.html#top">docu</a>)</a></h2>
+<ul>
+	<li>New: Support the new iOS 13 permission-dialog.</li>
+	<li>New: Supports the usage inside <a href="plugins/gyro2.html#iframe">iframes</a> when the outer page forwards the sensor data.</li>
+	<li>New: <a href="plugins/gyro2.html#desktopsupport">desktopsupport</a> setting for supporting desktop browsers (e.g. Windows Tablet-PCs).</li>
+	<li>New: Show a warning when using on non-HTTPS sites that the gyro might not work.</li>
+</ul>
+
+
+<h2><a href="#postprocessingplugins" name="postprocessingplugins" class="selflink">Postprocessing Plugins</a> (<a href="plugins/postprocessing.html#top">docu</a>)</h2>
+<ul>
+	<li>New: <a href="plugins/postprocessing.html">pp_light</a> - High-quality exposure and light/shadow control.</li>
+	<li>New: <a href="plugins/postprocessing.html">pp_blur.js</a> - High-performance image blurring.</li>
+	<li>New: <a href="plugins/postprocessing.html">pp_sharpen.js</a> - An Unsharp-Mask filter for sharpening or local contrast enhancement.</li>
+</ul>
+
+
+<h2><a href="#soundinterface" name="soundinterface" class="selflink">Soundinterface Plugin</a> (<a href="plugins/soundinterface.html#top">docu</a>)</h2>
+<ul>
+	<li>New: A completely new <a href="plugins/soundinterface.html">Soundinterface</a> plugin.
+		<ul>
+			<li>Based on howler.js.</li>
+			<li>Handles the sound playback unlocking automatically.</li>
+			<li>Uses the WebAudio API instead of HTML5-Audio by default (when available).</li>
+			<li>Backward compatible to older plugin versions.</li>
+		</ul>
+	</li>
+	<li>New: Support for 3D Positional Audio.</li>
+	<li>New: Support for <a href="plugins/soundinterface.html#soundsprites">Sound Sprites</a> - one file for multiple sounds.</li>
+	<li>New: Support for <a href="plugins/soundinterface.html#soundobject">Sound Objects</a> - control a sound during playing.</li>
+	<li>New: Automatically add the plugin itself as global 'soundinterface' variable inside krpano.</li>
+</ul>
+
+
+<h2><a href="#videoplayer" name="videoplayer" class="selflink">Videoplayer Plugin</a> (<a href="plugins/videoplayer.html#top">docu</a>)</h2>
+<ul>
+	<li>New: Improved autoplay workarounds, control by
+		<a href="plugins/videoplayer.html#userinteractionworkarounds">userinteractionworkarounds</a>, 
+		<a href="plugins/videoplayer.html#onneeduserinteraction">onneeduserinteraction</a>, 
+		<a href="plugins/videoplayer.html#ongotuserinteraction">ongotuserinteraction</a>, 
+		<a href="plugins/videoplayer.html#needuserinteraction">needuserinteraction</a>.
+	</li>
+	<li>Fix: The <a href="plugins/videoplayer.html#html5controls">html5controls</a> were not usable.</li>
+	<li>Fix: Add 'x5-video-player-type=h5' for the WeChat browser.</li>
+	<li>Fix: MS Edge support.</li>
+	<li>Fix: Check also for different ports when doing the CORS check.</li>
+</ul>
+
+
+<h2><a href="#scrollarea" name="scrollarea" class="selflink">Scrollarea Plugin</a> (<a href="plugins/scrollarea.html#top">docu</a>)</h2>
+<ul>
+	<li>New: <a href="plugins/scrollarea.html#capturechildren">capturechildren</a> setting for capturing
+		mouse/touch-events also on the children elements for dragging the layer.
+	</li>
+	<li>New: <a href="plugins/scrollarea.html#parentmaskchildren">parentmaskchildren</a> setting
+		for automatically applying the <a href="xml.html#layer.maskchildren">maskchildren</a> setting to the parent layer.
+	</li>
+	<li>New: Support the 'inverted' mouse-wheel scrolling on Mac OSX.</li>
+</ul>
+
+
+<h2><a href="#bingmaps" name="bingmaps" class="selflink">Bingmaps Plugin</a> (<a href="plugins/bingmaps.html#top">docu</a>)</h2>
+<ul>
+	<li>Fix: bingmaps radar inverted in some cases: https://krpano.com/forum/wbb/index.php?page=Thread&postID=75220#post75220</li>
+	<li>New: custom mousewheel support</li>
+	<li>New: Support the 'inverted' mouse-wheel scrolling on Mac OSX.</li>
+</ul>
+
+
+<h2><a href="#googlemaps" name="googlemaps" class="selflink">Googlemaps Plugins</a> (<a href="plugins/googlemaps.html#top">docu</a>)</h2>
+<ul>
+	<li>New: <a href="plugins/googlemaps.html#apiversion">apiversion</a> setting for optionally defining the Google-Maps API Version to use.
+		When not set, the latest api version will be used.
+	</li>
+	<li>Fix: new wheel event support</li>
+	<li>New: Support the 'inverted' mouse-wheel scrolling on Mac OSX.</li>
+</ul>
+
+
+<h2><a href="#showtext" name="showtext" class="selflink">Showtext Plugin</a> (<a href="plugins/showtext.html#top">docu</a>)</h2>
+<ul>
+	<li>Fix: Allow quote characters in the arguments.</li>
+</ul>
+
+
+<h2><a href="#combobox" name="combobox" class="selflink">combobox.xml</a></h2>
+<ul>
+	<li>Fix: Wrong arrow icon on iOS.</li>
+</ul>
+
+
+<h2><a href="#vtourskinxml" name="vtourskinxml" class="selflink">vtourskin.xml</a></h2>
+<ul>
+	<li>New: Load the maps-plugin first after opening the maps. This can speed-up the pano loading
+		because the map tiles are getting loaded only later when the user opens the map.
+		Adjustable by the new <span class="pre">skin_settings.maps_loadonfirstus</span> setting.
+	</li>
+	<li>New: <span class="pre">skin_settings.followmousecontrol</span> setting to enable a follow-mouse control.</li>
+	<li>New: Add an UI for the new iPhone landscape-mode fullscreen mode.</li>
+	<li>New: Show the loading info only when the loading takes longer than 2.0 seconds.</li>
+	<li>New: The 'button glowing' is now implemented by <a href="xml.html#addevent">addevent</a> events, 
+		so that the layer itself can use the normal events.
+	</li>
+	<li>Change: Use separate <span class="pre">keeplookingdirection</span> settings for for gyro and webvr usage.</li>
+	<li>Fix: The rotation of the little-planet-intro wasn't working.</li>
+	<li>Fix: The gyro-icon wasn't showing up when the the little-planet-intro was enabled.</li>
+	<li>Fix: The the show the 'title' in the special WebVR Enter-VR button only when a title is actually defined.</li>
+</ul>
+
+
+<h2><a href="#examples" name="examples" class="selflink">Examples</a> (<a href="examples.html#top">link</a>)</h2>
+<ul>
+	<li>New: <a href="examples.html#custom-tile-urls">Custom Tile-URLs</a> - a demo that shows how to use custom tile-image-urls.</li>
+	<li>New: <a href="examples.html#demotour-corfu">Demotour Corfu</a> - use a custom image as map.</li>
+	<li>New: <a href="examples.html#indiantemple3d">Demotour Indian Temple Stereoscopic 3D</a> - a tour with stereoscopic panos.</li>
+	<li>New: <a href="examples.html#depthmap-tour">Depthmap-Tour Abu Simbel</a> - a full-featured demo tour using depthmaps.</li>
+	<li>New: <a hreF="examples.html#depthmap-tour-everpano">Depthmap-Tour Gravina Apartment</a> - a depthmap tour build by everpano 3D.</li>
+	<li>New: <a href="examples.html#depthmap-images">Depthmap-Images</a> - some depthmap image examples.</li>
+	<li>New: <a href="examples.html#depthmap-helper">Depthmap-Image Helper Tool</a> - a helper tool for finding settings for depthmap images.</li>
+	<li>New: <a href="examples.html#followmouse">Follow Mouse</a> - let the view automatically  follow the mouse-cursor.</li>
+	<li>New: <a href="examples.html#littleplanetintro">Little Planet Intro</a> - a demo of the Little Planet Intro feature.</li>
+	<li>New: <a href="examples.html#petapixel">Petapixel Demo</a> - provide also a partial-pano example.</li>
+	<li>New: <a href="examples.html#partialpano">Partial-Pano: Rome</a> - a multi-resolution partial-pano with controls for fov changing.</li>
+	<li>New: <a href="examples.html#partialpano">Partial-Pano: St. Peter's Basilica</a> - a multi-resolution partial-pano.</li>
+	<li>New: <a href="examples.html#partialpano">Partial-Panos: Colosseum</a> - a multi-resolution partial-pano tour.</li>
+	<li>New: <a href="examples.html#partialpano">Partial-Pano: Trevi Fountain</a> - a multi-resolution flat- and partial-pano example.</li>
+	<li>New: <a href="examples.html#pp-demo">Postprocessing Plugins Demo</a> - a demo of the new postprocessing plugins.</li> 
+	<li>New: <a href="examples.html#pp-blur">Postprocessing Demo: Popups with Background-Blur</a>.</li>
+	<li>New: <a href="examples.html#pp-sharpen">Postprocessing Demo: Zoom-based Sharpening</a>.</li>
+	<li>New: <a href="examples.html#webvr">WebVR</a> - an updated WebVR demo.</li>
+	<li>New: <a href="examples.html#webvr-controllers">WebVR VR-Controllers</a> - a demo of the VR-Controller support.</li>
+	<li>New: <a href="examples.html#droneattack">WebVR Drone Attack</a> - a shooter game as tech-demo of the new features.</li>
+	<li>Some examples are automatically using higher-resolution images or videos when running on the krpano server.
+		The images included in the download package are reduced in size and quality to save space.
+	</li>
+</ul>
+
+<br>
+
+
+
+				</div>
+			</div>
+		</div>
+		<div id="krpano_footerwrapper">
+			<div id="krpano_footer">
+				<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td align="right">Copyright &copy; krpano.com</td></tr></tbody></table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

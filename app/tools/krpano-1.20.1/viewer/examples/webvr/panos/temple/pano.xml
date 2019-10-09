@@ -1,0 +1,7 @@
+<krpano title="Meenakshi-Sundareshwara Temple, Madurai">
+	
+	<image stereo="true" stereolabels="left|right" stereooffset="+1.4">
+		<cube url="pano01_%t_%s.jpg" />
+	</image>
+
+</krpano>

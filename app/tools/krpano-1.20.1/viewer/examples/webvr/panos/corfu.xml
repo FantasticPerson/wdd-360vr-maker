@@ -1,0 +1,94 @@
+﻿<krpano title="Corfu Holiday Trip">
+
+	<scene name="scene_achilleion-hof-unten" title="Achilleion - Garden" onstart="" thumburl="../../demotour-corfu/panos/achilleion-hof-unten.tiles/thumb.jpg" lat="39.563340" lng="19.904324" heading="0.0" autoload="true">
+
+		<view hlookat="-1" vlookat="11" fovtype="MFOV" fov="120" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="../../demotour-corfu/panos/achilleion-hof-unten.tiles/preview.jpg" />
+
+		<image>
+			<cube url="../../demotour-corfu/panos/achilleion-hof-unten.tiles/mobile_%s.jpg" if="browser.domain != 'krpano.com'" />
+			<cube url="https://krpano.com/tours/corfu/panos/achilleion-hof-unten.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536,2816" if="browser.domain == 'krpano.com'" />
+		</image>
+
+	</scene>
+
+	<scene name="scene_canaldemure5" title="Canal d&#180;Amour 2" onstart="" thumburl="../../demotour-corfu/panos/canaldemure5.tiles/thumb.jpg" lat="39.796233694" lng="19.70181763" heading="0.0">
+
+		<view hlookat="-118" vlookat="4" fovtype="MFOV" fov="132" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="../../demotour-corfu/panos/canaldemure5.tiles/preview.jpg" />
+
+		<image>
+			<cube url="../../demotour-corfu/panos/canaldemure5.tiles/mobile_%s.jpg" if="browser.domain != 'krpano.com'" />
+			<cube url="https://krpano.com/tours/corfu/panos/canaldemure5.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536,2816" if="browser.domain == 'krpano.com'" />
+		</image>
+
+	</scene>
+
+	<scene name="scene_kalamaki-strand" title="Kalamaki Beach 2" onstart="" thumburl="../../demotour-corfu/panos/kalamaki-strand.tiles/thumb.jpg" lat="39.7989065" lng="19.8847845" heading="0.0">
+
+		<view hlookat="18" vlookat="1" fovtype="MFOV" fov="120" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="../../demotour-corfu/panos/kalamaki-strand.tiles/preview.jpg" />
+
+		<image>
+			<cube url="../../demotour-corfu/panos/kalamaki-strand.tiles/mobile_%s.jpg" if="browser.domain != 'krpano.com'" />
+			<cube url="https://krpano.com/tours/corfu/panos/kalamaki-strand.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,1152,2176" if="browser.domain == 'krpano.com'" />
+		</image>
+
+	</scene>
+
+	<scene name="scene_kassiopi-felsen" title="Kassiopi Beach 2" onstart="" thumburl="../../demotour-corfu/panos/kassiopi-felsen.tiles/thumb.jpg" lat="39.79083003" lng="19.92507129" heading="0.0">
+
+		<view hlookat="-4" vlookat="18" fovtype="MFOV" fov="110" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="../../demotour-corfu/panos/kassiopi-felsen.tiles/preview.jpg" />
+
+		<image>
+			<cube url="../../demotour-corfu/panos/kassiopi-felsen.tiles/mobile_%s.jpg" if="browser.domain != 'krpano.com'" />
+			<cube url="https://krpano.com/tours/corfu/panos/kassiopi-felsen.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536,2816" if="browser.domain == 'krpano.com'" />
+		</image>
+
+	</scene>
+
+	<scene name="scene_korfu-stadt-alte-festung-ganz-oben" title="Corfu Old Fortress 1" onstart="" thumburl="../../demotour-corfu/panos/korfu-stadt-alte-festung-ganz-oben.tiles/thumb.jpg" lat="39.62343265" lng="19.9288907" heading="0.0">
+
+		<view hlookat="123" vlookat="17" fovtype="MFOV" fov="133" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="../../demotour-corfu/panos/korfu-stadt-alte-festung-ganz-oben.tiles/preview.jpg" />
+
+		<image>
+			<cube url="../../demotour-corfu/panos/korfu-stadt-alte-festung-ganz-oben.tiles/mobile_%s.jpg" if="browser.domain != 'krpano.com'" />
+			<cube url="https://krpano.com/tours/corfu/panos/korfu-stadt-alte-festung-ganz-oben.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536,2816" if="browser.domain == 'krpano.com'" />
+		</image>
+
+	</scene>
+
+	<scene name="scene_pantokrator-antenne" title="Mount Pantokrator - Communication Station" onstart="" thumburl="../../demotour-corfu/panos/pantokrator-antenne.tiles/thumb.jpg" lat="39.74802500" lng="19.87182944" heading="0.0">
+
+		<view hlookat="-3" vlookat="4" fovtype="MFOV" fov="130" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="../../demotour-corfu/panos/pantokrator-antenne.tiles/preview.jpg" />
+
+		<image>
+			<cube url="../../demotour-corfu/panos/pantokrator-antenne.tiles/mobile_%s.jpg" if="browser.domain != 'krpano.com'" />
+			<cube url="https://krpano.com/tours/corfu/panos/pantokrator-antenne.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536,2816" if="browser.domain == 'krpano.com'" />
+		</image>
+
+	</scene>
+
+	<scene name="scene_pantokrator-kloster" title="Mount Pantokrator - Monastery" onstart="" thumburl="../../demotour-corfu/panos/pantokrator-kloster.tiles/thumb.jpg" lat="39.74836333" lng="19.87214583" heading="0.0">
+
+		<view hlookat="0" vlookat="0" fovtype="MFOV" fov="120" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="../../demotour-corfu/panos/pantokrator-kloster.tiles/preview.jpg" />
+
+		<image>
+			<cube url="../../demotour-corfu/panos/pantokrator-kloster.tiles/mobile_%s.jpg" if="browser.domain != 'krpano.com'" />
+			<cube url="https://krpano.com/tours/corfu/panos/pantokrator-kloster.tiles/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="512,768,1536,2816" if="browser.domain == 'krpano.com'" />
+		</image>
+
+	</scene>
+
+</krpano>
