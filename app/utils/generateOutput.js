@@ -82,6 +82,7 @@ export function GenerateOutput(vrItem,sceneList,hotpotList,groupList,allSceneLis
             } else {
                 fse.copySync(path.resolve(srcPath,`./${IMG_NAME_ARR[j]}`),path.resolve(destPath,`./${IMG_NAME_ARR[j]}`))
             }
+            fse.copySync(path.resolve(srcPath,`./thumb.jpg`),path.resolve(destPath,`./preview.jpg`))
             // fse.moveSync()
         }
     }
