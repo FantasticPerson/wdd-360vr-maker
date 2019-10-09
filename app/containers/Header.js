@@ -14,6 +14,8 @@ import { getPreviewUrl } from '../native/pathUtils'
 import packageKrpano from '../native/packageKrpano'
 import { updateAppShowType } from '../actions/app'
 
+import Hotpot from '../modals/Hotpot'
+
 import { APP_SHOW_TYPE_VR, APP_SHOW_TYPE_PIC, APP_SHOW_TYPE_AUDIO } from '../actions/app'
 
 class Header extends Component {
@@ -33,8 +35,12 @@ class Header extends Component {
     }
 
     onSaveClick() {
-        const { vrItem, sceneList, hotpotList, groupList, allSceneList } = this.props
-        GenerateOutput(vrItem, sceneList, hotpotList, groupList, allSceneList)
+        Hotpot.findAll().then(list=>{
+            const { vrItem, sceneList, hotpotList, groupList, allSceneList } = this.props
+            console.log(hotpotList)
+            GenerateOutput(vrItem, sceneList, list, groupList, allSceneList)
+        })
+        
     }
 
     onPreviewClick() {
@@ -130,7 +136,8 @@ let headerConfig = {
     hotpotList: true,
     groupList: true,
     allSceneList: true,
-    appShowType: true
+    appShowType: true,
+    allHospotList:true
 }
 
 export default connect(getSelector(headerConfig), mapDispatchToProps)(Header);
