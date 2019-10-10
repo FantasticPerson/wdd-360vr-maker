@@ -1,0 +1,9 @@
+﻿<krpano>
+
+	<preview url="Bluebonnet-3-L.tiles/preview.jpg" />
+
+	<image stereo="true" stereolabels="L|R">
+		<cube url="Bluebonnet-3-%t.tiles/pano_%s.jpg" />
+	</image>
+	
+</krpano>

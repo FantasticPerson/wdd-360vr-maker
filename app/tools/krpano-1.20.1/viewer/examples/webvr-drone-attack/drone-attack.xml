@@ -1,0 +1,481 @@
+<!--
+	krpano VR - Drone Attack
+
+	A small game as tech-demo for some krpano features:
+	- WebVR with Positional-tracking
+	- VR-Controllers
+	- 3D-Hotspots
+	- 3D-Sounds
+	- Post-Processing
+	- Javascript Actions
+-->
+
+<krpano debugjsactions="true">
+
+	<!-- soundinterface plugin -->
+	<plugin name="soundinterface"
+		url="%VIEWER%/plugins/soundinterface.js"
+		preload="true"
+		/>
+
+	<action autorun="onstart" type="Javascript"><![CDATA[
+
+		<!-- preload the sounds for lower latency when playing them later -->
+		krpano.preloadsound('%CURRENTXML%/res/explosion.wav');
+		krpano.preloadsound('%CURRENTXML%/res/shoot.wav');
+		krpano.preloadsound('%CURRENTXML%/res/The Dawn - Waiting for the sun.mp3');
+		
+		<!-- add an action for playing an explosion sound -->
+		krpano.explosionsound = function(volume, x, y, z)
+		{
+			if ( !isNaN(x+y+z) )
+			{
+				var sound = krpano.playsound_at_xyz('auto', '%CURRENTXML%/res/explosion.wav', x,y,z, false, volume);
+				sound.setup3d(10000.0, 0.1);
+			}
+			else
+			{
+				krpano.playsound('auto', '%CURRENTXML%/res/explosion.wav', false, volume);
+			}
+		}
+
+		<!-- add an action for playing an shoot sound at a hotspot position -->
+		krpano.shootsound_at_hs = function(volume, hotspotname)
+		{
+			var sound = krpano.playsound_at_hotspot('auto', '%CURRENTXML%/res/shoot.wav', hotspotname, false, volume);
+			sound.setup3d(10000.0, 0.1);
+		}
+
+	]]></action>
+
+
+
+	<!-- got-hit post-processing effect (a color-shift + color-blend effect) -->
+	<plugin name="pp_hit_effect"
+		url="pp_hit_effect.js"
+		effect="0.0"
+		/>
+
+	<!-- apply the effect + slow-down, then speed-up the background-sound -->
+	<action name="hit_effect">
+		tween(plugin[pp_hit_effect].effect, 0.5, 1.0, easeOutBack,
+			tween(plugin[pp_hit_effect].effect, 0.0, 1.0, easeOutQuint);
+		);
+		tween(sound[bg].speed, 0.5, 1.0, default,
+			tween(sound[bg].speed, 1.0, 3.0, easeOutBack);
+		);
+	</action>
+
+
+
+	<!-- webvr -->
+	<include url="%VIEWER%/plugins/webvr.xml" />
+	
+	<!-- overwrite/adjust some settings (for better performance) -->
+	<plugin name="webvr"
+		auto_oversampling="false"
+		/>
+		
+	<!-- move the default vr-cursor from the webvr.xml farther away -->
+	<style name="vr_cursor_style" depth="1000" />
+
+	<!-- overwrite/redesign the 'vrcontroller_laser' style from the webvr.xml -->
+	<style name="vrcontroller_laser"
+			url="res/laser.png"
+			crop="0|0|64|512"
+			onvrcontrollerbutton="
+			if(pressed,
+				tween(alpha,1,0);
+				set(crop, '0|512|64|512');
+				set(width, 2);
+				shootsound_at_hs(0.7, get(name));
+				tween(alpha,0,0.5);
+			  ,
+				set(crop, '0|0|64|512');
+				set(width,0.5);
+				tween(alpha,1,0);
+			);"
+			handrotate=""
+			onloaded.addevent="renderloop( calc(handrotate,'0|'+(random*360)+'|0|ZXY'); );"
+			/>
+
+	<!-- remove the default 'Enter VR' button from the webvr.xml -->
+	<action autorun="onstart">
+		removelayer(webvr_enterbutton);
+	</action>
+
+	<!-- custom webvr events - load the new vr-controller style and show the new 'Enter VR' button -->
+	<events name="game_webvr_events"
+		webvr_onavailable="webvr_load_vr_controller_hs('vrcontroller_laser');"
+		webvr_onentervr="set(layer[entervrbutton].visible,false);"
+		webvr_onexitvr="set(layer[entervrbutton].visible,true); pausegame();"
+		/>
+
+
+	<!-- a pano as background -->
+	<preview url="pano/preview.jpg" />
+	<image>
+		<cube url="pano/pano_%s.jpg" />
+
+		<!-- a small 'trick' - use an 'empty' depthmap and render the pano image far away as 'background' -->
+		<depthmap url="depthmap.depth" enabled="true" rendermode="3dmodel" background="pano" />
+	</image>
+
+
+	<!-- the 'Enter VR' button -->
+	<layer name="entervrbutton" type="text"
+		html="[span style='font-size:26px;font-weight:bold;']ENTER VR MODE[/span][br][br]A VR-Headset with VR-Controllers is recommended!"
+		css="text-align:center;color:#FFFFFF;font-size:14px;"
+		bg="true" bgcolor="0x000000" bgalpha="0.4" bgroundedge="5" padding="10 20"
+		align="center" y="15%"
+		onclick="entervr();"
+		/>
+
+	<!-- some info text -->
+	<layer name="infotext" type="text"
+		align="bottom" y="10"
+		html="Just a little krpano tech demo..."
+		css="text-align:center;color:#FFFFFF;font-size:11px;font-style:italic;"
+		bg="false"
+		enabled="false"
+		/>
+
+
+	<!-- the game title / intro-text -->
+	<hotspot name="introtext" type="text" enabled="false"
+		html="krpano VR[br][span style='font-size:60px;']Drone Attack[/span]"
+		css="color:#FFFFFF; font-size:40px; font-weight:bold; text-align:center; font-style:italic;"
+		bg="true" bgcolor="0xFFFFFF" bgalpha="0.004" padding="4 8"
+		distorted="true" depth="0" tz="1000" ty="-160" oversampling="2"
+		/>
+
+
+	<!-- the start the game (or resume a paused game) button -->
+	<hotspot name="shootheretostart" type="text"
+		html="Shoot here to start..."
+		css="color:#FFFFFF; font-size:40px; font-weight:bold; text-align:center; font-style:italic;"
+		bg="true" bgcolor="0x000000" bgalpha="0.40" bgroundedge="5" padding="4 16"
+		distorted="true" depth="0" tz="2000" ty="300" oversampling="2"
+		visible="false"
+		onclick="explosionsound(0.5); startgame();"
+		/>
+
+
+	<!-- the floor / player-platform -->
+	<hotspot name="floor" keep="true" capture="false"
+		url="res/floor.jpg" alpha="0.7"
+		width="400" height="400" scale="0.5" distorted="true" depth="0"
+		rotationorder="xyz" rx="-90"
+		torigin="world" tx="0" ty="160" tz="0"
+		depthbuffer="true"
+		vr_timeout="200"
+		ondown="set(enabled,false);delayedcall(0,set(enabled,true)); showexplosion(calc((hitx-0.5)*width), calc(ty-10), calc(-(hity-0.5)*height), 0.04, 0.5);"
+		/>
+
+
+	<!-- a hotspot to show the current state, e.g. the current lives or the gameover and the score -->
+	<hotspot name="gamestate" type="text"
+		html=""
+		css="color:#FFFFFF; font-size:40px; font-weight:bold; text-align:center; font-style:italic;"
+		padding="4 8"
+		bg="true"
+		bgcolor="0xFFFFFF"
+		bgalpha="0.004"
+		oversampling="2"
+		distorted="true"
+		enabled="false"
+		depth="0" scale="0.2"
+		rotationorder="xyz" rx="0"
+		edge="bottom"
+		torigin="world" tx="0" ty="158" tz="180"
+		depthbuffer="true"
+		/>
+
+
+
+	<action name="entervr">
+		<!-- enter the VR mode -->
+		webvr.enterVR();
+
+		<!-- start a slow moving-out animation of the intro-text -->
+		set(hotspot[introtext].tz, 2000);
+		tween(hotspot[introtext].tz, 1000, 30.0);
+
+		<!-- fade-in the 'shoot here to start' button to start the game -->
+		set(hotspot[shootheretostart], alpha=0, visible=true);
+		tween(hotspot[shootheretostart].alpha, 1.0, 2.0);
+	</action>
+
+
+	<action name="pausegame">
+		set(gameplay.state, 'paused');
+
+		<!-- show the 'shoot here to start' button to resume the game -->
+		set(hotspot[shootheretostart], alpha=1, visible=true, enabled=true);
+
+		<!-- pause the background sound -->
+		pausesound(bg);
+	</action>
+
+
+	<action name="startgame">
+		<!-- start playing or resume the background sound -->
+		if(sound[bg],
+			sound[bg].play();
+			tween(sound[bg].volume, 0.5);
+		  ,
+			playsound(bg, '%CURRENTXML%/res/The Dawn - Waiting for the sun.mp3', true, 0.0);
+			tween(sound[bg].volume, 0.5, 1.0);
+		);
+
+		<!-- move and fadeout the intro-text -->
+		tween(hotspot[introtext].tz, -200, 5.0, linear, set(hotspot[introtext].visible,false));
+		tween(hotspot[introtext].alpha, 0.0, 5.0, easeInExpo);
+
+		<!-- fade-out the 'shoot here to start' button -->
+		set(hotspot[shootheretostart].enabled, false);
+		tween(hotspot[shootheretostart].alpha, 0.0, 1.5);
+		tween(hotspot[shootheretostart].rx, -1080.0, 1.5, default, set(hotspot[shootheretostart].rx,0); );
+
+		<!-- start playing -->
+		set(gameplay.state, 'playing');
+		show_gameplay_state();
+	</action>
+
+
+
+	<!-- the drone / robots style -->
+	<style name="robot"
+		url="res/robot.png"
+		zoom="true"
+		vr_timeout="50"
+		oy="20"
+		depth="0"
+		width="100"
+		height="prop"
+		depthbuffer="true"
+		ondown="explode_robot(); inc_score();"
+		alpha="0"
+		/>
+
+
+	<!-- the explosion style + animaton -->
+	<style name="explosion"
+		url="res/explosion.png"
+		crop="0|0|100|100"
+		zoom="true"
+		depth="0"
+		width="400"
+		height="prop"
+		depthbuffer="true"
+		enabled="false"
+		/>
+
+	<action autorun="onstart" type="Javascript"><![CDATA[
+
+		krpano.showexplosion = function(x,y,z, scale, volume)
+		{
+			krpano.explosionsound(volume, x,y,z);
+
+			var hs = krpano.addhotspot();
+			hs.loadstyle("explosion");
+			hs.tx = x;
+			hs.ty = y;
+			hs.tz = z;
+			hs.scale = scale;
+
+			var xframes = 7;
+			var totalframes = 7 * 7;
+			var frame = 0;
+
+			krpano.actions.renderloop(function()
+			{
+				var xpos = (frame % xframes) * 100;
+				var ypos = ((frame / xframes) | 0) * 100;
+				hs.crop = xpos + '|' + ypos + '|100|100';
+				frame++;
+				if (frame == totalframes)
+				{
+					krpano.removehotspot(hs.name);
+					krpano.actions.stoprenderloop();
+				}
+			});
+		}
+
+	]]></action>
+
+	<action name="explode_robot" type="Javascript"><![CDATA[
+		if (caller.hit != true && krpano.gameplay.state == 'playing')
+		{
+			caller.hit = true;
+
+			krpano.showexplosion(caller.tx, caller.ty, caller.tz, 1.0, 1.0);
+
+			krpano.resetrobot(caller);
+		}
+	]]></action>
+
+
+
+	<gameplay
+		state="paused"
+		lives.number="5"
+		score.number="0.0"
+		speed.number="7.0"
+		playtime.number="0.0"
+		/>
+
+	<action autorun="onstart" type="Javascript"><![CDATA[
+
+		krpano.show_gameplay_state = function()
+		{
+			var hs = krpano.get("hotspot[gamestate]");
+
+			var lives = krpano.gameplay.lives;
+			if (lives > 0)
+			{
+				hs.html = "Lives: " + lives;
+				hs.ty = 158;
+			}
+			else
+			{
+				hs.html = "Game Over[br]Your Score: "+krpano.gameplay.score;
+				hs.ty = 0;
+			}
+		}
+
+		krpano.inc_score = function()
+		{
+			krpano.gameplay.score += Math.ceil( krpano.gameplay.speed );
+		}
+
+
+		function rnd(rmin, rmax)
+		{
+			return rmin + Math.random() * (rmax - rmin);
+		}
+
+		function resetrobot(hs)
+		{
+			var distance = 50;
+
+			hs.tz = rnd(100, 400) * distance;
+			hs.tx = rnd(-400, +400) * distance;
+			hs.ty = rnd(-100, +100) * distance;
+			hs.alpha = 0;
+			hs.hit = false;
+		}
+
+		krpano.resetrobot = resetrobot;
+
+
+		function addrobot()
+		{
+			var hs = krpano.addhotspot();
+			hs.loadstyle("robot");
+			resetrobot(hs);
+			return hs;
+		}
+
+
+		var robots_cnt = 50;
+		var robots = [];
+
+		for (var i=0; i < robots_cnt; i++)
+		{
+			robots.push( addrobot() );
+		}
+
+
+		function gameover()
+		{
+			krpano.set("sound[bg].volume", 0.2);
+
+			var hs = krpano.get("hotspot[shootheretostart]");
+			krpano.actions.delayedcall(2.0, function()
+			{
+				hs.alpha = 0;
+				hs.visible = true;
+				hs.enabled = true;
+				krpano.call("tween(alpha,1.0);", hs);
+			});
+
+			krpano.gameplay.state = "gameover";
+
+			// reset gameplay
+			krpano.gameplay.lives = 5;
+			krpano.gameplay.speed = 7;
+			krpano.gameplay.score = 0;
+			krpano.gameplay.playtime = 0;
+
+			for (var i=0; i < robots_cnt; i++)
+			{
+				resetrobot( robots[i] );
+			}
+		}
+
+		var kview = krpano.view;
+
+		function gameplay_tick(deltatime)
+		{
+			krpano.gameplay.playtime += deltatime;
+		
+			var speed = krpano.gameplay.speed * (deltatime/16);
+			
+			// get slowly faster over time
+			krpano.gameplay.speed += krpano.gameplay.playtime / (100*1000*1000);
+			
+			for (var i=0; i < robots.length; i++)
+			{
+				var robot = robots[i];
+
+				var dx = robot.tx - kview.tx;
+				var dy = robot.ty - kview.ty;
+				var dz = robot.tz - kview.tz;
+
+				var d = Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+				robot.alpha = 1.0 - Math.min(Math.max((d - 50*100) / 1000,0),1.0);
+
+				if (d < 100)
+				{
+					krpano.call("explode_robot(); hit_effect(); ", robot);
+
+					krpano.gameplay.speed -= 0.2;
+					krpano.gameplay.lives--;
+
+					krpano.show_gameplay_state();
+
+					if (krpano.gameplay.lives <= 0)
+					{
+						gameover();
+						break;
+					}
+				}
+				else
+				{
+					var robotspeed = -speed / d;
+					robot.tx += robotspeed * dx;
+					robot.ty += robotspeed * dy;
+					robot.tz += robotspeed * dz;
+				}
+			}
+		}
+
+		var lasttick = krpano.timertick;
+
+		krpano.actions.renderloop(function()
+		{
+			var tick = krpano.timertick;
+			var dt = tick - lasttick;
+			lasttick = tick;
+		
+			if (krpano.gameplay.state == "playing")
+			{
+				gameplay_tick(dt);
+			}
+		});
+
+	]]></action>
+
+</krpano>

@@ -1,0 +1,1212 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+	<meta name="format-detection" content="telephone=no" />
+	<link rel="stylesheet" type="text/css" href="../design.css"/>
+	<title>krpano Documentation</title>
+	<script>
+		function toggle_mobile_nav(){var t=document,n=t.getElementById("krpano_contentnav"),m=t.getElementById("krpano_mobile_menu_bg");t=n.state!=2;n.state=t?2:1;n.style.height=t?"auto":"24px";m.style.display=t?"block":"none";t=t?"add":"remove";n.classList[t]("krpano_contentnav_opened");t+="EventListener";n[t]("click",toggle_mobile_nav,false);m[t]("mousedown",toggle_mobile_nav,false);}
+	</script>
+</head>
+<body>
+	<div id="krpano_root">
+		<div id="krpano_headerwrapper">
+			<div id="krpano_header">
+				<div id="krpano_mainmenu">
+					krpano 1.20.1 <span class="smallcomment">(build 2019-10-02)</span>
+				</div>
+			</div>
+			<div id="krpano_imagebar"></div>
+			
+			<div id="krpano_logo_container">
+				<a id="krpano_logo" href="https://krpano.com"><span>krpano.com</span></a>
+			</div>
+			
+			<div id="krpano_imagebar_links">
+				Documentation
+			</div>
+		</div>
+		
+		<div id="krpano_contentwrapper">
+			<div id="krpano_mobile_menuicon" onclick="toggle_mobile_nav();"><span class="burgermenu"></span></div>
+			<div id="krpano_mobile_menu_bg"></div>
+			<div id="krpano_content">
+				<div id="krpano_contentnav">
+					<h2><a href="#top" class="selflink">Documentation</a></h2>
+					<ul>
+						<li><a href="../embedpano.html#top">Embedding</a></li>
+						<li><a href="../xml.html#top">XML Reference</a></li>
+						<li><a href="../actions.html#top">Actions / Scripting</a></li>
+						<li><a href="../plugin_api.html#top">Plugin&nbsp;Interface</a></li>
+						<li><a href="../js_api.html#top">Javascript Interface</a></li>
+						<li><a href="../localusage.html#top">Local / Offline Usage</a></li>
+						<li><a href="../releasenotes.html#top">Release Notes</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Plugins</a></h2>
+					<ul>
+						<li><a href="bingmaps.html#top">Bing Maps</a></li>
+						<li><a href="combobox.html#top">Combobox</a></li>
+						<li><a href="googlemaps.html#top">Google Maps</a></li>
+						<li><a href="gyro2.html#top">Gyro2</a></li>
+						<li><a href="postprocessing.html#top">Postprocessing</a></li>
+						<li><a href="radar.html#top">Radar</a></li>
+						<li><a href="scrollarea.html#top">ScrollArea</a></li>
+						<li><a href="showtext.html#top">Showtext</a></li>
+						<li><a href="snow.html#top">Snow / Rain</a></li>
+						<li><a href="soundinterface.html#top">Soundinterface</a></li>
+						<li><a href="../textfield.html#top">Textfield</a></li>
+						<li><a href="videoplayer.html#top">Videoplayer</a></li>
+						<li><a href="webvr.html#top">WebVR</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Tools</a></h2>
+					<ul>
+						
+						<li><a href="../tools/config.html#top">Config File Reference</a></li>
+						<li><a href="../tools/testingserver.html#top">krpano Testing Server</a></li>
+					</ul>
+					<h2><a href="#top" class="selflink">Examples</a></h2>
+					<ul>
+						<li><a href="../examples.html#top">All Examples</a></li>
+						<li><a href="../examples.html?depthmap#top">Depthmap</a></li>
+						<li><a href="../examples.html?js#top">Javascript</a></li>
+						<li><a href="../examples.html?multires#top">Multiresolution</a></li>
+						<li><a href="../examples.html?panovideo#top">Panoramic Video</a></li>
+						<li><a href="../examples.html?vtour#top">Virtual Tours</a></li>
+						<li><a href="../examples.html?webvr#top">WebVR</a></li>
+					</ul>
+				</div>
+				<a name="top" class="toplink">&nbsp;</a>
+				<div id="krpano_contenttext">
+
+					<noscript>
+						<table style="width:100%; height:400px; position:fixed; left:95px; top:220px;"><tr valign="middle"><td><center><h1>
+							<span style="color:#FFFFFF; background:#FF0000; padding:15px;">
+								Javascript must be activated for this page!
+							</span>
+						</h1></center></td></tr></table>
+					</noscript>
+
+					
+
+	<h1>WebVR Plugin
+		<span class="pluginfilename">webvr.js</span>
+		
+	</h1>
+	
+	<div class="paragraph">
+		<a name="webvr_notes"></a>
+		<a name="mobilevr_notes"></a>
+		<ul>
+			<li>krpano WebVR / MobileVR support:
+				<ul>
+					<li><u>WebVR</u> support means using the browsers <a href="https://developer.mozilla.org/en/docs/Web/API/WebVR_API">WebVR API</a>
+						when available. Here the browser and system will do the head- and position-tracking
+						and the lens-distortion.
+						That's the best-quality and best-performance case but requires a system and a browser with WebVR support.
+					</li>
+					<li><u>MobileVR</u> support means 'manual' VR support for mobile devices.
+						That will be used as fallback when the browser doesn't support the WebVR API.
+						Here the accelerometer and gyroscope sensors of the mobile device will be used
+						for the head-tracking and the lens-distortion will be done manually.
+						For getting the correct lens-distortion settings it can be necessary adjust the settings manually
+						for the specific headset. 
+					</li>
+				</ul>
+			</li>
+			<li>Experience any  panoramic image or video (normal and stereoscopic) in 3D Virtual Reality mode directly
+				inside the browser. When using <a href="../xml.html#depthmap">depthmap-panos</a>
+				additionally also with positional-tracking.
+			</li>
+			
+		</ul>
+	</div>
+
+	
+	<div class="paragraph">
+		<h2><a name="topics" href="#topics" class="selflink">Topics</a></h2>
+		<ul>
+			<li><a href="#syntax">Syntax</a></li>
+			<li><a href="#attributes">Plugin Attributes</a></li>
+			<li><a href="#stateattributes">Plugin State Variables</a></li>
+			<li><a href="#events">Plugin Events</a></li>
+			<li><a href="#actions">Plugin Actions</a></li>
+			
+			<li><a href="#iframe">iFrame Support</a></li>
+			
+		</ul>
+	</div>
+	
+	
+	<div class="paragraph">
+		<h2><a name="syntax" href="#syntax" class="selflink">Syntax</a></h2>
+
+		<pre class="xmlpre">&lt;<a href="../xml.html#plugin">plugin</a> <a href="../xml.html#plugin.name">name</a>="webvr" <a href="../xml.html#devices-notes">devices</a>="html5" <a href="../xml.html#plugin.keep">keep</a>="true"
+        <a href="../xml.html#plugin.url">url</a>="webvr.js"
+        <a href="#postracking" class="pluginattrib">postracking</a>="auto"
+        <a href="#oversampling" class="pluginattrib">oversampling</a>="1.0"
+        <a href="#fullscreen_mirroring" class="pluginattrib">fullscreen_mirroring</a>="false"
+        <a href="#mouse_pointerlock" class="pluginattrib">mouse_pointerlock</a>="true"
+        <a href="#mobilevr_support" class="pluginattrib">mobilevr_support</a>="true"
+        <a href="#mobilevr_fake_support" class="pluginattrib">mobilevr_fake_support</a>="true"
+        <a href="#mobilevr_touch_support" class="pluginattrib">mobilevr_touch_support</a>="false"
+        <a href="#mobilevr_profile" class="pluginattrib">mobilevr_profile</a>="80|60|42|35|0.441|0.156"
+        <a href="#mobilevr_screensize" class="pluginattrib">mobilevr_screensize</a>="auto"
+        <a href="#mobilevr_database_support" class="pluginattrib">mobilevr_database_support</a>="xml|internal|external"
+        <a href="#mobilevr_database_url" class="pluginattrib">mobilevr_database_url</a>="https://dpdb.webvr.rocks/dpdb.json"
+        <a href="#vr_cursor" class="pluginattrib">vr_cursor</a>=""
+        <a href="#vr_cursor_enabled" class="pluginattrib">vr_cursor_enabled</a>="true"
+        <a href="#vr_cursor_onover" class="pluginattrib">vr_cursor_onover</a>=""
+        <a href="#vr_cursor_onout" class="pluginattrib">vr_cursor_onout</a>=""
+        <a href="#vr_controller_support" class="pluginattrib">vr_controller_support</a>="true"
+        <a href="#vr_controller" class="pluginattrib">vr_controller</a>=""
+        <a href="#vr_controller_clickbuttons" class="pluginattrib">vr_controller_clickbuttons</a>="0,1"
+        <a href="#onavailable" class="pluginattrib">onavailable</a>=""
+        <a href="#onunavailable" class="pluginattrib">onunavailable</a>=""
+        <a href="#onunknowndevice" class="pluginattrib">onunknowndevice</a>=""
+        <a href="#onvrcontrollers" class="pluginattrib">onvrcontrollers</a>=""
+        <a href="#onvrcontrollerbutton" class="pluginattrib">onvrcontrollerbutton</a>=""
+        <a href="#onhavepostracking" class="pluginattrib">onhavepostracking</a>=""
+        <a href="#onentervr" class="pluginattrib">onentervr</a>=""
+        <a href="#onexitvr" class="pluginattrib">onexitvr</a>=""
+        /&gt;</pre>
+        
+        <div class="paragraph">
+			After loading the plugin will be additionally also available as global <span class="pre">webvr</span> variable.
+		</div>
+
+        <h2><a name="krpanoevents" href="#krpanoevents" class="selflink">krpano Events</a></h2>
+        Additionally to the plugin events, the plugin also dispatches these <a href="../xml.html#events">krpano events</a>:
+		<pre class="xmlpre">
+&lt;events <a href="#onavailable" class="pluginattrib">webvr_onavailable</a>=""
+        <a href="#onunavailable" class="pluginattrib">webvr_onunavailable</a>=""
+        <a href="#onunknowndevice" class="pluginattrib">webvr_onunknowndevice</a>=""
+        <a href="#onvrcontrollers" class="pluginattrib">webvr_onvrcontrollers</a>=""
+        <a href="#onvrcontrollerbutton" class="pluginattrib">webvr_onvrcontrollerbutton</a>=""
+        <a href="#onhavepostracking" class="pluginattrib">webvr_onhavepostracking</a>=""
+        <a href="#onentervr" class="pluginattrib">webvr_onentervr</a>=""
+        <a href="#onexitvr" class="pluginattrib">webvr_onexitvr</a>=""
+        /&gt;</pre>
+        <br>
+	</div>
+	
+	
+	<div class="paragraph">
+		<h2><a name="attributes" href="#attributes" class="selflink">Plugin Attributes</a></h2>
+		
+		<div style="padding-left:1px;padding-top:0;">
+		<table class="xmlattrdoc" style="table-layout:fixed;">
+			
+			
+			<tr class="xmlattrdocdes1">
+				<td style="width:50%;"><a name="postracking"></a>Attribute name</td>
+				<td style="width:22%;">Type</td>
+				<td style="width:28%;">Default value</td>
+			</tr>
+			<tr><th><a href="#postracking" class="selflink">postracking</a></th><th>String</th><th>"auto"</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Enable VR Positional-Tracking.</li>
+						<li>Requires a VR headset with positional-tracking support, otherwise it has no effect. </li>
+						<li>The current position will be added to the <a href="../xml.html#view.tx">view.tx/ty/tz</a> settings.</li>
+						<li>When positional-tracking is available the <a href="#onhavepostracking">onhavepostracking</a> event will be called.</li>
+						<li>Available settings:
+							<ul>
+								<li><span class="pre">auto</span> - Automatically enable positional-tracking when using <a href="../xml.html#depthmap">depthmap-panos</a>.</li>
+								<li><span class="pre">true</span> - Always enable positional-tracking (when available by the VR hardware).<br>
+									But note - normal panoramic images would get distorted when not viewed from their normal image-center!
+								</li>
+								<li><span class="pre">false</span> - Always disable positional-tracking.</li>
+							</ul>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="hlookatoffset"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#hlookatoffset" class="selflink">hlookatoffset</a></th><th>Number</th><th>0.0</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>A custom offset to the horizontal looking position (<a href="../xml.html#view.hlookat">view.hlookat</a>)  in degrees.</li>
+						<li>Can be used to rotate the view independently and additionally to the users viewing.</li> 
+					</ul>
+				</td>
+			</tr>
+			
+			
+			<tr class="xmlattrdocdesc"><td><a name="oversampling"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#oversampling" class="selflink">oversampling</a></th><th>Number</th><th>1.0</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>An oversampling scale-factor for the rendering resolution.</li>
+						<li>Higher values will increase the image-quality, but require more GPU processing power.</li>
+						<li>Lower values will lower the image-quality and require fewer GPU processing power.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="auto_oversampling"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#auto_oversampling" class="selflink">auto_oversampling</a></th><th>Boolean</th><th>true</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>When enabled apply an automatic additional oversampling factor depending on the actual VR headset.</li>
+						<li>This is done because the default resolution provided by the device is lower 
+							then the resolution that the device would be capable of for performance reasons.
+						</li>
+						<li>The added oversampling factor improves image-quality at cost of a little performance.</li>
+						<li>When higher and more stable framerates are more important than image-quality consider disabling that setting or using a lower
+							<a href="#oversampling">oversampling</a> setting.
+						</li>
+						<li>Supported headsets:
+							<ul>
+								<li>For Oculus Go and Oculus Quest a factor of ~1.4 will be automatically added.</li>
+							</ul>
+						</li>
+						<li>Custom <a href="#oversampling">oversampling</a> settings will be respected and a too high oversampling
+							factor automatically avoided.
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td ><a name="zoom"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#zoom" class="selflink">zoom</a></th><th>Number</th><th>1.0</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Apply a custom zoom-scale to the VR view.</li>
+						<li>Should be used very carefully and only for special cases!</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="friction"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#friction" class="selflink">friction</a></th><th>Number</th><th>0.0</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>A value between 0.0 and 0.999</li>
+						<li>Add a fricition to reduce the gyro responsive speed.</li>
+						<li>Should be used only for high zoom values to reduce shaking, but never for normal viewing!</li>
+					</ul>
+				</td>
+			</tr>
+	
+			
+			
+			
+			
+			<tr class="xmlattrdocdesc"><td><a name="headtracking"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#headtracking" class="selflink">headtracking</a></th><th>Boolean</th><th>true</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>By setting headtracking to false, it would be possible to disable the headset-movement-tracking and
+							control the viewing direction by yourself by changing the <a href="../xml.html#view">view</a> settings.
+						</li>
+						<li><i class="redtext">Warning - disabling this settings is NOT recommended!</i></li>
+						<li>
+							Changing the viewing direction in VR different to the users head movement is a bad experience.
+							And on systems with 're-projection' (HTC Vice, Oculus Rift) this can cause graphical errors, because
+							these systems doesn't assume that the view will change different to the head-movement.
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="headtracking_absolute"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#headtracking_absolute" class="selflink">headtracking_absolute</a></th><th>Boolean</th><th>false</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Use an 'absolute' head tracking when possible.</li> 
+						<li>When enabled the looking direction should be linked to the real world one.</li>
+						<li>When disabled (the default) the looking direction is relative to the startup looking direction when entering the VR mode.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="fullscreen_mirroring"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#fullscreen_mirroring" class="selflink">fullscreen_mirroring</a></th><th>Boolean</th><th>false</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Switch also automatically to fullscreen mode when using WebVR.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="mouse_pointerlock"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#mouse_pointerlock" class="selflink">mouse_pointerlock</a></th><th>Boolean</th><th>true</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Lock the mouse-control when in VR mode (no visible mouse-cursor) and control
+							the viewing direction directly by mouse movements.
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			
+			
+			
+			
+			
+			<tr class="xmlattrdocdesc"><td><a name="mobilevr_support"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#mobilevr_support" class="selflink">mobilevr_support</a></th><th>Boolean</th><th>true</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Enable or disable the <a href="#mobilevr_notes">MobileVR</a> support.</li>
+						<li>This is a fallback solution when there is no <a href="#webvr_notes">WebVR API</a> support available in the browser.</li>
+						<li>It allows using VR on any mobile devices that have gyroscope and accelerometer sensors.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			
+			<tr class="xmlattrdocdesc"><td><a name="mobilevr_desktop_support"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#mobilevr_desktop_support" class="selflink">mobilevr_desktop_support</a></th><th>Boolean</th><th>false</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Provide the <a href="#mobilevr_notes">MobileVR</a> support also on Desktop devices.</li>
+						<li>By default the support is limited to mobile and tablet devices.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="mobilevr_fake_support"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#mobilevr_fake_support" class="selflink">mobilevr_fake_support</a></th><th>Boolean</th><th>false</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Enable a 'fake' MobileVR support for tablet and non-VR desktop devices.</li>
+						<li>On these devices using VR wouldn't be possible normally, but with this setting enabled krpano will provide a fake solution / kind of simulation to give the user still an impression of the VR mode.</li>
+						<li>For checking if the fake mode is enabled there is the <a href="#isfake">isfake</a> attribute.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="mobilevr_touch_support"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#mobilevr_touch_support" class="selflink">mobilevr_touch_support</a></th><th>Boolean</th><th>false</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Enable touch support for rotating / adjusting the horizontal offset.</li>
+						<li>This setting is disabled by default because some VR headsets are touching the screen with their case
+							and can sometimes trigger wrong inputs.
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			
+		
+			
+			
+			<tr class="xmlattrdocdesc"><td><a name="mobilevr_profile"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#mobilevr_profile" class="selflink">mobilevr_profile</a></th><th>String</th><th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>The VR-headset profile parameters for <a href="#mobilevr_notes">MobileVR</a> mode.</li>
+						<li>The <a href="https://support.google.com/cardboard/manufacturers/answer/6324808" target="_blank">Cardboard lens distortion model</a> is used.</li>
+						<li>Parameters:
+							<pre>"fov|lensdistance|screendistance|traydistance|k1|k2"</pre>
+							<ul>
+								<li><span class="pre">fov</span> - Field of view in degrees.</li>
+								<li><span class="pre">lensdistance</span> - Inter-lens distance in millimeters.</li>
+								<li><span class="pre">screendistance</span> - Screen to lens distance in millimeters.</li>
+								<li><span class="pre">traydistance</span> - The distance from the headset tray bottom to the lens-center in millimeters. 
+									When set to 0 the center of the device will be used.</li>
+								</li>
+								<li><span class="pre">k1</span> and <span class="pre">k2</span> - Lens distortion coefficents.</li>
+							</ul>
+						</li>
+						<li>The default value (for Cardboard V1 headsets):
+							<pre>"80|60|42|35|0.441|0.156"</pre>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="mobilevr_screensize"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#mobilevr_screensize" class="selflink">mobilevr_screensize</a></th><th>String</th><th>"auto"</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Set a custom diagonal device screen size in inch.</li>
+						<li>Knowing the physical screen size is necessary and very important to be able calculate the correct VR field-of-view and lens-distortion.</li>
+						<li>When set to <span class="presyntax_inline">auto</span> (the default):
+							<ul>
+								<li>In this case the plugin tries to detect the device itself to get its screensize.</li>
+								<li>The plugin uses therefore an internal list of devices. Additionally a <a href="#mobilevr_database_support">customizable list</a> of devices can be defined in the xml.</li>
+								<li>When the device is unknown an external database can be used (see <a href="#mobilevr_database_url">mobilevr_database_url</a>) for finding the size of the device.</li>
+								<li>When detecting the size isn't possible, the plugin sends the <a href="#onunknowndevice">onunknowndevice</a> event.</li>
+							</ul>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			
+			<tr class="xmlattrdocdesc"><td><a name="mobilevr_database_support"></a><a name="mobilevr_device_database"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#mobilevr_database_support" class="selflink">mobilevr_database_support</a></th><th>String</th><th>"xml|internal|external"</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Set which databases should be used for finding the physical screensize for a device.</li>
+						<li>The setting can be a combination of these values:
+							<ul>
+								<li><span class="pre">xml</span> - use the <a name="mobilevr_device_database">mobilevr_device_database</a> named
+									database defined in the xml.
+								</li>
+								<li><span class="pre">internal</span> - use an internal database.</li>
+								<li><span class="pre">external</span> - use an external database (<a href="#mobilevr_database_url">mobilevr_database_url</a>).</li>
+							</ul>
+						</li>
+						<li>Syntax of the  <a name="mobilevr_device_database">mobilevr_device_database</a> xml database:
+							<pre>&lt;mobilevr_device_database&gt;<br>  &lt;device name="Samsung S8" ua="sm-g950" size="5.8" /&gt;<br>  &lt;device name="Samsung S8+" ua="sm-g955" size="6.2" /&gt;<br>  ...<br>  &lt;device name="iPhone X" screen="414x812x3" size="5.85|5.33" /&gt;<br>&lt;/mobilevr_device_database&gt;</pre>
+							<ul>
+								<li>A <span class="pre">mobilevr_database_url</span> element be xml defined anywhere in the xml files.</li>
+								<li>Multiple declarations will be automatically merged.</li>
+								<li>A <span class="pre">device</span> element can have the following settings to define a device:
+									<ul>
+										<li><span class="pre">name</span> - the name of the device, need to be unique.</li>
+										<li><span class="pre">size</span> - the physical screensize diagonal in inch (the detection result).<br>
+											For iOS devices two sizes can be defined. The first value is
+											the size when using the full screen size, the second one when only using the <a href="../xml.html#display.safearea">safearea</a>.
+										</li>
+										<li><span class="pre">bevel</span> - the physical bevel around the screen in millimeter (4 by default).</li>
+										<li><span class="pre">ua</span> - a string that should be part of the user-agent string to detect the device, case-insensitive (used for detecting Android devices).</li>
+										<li><span class="pre">screen</span> - the screen size (in portrait mode) in logical CSS pixels and optionally also the pixel-ratio  (used for detecting iOS devices).<br>
+											Syntax: <span class="pre">WIDTHxHEIGHTxPIXELRATIO</span>.
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="mobilevr_database_url"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#mobilevr_database_url" class="selflink">mobilevr_database_url</a></th><th>String</th><th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Use  a Cardboard <b>Device Parameter Database</b> (DPDB) as fallback for getting the screen-size for unknown devices.</li>
+						<li>By default this online database will be used:
+							<ul>
+								<li><a href="https://dpdb.webvr.rocks/dpdb.json">https://dpdb.webvr.rocks/dpdb.json</a></li>
+							</ul>
+						</li>
+						<li>When the database url setting will be set to an empty string value or to null, then no online database request will be made for unknown devices.</li>
+					</ul>
+				</td>
+			</tr>
+		
+			
+			<tr class="xmlattrdocdesc"><td><a name="mobilevr_wakelock"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#mobilevr_wakelock" class="selflink">mobilevr_wakelock</a></th><th>Boolean</th><th>true</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Wakelock - try to keep the mobile device awaken and prevent that the display
+							switches to sleep / standby mode.
+							This is necessary because during the VR viewing typically no user touches on the display 
+							(which would prevent sleeping) are happening.
+						</li>
+						<li>Currently the wake-locking is not a browser feature, currently it is only an <u>ugly hack</u> (which works
+							by playing and looping a small hidden video).
+							The current hack might be not working or could cause problems in newer/updated browser version,
+							therefore it's optionally possible to disable that feature.
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="mobilevr_sensor"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#mobilevr_sensor" class="selflink">mobilevr_sensor</a></th><th>int</th><th>1</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Define which browser event should be used for the device movement tracking:
+							<ul>
+								<li>0 = the <a href="https://developer.mozilla.org/en-US/docs/Web/Events/deviceorientation" target="_blank">deviceorientation</a> event
+									<ul>
+										<li>Here the sensor fusion will be done by the browser itself.</li>
+										<li>The data from this event is unfortunately buggy or just bad (slow, inaccurate, wrong) in many Android devices and Android browsers.</li> 
+									</ul>
+								</li>
+								<li>1 = the <a href="https://developer.mozilla.org/en-US/docs/Web/Events/devicemotion" target="_blank">devicemotion</a> event (default)
+									<ul>
+										<li>Here the sensor fusion will be done by krpano.</li>
+										<li>The browser provides the raw data from the acceleration and the gyroscope sensors and krpano combines them for getting the final device rotation:
+											<ul>
+												<li>The gyroscope data is very quick and accurate but the gyroscope sensor measures only <u>relative</u> rotations and 
+													therefore it drifts away from the real physical orientation over time. 
+												</li>
+												<li>To compensate that drift, the acceleration sensor is used. That sensor measures the gravity acceleration of the earth
+													and that can be used as <u>absolute</u> reference.
+												</li>
+												<li>But the acceleration data is very noisy and it can be only used for detection 'tilt' rotations (tilt left, right, up or down) -
+													rotations around the device itself can't detected by acceleration, for this the gyroscope data is required.
+												</li>
+												<li>So the data from both sensor will be combined / fused.
+													The acceleration data will be low-pass filtered and used as slow 'stabilization' and
+													the gyroscope data for quick and accurate movements in all directions.
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li>Using the devicemotion event (setting mobilevr_sensor=1) is the default and there should be normally no need or benefit to use the deviceorientation event, 
+							except maybe for some extreme browser bugs...
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="mobilevr_sensor_mode"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#mobilevr_sensor_mode" class="selflink">mobilevr_sensor_mode</a></th><th>int</th><th>3</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>The frame-rendering and the 'sensor-data-events' are happening in different time intervals / rates
+							(depending on the system and browser),
+							so it is necessary to evaluate and interpolate/extrapolate the sensor data somehow to get
+							a smooth and also fast and responsive movement.
+						</li>
+						<li>With this setting, different modes for this process can be selected.
+						</li>
+						</li>
+						<li>Available modes:
+							<ul>
+								<li><span class="presyntax_inline">0</span> = Directly use the latest available sensor data.
+									No interpolation or extrapolation. Depending on the sensor-time-intervals of the browser
+									the movement can be either jerky or smooth.
+								</li>
+								<li><span class="presyntax_inline">1</span> = Smoothly interpolate between the latest
+									available sensor data. This will give a very smooth but delayed movement.
+								</li>
+								<li><span class="presyntax_inline">2</span> = Forecast the device rotations and then interpolate between the sensor data.
+								</li>
+								<li><span class="presyntax_inline">3</span> = Extrapolate the latest available sensor data
+									to the current frame time.
+									This will give a fast responsive and smooth movement, but there can be a jerking
+									when the extrapolated/predicted data and the real movement don't match.
+								</li>
+								<li><span class="presyntax_inline">4</span> = Forecast the device rotation to the current frame time.
+									This will give a fast responsive and smooth movement, but there can be a jerking
+									when the extrapolated/predicted data and the real movement don't match.
+								</li>
+								<li><span class="presyntax_inline">5</span> = Forecast the device rotation and extrapolate the
+									sensor data from the latest event to the current frame time.
+								</li>
+								<li><span class="presyntax_inline">6</span> = Forecast the device rotation one frame ahead.
+								</li>
+								<li><span class="presyntax_inline">7</span> = Forecast the device rotation two frames ahead.
+								</li>
+							</ul>
+						</li>
+						<li><i>Note - these settings would need to be rated inside a VR-HMD (head-mounted-display)!
+							E.g. mode=1 looks good and super smooth on the screen, but inside a HMD the delayed movement
+							can be unpleasing. Other modes might look jerking on the screen, but good inside the HMD.<br>
+							Additionally it depends on the sensor-rate of the browser, how good each mode will look.
+							A good compromise for different devices are the modes 3 and 4. 
+							</i>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			
+			
+			
+			
+			
+			<tr class="xmlattrdocdesc"><td><a name="vr_cursor"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#vr_cursor" class="selflink">vr_cursor</a></th><th>String</th><th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Use a <a href="../xml.html#hotspot">hotspot</a> as vr-cursor.</li>
+						<li>That cursor hotspot will be displayed automatically above all other hotspots at the center
+							of the screen and act as cursor / pointer. The styling of the hotspot itself can be controlled
+							with the normal hotspot attributes.
+						</li>
+						<li>The stereoscopic 3D depth of the cursor will be automatically adjusted to match the 3D depth of
+							other hotspot when hovering them. This makes it eaiser to focus hotspots with different depths.
+						</li>
+						<li>When the cursor will be over other hotspots, the <a href="../xml.html#hotspot.onover">onover</a>
+							and <a href="../xml.html#hotspot.onout">onout</a> events of that hotspot itself and additionally
+							also the <a href="#vr_cursor_onover">vr_cursor_onover</a>, <a href="#vr_cursor_onout">vr_cursor_onout</a> 
+							events will be called.
+							This could be used to implement an automatic clicking when hovering a hotspots for some time.
+						</li>
+						<li>Syntax:
+							<pre>vr_cursor="hotspot[name]"</pre>
+							<ul>
+								<li>name - The <a href="../xml.html#hotspot.name">name</a> of the hotspot.</li>
+								<li>The hotspot itself should be invisible (visible=false) on startup.</li>
+							</ul>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="vr_cursor_enabled"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#vr_cursor_enabled" class="selflink">vr_cursor_enabled</a></th><th>Boolean</th><th>true</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Enable or disable the vr-cursor.</li>
+						<li>When disabled the cursor will not trigger <a href="../xml.html#hotspot.onover">onover</a> / <a href="#vr_cursor_onover">vr_cursor_onover</a> events.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="vr_cursor_onover"></a><a name="vr_cursor_onout"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#vr_cursor_onover" class="selflink">vr_cursor_onover</a><br>
+					<a href="#vr_cursor_onout" class="selflink">vr_cursor_onout</a><br>
+				</th>
+				<th>Action&nbsp;Event<br>Action&nbsp;Event</th>
+				<th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>These events will be called when the <a href="#vr_cursor">vr_cursor</a> will move over and out of others hotspots.</li>
+						<li>The 'scope' of these events will be one of the hovered hotspots.
+							That means these events act like the <a href="../xml.html#hotspot.onover">onover</a>,
+							<a href="../xml.html#hotspot.onout">onout</a> events of the hotspot itself.
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="vr_controller_support"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#vr_controller_support" class="selflink">vr_controller_support</a></th><th>Boolean</th><th>true</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Enable or disable the support for vr-controllers.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="vr_controller"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#vr_controller" class="selflink">vr_controller</a></th><th>String</th><th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Define a comma-separated list of <a href="../xml.html#hotspot">hotspots</a> that should be used as as vr-controllers.</li>
+						<li>One or two hotspots can be used - for the left and right hands. When no hotspot for a hand should be used, the value null 
+							can be used instead.
+						</li>
+						<li>Example:
+							<pre>vr_controller="vrcontroller_l,vrcontroller_r"</pre>
+							where 'vrcontroller_l' and 'vrcontroller_r' are the names of <a href="../xml.html#hotspots" class="selflink">&lt;hotspot&gt;</a> elements.
+						</li>
+						<li>The so linked hotspots will get automatically updated when the vr-controllers are used:
+							<ul>
+								<li>Their <a href="../xml.html#hotspot.tx" class="pre selflink2">tx,ty,tz</a> position will be set to the controller position.</li>
+								<li>The <a href="../xml.html#hotspot.rx" class="pre selflink2">rx,ry,rz</a> rotation set to match the controller rotation.</li>
+								<li>Additional <span class="pre">dx,dy,dz</span> attributes that represent the direction-unit-vector
+									where the controller is pointing will be added to the controller-hotspot.
+								</li>
+								<li>The controller hotspots can have <span class="pre">handrotate="rx|ry|rz|rotationorder"</span> settings
+									for customizing the rotation of the hotspot controller image.
+									<ul>
+										<li>The defaults are <span class="pre">handrotate="0|180|0|XYZ"</span> for the left hand and</li>
+										<li><span class="pre">handrotate="0|0|0|XYZ"</span> for the right hand.</li>
+									</ul>
+								</li>
+								<li>When the controller is pointing to another hotspot:
+									<ul>
+										<li>A <span class="pre">target</span> attribute with a reference to that hotspot object 
+											will be added to the controller-hotspot.
+										</li>
+										<li>The <a href="../xml.html#hotspot.onover" class="pre selflink2">onover, onout</a> events 
+											of the target hotspot and also of the controller hotspot will be called.
+										</li>
+										<li>The <a href="../xml.html#hotspot.hovering" class="pre selflink2">hovering</a> attribute 
+											of the target hotspot and also of the controller hotspot will be set to true.
+										</li>
+										<li>For checking the exact position where the controller is pointing on the that hotspot,
+											the <a href="../xml.html#hotspot.hitx" class="pre selflink2">hitx,hity,hitd</a> attributes 
+											of that target hotspot can be used.
+										</li>
+									</ul>
+								</li>
+								<li>When pressing or releasing a controller button a <span class="pre">onvrcontrollerbutton</span> 
+									event of the controller hotspot will get called.
+									Additionally the controller hotspot will get:
+									<ul>
+										<li><span class="pre">vrbuttonindex</span> - The index of the current button (0-n).</li>
+										<li><span class="pre">vrbuttonstate</span> - The current state of the button "down" or "up".</li>
+									</ul>
+									variables for getting information about which button is pressed or released.
+								</li>
+								<li>When pressing a controller button AND hovering an other hotspot at the same time AND the pressed button is one of the
+									<a href="#vr_controller_clickbuttons">vr_controller_clickbuttons</a>: 
+									<ul>
+										<li>then the <a href="../xml.html#hotspot.pressed" class="pre selflink2">pressed</a> attribute 
+											of the target hotspot and also of the controller hotspot will be set to true,
+										</li>
+										<li>and the
+											<a href="../xml.html#hotspot.ondown" class="pre selflink2">ondown, onup, onclick</a> events 
+											of the target hotspot  will be called.
+										</li>
+									</ul>
+								</li>
+								<li>For haptic feedback the hotspots get a
+									<span class="pre">pulse(value,duration)</span> function added.
+									This could be called e.g. in the <a href="../xml.html?#hotspot.onover">onover</a> event when hovering things.
+									<ul>
+										<li><span class="pre">value</span> - The intensity of the pulse (controller vibration).</li>
+										<li><span class="pre">duration</span> - The duration of the pulse in seconds.</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li>When the controllers are getting updated the <a href="#onvrcontrollers">onvrcontrollers</a> event will be called.</li>
+						<li>Information about the vr-controllers itself are also available by the <a href="#vrcontrollers">vrcontrollers</a> Array.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="vr_controller_clickbuttons"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#vr_controller_clickbuttons" class="selflink">vr_controller_clickbuttons</a></th><th>String</th><th>"0,1"</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Which buttons of the vr-controller should be used to trigger clicking events.</li>
+						<li>Available buttons: <a href="https://w3c.github.io/gamepad/#remapping" target="_blank">https://w3c.github.io/gamepad/#remapping</a>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			
+		</table>
+		</div>
+	</div>
+	
+	
+	<div class="paragraph">
+		<h2><a name="stateattributes" href="#stateattributes" class="selflink">Plugin State Variables (read only)</a></h2>
+		
+		<div style="padding-left:1px;padding-top:0;">
+		<table class="xmlattrdoc">
+	
+			<tr class="xmlattrdocdes1"><td style="width:50%;"><a name="isavailable"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#isavailable" class="selflink">isavailable</a></th><th>Boolean</th><th>false</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Is VR support available?</li>
+						<li><i>Note - the correct state will be only available after the <a href="#onavailable">onavailable</a>
+							or <a href="#onunavailable">onunavailable</a> events!</i>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="isenabled"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#isenabled" class="selflink">isenabled</a></th><th>Boolean</th><th>false</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Is the VR mode currently enabled?</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="iswebvr"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#iswebvr" class="selflink">iswebvr</a></th><th>Boolean</th><th>false</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Is the WebVR API available / supported by the browser?</li>
+						<li><i>Note - the correct state will be only available after the <a href="#onavailable">onavailable</a> event!</i></li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="ismobilevr"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#ismobilevr" class="selflink">ismobilevr</a></th><th>Boolean</th><th>false</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>When there is no WebVR API support available, but the device itself is a mobile device with working gyroscope sensor support? &rArr; <a href="#mobilevr_notes">MobileVR</a> support.</li>
+						<li><i>Note - the correct state will be only available after the <a href="#onavailable">onavailable</a> event!</i></li>
+					</ul>
+				</td>
+			</tr>
+			
+			
+			
+			<tr class="xmlattrdocdesc"><td><a name="isfake"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#isfake" class="selflink">isfake</a></th><th>Boolean</th><th>false</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Is in MobileVR <a href="#mobilevr_fake_support">fake</a> mode.</li>
+						<li><i>Note - the correct state will be only available after the <a href="#onavailable">onavailable</a> event!</i></li>
+					</ul>
+				</td>
+			</tr>
+			
+			
+			<tr class="xmlattrdocdesc"><td><a name="isvrbrowser"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#isvrbrowser" class="selflink">isvrbrowser</a></th><th>Boolean</th><th>false</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Is the browser itself also a VR application?</li>
+						<li>This could be used for showing a special user-interface,
+							e.g. instead of the normal desktop/mobile skin, directly a big 'Enter VR' button.
+						</li>
+						<li><i>Note - the correct state will be only available after the <a href="#onavailable">onavailable</a> event!</i></li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="vrcontrollers"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#vrcontrollers" class="selflink">vrcontrollers</a></th><th>JS-Array</th><th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>A Javascript-Array with information about the currently available vr-controllers.</li>
+						<li>Each Array-item contains the following information:
+							<ul>
+								<li><span class="pre">id</span> - The id/name of the vr-controller.</li>
+								<li><span class="pre">hand</span> - A String: "left" or "right".</li>
+								<li><span class="pre">axes</span> - A 4-count floating point Array with values in the range -1.0 to +1.0, representing the controls-stick axis (or touch-pad-hit) position (<a href="https://developer.mozilla.org/en-US/docs/Web/API/Gamepad/axes" target="_blank">more information</a>).</li>
+								<li><span class="pre">buttons</span> - An array of Gamepad buttons (<a href="https://developer.mozilla.org/en-US/docs/Web/API/Gamepad/buttons" target="_blank">more information</a>).</li>
+								<li><span class="pre">pressed</span> - A Boolean indicating that one of the trigger buttons (according to <a href="#vr_controller_clickbuttons">vr_controller_clickbuttons</a>) is pressed.</li>
+								<li><span class="pre">rx,ry,rz</span> - Rotation angles in degrees.</li>
+								<li><span class="pre">dx,dy,dz</span> - A direction unit-vector.</li>
+								<li><span class="pre">tx,ty,tz</span> - The position of the vr-controller.</li>
+								<li><span class="pre">hs</span> - A object-reference to the krpano hotspot that is assigned to that vr-controller.</li>
+							</ul>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="havepostracking"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#havepostracking" class="selflink">havepostracking</a></th><th>Boolean</th><th>false</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Have positional-tracking?</li>
+						<li>Note - this state is first updated after entering VR mode and on the <a href="#onhavepostracking">onhavepostracking</a> event!</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="havesettings"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#havesettings" class="selflink">havesettings</a></th><th>Boolean</th><th>false</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Have settings loaded by the <a href="#loadsettings">loadsettings()</a> action?</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="devicename"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#devicename" class="selflink">devicename</a></th><th>String</th><th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Get the name of the WebVR device or the name of the detected mobile device.</li>
+						<li><i>Note - the correct state will be only available after the <a href="#onavailable">onavailable</a> event!</i></li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="devicesize"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#devicesize" class="selflink">devicesize</a></th><th>Number</th><th>0.0</th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>Get the physical diagonal screen size of the device in inch.</li>
+						<li>The value will be 0.0 when the size will be unknown.</li>
+						<li><i>Note - the correct state will be only available after the <a href="#onavailable">onavailable</a>
+							or <a href="#onunknowndevice">onunknowndevice</a> events!</i>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+		</table>
+		</div>
+	</div>
+	
+	
+	<div class="paragraph">
+		<h2><a name="events" href="#events" class="selflink">Plugin Events</a></h2>
+		
+		<div style="padding-left:1px;padding-top:0;">
+		<table class="xmlattrdoc">
+	
+			<tr class="xmlattrdocdes1"><td style="width:50%;"><a name="onavailable"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#onavailable" class="selflink">onavailable</a></th><th>Action&nbsp;Event</th><th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>This event will be called when either WebVR or MobileVR support is available.</li>
+						<li>Could be used to show a 'Enter VR mode' button.
+							This button could call the <a href="#entervr">enterVR()</a> action to enter it.
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="onunavailable"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#onunavailable" class="selflink">onunavailable</a></th><th>Action&nbsp;Event</th><th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>This event will be called when there is no VR support available.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="onunknowndevice"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#onunknowndevice" class="selflink">onunknowndevice</a></th><th>Action&nbsp;Event</th><th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>This event will be called when the mobile device and its <a href="#devicesize">screen size</a> can't be detected.</li>
+						<li>In this case it might be possible to show a menu or setup screen and ask the user there about 
+							the <a href="#mobilevr_screensize">screen size</a> of his device.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="onvrcontrollers"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#onvrcontrollers" class="selflink">onvrcontrollers</a></th><th>Action&nbsp;Event</th><th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>This event will be called when updating the vr-controllers.</li>
+						<li>Information about the vr-controllers itself are available by the <a href="#vrcontrollers">vrcontrollers</a> variable.</li>
+						<li>Note - when vr-controllers become available the <a href="#vr_cursor">vr-cursor</a> will get automatically hidden.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="onvrcontrollerbutton"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#onvrcontrollerbutton" class="selflink">onvrcontrollerbutton</a></th><th>Action&nbsp;Event</th><th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>This event will be called when the state of a button on a vr-controller will be changed.</li>
+						<li>The call scope of the event will be the vr-controller hotspot element.</li>
+						<li>These information will be available in that scope:
+							<ul>
+								<li><span class="pre">vrbuttonindex</span> - The index of the current button (0-n).</li>
+								<li><span class="pre">vrbuttonstate</span> - The current state of the button "down" or "up".</li>
+								<li><span class="pre">vrcontroller</span> - Information about the current <a href="#vrcontrollers">vr-controller</a>.</li>
+							</ul>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="onhavepostracking"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#onhavepostracking" class="selflink">onhavepostracking</a></th><th>Action&nbsp;Event</th><th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>This event will be called once when detecting the availability of <a href="#postracking">positional-tracking</a>.</li>
+						<li>This can happen only after entering VR mode.</li>
+					</ul>
+				</td>
+			</tr>
+			
+			
+			
+			
+			<tr class="xmlattrdocdesc"><td><a name="onentervr"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#onentervr" class="selflink">onentervr</a></th><th>Action&nbsp;Event</th><th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>This event will be called when switching into VR mode.</li>
+						<li>Could be used for setting up a custom VR layout - e.g. like showing an 'Exit VR' button
+							and hiding the UI elements that are unnecessary or interfering with VR mode.
+						</li>
+					</ul>
+				</td>
+			</tr>
+			
+			<tr class="xmlattrdocdesc"><td><a name="onexitvr"></a>Attribute name</td><td>Type</td><td>Default value</td></tr>
+			<tr><th><a href="#onexitvr" class="selflink">onexitvr</a></th><th>Action&nbsp;Event</th><th></th></tr>
+			<tr>
+				<td colspan="4">
+					<ul>
+						<li>This event will be called when exiting from VR mode.</li>
+					</ul>
+				</td>
+			</tr>
+		</table>
+		</div>
+	</div>
+	
+	
+	<div class="paragraph">
+		<h2><a name="actions" href="#actions" class="selflink">Plugin Actions</a></h2>
+		
+		<a name="entervr" href="#entervr" class="selflink"><pre>enterVR()</pre></a>
+		<div class="preinfo">
+			<ul>
+				<li>Switch into the VR fullscreen mode.</li>
+			</ul>
+		</div>
+		
+		<br>
+		<a name="exitvr" href="#exitvr" class="selflink"><pre>exitVR()</pre></a>
+		<div class="preinfo">
+			<ul>
+				<li>Exit the VR mode.</li>
+			</ul>
+		</div>
+		
+		<br>
+		<a name="togglevr" href="#togglevr" class="selflink"><pre>toggleVR()</pre></a>
+		<div class="preinfo">
+			<ul>
+				<li>Toggle the current VR mode state - switch either into VR mode or exit from it, depending on the current state.</li>
+			</ul>
+		</div>
+		
+		<br>
+		<a name="resetsensor"></a>
+		<a name="lookat" href="#lookat" class="selflink"><pre>lookat(hlookat)</pre></a>
+		<div class="preinfo">
+			<ul>
+				<li>Set the horiztonally looking direction (<a href="../xml.html#view.hlookat">hlookat</a>).</li>
+				
+			</ul>
+		</div>
+		
+		<br>
+		<a name="calibrate" href="#calibrate" class="selflink"><pre>calibrate(ondone*, onerror*)</pre></a>
+		<div class="preinfo">
+			<ul>
+				<li>Calibrate the gyroscope sensor manually (Mobile VR only).</li>
+				<li>Some devices (especially Android devices) could have an uncalibrated gyroscope sensor
+					and this could lead to wrong and unintended rotations ('drifting').</li>
+				<li>When calling the <a href="#calibrate">calibrate()</a> action the device should be <u>absolutely still</u> (!) for a few seconds
+					(e.g. place the device on a flat and stable table for calibration). The orientation of the device itself doesn't matter for this process.
+				</li>
+				
+			</ul>
+			Parameters:<br>
+			<ul>
+				<li><a name="calibrate.ondone" href="#calibrate.ondone" class="selflink">ondone</a> <span class="smallcomment">(optionally)</span><br> 
+					<ul>
+						<li>Actions to call when the calibration is done.</li>
+					</ul>
+				</li>
+				
+				<li><a name="calibrate.onerror" href="#calibrate.onerror" class="selflink">onerror</a> <span class="smallcomment">(optionally)</span><br> 
+					<ul>
+						<li>Actions to call when the calibration failed, e.g. when there was too much movement during the calibration.</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		
+		<br>
+		<a name="resetcalibration" href="#resetcalibration" class="selflink"><pre>resetCalibration()</pre></a>
+		<div class="preinfo">
+			<ul>
+				<li>Reset / zero the gyroscope sensor calibration data (Mobile VR only).</li>
+			</ul>
+		</div>
+		
+		<br>
+		<a name="savesettings"></a>
+		<a name="resetsettings"></a>
+		<pre>
+<a name="loadsettings" href="#loadsettings" class="selflink">loadSettings()</a>
+<a href="#savesettings" class="selflink">saveSettings()</a>
+<a href="#resetsettings" class="selflink">resetSettings()</a>
+</pre>
+		<div class="preinfo">
+			<ul>
+				<li>Load or save the MobileVR settings (screensize, profile, gyro-calibration).</li>
+				<li>The settings will be stored only locally in the browsers 
+					<a href="https://developer.mozilla.org/en/docs/Web/API/Window/localStorage" target="_blank">localStorage</a>.
+				</li>
+				<li>When calling resetSettings() the setting storage will be cleared.</li>
+				<li>The storage works only for the current domain, cross-domain-storage sharing
+					is not possible anymore due browser-restrictions.
+				</li>
+			</ul>
+		</div>
+
+	</div>
+	
+	
+	<div class="paragraph">
+			<h2><a name="iframe" href="#iframe" class="selflink">iFrame Support</a></h2>
+			
+			<div class="subparagraph">	
+				When trying to use <a href="#mobilevr_notes">MobileVR</a> support inside an 'cross-origin' iframe (that means the outer page and inner iframe 
+				page are on different origins/domains) then the gyro-usage (and with that also the VR support) might be blocked by the browser.<br>
+				<br>
+				To work-around that limitation it is possible to 'capture' the devicemotion event in the outer page
+				and send it via the postMessage API to the inner iframe.
+			</div>
+
+			Here example Javascript code for the outer (the iframe-containing) webpage:
+			<pre class="xmlpre" style="word-break:normal; white-space:nowrap;">
+&lt;script&gt;<br>
+var pano_iframe_name = "enter_here_the_id_of_your_iframe_element";<br>
+window.addEventListener("devicemotion", function(e){ var iframe = document.getElementById(pano_iframe_name); if (iframe) iframe.contentWindow.postMessage({ type:"devicemotion", deviceMotionEvent:{ acceleration:{ x:e.acceleration.x, y:e.acceleration.y, z:e.acceleration.z }, accelerationIncludingGravity:{ x:e.accelerationIncludingGravity.x, y:e.accelerationIncludingGravity.y, z:e.accelerationIncludingGravity.z }, rotationRate:{ alpha:e.rotationRate.alpha, beta:e.rotationRate.beta, gamma:e.rotationRate.gamma }, interval:e.interval, timeStamp:e.timeStamp } }, "*"); });<br>
+&lt;/script&gt;
+</pre>
+		</div>
+		
+		
+	
+	
+
+
+	
+
+
+	
+
+
+
+
+
+
+				</div>
+			</div>
+		</div>
+		<div id="krpano_footerwrapper">
+			<div id="krpano_footer">
+				<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td align="right">Copyright &copy; krpano.com</td></tr></tbody></table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

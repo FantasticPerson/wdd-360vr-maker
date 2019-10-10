@@ -2,9 +2,7 @@ export default class Common{ }
 
 const rootPath = window.electron_app_root_path
 const nativeRequire = window.native_require
-
 const path = nativeRequire('path')
-
 
 Common.KR_VERSION = '1.19-pr7'
 Common.KR_EMBED = { 

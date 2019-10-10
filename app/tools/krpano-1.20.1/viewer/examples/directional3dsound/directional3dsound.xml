@@ -1,0 +1,164 @@
+<krpano>
+	
+	<include url="%VIEWER%/plugins/depthmap_navigation.xml" />
+	<include url="%VIEWER%/plugins/webvr.xml" />
+	<include url="%VIEWER%/plugins/iphone_fullscreen_swipe.xml" />
+
+
+	<!-- load/preload the soundinterface plugin -->
+	<plugin name="soundinterface" preload="true" keep="true"
+	        url.flash="%VIEWER%/plugins/soundinterface.swf"
+	        url.html5="%VIEWER%/plugins/soundinterface.js"
+	        rootpath="%CURRENTXML%"
+	        />
+	
+
+	<!-- the pano image -->
+	<image>
+		<sphere url="pano.jpg" />
+
+		<!-- a small 'trick' - use an 'empty' depthmap and render the pano image far away as 'background' -->
+		<depthmap url="data:text/depth,DEPTH 0 0" enabled="true" rendermode="3dmodel" background="pano" />
+	</image>
+	
+	<!-- view settings -->
+	<view hlookat="0" vlookat="0" fovtype="MFOV" fov="90" fovmin="30" fovmax="170" />
+
+	<!-- limit the 3D moving range to the platform -->
+	<events onviewchange="clamp(view.tx,-1000,+1000); clamp(view.tz,-1000,+1000);" />	
+
+
+	<!-- the speaker hotspots (convert ath/atv/depth to tx/ty/tz for a better VR display) -->
+	<style name="speaker"
+		url="speaker.png" scale="0.1" zoom="true" capture="false" mipmapping="true" depthbuffer="true" zorder="1"
+		onloaded="spheretospace(ath,atv,depth,tx,ty,tz); set(depth,0);"
+		/>
+	
+	<hotspot name="h1" style="speaker" ath="0" atv="0" depth="500" onclick="sound1click();" />
+	<hotspot name="h2" style="speaker" ath="90" atv="0" depth="500" onclick="sound2click();" />
+	<hotspot name="h3" style="speaker" ath="270" atv="0" depth="500" onclick="sound3click();" />
+	<hotspot name="h4" style="speaker" ath="180" atv="0" depth="500" onclick="sound4click();" />
+		
+	<action name="sound1click">
+		if(sound[s1],
+			destroysound(s1);
+		  ,
+			playsound_at_hotspot(s1, 'downlifiting.mp3', get(name), true, 1.0);
+			asyncloop(sound[s1], calc(scale,0.1+0.005*random); );
+		);
+	</action>
+		
+	<action name="sound2click">
+		if(sound[s2],
+			destroysound(s2);
+		  ,
+			playsound_at_hotspot(s2, 'wooble_bass.mp3', get(name), true, 1.0);
+			asyncloop(sound[s2], calc(scale,0.1+0.005*random); );
+		);
+	</action>
+		
+	<action name="sound3click">
+		if(sound[s3],
+			destroysound(s3);
+		  ,
+			playsound_at_hotspot(s3, 'fx_loop.mp3', get(name), true, 1.0);
+			asyncloop(sound[s3], calc(scale,0.1+0.005*random); );
+		);
+	</action>
+		
+	<action name="sound4click">
+		if(sound[s4],
+			destroysound(s4);
+		  ,
+			playsound_at_hotspot(s4, 'ping.mp3', get(name), true, 1.0);
+			set(t1,0);
+			asyncloop(sound[s4], 
+				calc(scale,0.1+0.005*random); 
+				calc(tx, min(t1,1000) * cos(t1*0.1));
+				inc(t1,1);
+			,
+				tween(tx,0);
+			);
+			
+		);
+	</action>
+
+	
+	<!-- the floor / platform -->
+	<hotspot name="floor" capture="false"
+		url="floor.jpg" mipmapping="true"
+		width="1000" height="1000" distorted="true" depth="0"
+		rotationorder="xyz" rx="-90"
+		torigin="world" tx="0" ty="160" tz="0"
+		depthbuffer="true"
+		zorder="0"
+		/>
+		
+	
+	<!-- some lights for more 3D feeling -->
+	<style name="flare"  url="flare.png" zoom="true" blendmode="add" scale="0.5" enabled="false" />
+	<style name="flaremirror" style="flare" alpha="0.2" zorder="2" />
+	
+	<hotspot name="f11" style="flare" depth="0" ty="-200" tx="-500" tz="-500" />
+	<hotspot name="f12" style="flare" depth="0" ty="-200" tx="-250" tz="-500" />
+	<hotspot name="f13" style="flare" depth="0" ty="-200" tx=" 0"   tz="-500" />
+	<hotspot name="f14" style="flare" depth="0" ty="-200" tx="+250" tz="-500" />
+	<hotspot name="f15" style="flare" depth="0" ty="-200" tx="+500" tz="-500" />
+	
+	<hotspot name="f21" style="flare" depth="0" ty="-200" tx="-500" tz="-250" />
+	<hotspot name="f22" style="flare" depth="0" ty="-200" tx="-250" tz="-250" />
+	<hotspot name="f23" style="flare" depth="0" ty="-200" tx=" 0"   tz="-250" />
+	<hotspot name="f24" style="flare" depth="0" ty="-200" tx="+250" tz="-250" />
+	<hotspot name="f25" style="flare" depth="0" ty="-200" tx="+500" tz="-250" />
+	
+	<hotspot name="f31" style="flare" depth="0" ty="-200" tx="-500" tz="0" />
+	<hotspot name="f32" style="flare" depth="0" ty="-200" tx="-250" tz="0" />
+	<hotspot name="f33" style="flare" depth="0" ty="-200" tx=" 0"   tz="0" />
+	<hotspot name="f34" style="flare" depth="0" ty="-200" tx="+250" tz="0" />
+	<hotspot name="f35" style="flare" depth="0" ty="-200" tx="+500" tz="0" />
+	
+	<hotspot name="f41" style="flare" depth="0" ty="-200" tx="-500" tz="+250" />
+	<hotspot name="f42" style="flare" depth="0" ty="-200" tx="-250" tz="+250" />
+	<hotspot name="f43" style="flare" depth="0" ty="-200" tx=" 0"   tz="+250" />
+	<hotspot name="f44" style="flare" depth="0" ty="-200" tx="+250" tz="+250" />
+	<hotspot name="f45" style="flare" depth="0" ty="-200" tx="+500" tz="+250" />
+	
+	<hotspot name="f51" style="flare" depth="0" ty="-200" tx="-500" tz="+500" />
+	<hotspot name="f52" style="flare" depth="0" ty="-200" tx="-250" tz="+500" />
+	<hotspot name="f53" style="flare" depth="0" ty="-200" tx=" 0"   tz="+500" />
+	<hotspot name="f54" style="flare" depth="0" ty="-200" tx="+250" tz="+500" />
+	<hotspot name="f55" style="flare" depth="0" ty="-200" tx="+500" tz="+500" />
+	
+	
+	<!-- fake mirrored lights in the floor -->	
+	<hotspot name="mf11" style="flaremirror" depth="0" ty="+360" tx="-500" tz="-500" />
+	<hotspot name="mf12" style="flaremirror" depth="0" ty="+360" tx="-250" tz="-500" />
+	<hotspot name="mf13" style="flaremirror" depth="0" ty="+360" tx=" 0"   tz="-500" />
+	<hotspot name="mf14" style="flaremirror" depth="0" ty="+360" tx="+250" tz="-500" />
+	<hotspot name="mf15" style="flaremirror" depth="0" ty="+360" tx="+500" tz="-500" />
+	
+	<hotspot name="mf21" style="flaremirror" depth="0" ty="+360" tx="-500" tz="-250" />
+	<hotspot name="mf22" style="flaremirror" depth="0" ty="+360" tx="-250" tz="-250" />
+	<hotspot name="mf23" style="flaremirror" depth="0" ty="+360" tx=" 0"   tz="-250" />
+	<hotspot name="mf24" style="flaremirror" depth="0" ty="+360" tx="+250" tz="-250" />
+	<hotspot name="mf25" style="flaremirror" depth="0" ty="+360" tx="+500" tz="-250" />
+	
+	<hotspot name="mf31" style="flaremirror" depth="0" ty="+360" tx="-500" tz="0" />
+	<hotspot name="mf32" style="flaremirror" depth="0" ty="+360" tx="-250" tz="0" />
+	<hotspot name="mf33" style="flaremirror" depth="0" ty="+360" tx=" 0"   tz="0" />
+	<hotspot name="mf34" style="flaremirror" depth="0" ty="+360" tx="+250" tz="0" />
+	<hotspot name="mf35" style="flaremirror" depth="0" ty="+360" tx="+500" tz="0" />
+	
+	<hotspot name="mf41" style="flaremirror" depth="0" ty="+360" tx="-500" tz="+250" />
+	<hotspot name="mf42" style="flaremirror" depth="0" ty="+360" tx="-250" tz="+250" />
+	<hotspot name="mf43" style="flaremirror" depth="0" ty="+360" tx=" 0"   tz="+250" />
+	<hotspot name="mf44" style="flaremirror" depth="0" ty="+360" tx="+250" tz="+250" />
+	<hotspot name="mf45" style="flaremirror" depth="0" ty="+360" tx="+500" tz="+250" />
+	
+	<hotspot name="mf51" style="flaremirror" depth="0" ty="+360" tx="-500" tz="+500" />
+	<hotspot name="mf52" style="flaremirror" depth="0" ty="+360" tx="-250" tz="+500" />
+	<hotspot name="mf53" style="flaremirror" depth="0" ty="+360" tx=" 0"   tz="+500" />
+	<hotspot name="mf54" style="flaremirror" depth="0" ty="+360" tx="+250" tz="+500" />
+	<hotspot name="mf55" style="flaremirror" depth="0" ty="+360" tx="+500" tz="+500" />
+
+</krpano>

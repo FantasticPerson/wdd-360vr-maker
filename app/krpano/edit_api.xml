@@ -374,7 +374,7 @@
   <action name="add_sun_hotspot">
 
       addhotspot(sun_hotspot);
-      set(hotspot[sun_hotspot].url, '../krpano/skin/sun.png');
+      set(hotspot[sun_hotspot].url, './krpano/skin/sun.png');
       set(hotspot[sun_hotspot].keep,false);
       set(hotspot[sun_hotspot].onup,
         jscall(calc('window.onKrpSunHotspotMoveEnd(' + ath + ',' + atv + ')'));

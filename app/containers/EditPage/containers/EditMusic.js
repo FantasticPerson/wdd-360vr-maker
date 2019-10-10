@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {createSelector} from 'reselect'
-
 import FlatButton from '@material-ui/core/Button';
 
 import UploadAudioModal from './UploadAudioModal'
@@ -13,6 +11,10 @@ import ReactAudioPlayer from 'react-audio-player';
 
 import * as audioActions from '../../../actions/audio'
 import * as vrActions from '../../../actions/vr'
+import * as GroupActions from '../../../actions/group'
+import * as sceneActions from '../../../actions/scene'
+
+import {editMusicConfig,getSelector} from '../../../store/getStore'
 
 class EditMusic extends Component{
     constructor(){
@@ -21,17 +23,10 @@ class EditMusic extends Component{
     }
 
     componentDidMount(){
-        const {vrItem} = this.props
-        let stateObj = {}
-        if(vrItem && vrItem.url){
-            stateObj.url = vrItem.url
+        const {sceneSelectedItem} = this.props
+        if(sceneSelectedItem){
+            this.setState({url:sceneSelectedItem.music1,url2:sceneSelectedItem.music2})
         }
-        if(vrItem && vrItem.url2){
-            stateObj.url2 = vrItem.url2
-        }
-        setTimeout(()=>{
-            this.setState(stateObj)
-        },100)
     }
 
     onAddMusicLocal(type){
@@ -97,30 +92,53 @@ class EditMusic extends Component{
         }
     }
 
+    onRemoveMusic1(){
+        this.setState({url:null})
+    }
 
     renderMusic(){
         const {url} = this.state
         if(url){
             return (
-                <div>{url}</div>
+                <div>
+                    {url}
+                    <FlatButton color="primary" onClick={()=>{this.onRemoveMusic1()}}>删除</FlatButton>
+                </div>
             )
         }
+    }
+
+    onRemoveMusic2(){
+        this.setState({url2:null})
     }
 
     renderMusic2(){
         const {url2} = this.state
         if(url2){
             return (
-                <div>{url2}</div>
+                <div>
+                    {url2}
+                    <FlatButton color="primary" onClick={()=>{this.onRemoveMusic2()}}>删除</FlatButton>
+                </div>
             )
         }
     }
 
     onConfirmClick(){
-        const {addMusic,vrItem} = this.props
+        const {onfinish,updateSceneMusic,sceneSelectedItem} = this.props
         const {url,url2} = this.state
-        if(vrItem){
-            addMusic(vrItem.id,url,url2)
+        if(sceneSelectedItem){
+            updateSceneMusic(sceneSelectedItem,url,url2)
+            onfinish()
+        }
+    }
+
+    onAllConfirmClick(){
+        const {onfinish,updateAllMusic,sceneList} = this.props
+        const {url,url2} = this.state
+        if(sceneList.length > 0){
+            updateAllMusic(sceneList,url,url2)
+            onfinish()
         }
     }
 
@@ -160,6 +178,7 @@ class EditMusic extends Component{
                     </div>
                 </div>
                 <FlatButton  color="primary" onClick={this.onConfirmClick.bind(this)}>确定</FlatButton>
+                <FlatButton  color="primary" onClick={this.onAllConfirmClick.bind(this)}>应用到全部分组</FlatButton>
                 {this.renderUploadModal()}
                 {this.renderListModal()}
             </div>
@@ -167,29 +186,13 @@ class EditMusic extends Component{
     }
 }
 
-const selector = createSelector(
-    state => state.scene.sceneSelected,
-    state => state.scene.list,
-    state => state.vr.list,
-    (sceneSelected,sceneList,vrList)=>{
-        return {
-            vrItem:getVrItem(sceneSelected,sceneList,vrList)
-        }
-    }
-)
-
-function getVrItem(sId,sList,vList){
-    let item = sList.find(item=>item.id == sId)
-    if(item){
-        return vList.find(item2=>item2.id == item.vrid)
-    }
-}
-
 function mapDispatchToProps(dispatch){
     return {
         ...bindActionCreators(audioActions,dispatch),
-        ...bindActionCreators(vrActions,dispatch)
+        ...bindActionCreators(vrActions,dispatch),
+        ...bindActionCreators(GroupActions,dispatch),
+        ...bindActionCreators(sceneActions,dispatch)
     }
 }
 
-export default connect(selector,mapDispatchToProps)(EditMusic)
+export default connect(getSelector(editMusicConfig),mapDispatchToProps)(EditMusic)

@@ -9,31 +9,26 @@ export default class ContextModal extends Component{
     }
 
     componentDidMount(){
-        // setTimeout(() => {
-            const {posX,posY} = this.props.data
-            const {clientHeight} = this.dom
-            let clientWidth = 150
-            const {innerHeight,innerWidth} = window
+        const {posX,posY} = this.props.data
+        const {clientHeight} = this.dom
+        let clientWidth = 150
+        const {innerHeight,innerWidth} = window
 
-            console.log(clientHeight,clientWidth)
-            console.log(this.dom)
-
-            let posLeft = posX 
-            if(posX + clientWidth > innerWidth){
-                posLeft = innerWidth - clientWidth
+        let posLeft = posX 
+        if(posX + clientWidth > innerWidth){
+            posLeft = innerWidth - clientWidth
+        }
+        let posTop = posY
+        if(posY + clientHeight > innerHeight){
+            posTop = innerHeight - clientHeight
+        }
+        this.setState({
+            style:{
+                position:'absolute',
+                left:posLeft+'px',
+                top:posTop+'px'
             }
-            let posTop = posY
-            if(posY + clientHeight > innerHeight){
-                posTop = innerHeight - clientHeight
-            }
-            this.setState({
-                style:{
-                    position:'absolute',
-                    left:posLeft+'px',
-                    top:posTop+'px'
-                }
-            })
-        // }, 50);
+        })
     }
 
     onBgClick(e){

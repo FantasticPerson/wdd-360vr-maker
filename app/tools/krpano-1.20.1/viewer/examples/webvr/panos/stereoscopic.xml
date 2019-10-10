@@ -1,0 +1,52 @@
+﻿<krpano>
+
+	<scene name="stereopano1" autoload="true">
+		
+		<!-- startup view -->
+		<view hlookat="110" vlookat="10" />
+
+		<preview url="../../demotour-stereoscopic/panos/pano1_mono/preview.jpg" />
+
+		<image stereo="true" stereolabels="l|r" stereooffset="0.75" prealign="0|220|0">
+			<cube url="../../demotour-stereoscopic/panos/pano1_stereo_%t/pano_%s.jpg" />
+		</image>
+
+		<hotspot name="spot1"
+			url="../../demotour-stereoscopic/spot_curvedarrow.png"
+			ath="74" atv="-17"
+			distorted="true"
+			edge="bottom"
+			depth="700" scale="0.5"
+			flying="0.05"
+			onover="tween(scale,0.55,easeOutExpo,0.2);"
+			onout="tween(scale,0.5,easeOutExpo,0.2);"
+			onclick="tween(alpha,0,0.2,default,WAIT); loadscene(stereopano2,null,MERGE|KEEPMOVING,COLORBLEND(1.0,0x000000,easeOutSine));"
+			/>
+
+	</scene>
+
+
+	<scene name="stereopano2">
+
+		<preview url="../../demotour-stereoscopic/panos/pano2_mono/preview.jpg" />
+
+		<image stereo="true" stereolabels="l|r" stereooffset="0.25" prealign="0|25|0">
+			<cube url="../../demotour-stereoscopic/panos/pano2_stereo_%t/pano_%s.jpg" />
+		</image>
+		
+		<hotspot name="spot2"
+			url="../../demotour-stereoscopic/spot_curvedarrow.png"
+			ath="-109" atv="+32"
+			distorted="true"
+			edge="lefttop"
+			depth="5000" scale="4" rotate="180"
+			flying="0.05"
+			onover="tween(scale,4.4,easeOutExpo,0.2);"
+			onout="tween(scale,4.0,easeOutExpo,0.2);"
+			onclick="tween(alpha,0,0.2,default,WAIT); loadscene(stereopano1,null,MERGE|KEEPMOVING,COLORBLEND(1.0,0x000000,easeOutSine));"
+			/>
+
+	</scene>
+
+
+</krpano>

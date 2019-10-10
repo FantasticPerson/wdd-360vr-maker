@@ -1,1 +1,2 @@
-export const IMG_NAME_ARR = ["mobile_b.jpg","mobile_d.jpg","mobile_f.jpg","mobile_l.jpg","mobile_r.jpg","mobile_u.jpg","preview.jpg","thumb.jpg"]
+export const IMG_NAME_ARR = ["mobile_b.jpg","mobile_d.jpg","mobile_f.jpg","mobile_l.jpg","mobile_r.jpg","mobile_u.jpg","origin_preview.jpg"]
+// export const IMG_NAME_ARR = ["origin_b.tif","origin_d.tif","origin_f.tif","origin_l.tif","origin_r.tif","origin_u.tif","preview.jpg","thumb.jpg"]

@@ -1,0 +1,189 @@
+﻿<krpano>
+
+	<!-- several helpers -->
+	<include url="%VIEWER%/plugins/combobox.xml" />
+	<include url="%VIEWER%/plugins/contextmenu.xml" />
+	<include url="%VIEWER%/plugins/iphone_fullscreen_swipe.xml" />
+	<include url="%VIEWER%/plugins/webvr.xml" />
+	<include url="%VIEWER%/plugins/depthmap_navigation.xml" />
+
+	<scene name="kandao1" title="Example 1: Kandao" autoload="true">
+		<view tx="0" ty="0" tz="0" />
+		<image>
+			<sphere   url="kandao3.jpg" />
+			<depthmap url="kandao3_depthmap.jpg" scale="1.0" offset="0.065" />
+		</image>
+		<layer name="credits" style="info" align="rightop" html="Imagesource: [a href='https://www.kandaovr.com' target='_blank' style='color:#FFFFFF;']Kandao[/a] / [a href='https://immersionvr.co.uk/' target='_blank' style='color:#FFFFFF;']immersionvr.co.uk[/a]" />
+	</scene>
+
+	<scene name="kandao2" title="Example 2: Kandao">
+		<view tx="0" ty="0" tz="0" />
+		<image>
+			<sphere   url="kandao4.jpg" />
+			<depthmap url="kandao4_depthmap.jpg" scale="1.0" offset="0.065" />
+		</image>
+		<layer name="credits" style="info" align="rightop" html="Imagesource: [a href='https://www.kandaovr.com' target='_blank' style='color:#FFFFFF;']Kandao[/a] / [a href='https://immersionvr.co.uk/' target='_blank' style='color:#FFFFFF;']immersionvr.co.uk[/a]" />
+	</scene>
+	
+
+	<scene name="kandao3" title="Example 3: Kandao">
+		<view tx="0" ty="0" tz="0" />
+		<image>
+			<sphere   url="ivyguo.jpg" />
+			<depthmap url="ivyguo_deptmap.jpg" scale="1.0" offset="0.065" />
+		</image>
+		<layer name="credits" style="info" align="rightop" html="Imagesource: [a href='https://www.kandaovr.com' target='_blank' style='color:#FFFFFF;']Kandao[/a]" />
+	</scene>
+
+	<scene name="kandao4" title="Example 4: Kandao">
+		<view tx="0" ty="0" tz="0" />
+		<image>
+			<sphere   url="kandao1.jpg" />
+			<depthmap url="kandao1_depthmap.jpg" scale="1.0" offset="0.065" />
+		</image>
+		<layer name="credits" style="info" align="rightop" html="Imagesource: [a href='https://www.kandaovr.com' target='_blank' style='color:#FFFFFF;']Kandao[/a]" />
+	</scene>
+
+	<scene name="kandao5" title="Example 5: Kandao">
+		<view tx="0" ty="0" tz="0" />
+		<image>
+			<sphere   url="kandao2.jpg" />
+			<depthmap url="kandao2_depthmap.jpg" scale="1.0" offset="0.065" />
+		</image>
+		<layer name="credits" style="info" align="rightop" html="Imagesource: [a href='https://www.kandaovr.com' target='_blank' style='color:#FFFFFF;']Kandao[/a]" />
+	</scene>
+
+
+	<scene name="pano1" title="Example 6: Rendering">
+		<view tx="0" ty="0" tz="0" />
+		<image>
+			<sphere   url="pano1.jpg" />
+			<depthmap url="pano1_depthmap.jpg" scale="1.0" offset="0.0" />
+		</image>
+		<layer name="credits" style="info" align="rightop" html="Imagesource: unknown" />
+	</scene>
+
+	<scene name="pano2" title="Example 7: Stereo-to-Depth">
+		<view tx="0" ty="0" tz="0" />
+		<image>
+			<sphere   url="pano2.jpg" />
+			<depthmap url="pano2_depthmap.jpg" scale="1.0" offset="0.0" />
+		</image>
+		<layer name="credits" style="info" align="rightop" html="Imagesource: unknown" />
+	</scene>
+
+
+	<style name="info" type="text" css="color:#FFFFFF;text-align:center;" bg="false" txtshadow="0 1 4 0x000000 1.0" enabled="false" />
+	<style name="button" type="text" css="text-align:center;" padding="4 0" mergedalpha="false" bgborder="0 0xFFFFFF 1" bgroundedge="1" bgshadow="0 1 4 0x000000 1.0" ondown="set(bgcolor, 0xDDDDDD);" onup="set(bgcolor, 0xFFFFFF);" />
+
+	<layer name="depthonoff" keep="true" style="button" html=""           width="94" align="left" x="20" y="-20" onloaded="calc(html,image.depthmap.enabled ? 'Depthmap: On' : 'Depthmap: Off');" onclick="switch(image.depthmap.enabled); onloaded(); updatescreen();" />
+	<layer name="anaglyph"   keep="true" style="button" html=""           width="94" align="left" x="20" y="+10" onloaded="calc(html,display.anaglyph ? 'Anaglyph: On' : 'Anaglyph: Off');"  onclick="switch(display.anaglyph); onloaded();" />
+	<layer name="dollhouse"  keep="true" style="button" html="Dollhouse"  width="80" align="bottom" y="50" onclick="dollhouse_view();" />
+	<layer name="resetview"  keep="true" style="button" html="Reset View" width="80" align="bottom" y="20" onclick="resetview();" />
+
+
+
+	<action name="dollhouse_view">
+		lookto(270,50,90,default,true,true);
+		tween(view.oz|view.tx|view.ty|view.tz,calc(''+1200+'|'+image.ox+'|'+image.oy+'|'+image.oz));
+		set(control.invert,true);
+	</action>
+
+	<action name="resetview">
+		set(control.invert,false);
+		tween(view.tx|view.ty|view.tz|view.ox|view.oy|view.oz|view.fisheye,
+			calc(''+image.ox+'|'+image.oy+'|'+image.oz+'|0|0|0|0'),
+			0.5,
+			default
+		);
+	</action>
+
+
+	<combobox name="cbscenes" align="leftbottom" x="20" y="20" zorder="9" onloaded="add_scene_items();" />
+
+	<action name="add_scene_items" scope="local">
+		for(set(i,0), i LT scene.count, inc(i),
+			caller.addnameditem(get(scene[get(i)].name), get(scene[get(i)].title), calc('loadscene('+scene[get(i)].name+',null,MERGE,BLEND(1.0))') );
+		);
+		caller.selectitem( get(xml.scene) );
+	</action>
+
+	<events name="cbscenes_updates" keep="true"
+		onxmlcomplete="layer[cbscenes].selectitembyname( get(xml.scene) );"
+		/>
+
+	<!-- quickly switch scenes with the page-up/page-down/home/end keys -->
+	<events name="keybevents" keep="true" onkeydown="keybevents();" />
+	<action name="keybevents">
+		if (keycode == 33, nextscene(-1,true);
+		  , keycode == 34, nextscene(+1,true);
+		  , keycode == 36, nextscene(-99,false);
+		  , keycode == 35, nextscene(+99,false);
+		);
+	</action>
+
+	<action name="nextscene" scope="local" args="addtoindex, loop">
+		calc(newsceneindex, (scene[get(xml.scene)].index BOR 0) + addtoindex);
+		sub(lastsceneindex, scene.count, 1);
+		if(loop,
+			if(newsceneindex LT 0, copy(newsceneindex,lastsceneindex));
+			if(newsceneindex GT lastsceneindex, set(newsceneindex,0));
+		  ,
+			if(newsceneindex LT 0, set(newsceneindex,0));
+			if(newsceneindex GT lastsceneindex, copy(newsceneindex,lastsceneindex));
+		);
+		loadscene(get(scene[get(newsceneindex)].name),null,MERGE,OPENBLEND(0.5,0,0.5));
+	</action>
+
+
+
+	<plugin name="blur" url="%VIEWER%/plugins/pp_blur.js" keep="true"
+		range="30" quality="7" phase="2"
+		onloaded="tween(layer[exampleinfo].bgalpha, 0.33, 3.0);"
+		/>
+
+	<layer name="exampleinfo" keep="true"
+		type="container" align="lefttop" width="100%" height="100%" zorder="999"
+		bgcolor="0x000000" bgalpha="1.0" bgcapture="true" handcursor="false" safearea="false"
+		onclick="hide_exampleinfo();"
+	  >
+		<layer name="exampleinfo_text"
+			type="text"
+			align="center" width="100%" vcenter="true"
+			padding="8" bg="false" css="color:#FFFFFF;font-size:30px;text-align:center;xline-height:22px;" txtshadow="0 1 4 0x000000 1.0"
+			enabled="false"
+			html="data:exampleinfo"
+		/>
+	</layer>
+
+	<action name="hide_exampleinfo">
+		set(layer[exampleinfo].enabled,false);
+		tween(layer[exampleinfo].bgalpha|layer[exampleinfo].alpha|plugin[blur].range, 0.33|0.0|0.0, 1.0, default,
+			removeplugin(blur);
+			removelayer(exampleinfo,true);
+		);
+	</action>
+
+	<data name="exampleinfo"><![CDATA[
+		<div style="font-size:24px;">Depthmap-Images</div>
+		<div style="font-size:14px;display:inline-block;max-width:420px;">
+			<br>
+			<div>
+				Some example panos with <a href="https://krpano.com/docu/xml/#depthmap" style="color:#FFFFFF;">depthmap images</a>.<br>
+				<br>
+				The depthmaps were created either by the camera itself,
+				by rendering software together with the (also rendered) pano-image
+				or using some stereo-to-depth software from stereo-panos.<br>
+				<br>
+				The quality of such generated depthmap images is often not suitable
+				for 3D-movements in the pano images
+				but often good enough for a convincing stereo-effect with depth-perception
+				when viewed in VR or Anglyph-mode.
+			</div>
+			<br>
+
+			<div style="text-align:center;font-size:18px;padding-top:20px;cursor:pointer;">Click/Touch to start</div>
+		</div>
+	]]></data>
+
+</krpano>

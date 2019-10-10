@@ -2,12 +2,7 @@ import React,{Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {createSelector} from 'reselect';
-
-import FlatButton from '@material-ui/core/Button';
-import RadioButton from '@material-ui/core/Radio';
-import RadioButtonGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
+import {Button as FlatButton,Radio as RadioButton,RadioGroup as RadioButtonGroup,FormControlLabel,FormControl} from '@material-ui/core'
 
 import {editEffectConfig,getSelector} from '../../../store/getStore'
 
@@ -20,9 +15,8 @@ class EditEffect extends Component{
         this.state = {rainType:'0',snowType:'0'}
     }
 
-
     componentDidMount(){
-        const {sceneSelectedItem,sceneSelected,updateEffect,AddEffect} = this.props
+        const {sceneSelectedItem,sceneSelected,updateEffect,AddEffect,AddSunlight} = this.props
 
         if(sceneSelectedItem.hasOwnProperty('effectType') && sceneSelectedItem.hasOwnProperty('effectLevel')){
             if(sceneSelectedItem.effectType == 'rain'){
@@ -33,13 +27,20 @@ class EditEffect extends Component{
                 AddEffect('snow',sceneSelectedItem.effectLevel)
             }
         }
+        if(sceneSelectedItem.hasOwnProperty('sunlight')){
+            let sunlight = sceneSelectedItem.sunlight
+            if(sunlight.length > 0){
+                let sunObj = JSON.parse(sunlight)
+
+                AddSunlight(sunObj)
+            }
+        }
     }
 
     componentWillReceiveProps(obj,cObj){
 
         let nItem = obj.sceneSelectedItem
         let cItem = cObj.sceneSelectedItem
-
 
         const {AddEffect} = this.props
 
@@ -58,13 +59,14 @@ class EditEffect extends Component{
 
     onSelectEffectConfirm(){
         const {rainType,snowType} = this.state
-        const {updateEffect,sceneSelected} = this.props
+        const {updateEffect,sceneSelected,onfinish} = this.props
 
         if(rainType > 0){
             updateEffect(sceneSelected,'rain',rainType)
         } else if(snowType > 0){
             updateEffect(sceneSelected,'snow',snowType)
         }
+        onfinish()
     }
 
     onChooseSpecislShowChange(event,value){
@@ -82,6 +84,26 @@ class EditEffect extends Component{
             }
             this.setState({snowType:value})
             AddEffect('snow',value)
+        }
+    }
+
+    addSunlight(){
+        const {sceneSelectedItem} = this.props
+        if(sceneSelectedItem){
+            if(sceneSelectedItem.sunlight && sceneSelectedItem.sunlight.length > 0){
+                return 
+            }
+            const {addSunlight,sceneSelected} = this.props
+            addSunlight(sceneSelected)
+        }
+    }
+
+    removeSunlight(){
+        const {sceneSelectedItem,removeSunlight} = this.props
+        if(sceneSelectedItem){
+            if(sceneSelectedItem.sunlight && sceneSelectedItem.sunlight.length > 0){
+                removeSunlight(sceneSelectedItem.id)
+            }
         }
     }
 
@@ -116,6 +138,8 @@ class EditEffect extends Component{
                     </span>
                 </div>
                 <div>
+                    <FlatButton variant="contained" color="primary" style={{marginLeft:'10px'}} onClick={this.addSunlight.bind(this)}>添加阳光</FlatButton>
+                    <FlatButton  style={{marginLeft:'10px'}} onClick={this.removeSunlight.bind(this)}>删除</FlatButton>
                     <div>下雨</div>
                     <RadioButtonGroup
                         name="rain"

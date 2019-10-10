@@ -1,0 +1,88 @@
+<krpano>
+
+	<!-- include the main example -->
+	<include url="main.xml" />
+
+	<!-- remove the navigator plugin from there -->
+	<plugin name="navigator" url="" />
+
+	<!-- include the free 3D-movement depthmap navigation controls -->
+	<include url="%VIEWER%/plugins/depthmap_navigation.xml" />
+
+
+	<!-- automatically add floor-hotspots at scene locations -->
+	<action name="generate_floor_hotspots" autorun="onstart" scope="local">
+		set(floorheight, 152.0);
+		for(set(i,0), i LT style.count, inc(i),
+			indexoftxt(is_everpano3D_style, get(style[get(i)].name), 'everpano3d_');
+			if(is_everpano3D_style == 0,
+				copy(st, style[get(i)]);
+				addhotspot(calc('floorspot_' + (i+1)), hs);
+				hs.loadstyle(floorspot);
+				copy(hs.tx, st.ox);
+				copy(hs.tz, st.oz);
+				calc(hs.ty, floorheight + 1.0*st.oy - 1.0);
+				copy(hs.linkedscene, st.linkedscene);
+			);
+		);
+	</action>
+
+	<style name="floorspot" keep="true" type="text"
+		css="font-size:20px;text-align:center;" vcenter="true"
+		width="200" height="200" scale="0.15"
+		bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+		oversampling="2" mipmapping="true" zorder="1"
+		distorted="true" depth="0" depthbuffer="true"
+		torigin="world" rotationorder="xyz" rx="-90"
+		xalpha="0"
+		alpha="0.3"
+		onover.addevent="tween(scale,0.16); tween(alpha,0.6);"
+		onout.addevent="tween(scale,0.15); tween(alpha,0.3);"
+		onclick="floorspot_onclick();"
+		/>
+
+	<action name="floorspot_onclick" scope="local">
+		if(xml.scene != caller.linkedscene,
+			loadscene(get(caller.linkedscene),null,MERGE|KEEPVIEW|KEEPMOVING,BLEND(0.5));
+		);
+		tween(view.tx|view.ty|view.tz, calc(image.ox + '|' + image.oy + '|' + image.oz), 2.0, default);
+	</action>
+
+
+	<!-- add some buttons and icons -->
+	<style name="button" type="text" css="text-align:center;" padding="4 8" mergedalpha="false" bgborder="0 0xFFFFFF 1" bgroundedge="1" bgshadow="0 1 4 0x000000 1.0"  ondown="set(bgcolor, 0xDDDDDD);"  onup="set(bgcolor, 0xFFFFFF);" />
+
+	<layer name="resetview" keep="true" style="button" html="Reset View" width="80" align="bottom" y="20" onclick="resetview(); "/>
+
+	<action name="resetview">
+		tween(view.tx|view.ty|view.tz|view.ox|view.oy|view.oz|view.fisheye, calc(''+image.ox+'|'+image.oy+'|'+image.oz+'|0|0|0|0'), 0.5, default);
+	</action>
+
+	<!-- overwrite/redesign the default Enter VR button from the webvr.xml -->
+	<layer name="webvr_enterbutton" keep="true"
+		url="../abu-simbel-tempel-tour/res/icon_vr.png"
+		scale="0.5" align="leftbottom" x="18" y="18" alpha="1.0"
+		onclick.addevent="set(display.anaglyph,false);"
+		/>
+
+	<layer name="webvr_enterbutton_infotext" keep="true" devices="normal"
+		parent="webvr_enterbutton"
+		type="text" css="color:#FFFFFF;font-size:10px;line-height:12px;" bg="false" txtshadow="0 1 4 0x000000 1.0"
+		html="Enter[br]VR Mode"
+		align="lefttop" x="42" capture="false"
+		/>
+
+	<layer name="toggle_anaglyph_mode" keep="true"
+		url="../abu-simbel-tempel-tour/res/icon_anaglyph.png"
+		align="leftbottom" x="18" y="53" scale="0.5"
+		onclick="switch(display.anaglyph);"
+		/>
+
+	<layer name="toggle_anaglyph_mode_infotext" keep="true" devices="normal"
+		parent="toggle_anaglyph_mode"
+		type="text" css="color:#FFFFFF;font-size:10px;line-height:12px;" bg="false" txtshadow="0 1 4 0x000000 1.0"
+		html="Anaglyph[br]Mode"
+		align="lefttop" x="42" capture="false"
+		/>
+
+</krpano>

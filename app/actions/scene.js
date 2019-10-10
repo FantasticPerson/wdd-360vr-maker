@@ -4,18 +4,34 @@ import {addHotspotToKrpano} from '../utils/krpanoFunctions'
 import Hashid from '../utils/generateHashId'
 import getPathOfHotSpotIconPath from '../native/getHotspotIconPath'
 import getPathOfSceneHeadImg from '../native/getPathOfSceneHeadImg'
-import getScenePath from '../native/getScenePath'
 import {getPanoXml} from '../utils/xmlBuilder'
-import {addHotpots} from './hotpot'
+import {addHotspots} from './hotpot'
+
+import {getScenePath} from '../native/pathUtils'
+
+import {AddSunlight,RemoveSunlight} from './krpano'
 
 export const updateAllScene = createAction('update_all_scene')
 export const dUpdateSceneSelected = createAction('update_scene_selected')
 
-export function updateSceneSelected(id,vrId,folderId){
+export function updateDAllScene(id){
+    return (dispatch,getState)=>{
+        let gId = id ? id : getState().group.selectId
+        Modals.Scene.findAllSceneByGroupId(gId)
+        .then((list)=>{
+            list.sort((item1,item2)=>{
+                return item1.index > item2.index
+            })
+            dispatch(updateAllScene(list))
+        })
+    }
+}
+
+export function updateSceneSelected(id){
     return (dispatch,getState)=>{
         let krpano = getState().krpano.obj
         if(krpano){
-            let scenePath = getScenePath(folderId,vrId,id)
+            let scenePath = getScenePath(id)
             if(krpano){
                 const xml = getPanoXml({
                     scenePath:scenePath
@@ -23,7 +39,7 @@ export function updateSceneSelected(id,vrId,folderId){
                 krpano.call(`load_pano_by_multils(${xml})`)
             }
             dispatch(dUpdateSceneSelected(id))
-            dispatch(addHotpots())
+            dispatch(addHotspots(id))
         }
     }
 }
@@ -43,12 +59,18 @@ export function updateInitViewPort(sceneId){
 
             Modals.Scene.update(sceneItem)
             .then(()=>{
-                return Modals.Scene.findAll()
-            })
-            .then((list)=>{
-                dispatch(updateAllScene(list))
+                dispatch(updateDAllScene())
             })
         }
+    }
+}
+
+export function sortSceneItems(items){
+    return (dispatch,getState)=>{
+        Modals.Scene.updateAllScene(items)
+        .then(()=>{
+            dispatch(updateDAllScene())
+        })
     }
 }
 
@@ -66,10 +88,7 @@ export function updateViewRange(id,fov,fovmax,fovmin,vlookatmin,vlookatmax){
 
             Modals.Scene.update(sceneItem)
             .then(()=>{
-                return Modals.Scene.findAll()
-            })
-            .then((list)=>{
-                dispatch(updateAllScene(list))
+                dispatch(updateDAllScene())
             })
         }
     }
@@ -80,16 +99,72 @@ export function updateEffect(id,type,level){
         let sceneList = getState().scene.list
         let sceneItem = sceneList.find(item=>item.id == id)
 
-        if(sceneItem){
+        if(sceneItem){ 
             sceneItem.effectType = type
             sceneItem.effectLevel = level
 
             Modals.Scene.update(sceneItem)
             .then(()=>{
-                return Modals.Scene.findAll()
+                dispatch(updateDAllScene())
             })
-            .then((list)=>{
-                dispatch(updateAllScene(list))
+        }
+    }
+}
+
+export function addSunlight(id){
+    return (dispatch,getState)=>{
+        let sceneList = getState().scene.list
+        let sceneItem = sceneList.find(item=>item.id == id)
+
+        var krpano = getState().krpano.obj
+
+        if(sceneItem && krpano){
+            const ath = krpano.get('view.hlookat')
+            const atv = krpano.get('view.vlookat')
+
+            let newItem = {...sceneItem,sunlight:JSON.stringify({ath,atv})}
+
+            dispatch(AddSunlight({ath,atv}))
+
+            Modals.Scene.add(newItem)
+            .then(()=>{
+                dispatch(updateDAllScene())
+            })
+        }
+    }
+}
+
+export function updateSunlight(id,ath,atv){
+    return (dispatch,getState)=>{
+        let sceneList = getState().scene.list
+        let sceneItem = sceneList.find(item=>item.id == id)
+
+        var krpano = getState().krpano.obj
+
+        if(sceneItem && krpano){
+            let newItem = {...sceneItem,sunlight:JSON.stringify({ath,atv})}
+
+            Modals.Scene.update(newItem)
+            .then(()=>{
+                dispatch(updateDAllScene())
+            })
+        }
+    }
+}
+
+export function removeSunlight(id){
+    return (dispatch,getState)=>{
+        let sceneList = getState().scene.list
+        let sceneItem = sceneList.find(item=>item.id == id)
+
+        var krpano = getState().krpano.obj
+
+        if(sceneItem && krpano){
+            let newItem = {...sceneItem,sunlight:null}
+            dispatch(RemoveSunlight())
+            Modals.Scene.update(newItem)
+            .then(()=>{
+                dispatch(updateDAllScene())
             })
         }
     }
@@ -97,21 +172,18 @@ export function updateEffect(id,type,level){
 
 export function updateAllSceneFromLocal(){
     return (dispatch)=>{
-        Modals.Scene.findAll()
-        .then((list)=>{
-            dispatch(updateAllScene(list))
-        })
+        dispatch(updateDAllScene())
     }
 }
 
 export function addScene(obj) {
+    let sceneObj = {
+        ...obj,fov:75,fovmax:155,fovmin:-5,hlookat:0,vlookat:0,vlookatmax:90,vlookatmin:-90
+    }
     return (dispatch) => {
-        Modals.Scene.add(obj)
+        Modals.Scene.add(sceneObj)
         .then(()=>{
-            return Modals.Scene.findAll()
-        })
-        .then((list)=>{
-            dispatch(updateAllScene(list))
+            dispatch(updateDAllScene())
         })
     }
 }
@@ -120,10 +192,7 @@ export function delScene(obj) {
     return (dispatch)=>{
         Modals.Scene.delete(obj.id)
         .then(()=>{
-            return Modals.Scene.findAll()
-        })
-        .then((list)=>{
-            dispatch(updateAllScene(list))
+            dispatch(updateDAllScene())
         })
     }
 }
@@ -132,10 +201,28 @@ export function modifyScene(obj) {
     return (dispatch)=>{
         Modals.Scene.update(obj)
         .then(()=>{
-            return Modals.Scene.findAll()
+            dispatch(updateDAllScene())
         })
-        .then((list)=>{
-            dispatch(updateAllScene(list))
+    }
+}
+
+export function updateAllMusic(arr,music1,music2){
+    let objArr = arr.map(item=>{
+        return {...item,music1,music2}
+    })
+    return (dispatch)=>{
+        Modals.Scene.updateAllScene(objArr)
+        .then(()=>{
+            dispatch(updateDAllScene())
+        })
+    }
+}
+
+export function updateSceneMusic(obj,music1,music2){
+    return (dispatch)=>{
+        Modals.Scene.update({...obj,music1,music2})
+        .then(()=>{
+            dispatch(updateDAllScene())
         })
     }
 }

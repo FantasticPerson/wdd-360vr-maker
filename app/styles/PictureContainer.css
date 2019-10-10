@@ -1,0 +1,28 @@
+.pic {
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.span{
+    display: inline-block;
+    width: 200px;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 5px;
+}
+
+.container{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 15px;
+    flex: 1;
+    box-sizing: content-box;
+    overflow-y: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}

@@ -1,0 +1,693 @@
+﻿<krpano title="Little Temple of Abu Simbel" strict="true" debugmode="true">
+
+	<!--
+		An Example Depthmap-Tour of the 'Little Temple of Abu Simbel'.
+		- Panos and Depthmaps by Jordi Vallverdú (everpano.com)
+		- Tour Design and Coding by krpano
+		- Music by Derek Fiechter (dbfiechter.bandcamp.com)
+		- Temple Information Texts from:
+			https://en.wikipedia.org/wiki/Abu_Simbel_temples
+			https://www.newworldencyclopedia.org/entry/Abu_Simbel
+	-->
+
+
+	<!-- a little helper editor tool, change the if="0" to if="1" to use it -->
+	<include url="tour_edithelper.xml" if="0" />
+
+	<!-- several helpers -->
+	<include url="%VIEWER%/plugins/contextmenu.xml" />
+	<include url="%VIEWER%/plugins/iphone_fullscreen_swipe.xml" />
+	<include url="%VIEWER%/plugins/webvr.xml" />
+	<include url="%VIEWER%/plugins/depthmap_navigation.xml" />
+
+	<action name="webvr_show_fakemode_info">
+		<!-- hide the 'Simulated WebVR Mode' message from the webvr.xml by redefining this action -->
+	</action>
+
+
+	<!-- settings for viewing the example offline (smaller images with lower quality, smaller files) -->
+	<settings if="browser.domain != 'krpano.com'"
+		tileurl="panos/"
+		multiressizes="512,1024"
+		/>
+
+	<!-- settings for viewing the example online (higher resolution images with better quality) -->
+	<settings if="browser.domain == 'krpano.com'"
+		tileurl="https://krpano.com/tours/abu_simbel/panos/"
+		multiressizes="512,1024,2048"
+		/>
+
+	<!-- background music -->
+	<plugin url="%VIEWER%/plugins/soundinterface.js" keep="true"
+		onloaded="playsound(bg, '%CURRENTXML%/res/bg.mp3', true, 0.3);"
+		/>
+
+
+	<!-- default depthmap rendering mode -->
+	<display depthmaprendermode="3dmodel" />
+
+
+	<!--
+		Depthmap Tour Organization
+		- Using <style> elements to store the alignment and 3D world location of each scene.
+		- That data can be also easily used to build hotspots for each scene automatically.
+	-->
+	<style name="abu_simbel_14" prealign="0|-5.5|0"  ox="5"    oy="-33" oz="750" linkedscene="abu_simbel_14" autohotspot="true" />
+	<style name="abu_simbel_18" prealign="0|252|0"   ox="0"    oy="0"   oz="0"   linkedscene="abu_simbel_18" autohotspot="true" />
+	<style name="abu_simbel_19" prealign="0|209.4|0" ox="-456" oy="0"   oz="-34" linkedscene="abu_simbel_19" autohotspot="true" />
+	<style name="abu_simbel_20" prealign="0|225|0"   ox="-235" oy="-33" oz="737" linkedscene="abu_simbel_20" autohotspot="true" />
+	<style name="abu_simbel_21" prealign="0|59|0"    ox="232"  oy="-33" oz="741" linkedscene="abu_simbel_21" autohotspot="true" />
+	<style name="abu_simbel_22" prealign="0|26|0"    ox="446"  oy="0"   oz="0"   linkedscene="abu_simbel_22" autohotspot="true" />
+
+
+	<!-- Automatically a floor-hotspot at each pano world location -->
+	<action name="generate_abu_simbel_hotspots" autorun="onstart" scope="local">
+		set(floorheight, 160.0);
+		for(set(i,0), i LT style.count, inc(i),
+			if (style[get(i)].autohotspot == true,
+				copy(st, style[get(i)]);
+				addhotspot(calc('abu_simbel_spot_' + (i+1)), hs);
+				hs.loadstyle(floorspot);
+				copy(hs.tx, st.ox);
+				copy(hs.tz, st.oz);
+				calc(hs.ty, floorheight + 1.0*st.oy - 1.0);
+				copy(hs.linkedscene, st.linkedscene);
+			);
+		);
+	</action>
+
+	<style name="floorspot" keep="true" type="text"
+		css="font-size:20px;text-align:center;" vcenter="true"
+		width="200" height="200" scale="0.2"
+		bgroundedge="100" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+		oversampling="2" mipmapping="true" zorder="1"
+		distorted="true" depth="0" depthbuffer="true"
+		torigin="world" rotationorder="xyz" rx="-90"
+		alpha="0"
+		onloaded.addevent="delayedcall(1.0, tween(alpha,0.5); );"
+		onover.addevent="tween(scale,0.22); tween(alpha,0.7);"
+		onout.addevent="tween(scale,0.2); tween(alpha,0.5);"
+		onclick="floorspot_onclick();"
+		/>
+
+	<action name="floorspot_onclick" scope="local">
+		if(xml.scene != caller.linkedscene,
+			tour_loadscene(get(caller.linkedscene));
+		  ,
+			moveto_scene_center();
+		);
+	</action>
+
+
+	<!-- using arrow hotspots for direct scene navigation -->
+	<style name="arrowspot"
+		zoom="true"
+		capture="false"
+		depth="0"
+		depthbuffer="true"
+		alpha="0"
+		zorder="3"
+		enabled="false"
+		onloaded="delayedcall(calc(customtransitiontime !== null ? (customtransitiontime+0.5) : 0.5), tween(alpha,0.5,0.3,default,set(enabled,true)); );"
+		onover="tween(alpha,0.7);"
+		onout="tween(alpha,0.5);"
+		/>
+
+	<style name="doorspot"
+		type="text"
+		distorted="true"
+		capture="false"
+		depth="0"
+		alpha="0.0"
+		zorder="0"
+		enabled="false"
+		onloaded="delayedcall(calc(customtransitiontime !== null ? (customtransitiontime+0.5) : 0.5), set(enabled,true); );"
+		/>
+
+
+	<!-- action for loading scenes -->
+	<action name="tour_loadscene" scope="local" args="scenename">
+		loadscene(get(scenename), null, MERGE|KEEPVIEW|KEEPMOVING, BLEND(2.0));
+	</action>
+
+
+	<!-- a style for changing depthmap settings for all scenes -->
+	<style name="depthmapsettings" background="none" />
+
+
+	<!-- the scenes -->
+
+	<scene name="abu_simbel_14" title="abu_simbel_14" onstart="" thumburl="panos/abu_simbel_14/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="2.363" vlookat="8.734" fovtype="MFOV" fov="106.952" fovmin="30" fovmax="150" />
+
+		<preview url="panos/abu_simbel_14/preview.jpg" />
+
+		<image style="abu_simbel_14">
+			<cube url="calc:settings.tileurl + 'abu_simbel_14/l%l/l%l_%s_%v_%h.jpg'" multires="get:settings.multiressizes" />
+			<depthmap url="panos/abu_simbel_14/abu_simbel_14.depth" scale="1.6" style="depthmapsettings" />
+		</image>
+
+		<hotspot name="door_to_18" style="doorspot" width="60" height="80" tx="-22" ty="15" tz="536" onclick="tour_loadscene(abu_simbel_18);" />
+		<hotspot name="arrow_to_19" style="arrowspot" url="res/arrow_l.png" scale="0.1" rotate="-90" tx="-428" ty="10" tz="600" onclick="transition_14_20_21_to_19();" />
+		<hotspot name="arrow_to_22" style="arrowspot" url="res/arrow_r.png" scale="0.1" rotate="+90" tx="+400" ty="10" tz="600" onclick="transition_14_20_21_to_22();" />
+
+	</scene>
+
+	<scene name="abu_simbel_18" autoload="true" title="abu_simbel_18" onstart="" thumburl="panos/abu_simbel_18/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-0.661" vlookat="0.203" fovtype="MFOV" fov="106.952" fovmin="30" fovmax="150" />
+
+		<preview url="panos/abu_simbel_18/preview.jpg" />
+
+		<image style="abu_simbel_18">
+			<cube url="calc:settings.tileurl + 'abu_simbel_18/l%l/l%l_%s_%v_%h.jpg'" multires="get:settings.multiressizes" />
+			<depthmap url="panos/abu_simbel_18/abu_simbel_18.depth" style="depthmapsettings" />
+		</image>
+
+		<hotspot name="door_to_14" style="doorspot" width="70" height="150" tx="-1" ty="-25" tz="+517" onclick="tour_loadscene(abu_simbel_14);" />
+		<hotspot name="arrow_to_22" style="arrowspot" url="res/arrow_r.png" scale="0.1" rotate="+90" tx="+300" ty="+50" tz="+80" onclick="transition_18_to_22();" />
+		<hotspot name="arrow_to_19" style="arrowspot" url="res/arrow_l.png" scale="0.1" rotate="-90" tx="-300" ty="+50" tz="+55" onclick="transition_18_to_19();" />
+
+	</scene>
+
+	<scene name="abu_simbel_19" title="abu_simbel_19" onstart="" thumburl="panos/abu_simbel_19/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="89.521" vlookat="5.049" fovtype="MFOV" fov="115.830" fovmin="30" fovmax="150" />
+
+		<preview url="panos/abu_simbel_19/preview.jpg" />
+
+		<image style="abu_simbel_19">
+			<cube url="calc:settings.tileurl + 'abu_simbel_19/l%l/l%l_%s_%v_%h.jpg'" multires="get:settings.multiressizes" />
+			<depthmap url="panos/abu_simbel_19/abu_simbel_19.depth" style="depthmapsettings" />
+		</image>
+
+		<hotspot name="arrow_to_19" style="arrowspot" url="res/arrow_r.png" scale="0.1" rotate="+90" tx="-300" ty="+50" tz="+55" onclick="transition_19_to_18();" />
+		<hotspot name="arrow_to_20" style="arrowspot" url="res/arrow_r.png" scale="0.15" rotate="+90" tx="-440" ty="0" tz="690" onclick="transition_19_to_20();" />
+
+	</scene>
+
+	<scene name="abu_simbel_20" title="abu_simbel_20" onstart="" thumburl="panos/abu_simbel_20/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="264.164" vlookat="9.938" fovtype="MFOV" fov="115.830" fovmin="30" fovmax="150" />
+
+		<preview url="panos/abu_simbel_20/preview.jpg" />
+
+		<image style="abu_simbel_20">
+			<cube url="calc:settings.tileurl + 'abu_simbel_20/l%l/l%l_%s_%v_%h.jpg'" multires="get:settings.multiressizes" />
+			<depthmap url="panos/abu_simbel_20/abu_simbel_20.depth" style="depthmapsettings" />
+		</image>
+
+		<hotspot name="arrow_to_18" style="arrowspot" url="res/arrow_r.png" scale="0.1" rotate="+90" tx="-33"  ty="+10" tz="+580" onclick="transition_20_21_to_18();" />
+		<hotspot name="arrow_to_19" style="arrowspot" url="res/arrow_l.png" scale="0.1" rotate="-90" tx="-428" ty="+10" tz="+600" onclick="transition_14_20_21_to_19();" />
+		<hotspot name="arrow_to_22" style="arrowspot" url="res/arrow_r.png" scale="0.1" rotate="+90" tx="+400" ty="+10" tz="+600" onclick="transition_14_20_21_to_22();" />
+
+	</scene>
+
+	<scene name="abu_simbel_21" title="abu_simbel_21" onstart="" thumburl="panos/abu_simbel_21/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="92.736" vlookat="7.761" fovtype="MFOV" fov="115.830" fovmin="30" fovmax="150" />
+
+		<preview url="panos/abu_simbel_21/preview.jpg" />
+
+		<image style="abu_simbel_21">
+			<cube url="calc:settings.tileurl + 'abu_simbel_21/l%l/l%l_%s_%v_%h.jpg'" multires="get:settings.multiressizes" />
+			<depthmap url="panos/abu_simbel_21/abu_simbel_21.depth" style="depthmapsettings" />
+		</image>
+
+		<hotspot name="arrow_to_18" style="arrowspot" url="res/arrow_l.png" scale="0.1" rotate="-90" tx="+11"  ty="+10" tz="+595" onclick="transition_20_21_to_18();" />
+		<hotspot name="arrow_to_19" style="arrowspot" url="res/arrow_l.png" scale="0.1" rotate="-90" tx="-428" ty="+10" tz="+600" onclick="transition_14_20_21_to_19();" />
+		<hotspot name="arrow_to_22" style="arrowspot" url="res/arrow_r.png" scale="0.1" rotate="+90" tx="+400" ty="+10" tz="+600" onclick="transition_14_20_21_to_22();" />
+
+	</scene>
+
+	<scene name="abu_simbel_22" title="abu_simbel_22" onstart="" thumburl="panos/abu_simbel_22/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="265.502" vlookat="6.723" fovtype="MFOV" fov="115.830" fovmin="30" fovmax="150" />
+
+		<preview url="panos/abu_simbel_22/preview.jpg" />
+
+		<image style="abu_simbel_22">
+			<cube url="calc:settings.tileurl + 'abu_simbel_22/l%l/l%l_%s_%v_%h.jpg'" multires="get:settings.multiressizes" />
+			<depthmap url="panos/abu_simbel_22/abu_simbel_22.depth" style="depthmapsettings" />
+		</image>
+
+		<hotspot name="arrow_to_18" style="arrowspot" url="res/arrow_l.png" scale="0.1" rotate="-90" tx="+182" ty="50" tz="+100" onclick="transition_22_to_18();" />
+		<hotspot name="arrow_to_21" style="arrowspot" url="res/arrow_l.png" scale="0.12" rotate="-90" tx="430" ty="0" tz="485" onclick="transition_22_to_21();"/>
+
+	</scene>
+
+
+	<!-- transition actions -->
+
+	<action name="moveto_scene_center" scope="local">
+		if (global.customtransition != 'SKIP',
+
+			if(global.customtransition !== null,
+				dollhouse_off();
+				global.customtransition();
+			  ,
+				tween(view.tx|view.ty|view.tz, calc(image.ox + '|' + image.oy + '|' + image.oz), 2.0, easeinoutsine);
+			);
+
+			delayedcall(calc(customtransitiontime !== null ? (customtransitiontime-1.0) : 1.0),
+				playsound(auto, '%CURRENTXML%/res/move.mp3');
+			);
+		);
+
+		delete(global.customtransition);
+		delete(global.customtransitiontime);
+	</action>
+
+
+	<action name="webvr_lookto" scope="local" args="h, v, time, tweentype, donecall">
+		adjusthlookat(get(h));
+		tween(view.hlookat|view.vlookat|webvr.hlookatoffset, calc(h+'|'+v+'|'+(webvr.hlookatoffset+h-view.hlookat)), get(time), get(tweentype), get(donecall) );
+	</action>
+
+
+	<action name="transition_14_20_21_to_19">
+		set(customtransitiontime, 4.0);
+		set(customtransition,
+			webvr_lookto(180.0, 0.0, 2.0, easeinsine);
+			tween(view.tx|view.ty|view.tz, -450|0|730, 2.0, easeinsine,
+				tween(view.tx|view.ty|view.tz, calc(image.ox + '|' + image.oy + '|' + image.oz), 2.0, easeinoutsine);
+			);
+		);
+		tour_loadscene(abu_simbel_19);
+	</action>
+
+	<action name="transition_14_20_21_to_22">
+		set(customtransitiontime, 4.0);
+		set(customtransition,
+			webvr_lookto(180, 0.0, 2.0, easeinsine);
+			tween(view.tx|view.ty|view.tz, 400|0|730, 2.0, easeinsine,
+				tween(view.tx|view.ty|view.tz, calc(image.ox + '|' + image.oy + '|' + image.oz), 2.0, easeinoutsine);
+			);
+		);
+		tour_loadscene(abu_simbel_22);
+	</action>
+
+	<action name="transition_18_to_19">
+		set(customtransitiontime, 5.0);
+		set(customtransition,
+			webvr_lookto(-180, 0.0, 4.5, easeinoutsine);
+			tween(view.tx|view.ty|view.tz, -340|0|155, 2.0, easeinoutquad,
+				tween(view.tx|view.ty|view.tz, calc(image.ox + '|' + image.oy + '|' + image.oz), 3.0, easeinoutcubic);
+			);
+		);
+		tour_loadscene(abu_simbel_19);
+	</action>
+
+	<action name="transition_18_to_22">
+		set(customtransitiontime, 4.5);
+		set(customtransition,
+			webvr_lookto(172, 0.0, 4.5, easeinoutsine);
+			tween(view.tx|view.ty|view.tz, 380|0|180, 2.0, easeinoutquad,
+				tween(view.tx|view.ty|view.tz, calc(image.ox + '|' + image.oy + '|' + image.oz), 2.5, easeinoutcubic);
+			);
+		);
+		tour_loadscene(abu_simbel_22);
+	</action>
+
+	<action name="transition_19_to_18">
+		set(customtransitiontime, 5.0);
+		set(customtransition,
+			webvr_lookto(180, 0.0, 4.5, easeinoutsine);
+			tween(view.tx|view.ty|view.tz, -336|0|155, 2.0, easeinoutquad,
+				tween(view.tx|view.ty|view.tz, calc(image.ox + '|' + image.oy + '|' + image.oz), 3.0, easeinoutcubic);
+			);
+		);
+		tour_loadscene(abu_simbel_18);
+	</action>
+
+	<action name="transition_19_to_20">
+		set(customtransitiontime, 5.0);
+		set(customtransition,
+			webvr_lookto(90, 0.0, 4.5, easeinoutsine);
+			tween(view.tx|view.ty|view.tz, -420|0|700, 2.0, easeinoutquad,
+				tween(view.tx|view.ty|view.tz, calc(image.ox + '|' + image.oy + '|' + image.oz), 3.0, easeinoutcubic);
+			);
+		);
+		tour_loadscene(abu_simbel_20);
+	</action>
+
+	<action name="transition_20_21_to_18">
+		set(customtransitiontime, 4.0);
+		set(customtransition,
+			webvr_lookto(180, 0.0, 2.0, easeinsine);
+			tween(view.tx|view.ty|view.tz, 5|0|750, 2.0, easeinsine,
+				tween(view.tx|view.ty|view.tz, calc(image.ox + '|' + image.oy + '|' + image.oz), 2.0, easeinoutsine);
+			);
+		);
+		tour_loadscene(abu_simbel_18);
+	</action>
+
+	<action name="transition_22_to_18">
+		set(customtransitiontime, 4.5);
+		set(customtransition,
+			webvr_lookto(180, 0.0, 4.5, easeinoutsine);
+			tween(view.tx|view.ty|view.tz, 250|0|180, 2.0, easeinoutquad,
+				tween(view.tx|view.ty|view.tz, calc(image.ox + '|' + image.oy + '|' + image.oz), 2.5, easeinoutcubic);
+			);
+		);
+		tour_loadscene(abu_simbel_18);
+	</action>
+
+	<action name="transition_22_to_21">
+		set(customtransitiontime, 4.5);
+		set(customtransition,
+			webvr_lookto(-95.0, 0.0, 4.5, easeinoutsine);
+			tween(view.tx|view.ty|view.tz, 432|0|740, 2.0, easeinoutquad,
+				tween(view.tx|view.ty|view.tz, calc(image.ox + '|' + image.oy + '|' + image.oz), 3.0, easeinoutcubic);
+			);
+		);
+		tour_loadscene(abu_simbel_21);
+	</action>
+
+
+
+
+	<!-- global hotspots -->
+
+	<style name="infospot" keep="true" type="text"
+		html="i" css="font-size:60px;text-align:center;" vcenter="true"
+		width="70" height="70" scale="0.2"
+		bgroundedge="36" bgborder="2 0x000000 1" bgshadow="0 0 5 0xFFFFFF 1.0"
+		oversampling="2" mipmapping="true" depth="0" depthbuffer="true" zorder="2"
+		zoom="true" torigin="world"
+		autoalpha="true" alpha="0.0"
+		onloaded.addevent="delayedcall(1,tween(alpha,0.5));"
+		onover.addevent="tween(scale,0.23,0.2,easeoutback); tween(alpha,0.7);"
+		onout.addevent="if(enabled, tween(scale,0.2,0.2); tween(alpha,0.5); )"
+		onclick.addevent="dollhouse_off();"
+		/>
+
+	<style name="infospottext" keep="true" type="text"
+		css="color:#000000;font-size:20px;text-align:center;" vcenter="true" scale="0.2"
+		bgcolor="0xFFFFFF" padding="6 12"
+		oversampling="2" mipmapping="true" depth="0"  depthbuffer="true"
+		distorted="true" torigin="world"
+		enabled="false"
+		autoalpha="true" alpha="0.0"
+		/>
+
+
+	<action name="show_info_text" scope="local" args="targetscene,infoelement,x,y,z,h,v,fov">
+		set(caller.enabled, false);
+		tween(caller.alpha, 0.0);
+
+		dollhouse_off();
+
+		calc(targetmovecall, 'webvr_lookto('+h+','+v+',2.0,easeinoutsine);tween(view.tx|view.ty|view.tz|view.fov,'+x+'|'+y+'|'+z+'|'+fov+',2.0,easeinoutsine);');
+		if(xml.scene != targetscene,
+			copy(global.customtransition, targetmovecall);
+			tour_loadscene(get(targetscene));
+		  ,
+			targetmovecall();
+		);
+
+		if(infoelement != null,
+			delayedcall(2.0,
+				tween(hotspot[get(infoelement)].alpha, 1.0, 1.0);
+			);
+		);
+
+		delayedcall(2.2,
+			set(hasmoved, false);
+			set(startpos, x=get(view.tx), y=get(view.ty), z=get(view.tz));
+			asyncloop(hasmoved == false,
+				calc(d, sqrt((view.tx-startpos.x)^2 + (view.ty-startpos.y)^2 + (view.tz-startpos.z)^2) );
+				if(d GT 50,
+					set(hasmoved, true);
+				);
+			  ,
+				if(infoelement != null,
+					tween(hotspot[get(infoelement)].alpha, 0.0, 0.5, default,
+						tween(caller.alpha, 0.5);
+						set(caller.enabled, true);
+					);
+				  ,
+					tween(caller.alpha, 0.5);
+					set(caller.enabled, true);
+				);
+			);
+		);
+	</action>
+
+
+	<hotspot name="abu_simbel_18_info1" style="infospot"
+		tx="-187" ty="-224" tz="-23"
+		onclick="show_info_text(abu_simbel_18, abu_simbel_18_infotext1, +31,-224,-2, 267,0,110);"
+		/>
+
+	<hotspot name="abu_simbel_18_infotext1" style="infospottext"
+		tx="-187" tz="-23" ty="-224" ath="267" oref="2" ox="0" oy="20"
+		html="The ceiling of this hall is carved with a text in[br]
+		      which Ramesses II dedicates the temple to Queen[br]
+		      Nefertari. In Ancient Egypt, the Queen, was the[br]
+		      embodiment of the goddess Hathor, who was the eye[br]
+		      of the god Re, wife of the living king and mother[br]
+		      of the future king."
+		/>
+
+	<hotspot name="abu_simbel_19_info1" style="infospot"
+		tx="-518" ty="0" tz="-207"
+		onclick="show_info_text(abu_simbel_19, abu_simbel_19_infotext1, -348,-49,-213, -90,0, 108);"
+		/>
+
+	<hotspot name="abu_simbel_19_infotext1" style="infospottext"
+		tx="-521" ty="47" tz="-208" ath="-90"
+		html="The gods Seth (left) and Horus[br](right) blessing Ramesses."
+		/>
+
+	<hotspot name="abu_simbel_20_info1" style="infospot"
+		tx="-231" ty="-33" tz="622"
+		onclick="show_info_text(abu_simbel_20, null, -220,-82,+764, 180,0,120);"
+		/>
+
+	<hotspot name="abu_simbel_21_info1" style="infospot"
+		tx="183" ty="-33" tz="623"
+		onclick="show_info_text(abu_simbel_21, null, +228,-68,+790, 180,0,120);"
+		/>
+
+	<hotspot name="abu_simbel_22_info1" style="infospot"
+		tx="490" ty="0" tz="120"
+		onclick="show_info_text(abu_simbel_22, abu_simbel_22_infotext1, +400,-32,+150, 89,-4,126);"
+		/>
+
+	<hotspot name="abu_simbel_22_infotext1" style="infospottext"
+		tx="528" tz="152" ty="57" ath="89"
+		html="Nefertari offering sistrums to[br]seated goddess Hathor."
+		/>
+
+
+	<!-- setup stuff -->
+	<events name="tourevents" keep="true" onxmlcomplete="setup_first_scene();" />
+
+	<action name="setup_first_scene" scope="local">
+		set(view, tx=get(image.ox), ty=get(image.oy), tz=get(image.oz));
+		set(events[tourevents].onxmlcomplete, null);
+		set(events[tourevents].onloadcomplete,
+			set(events[tourevents].onloadcomplete, moveto_scene_center() );
+		 );
+	</action>
+
+
+	<!-- user interface / skin -->
+
+	<style name="button" type="text" css="text-align:center;" padding="4 8" mergedalpha="false" bgborder="0 0xFFFFFF 1" bgroundedge="1" bgshadow="0 1 4 0x000000 1.0" ondown="set(bgcolor, 0xDDDDDD);" onup="set(bgcolor, 0xFFFFFF);" />
+	<style name="settingsbutton" type="text" css="text-align:center;" padding="4 8" mergedalpha="false" bgborder="1 0xDDDDDD 1" bgroundedge="1" bgshadow="0 0 2 0x000000 1.0" onover="set(bgcolor,0xEEEEEE);" onout="if(!pressed,set(bgcolor,0xFFFFFF));" ondown="set(bgcolor,0xDDDDDD);" onup="if(hovering,set(bgcolor,0xEEEEEE),set(bgcolor,0xFFFFFF));" />
+
+
+	<!-- put all buttons and icons into one layer so that all could be shown or hidden together -->
+	<layer name="tour_ui" keep="true" type="container" align="topleft" width="100%" height="100%" alpha="0.0">
+
+		<!-- settings window -->
+		<layer name="settings" type="container"
+			bgalpha="0.5" bgcolor="0xFFFFFF" bgborder="1 0xFFFFFF 1" bgroundedge="1" bgshadow="0 1 4 0x000000 1.0" bgcapture="true"
+			align="left" x="-250" y="0" width="200" height="151" maskchildren="true" handcursor="false"
+			autoalpha="true"
+			alpha="0.0"
+			zorder="10"
+			state="false"
+			ondown="draglayer();"
+		  >
+			<layer name="settings_title" type="text" align="lefttop" html="Settings" width="100%" height="20" vcenter="true" capture="false" zorder="1" padding="0 4" bgshadow="0 1 4 0x000000 0.2" />
+			<layer name="settings_close" type="text" align="righttop" html="X" padding="0 4" height="20" vcenter="true" zorder="2" onclick="toggle_settings_dialog();" />
+
+			<layer name="settings_depthmapenabled"    style="settingsbutton" align="lefttop" x="10" y="29"  width="-20" onloaded="calc(html,'Depthmap: ' + (image.depthmap.enabled ? 'Enabled' : 'Disabled'));" onclick="switch(image.depthmap.enabled); onloaded(); updatescreen();" />
+			<layer name="settings_depthmaprendermode" style="settingsbutton" align="lefttop" x="10" y="59"  width="-20" onloaded="calc(html,'Rendermode: ' + (display.depthmaprendermode == '3dmodel' ? '3D Model' : 'Depthmap'));" onclick="switch(display.depthmaprendermode,'3dmodel','depthmap'); onloaded(); set(customtransition,'SKIP'); loadscene(get(xml.scene),null,MERGE|KEEPVIEW|KEEPMOVING,BLEND(1));" />
+			<layer name="settings_depthmapbackground" style="settingsbutton" align="lefttop" x="10" y="89"  width="-20" onloaded="calc(html,'3D Model Background: ' + style[depthmapsettings].background);" onclick="switch(style[depthmapsettings].background,'pano','none'); onloaded(); set(customtransition,'SKIP'); loadscene(get(xml.scene),null,MERGE|KEEPVIEW|KEEPMOVING,BLEND(1));" />
+			<layer name="settings_movemode"           style="settingsbutton" align="lefttop" x="10" y="119" width="-20" onloaded="calc(html,'Movemode: ' + (depthmap_movemode == 'walking' ? 'Walking' : 'Flying'));" onclick="switch(depthmap_movemode,'walking','flying'); onloaded();" />
+
+		</layer>
+
+		<layer name="dollhouse" style="button" html="Dollhouse"  width="80" align="bottom" y="50" onclick="dollhouse_view();" />
+		<layer name="resetview" style="button" html="Reset View" width="80" align="bottom" y="20" onclick="resetview();" />
+
+	</layer>
+
+
+	<!-- move the layer elements from the depthmap_navigation.xml also into the 'tour_ui' layer -->
+	<layer name="depthmap_walkinfo" parent="tour_ui" devices="desktop" />
+	<layer name="walkinfo_touch" parent="tour_ui" devices="handheld" />
+	<layer name="moveup" parent="tour_ui" />
+	<layer name="movedn" parent="tour_ui" />
+
+
+	<!-- overwrite/redesign the default Enter VR button -->
+	<layer name="webvr_enterbutton" keep="true" if="skipintro != true"
+		parent="tour_ui"
+		url="res/icon_vr.png" scale="0.5" alpha="1.0" align="leftbottom" x="18" y="18"
+		onclick.addevent="set(display.anaglyph,false);"
+		/>
+
+	<layer name="webvr_enterbutton_infotext" keep="true" devices="normal" parent="webvr_enterbutton" if="skipintro != true"
+		type="text" css="color:#FFFFFF;font-size:10px;line-height:12px;" bg="false" txtshadow="0 1 4 0x000000 1.0" capture="false"
+		html="Enter[br]VR Mode"
+		align="lefttop" x="42"
+		/>
+
+	<layer name="toggle_anaglyph_mode" keep="true"
+		parent="tour_ui"
+		url="res/icon_anaglyph.png" scale="0.5" align="leftbottom" x="18" y="53"
+		onclick="switch(display.anaglyph);"
+		/>
+
+	<layer name="toggle_anaglyph_mode_infotext" keep="true" devices="normal"
+		parent="toggle_anaglyph_mode"
+		type="text" css="color:#FFFFFF;font-size:10px;line-height:12px;" bg="false" txtshadow="0 1 4 0x000000 1.0" capture="false"
+		html="Anaglyph[br]Mode"
+		align="lefttop" x="42"
+		/>
+
+	<layer name="settings_button" keep="true"
+		parent="tour_ui"
+		url="res/icon_settings.png"
+		align="lefttop" x="20" y="20" alpha="0.3" scale="0.4" onover="tween(alpha,1.0);" onout="tween(alpha,0.3);"
+		ondown.touch="onover();"
+		onup.touch="onout();"
+		onclick="toggle_settings_dialog();"
+		/>
+
+	<layer name="togglesound" keep="true"
+		parent="tour_ui"
+		url="res/icon_sound.png"
+		align="rightop" x="20" y="20" alpha="0.3" scale="0.5" onover="tween(alpha,1.0);" onout="tween(alpha,0.3);"
+		ondown.touch="onover();"
+		onup.touch="onout();"
+		crop="0|0|64|64"
+		onclick="if(sound[bg], togglesound(bg); switch(crop, 0|0|64|64, 0|64|64|64); );"
+		/>
+
+
+	<action name="draglayer" scope="local">
+		copy(mx, mouse.x);
+		copy(my, mouse.y);
+		copy(ox, caller.x);
+		copy(oy, caller.y);
+		asyncloop(caller.pressed,
+			calc(caller.x, ox + mouse.x - mx);
+			calc(caller.y, oy + mouse.y - my);
+		);
+	</action>
+
+	<action name="toggle_settings_dialog">
+		callwith(layer[settings],
+			switch(state);
+			if(state,
+				tween(alpha|x|y, 1.0|70|0, 0.5);
+			  ,
+				tween(alpha|x|y, 0.0|-250|0, 0.5);
+			);
+		);
+	</action>
+
+	<action name="dollhouse_view">
+		lookto(270,50,90,default,true,true);
+		tween(view.oz|view.tx|view.ty|view.tz,calc(''+1200+'|'+image.ox+'|'+image.oy+'|'+image.oz));
+		set(control.invert,true);
+	</action>
+
+	<action name="dollhouse_off">
+		tween(view.oz, 0.0, 2.0);
+		set(control.invert,false);
+	</action>
+
+	<action name="resetview">
+		set(control.invert,false);
+		tween(view.tx|view.ty|view.tz|view.ox|view.oy|view.oz|view.fisheye,
+			calc(''+image.ox+'|'+image.oy+'|'+image.oz+'|0|0|0|0'),
+			0.5,
+			default
+		);
+	</action>
+
+
+
+	<!-- intro / info screen -->
+
+	<plugin name="blur" keep="true" if="skipintro != true"
+		url="%VIEWER%/plugins/pp_blur.js"
+		range="30" quality="7" phase="2"
+		onloaded="tween(layer[introscreen].bgalpha, 0.33, 3.0);"
+		/>
+
+	<layer name="introscreen" keep="true" if="skipintro != true"
+		type="container" align="lefttop" width="100%" height="100%" zorder="999"
+		bgcolor="0x000000" bgalpha="1.0" bgcapture="true" handcursor="false" safearea="false"
+		onclick="hide_introscreen();"
+	  >
+		<layer name="introscreen_text"
+			type="text"
+			align="center" width="100%" vcenter="true"
+			padding="8" bg="false" css="color:#FFFFFF;font-size:30px;text-align:center;xline-height:22px;" txtshadow="0 1 4 0x000000 1.0"
+			enabled="false"
+			html="data:infoscreen"
+		/>
+	</layer>
+
+	<action name="hide_introscreen">
+		if(device.mobilevr AND webvr.isavailable,
+			<!-- on vr-devices like the Oculus Go or Oculus Quest directly enter the VR mode -->
+			removeplugin(blur);
+			removelayer(introscreen,true);
+			set(layer[tour_ui].alpha,1.0);
+			webvr.enterVR();
+		  ,
+			set(layer[introscreen].enabled,false);
+			tween(layer[introscreen].bgalpha|layer[introscreen].alpha|plugin[blur].range, 0.33|0.0|0.0, 1.0, default,
+				removeplugin(blur);
+				removelayer(introscreen,true);
+			);
+			tween(layer[tour_ui].alpha,1);
+		);
+	</action>
+
+	<data name="infoscreen"><![CDATA[
+		<div style="font-size:18px;">krpano Depthmap Tour</div>
+		<div style="font-size:24px;">Little Temple of Abu Simbel</div>
+		<div style="font-size:14px;display:inline-block;max-width:420px;">
+			<br>
+			<div>
+				A tech-demo to show how depthmaps can be used in virtual tours.
+				For testing the depthmap feature this example provides full free 3D movement in the panos,
+				but for real-world/end-user usage a limited movement range would be probably more suitable.
+				For best experience using a VR-Headset with positional-tracking
+				and VR-Controllers is recommend (e.g. like the Oculus Quest).
+			</div>
+			<br>
+			<div style="font-size:12px;">
+			Credits:<br>
+			Panos&amp;Depthmaps by Jordi Vallverdú (<a href="https://everpano.com" target="_blank" style="color:#FFFFFF;">everpano.com</a>)<br>
+			Texts from <a href="https://en.wikipedia.org/wiki/Abu_Simbel_temples" target="_blank" style="color:#FFFFFF;">Wikipedia</a> and <a href="https://www.newworldencyclopedia.org/entry/Abu_Simbel" target="_blank" style="color:#FFFFFF;">New World Encyclopedia</a><br>
+			Music: Pharaoh Ramses II by <a href="https://dbfiechter.bandcamp.com" target="_blank" style="color:#FFFFFF;">Derek Fiechter</a><br>
+			Tour Design and Coding by krpano<br>
+			</div>
+
+			<div style="text-align:center;font-size:18px;padding-top:20px;cursor:pointer;">Click/Touch to start</div>
+		</div>
+	]]></data>
+
+</krpano>

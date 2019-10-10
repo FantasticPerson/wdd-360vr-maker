@@ -5,7 +5,8 @@ export default [
             userInfo: [
                 'id',
                 'name',
-                'avatar'
+                'avatar',
+                'timestamp'
             ],
             vr: [
                 'id',
@@ -15,7 +16,9 @@ export default [
                 'headImg',
                 'tabs',
                 'music1',
-                'music2'
+                'music2',
+                'timestamp',
+                'state' // 0 => 未保存 1 => 已保存
             ],
             scene: [
                 'id',
@@ -31,17 +34,26 @@ export default [
                 'vlookatmin',
                 'vlookatmax',
                 'effectType',
-                'effectLevel'
+                'effectLevel',
+                'timestamp',
+                'sunlight',
+                'music1',
+                'music2',
+                'index'
             ],
             folder: [
                 'id',
-                'name'
+                'name',
+                'timestamp'
             ],
             group: [
                 'id',
-                'name',
-                'folderId',
-                'vrId'
+                'title',
+                'vrId',
+                'timestamp',
+                'music1',
+                'music2',
+                'sceneListIds'
             ],
             hotpot:[
                 'id',
@@ -52,19 +64,25 @@ export default [
                 'ath',
                 'atv',
                 'action',
-                'sceneId'
+                'sceneId',
+                'timestamp'
             ],
             audio:[
                 'id',
-                'extension'
+                'extension',
+                'timestamp',
+                'showName'
             ],
             video:[
                 'id',
-                'url'
+                'url',
+                'timestamp'
             ],
             picture:[
                 'id',
-                'extension'
+                'extension',
+                'timestamp',
+                'showName'
             ]
         },
         upgrade: null

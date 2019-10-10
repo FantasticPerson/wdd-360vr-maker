@@ -5,22 +5,26 @@ import styles from '../../../styles/folderContextMenu.css'
 export default class FolderContextMenu extends Component{
 
     onDeleteClick(){
-        const {onDelete,folderData} = this.props
+        const {folderData} = this.props
+        const {deleteFolder,onHide} = this.props.functions
 
-        onDelete(folderData)
+        deleteFolder(folderData)
+        onHide()
     }
 
     onModifyClick(){
-        const {onModify,folderData} = this.props
+        const {folderData} = this.props
+        const {onModify} = this.props.functions
 
         onModify(folderData)
     }
 
     render(){
-        const {bgClick,posData} = this.props
+        const {posData} = this.props
+        const {onHide} = this.props.functions
 
         return (
-            <ContextModal bgClick={bgClick} data={posData}>
+            <ContextModal bgClick={onHide} data={posData}>
                 <ul>
                     <li>
                         <div onClick={this.onDeleteClick.bind(this)}>

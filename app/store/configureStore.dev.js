@@ -1,15 +1,21 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware, compose,combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import { createHashHistory } from 'history';
 import { routerMiddleware, routerActions } from 'react-router-redux';
+import { connectRouter } from 'connected-react-router'
 import { createLogger } from 'redux-logger';
 import rootReducer from '../reducers';
-import * as counterActions from '../actions/counter';
-import type { counterStateType } from '../reducers/counter';
+// import * as counterActions from '../actions/counter';
+// import type { counterStateType } from '../reducers/counter';
 
 const history = createHashHistory();
 
-const configureStore = (initialState?: counterStateType) => {
+const createRootReducer = (history) => combineReducers({
+  router: connectRouter(history),
+  // rest of your reducers
+})
+
+const configureStore = (initialState) => {
   // Redux Configuration
   const middleware = [];
   const enhancers = [];
@@ -29,12 +35,11 @@ const configureStore = (initialState?: counterStateType) => {
   }
 
   // Router Middleware
-  const router = routerMiddleware(history);
-  middleware.push(router);
+  // const router = routerMiddleware(history);
+  // middleware.push(createRootReducer(history));
 
   // Redux DevTools Configuration
   const actionCreators = {
-    ...counterActions,
     ...routerActions
   };
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
@@ -51,8 +56,9 @@ const configureStore = (initialState?: counterStateType) => {
   enhancers.push(applyMiddleware(...middleware));
   const enhancer = composeEnhancers(...enhancers);
 
+
   // Create Store
-  const store = createStore(rootReducer, initialState, enhancer);
+  const store = createStore(rootReducer(history), initialState, enhancer);
 
   if (module.hot) {
     module.hot.accept(

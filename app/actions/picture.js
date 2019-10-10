@@ -5,6 +5,9 @@ export const dUpdateAllPicture = createAction('update_all_picture')
 
 export function updateAllPicture(arr){
     return (dispatch)=>{
+        arr.sort((item1,item2)=>{
+            return item1.timestamp - item2.timestamp
+        })
         dispatch(dUpdateAllPicture(arr))
     }
 }
